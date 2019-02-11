@@ -1,0 +1,21 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+# Built-in modules #
+import argparse, sys
+
+# Internal modules #
+from cbm_runner.runner import Runner
+
+# Make a shell arguments parser #
+parser = argparse.ArgumentParser(description=sys.modules[__name__].__doc__)
+
+# Describe arguments #
+parser.add_argument("io_dir", help="The path to both input and output directories", type=str)
+args = parser.parse_args()
+
+# Create the Run #
+runner = Runner(args.io_dir)
+
+# Execute it #
+runner()
