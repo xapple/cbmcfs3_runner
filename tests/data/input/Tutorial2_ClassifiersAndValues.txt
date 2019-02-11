@@ -1,0 +1,39 @@
+!
+!Sample CBMSITVer1.00 Classifiers And Values Input File
+!
+
+
+/*
+'Working Species Or Leading Species'
+BF	   'Balsam Fir'
+BS	   'Black Spruce'
+JL	   'Western Larch'
+JP	   'Jack Pine'
+OS	   'Other Spruce'
+RP	   'Red Pine'
+SH	   'Unspecified Softwood'
+LT	   'Larch'
+WS	   'White Spruce'
+*/
+
+/*
+'Site Quality'
+GOOD	'Good'
+MEDIUM	'Medium'
+POOR	'Poor'
+*/
+
+/*
+'Density Class'
+D0	   'No Crown Closure'
+D1	   '75% - >    Crown Closure'
+D2	   '51% - 74%  Crown Closure'
+D3	   '26% - 50%  Crown Closure'
+NN	   'Null Value For The Non-forested Polyg'
+*/
+
+/*
+'Working Status'
+W 'Working forest'
+R 'Reserve Forest'
+*/
