@@ -14,33 +14,45 @@ from autopaths.auto_paths import AutoPaths
 
 # Constants #
 toolbox_install_dir = DirectoryPath("/Program Files (x86)/Operational-Scale CBM-CFS3")
+aidb_path           = toolbox_install_dir + "admin/dbs/ArchiveIndex_Beta_Install.mdb"
+cbm_exes_path       = toolbox_install_dir + "admin/executables/"
+cbm_work_dir        = toolbox_install_dir + "temp/"
 
 ###############################################################################
-class ModelExecution(object):
+class ComputeModel(object):
 
     all_paths = """
     /output/cbm_formatted_db/project.mdb
+    /output/cbm_tmp_dir/project.mdb
+    /output/cbm_tmp_dir/project.cbmproj  
+    /logs/compute_model.log
     """
 
     def __init__(self, parent):
         # Default attributes #
         self.parent = parent
         # Directories #
-        self.paths = AutoPaths(self.parent.io_dir, self.all_paths)
-        # Paths to Access databases #
-        self.aidb_path = toolbox_install_dir + "admin/dbs/ArchiveIndex_Beta_Install.mdb"
-        # Others #
-        self.cbm_exe_path = toolbox_install_dir + "admin/executables/"
+        self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        with AIDB(self.aidb_path, False) as aidb, AccessDB(str(self.paths.mdb), False) as proj:
-            sim_id  = aidb.AddProjectToAIDB(proj)
-            cbm_wd = os.path.join(toolbox_install_dir, "temp")
-            s = Simulator(executablePath   = self.cbm_exe_path,
-                          simID            = sim_id,
-                          projectPath      = str(self.paths.mdb.directory),
-                          CBMRunDir        = cbm_wd,
+        self.setup_tmp_dir()
+        self.run_simulator()
+
+    def setup_tmp_dir(self):
+        self.paths.formatted_mdb.copy(self.paths.tmp_mdb)
+
+    def run_simulator(self):
+        # Open contexts managers #
+        with AIDB(aidb_path, False)                   as aidb, \
+             AccessDB(str(self.paths.tmp_mdb), False) as proj:
+        # Run all methods #
+            self.sim_id = aidb.AddProjectToAIDB(proj)
+            s = Simulator(executablePath   = cbm_exes_path,
+                          simID            = self.sim_id,
+                          projectPath      = str(self.paths.tmp_dir),
+                          CBMRunDir        = cbm_work_dir,
                           toolboxPath      = toolbox_install_dir)
+            # This list of operations is taken from "simulator.py" #
             s.CleanupRunDirectory()
             s.CreateMakelistFiles()
             s.copyMakelist()

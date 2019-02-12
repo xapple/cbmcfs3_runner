@@ -19,7 +19,7 @@ from plumbing.cache       import property_cached
 # Internal modules #
 from cbm_runner.steps.switch_aidb          import AIDBSwitcher
 from cbm_runner.steps.standard_import_tool import StandardImportTool
-from cbm_runner.steps.model_execution      import ModelExecution
+from cbm_runner.steps.compute_model        import ComputeModel
 
 ###############################################################################
 class Runner(object):
@@ -31,30 +31,29 @@ class Runner(object):
     /logs/
     """
 
-    def __init__(self, io_dir=None):
+    def __init__(self, data_dir=None):
         """Store the data directory paths."""
-        # If the io_dir is not specified, get it from the environment vars #
-        if io_dir is None: io_dir = os.environ.get('CBM_IO_DIR')
+        # If the data_dir is not specified, get it from the environment vars #
+        if data_dir is None: data_dir = os.environ.get('CBM_IO_DIR')
         # Main directory #
-        self.io_dir = DirectoryPath(io_dir)
+        self.data_dir = DirectoryPath(data_dir)
         # Check it exists #
-        self.io_dir.must_exist()
+        self.data_dir.must_exist()
         # Automatically access paths #
-        self.p = AutoPaths(self.io_dir, self.all_paths)
+        self.paths = AutoPaths(self.data_dir, self.all_paths)
+
+    def clear_all_outputs(self):
+        self.paths.output_dir.remove()
+        self.paths.logs_dir.remove()
 
     @property_cached
     def switcher(self):
-        return AIDBSwitcher(path)
+        return AIDBSwitcher(self)
 
     @property_cached
     def standard_input_tool(self):
-        return StandardImportTool(path)
+        return StandardImportTool(self)
 
     @property_cached
-    def model_executer(self):
-        return ModelExecution(self)
-
-    def __call__(self):
-        self.switcher.switch_to_europe()
-        self.standard_input_tool.run()
-        self.simulator.run()
+    def compute_model(self):
+        return ComputeModel(self)

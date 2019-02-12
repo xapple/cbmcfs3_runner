@@ -1,6 +1,12 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
+"""
+Typically you would run this file from a command line like this:
+
+     ipython.exe -i -- /deploy/cbm_runner/tests/tutorial_six/run_tutorial_six.py
+"""
+
 # Built-in modules #
 import inspect
 
@@ -16,4 +22,6 @@ this_dir  = this_file.directory
 
 ###############################################################################
 runner = Runner(this_dir + 'data/')
-runner()
+runner.clear_all_outputs()
+runner.standard_input_tool()
+runner.compute_model()
