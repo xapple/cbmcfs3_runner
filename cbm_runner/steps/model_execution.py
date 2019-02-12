@@ -30,7 +30,7 @@ class ModelExecution(object):
         # Paths to Access databases #
         self.aidb_path = toolbox_install_dir + "admin/dbs/ArchiveIndex_Beta_Install.mdb"
         # Others #
-        self.cbm_exe_path = os.path.join(toolbox_install_dir, "admin", "executables")
+        self.cbm_exe_path = toolbox_install_dir + "admin/executables/"
 
     def __call__(self):
         with AIDB(self.aidb_path, False) as aidb, AccessDB(str(self.paths.mdb), False) as proj:
