@@ -1,5 +1,5 @@
 {
-  "output_path": "C:\\deploy\\cbm_runner\\tests\\tutorial_six\\data\\output\\cbm_formatted_db\\tutorial_six.mdb",
+  "output_path": "C:\\deploy\\cbm_runner\\tests\\tutorial_six\\data\\output\\cbm_formatted_db\\project.mdb",
   "import_config": {
     "path":                          "C:\\deploy\\cbm_runner\\tests\\tutorial_six\\data\\input\\tutorial_six.xls",
     "ageclass_table_name":           "AgeClasses$",

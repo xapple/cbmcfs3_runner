@@ -11,7 +11,7 @@ from cbm_runner.runner import Runner
 parser = argparse.ArgumentParser(description=sys.modules[__name__].__doc__)
 
 # Describe arguments #
-parser.add_argument("data_dir", help="The path to both input and output directories", type=str)
+parser.add_argument("data_dir", help="The paths to both input and output directories", type=str)
 args = parser.parse_args()
 
 # Create the Run #
