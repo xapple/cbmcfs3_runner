@@ -11,11 +11,11 @@ from cbm_runner.runner import Runner
 parser = argparse.ArgumentParser(description=sys.modules[__name__].__doc__)
 
 # Describe arguments #
-parser.add_argument("io_dir", help="The path to both input and output directories", type=str)
+parser.add_argument("data_dir", help="The path to both input and output directories", type=str)
 args = parser.parse_args()
 
 # Create the Run #
-runner = Runner(args.io_dir)
+runner = Runner(args.data_dir)
 
 # Execute it #
 runner()
