@@ -7,18 +7,19 @@ import shutil
 
 ###############################################################################
 class AIDBSwitcher(object):
-
-    all_paths = """
+    """
+    This class enables us to switch the famous "ArchiveIndexDatabase", between
+    the canadian standard and the european standard.
     """
 
     def __init__(self, parent):
         # Default attributes #
         self.parent = parent
-        # Directories #
-        self.p = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def switch_to_europe(self):
+        pass
         shutil.move()
 
     def switch_to_canada(self):
+        pass
         shutil.move()

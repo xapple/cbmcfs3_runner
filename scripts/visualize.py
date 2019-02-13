@@ -1,5 +1,5 @@
 """
-A test script to visualize the inventory
+A test script (throw it away later) to visualize the inventory.
 """
 
 # Third party modules #

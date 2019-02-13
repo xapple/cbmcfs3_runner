@@ -1,5 +1,4 @@
 # Built-in modules #
-import os
 
 # Third party modules #
 from simulation.simulator import Simulator
@@ -8,6 +7,7 @@ from cbm3data.accessdb    import AccessDB
 
 # First party modules #
 from autopaths.dir_path   import DirectoryPath
+from autopaths.file_path  import FilePath
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
@@ -20,11 +20,19 @@ cbm_work_dir        = toolbox_install_dir + "temp/"
 
 ###############################################################################
 class ComputeModel(object):
+    """
+    This class will run CBM-CFS3.exe from the command line without using the GUI.
+    It will take an Microsoft Access database (as created by SIT) as input.
+    Then it will produce a new Microsoft Access database as output.
+    If the input database is in a different location than when it was created
+    by SIT, the tool will not work in the same way. Side-effects are everywhere.
+    """
 
     all_paths = """
     /output/cbm_formatted_db/project.mdb
     /output/cbm_tmp_dir/project.mdb
     /output/cbm_tmp_dir/project.cbmproj  
+    /output/after_simulation/project.mdb
     /logs/compute_model.log
     """
 
@@ -36,23 +44,28 @@ class ComputeModel(object):
 
     def __call__(self):
         self.setup_tmp_dir()
-        self.run_simulator()
+        #self.run_simulator(self.paths.tmp_mdb) # Fails for unknown reason
+        self.run_simulator(self.paths.formatted_mdb)
+        self.copy_output()
 
     def setup_tmp_dir(self):
         self.paths.formatted_mdb.copy(self.paths.tmp_mdb)
 
-    def run_simulator(self):
+    def run_simulator(self, database):
+        """
+        This code was taken from:
+        https://github.com/cat-cfs/cbm3_python/blob/master/simulate.py#L36
+        """
         # Open contexts managers #
-        with AIDB(aidb_path, False)                   as aidb, \
-             AccessDB(str(self.paths.formatted_mdb), False) as proj:
+        with AIDB(aidb_path, False) as aidb, \
+             AccessDB(str(database), False) as proj:
         # Run all methods #
             self.sim_id = aidb.AddProjectToAIDB(proj)
             s = Simulator(executablePath   = cbm_exes_path,
                           simID            = self.sim_id,
-                          projectPath      = str(self.paths.formatted_mdb.directory),
+                          projectPath      = str(database.directory),
                           CBMRunDir        = cbm_work_dir,
                           toolboxPath      = toolbox_install_dir)
-            # This list of operations is taken from "simulator.py" #
             s.CleanupRunDirectory()
             s.CreateMakelistFiles()
             s.copyMakelist()
@@ -65,3 +78,12 @@ class ComputeModel(object):
             s.RunCBM()
             s.CopyTempFiles()
             s.LoadCBMResults()
+
+    @property
+    def generated_database(self):
+        """Will be in a direcotry created by CBM."""
+        return self.paths.cbm_tmp_dir + self.sim_id + '/' + self.sim_id + '.mdb'
+
+    def copy_output(self):
+        """Place the generated database in a separate directory."""
+        self.generated_db.copy(self.paths.after_mdb)
