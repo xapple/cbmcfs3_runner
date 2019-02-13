@@ -28,7 +28,7 @@ class Runner(object):
     all_paths = """
     /input/
     /output/
-    /logs/
+    /logs/plot.pdf
     """
 
     def __init__(self, data_dir=None):

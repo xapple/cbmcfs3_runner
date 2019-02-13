@@ -44,12 +44,12 @@ class ComputeModel(object):
     def run_simulator(self):
         # Open contexts managers #
         with AIDB(aidb_path, False)                   as aidb, \
-             AccessDB(str(self.paths.tmp_mdb), False) as proj:
+             AccessDB(str(self.paths.formatted_mdb), False) as proj:
         # Run all methods #
             self.sim_id = aidb.AddProjectToAIDB(proj)
             s = Simulator(executablePath   = cbm_exes_path,
                           simID            = self.sim_id,
-                          projectPath      = str(self.paths.tmp_dir),
+                          projectPath      = str(self.paths.formatted_mdb.directory),
                           CBMRunDir        = cbm_work_dir,
                           toolboxPath      = toolbox_install_dir)
             # This list of operations is taken from "simulator.py" #

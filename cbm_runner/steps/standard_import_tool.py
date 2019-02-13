@@ -47,4 +47,6 @@ class StandardImportTool(object):
         self.paths.SITLog.move_to(self.paths.log)
 
     def check_for_errors(self):
-        if "error" in self.paths.log.contents: raise Exception("SIT did not run properly.")
+        """This has not been checked yet."""
+        if "error" in self.paths.log.contents.lower(): raise Exception("SIT did not run properly.")
+        #assert self.paths.log.contents.endswith("Done")
