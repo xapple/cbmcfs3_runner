@@ -86,4 +86,4 @@ class ComputeModel(object):
 
     def copy_output(self):
         """Place the generated database in a separate directory."""
-        self.generated_db.copy(self.paths.after_mdb)
+        self.generated_database.copy(self.paths.after_mdb)
