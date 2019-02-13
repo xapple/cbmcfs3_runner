@@ -82,7 +82,7 @@ class ComputeModel(object):
     @property
     def generated_database(self):
         """Will be in a direcotry created by CBM."""
-        return self.paths.cbm_tmp_dir + self.sim_id + '/' + self.sim_id + '.mdb'
+        return self.paths.cbm_tmp_dir + str(self.sim_id) + '/' + str(self.sim_id) + '.mdb'
 
     def copy_output(self):
         """Place the generated database in a separate directory."""
