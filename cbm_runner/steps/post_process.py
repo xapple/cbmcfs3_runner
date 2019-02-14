@@ -3,7 +3,7 @@
 # Third party modules #
 
 # First party modules #
-from plumbing.cache import property_cached
+from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
 
@@ -22,6 +22,12 @@ class PostProcessor(object):
         self.parent = parent
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
+
+    @property_cached
+    def sim_result(self):
+        path = self.parent.compute_model.paths.after_mdb
+        path.must_exist()
+        return path
 
     @property_cached
     def predicted_inventory(self):
