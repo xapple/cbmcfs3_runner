@@ -1,6 +1,11 @@
 # Third party modules #
 
 # First party modules #
+from plumbing.cache import property_cached
+from autopaths.auto_paths import AutoPaths
+
+# Internal modules #
+from cbm_runner.graphs.inventory import InventoryBarChart
 
 ###############################################################################
 class Graphs(object):
@@ -10,7 +15,7 @@ class Graphs(object):
     """
 
     all_paths = """
-    /output/after_simulation/project.mdb
+    /output/graphs/inventory/input_inventory.pdf
     """
 
     def __init__(self, parent):
@@ -18,3 +23,11 @@ class Graphs(object):
         self.parent = parent
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
+
+    def __call__(self):
+        self.input_inventory.save_and_plot()
+
+    @property_cached
+    def input_inventory(self):
+        return InventoryBarChart()
+

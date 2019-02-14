@@ -18,6 +18,7 @@ from plumbing.cache       import property_cached
 
 # Internal modules #
 from cbm_runner.steps.switch_aidb          import AIDBSwitcher
+from cbm_runner.steps.input_data           import InputData
 from cbm_runner.steps.standard_import_tool import StandardImportTool
 from cbm_runner.steps.compute_model        import ComputeModel
 from cbm_runner.steps.post_process         import PostProcessor
@@ -49,7 +50,7 @@ class Runner(object):
 
     def __call__(self):
         self.clear_all_outputs()
-        self.standard_input_tool()
+        self.standard_import_tool()
         self.compute_model()
 
     def clear_all_outputs(self):
@@ -62,7 +63,11 @@ class Runner(object):
         return AIDBSwitcher(self)
 
     @property_cached
-    def standard_input_tool(self):
+    def input_data(self):
+        return InputData(self)
+
+    @property_cached
+    def standard_import_tool(self):
         return StandardImportTool(self)
 
     @property_cached

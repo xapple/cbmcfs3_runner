@@ -22,5 +22,6 @@ this_dir  = this_file.directory
 
 ###############################################################################
 runner = Runner(this_dir + 'data/')
-runner()
-print runner.post_processor.sim_result['tblClassifiers']
+#runner()
+#df = runner.post_processor.sim_result['tblAgeClasses']
+#print df
