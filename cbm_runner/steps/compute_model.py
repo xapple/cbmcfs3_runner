@@ -7,7 +7,6 @@ from cbm3data.accessdb    import AccessDB
 
 # First party modules #
 from autopaths.dir_path   import DirectoryPath
-from autopaths.file_path  import FilePath
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
