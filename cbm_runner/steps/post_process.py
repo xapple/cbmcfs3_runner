@@ -5,6 +5,7 @@
 # First party modules #
 from plumbing.databases.access_database import AccessDatabase
 from plumbing.cache import property_cached
+from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
 
