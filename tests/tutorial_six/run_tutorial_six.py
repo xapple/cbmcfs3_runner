@@ -25,3 +25,4 @@ runner = Runner(this_dir + 'data/')
 #runner()
 #df = runner.post_processor.sim_result['tblAgeClasses']
 #print df
+runner.reports.inventory_report()

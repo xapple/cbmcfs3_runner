@@ -23,6 +23,7 @@ from cbm_runner.steps.standard_import_tool import StandardImportTool
 from cbm_runner.steps.compute_model        import ComputeModel
 from cbm_runner.steps.post_process         import PostProcessor
 from cbm_runner.graphs.graphs              import Graphs
+from cbm_runner.reports                    import Reports
 
 ###############################################################################
 class Runner(object):
@@ -81,3 +82,7 @@ class Runner(object):
     @property_cached
     def graphs(self):
         return Graphs(self)
+
+    @property_cached
+    def reports(self):
+        return Reports(self)
