@@ -31,7 +31,7 @@ class InventoryReport(Document):
         self.markdown = unicode(self.template)
         # Render to latex #
         self.make_body()
-        self.make_latex({'title': 'Cluster report'})
+        self.make_latex({'title': 'Inventory report'})
         self.make_pdf(safe=True)
 
 ###############################################################################
