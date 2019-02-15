@@ -9,8 +9,9 @@ from cbm_runner import project_name, project_url
 from cbm_runner.reports.template import ReportTemplate
 
 # First party modules #
-from plumbing.cache import property_cached
-from pymarktex      import Document
+from plumbing.cache    import property_cached
+from pymarktex         import Document
+from pymarktex.figures import ScaledFigure
 
 ###############################################################################
 class InventoryReport(Document):
@@ -32,7 +33,7 @@ class InventoryReport(Document):
         # Render to latex #
         self.make_body()
         self.make_latex({'title': 'Inventory report'})
-        self.make_pdf(safe=True)
+        self.make_pdf(safe=False)
 
 ###############################################################################
 class InvTemplate(ReportTemplate):
@@ -44,6 +45,15 @@ class InvTemplate(ReportTemplate):
     def __init__(self, report):
         # Attributes #
         self.report, self.parent = report, report
+        self.runner = self.parent.parent.parent
+        self.graphs = self.runner.graphs
 
     def short_name(self):
-        return self.parent.parent.parent.data_dir.directory.name
+        return self.runner.data_dir.directory.name
+
+    def input_inventory(self):
+        caption = "Distribution of total area according to age"
+        path    = self.graphs.input_inventory.path
+        label   = "input_inventory"
+        return str(ScaledFigure(path, caption, label))
+

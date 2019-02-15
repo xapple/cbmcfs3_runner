@@ -1,5 +1,5 @@
 # Third party modules #
-import pyodbc, pandas, seaborn
+import seaborn
 
 # First party modules #
 from plumbing.graphs import Graph
@@ -7,4 +7,6 @@ from plumbing.graphs import Graph
 ###############################################################################
 class InventoryBarChart(Graph):
     def plot(self, **kwargs):
-        seaborn.barplot(self.x_data, self.y_data)
+        df = self.parent.parent.input_data.inventory
+        df = df.set_index('Age').groupby('Age').sum()[['Area']]
+        seaborn.barplot(df.index, df['Area'])

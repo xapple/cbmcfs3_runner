@@ -23,6 +23,5 @@ this_dir  = this_file.directory
 ###############################################################################
 runner = Runner(this_dir + 'data/')
 #runner()
-#df = runner.post_processor.sim_result['tblAgeClasses']
-#print df
+runner.graphs()
 runner.reports.inventory_report()

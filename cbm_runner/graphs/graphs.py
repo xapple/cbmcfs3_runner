@@ -25,9 +25,9 @@ class Graphs(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        self.input_inventory.save_and_plot()
+        self.input_inventory.plot_and_save()
 
     @property_cached
     def input_inventory(self):
-        return InventoryBarChart()
+        return InventoryBarChart(self, self.paths.input_pdf)
 
