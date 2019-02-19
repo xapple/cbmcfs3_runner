@@ -14,13 +14,15 @@ class StandardImportTool(object):
     """
     This class will run the tool found here:
     https://github.com/cat-cfs/StandardImportToolPlugin
+
+    It expects release version 1.1
+
     It will call the binary distribution exe with a JSON file as only parameter.
     This JSON file is automatically generated based on a template.
     Finally the log file is stored, and is checked for errors.
     """
 
     all_paths = """
-    /input/inv_and_dist.xls
     /output/sit_config/sit_config.json
     /output/cbm_formatted_db/project.mdb
     /output/cbm_formatted_db/SITLog.txt
@@ -41,9 +43,6 @@ class StandardImportTool(object):
 
     def create_json_config(self):
         """The template is at the repository root in /templates/"""
-        self.context  = {"mdb_output_path": self.paths.mdb.escaped,
-                         "xls_input_path":  self.paths.xls.escaped}
-        self.template = repos_dir + 'templates/sit_config.mustache'
         self.renderer = pystache.Renderer()
         self.json     = self.renderer.render_path(self.template, self.context)
         self.paths.json.write(self.json)
@@ -60,3 +59,46 @@ class StandardImportTool(object):
         """This has not been checked yet."""
         if "error" in self.paths.log.contents.lower(): raise Exception("SIT did not run properly.")
         assert self.paths.log.contents.endswith("Done\n")
+
+###############################################################################
+class ImportWithXLS(StandardImportTool):
+    all_paths = StandardImportTool.all_paths + """
+    /input/inv_and_dist.xls
+    """
+
+    template = repos_dir + 'templates/sit_xls_config.mustache'
+
+    @property
+    def context(self):
+        return {"mdb_output_path": self.paths.mdb.escaped,
+                "xls_input_path":  self.paths.xls.escaped}
+
+###############################################################################
+class ImportWithTXT(StandardImportTool):
+    all_paths = StandardImportTool.all_paths + """
+    /input/ageclass.txt
+    /input/classifiers.txt
+    /input/disturbance_events.txt
+    /input/disturbance_types.txt
+    /input/inventory.txt
+    /input/transition_rules.txt
+    /input/yields.txt
+    """
+
+    template = repos_dir + 'templates/sit_txt_config.mustache'
+
+    @property
+    def context(self):
+        return {'mdb_output_path':                  self.paths.mdb.escaped,
+                'ageclass_input_path':              self.paths.ageclass.escaped,
+                'classifiers_input_path':           self.paths.classifiers.escaped,
+                'disturbance_events_input_path':    self.paths.disturbance_events.escaped,
+                'disturbance_types_input_path':     self.paths.disturbance_types.escaped,
+                'inventory_input_path':             self.paths.inventory.escaped,
+                'transition_rules_input_path':      self.paths.transition_rules.escaped,
+                'yield_input_path':                 self.paths.yields.escaped}
+
+###############################################################################
+class ImportWithCSV(StandardImportTool):
+    """This is not currently possible."""
+    pass

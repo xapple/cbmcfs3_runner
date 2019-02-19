@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
+TUTORIAL SIX - INTEGRATION TEST
+
 Typically you would run this file from a command line like this:
 
      ipython.exe -i -- /deploy/cbm_runner/tests/tutorial_six/run_tutorial_six.py
