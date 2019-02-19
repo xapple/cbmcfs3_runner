@@ -23,5 +23,5 @@ this_dir  = this_file.directory
 ###############################################################################
 runner = Runner(this_dir + 'data/')
 #runner()
-runner.graphs()
-runner.reports.inventory_report()
+#runner.graphs()
+#runner.reports.inventory_report()

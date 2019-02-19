@@ -25,13 +25,6 @@ class InputData(object):
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
-    def test_xls_reading(self):
-        import xlrd
-        book = xlrd.open_workbook(self.paths.xls)
-        print("The number of worksheets is", book.nsheets)
-        print("Worksheet name(s):", book.sheet_names())
-        return book.sheet_by_index(0)
-
     @property_cached
     def xls(self): return pandas.ExcelFile(str(self.paths.xls))
 
