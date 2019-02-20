@@ -14,7 +14,7 @@
 	<key>BackgroundGraphic</key>
 	<dict>
 		<key>Bounds</key>
-		<string>{{0, 0}, {1133.8582611083984, 2834.6456527709961}}</string>
+		<string>{{0, 0}, {1077.1653480529785, 2409.4488048553467}}</string>
 		<key>Class</key>
 		<string>SolidGraphic</string>
 		<key>ID</key>
@@ -33,7 +33,7 @@
 	<key>CanvasOrigin</key>
 	<string>{0, 0}</string>
 	<key>CanvasSize</key>
-	<string>{1133.8582611083984, 2834.6456527709961}</string>
+	<string>{1077.1653480529785, 2409.4488048553467}</string>
 	<key>ColumnAlign</key>
 	<integer>1</integer>
 	<key>ColumnSpacing</key>
@@ -72,15 +72,15 @@
 			<integer>99693</integer>
 			<key>Points</key>
 			<array>
-				<string>{323.34446784389303, 1663.454343300433}</string>
-				<string>{273.71627716971193, 1665.3128566650512}</string>
+				<string>{323.34446784389303, 1663.7297401689589}</string>
+				<string>{273.71627716971193, 1665.7520726269302}</string>
 			</array>
 			<key>Style</key>
 			<dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
-					<string>FilledArrow</string>
+					<string>0</string>
 					<key>HeadScale</key>
 					<real>1.5000001192092896</real>
 					<key>Legacy</key>
@@ -88,7 +88,7 @@
 					<key>LineType</key>
 					<integer>1</integer>
 					<key>TailArrow</key>
-					<string>FilledArrow</string>
+					<string>0</string>
 					<key>TailScale</key>
 					<real>1.5</real>
 				</dict>
@@ -126,7 +126,7 @@
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
-					<string>FilledArrow</string>
+					<string>0</string>
 					<key>HeadScale</key>
 					<real>1.5000001192092896</real>
 					<key>Legacy</key>
@@ -893,7 +893,7 @@
 			<integer>99458</integer>
 			<key>Points</key>
 			<array>
-				<string>{943.16535430498948, 1003.4645760337198}</string>
+				<string>{947, 853}</string>
 				<string>{941.16535430498948, 2123.2577075513627}</string>
 			</array>
 			<key>Style</key>
@@ -1125,8 +1125,8 @@
 			<integer>99451</integer>
 			<key>Points</key>
 			<array>
-				<string>{322.07718045542862, 973.97154924187316}</string>
-				<string>{323.75603886930861, 1110.4058578951401}</string>
+				<string>{322.07718045542401, 973.97154924187316}</string>
+				<string>{323.75603886927388, 1110.4058578951401}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2959,8 +2959,8 @@
 			<integer>41284</integer>
 			<key>Points</key>
 			<array>
-				<string>{241.45738055139046, 547.59662785586465}</string>
-				<string>{302.35145980180141, 635.18110591145069}</string>
+				<string>{241.45738055138068, 547.59662785586465}</string>
+				<string>{302.35145980166919, 635.18110591145069}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2986,7 +2986,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{29.763779797610333, 416.69291716654465}, {131.81102481798865, 56}}</string>
+			<string>{{29.763779797610326, 416.69291716654465}, {150.23622183555693, 56}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -3040,7 +3040,7 @@
 
 \f0\b\fs24 \cf0 3) Calibration:\
 - 
-\f1\b0 Contains the back inventory as well as growth curves.}</string>
+\f1\b0 Contains the back inventory as well as growth curves. 82 tables.}</string>
 				<key>VerticalPad</key>
 				<integer>0</integer>
 			</dict>
@@ -3069,8 +3069,8 @@
 			<integer>41282</integer>
 			<key>Points</key>
 			<array>
-				<string>{318.6447961394839, 379.01214980027839}</string>
-				<string>{253.69905455665253, 480.59662785586431}</string>
+				<string>{318.64479613946884, 379.01214980027839}</string>
+				<string>{253.69905455652795, 480.59662785586431}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -3118,8 +3118,8 @@
 			<integer>41281</integer>
 			<key>Points</key>
 			<array>
-				<string>{335.44238779044088, 379.01214980027839}</string>
-				<string>{396.1993251507098, 487.4097884475018}</string>
+				<string>{335.44238779044701, 379.01214980027839}</string>
+				<string>{396.19932515076346, 487.4097884475018}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -3145,7 +3145,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{450.70866550667074, 462.04724828671277}, {124, 56}}</string>
+			<string>{{456.43304523293466, 462.4097884475018}, {129, 98}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -3199,7 +3199,8 @@
 
 \f0\b\fs24 \cf0 4) Silvicultural treatment:\
 - 
-\f1\b0 Describes futures disturbances.}</string>
+\f1\b0 Describes futures disturbances.\
+- Will be responsible for \'93dist_types.csv\'94 and \'93dist_events.csv\'94}</string>
 				<key>VerticalPad</key>
 				<integer>0</integer>
 			</dict>
@@ -3228,8 +3229,8 @@
 			<integer>41279</integer>
 			<key>Points</key>
 			<array>
-				<string>{402.6826816729432, 554.4097884475018}</string>
-				<string>{342.63482329865411, 635.18110591145069}</string>
+				<string>{402.68268167296822, 554.4097884475018}</string>
+				<string>{342.6348232989684, 635.18110591145069}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -4820,7 +4821,7 @@ s.LoadCBMResults()}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{310.39370360365058, 2281.3207188767065}, {43.99998870860594, 15}}</string>
+					<string>{{310.39370360365058, 2281.3207188767065}, {43.999988730079053, 15}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -7611,7 +7612,7 @@ This document just describes a plan for processing data.}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{649.77548572164358, 45.940211077956576}, {205, 14}}</string>
+			<string>{{863.14961413069966, 36.978519082565867}, {205, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -7660,7 +7661,7 @@ This document just describes a plan for processing data.}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{676.77553272277589, 25.969566165453756}, {173, 14}}</string>
+			<string>{{890.14966113183198, 17.007874170063047}, {173, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -7716,7 +7717,7 @@ This document just describes a plan for processing data.}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{779.77553519828609, 65.910857630646348}, {75, 14}}</string>
+			<string>{{993.14966360734218, 56.949165635255639}, {75, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -7772,7 +7773,7 @@ This document just describes a plan for processing data.}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{759.27553751014432, 85.881501693715308}, {96, 14}}</string>
+			<string>{{972.6496659192004, 76.919809698324599}, {96, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -8050,7 +8051,7 @@ This document just describes a plan for processing data.}</string>
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2019-02-20 14:49:22 +0000</string>
+	<string>2019-02-20 16:24:11 +0000</string>
 	<key>Modifier</key>
 	<string>Lucas Sinclair</string>
 	<key>NotesVisible</key>
@@ -8146,7 +8147,7 @@ This document just describes a plan for processing data.}</string>
 		<key>SidebarWidth</key>
 		<integer>0</integer>
 		<key>VisibleRegion</key>
-		<string>{{-2, 1811}, {1139, 803}}</string>
+		<string>{{-24, 85}, {1139, 803}}</string>
 		<key>Zoom</key>
 		<real>1</real>
 		<key>ZoomValues</key>
