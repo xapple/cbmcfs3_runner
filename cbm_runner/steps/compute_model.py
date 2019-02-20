@@ -3,7 +3,7 @@
 # Third party modules #
 from simulation.simulator import Simulator
 from cbm3data.aidb        import AIDB
-from cbm3data.accessdb    import AccessDB
+from cbm3data.accessdb    import AccessDB as LegacyDB
 
 # First party modules #
 from autopaths.dir_path   import DirectoryPath
@@ -57,7 +57,7 @@ class ComputeModel(object):
         """
         # Open contexts managers #
         with AIDB(aidb_path, False) as aidb, \
-             AccessDB(str(database), False) as proj:
+             LegacyDB(str(database), False) as proj:
         # Run all methods #
             self.sim_id = aidb.AddProjectToAIDB(proj)
             s = Simulator(executablePath   = cbm_exes_path,

@@ -5,6 +5,9 @@ import shutil
 
 # Internal modules #
 
+# Constants #
+default_path = "/Program Files%20%28x86%29/Operational-Scale%20CBM-CFS3/Admin/DBs/ArchiveIndex_Beta_Install.mdb"
+
 ###############################################################################
 class AIDBSwitcher(object):
     """

@@ -1,6 +1,14 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
+"""
+PINE FOREST - INTEGRATION TEST
+
+Typically you would run this file from a command line like this:
+
+     ipython.exe -i -- /deploy/cbm_runner/tests/pine_forest/run_pine_forest.py
+"""
+
 # Built-in modules #
 import inspect
 
@@ -15,5 +23,5 @@ this_file = FilePath((inspect.stack()[0])[1])
 this_dir  = this_file.directory
 
 ###############################################################################
-runner = Runner(this_dir + 'input_output/')
+runner = Runner(this_dir + 'data/')
 runner()

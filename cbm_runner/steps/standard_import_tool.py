@@ -5,6 +5,8 @@ import pbs, pystache
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
+from plumbing.cache import property_cached
+from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
 from cbm_runner import repos_dir
@@ -59,6 +61,11 @@ class StandardImportTool(object):
         """This has not been checked yet."""
         if "error" in self.paths.log.contents.lower(): raise Exception("SIT did not run properly.")
         assert self.paths.log.contents.endswith("Done\n")
+
+    @property_cached
+    def project_mdb(self):
+        self.paths.mdb.must_exist()
+        return AccessDatabase(self.paths.mdb)
 
 ###############################################################################
 class ImportWithXLS(StandardImportTool):
