@@ -1,0 +1,6 @@
+!Sample Standard Import Tool Ver1.00 Growth And Yields Input File
+!
+!Classifiers	Species			Merchantable Volume at age classes
+!1   2   3   4				 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 n
+!
+BF GOOD D1 W	BF		 0 0 0 8 20 33 49 63 78 93 106 112 113 113 113 113 113 113 113 113 113
