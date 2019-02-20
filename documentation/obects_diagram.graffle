@@ -199,14 +199,14 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>36517</integer>
+				<integer>36518</integer>
 			</dict>
 			<key>ID</key>
 			<integer>36519</integer>
 			<key>Points</key>
 			<array>
-				<string>{710.24541036444236, 182.21303682658552}</string>
-				<string>{748.96760733368444, 103.7407962616206}</string>
+				<string>{714.31534140528049, 182.23070428449117}</string>
+				<string>{744.09399224745346, 131.72210081271902}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -355,14 +355,14 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>36513</integer>
+				<integer>36514</integer>
 			</dict>
 			<key>ID</key>
 			<integer>36515</integer>
 			<key>Points</key>
 			<array>
-				<string>{951.52067069575651, 330.62555942991838}</string>
-				<string>{1007.9247934539305, 324.46074235392791}</string>
+				<string>{951.52324275166382, 335.31537411761076}</string>
+				<string>{997.29556809158771, 333.51127944758025}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2833,7 +2833,7 @@ Properties:\
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2019-02-20 14:16:52 +0000</string>
+	<string>2019-02-20 14:24:50 +0000</string>
 	<key>Modifier</key>
 	<string>Lucas Sinclair</string>
 	<key>NotesVisible</key>
@@ -2921,7 +2921,7 @@ Properties:\
 		<key>SidebarWidth</key>
 		<integer>0</integer>
 		<key>VisibleRegion</key>
-		<string>{{0, 44}, {1421, 739}}</string>
+		<string>{{0, 42}, {1421, 741}}</string>
 		<key>Zoom</key>
 		<real>1</real>
 		<key>ZoomValues</key>
