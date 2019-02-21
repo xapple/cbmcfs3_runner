@@ -43,11 +43,10 @@ Setting up the machine and installing the required programs is covered in hte `g
 ## Data Flowchart
 Below is drawn the flowchart describing the data processing along all the steps of `cbm_runner`:
 
-![Flowchart](documentation/data_flowchart.pdf)
+![Flowchart](documentation/data_flowchart.png)
 
 ## Objects Diagram
 Below is presented a tentative UML-style diagram detailing not the inheritance of the classes but the use of the composition design pattern between the objects created.
 
-![Diagram](documentation/obects_diagram.pdf)
+![Diagram](documentation/obects_diagram.png)
 
-![Test](documentation/test_image.png)
