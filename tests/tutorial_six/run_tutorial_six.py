@@ -24,6 +24,6 @@ this_dir  = this_file.directory
 
 ###############################################################################
 runner = Runner(this_dir + 'data/')
-runner.clear_all_outputs()
-runner.standard_import_tool()
-#runner()
+#runner.clear_all_outputs()
+#runner.standard_import_tool()
+runner()
