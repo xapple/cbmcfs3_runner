@@ -48,5 +48,5 @@ Below is drawn the flowchart describing the data processing along all the steps 
 ## Objects Diagram
 Below is presented a tentative UML-style diagram detailing not the inheritance of the classes but the use of the composition design pattern between the objects created.
 
-![Diagram](documentation/obects_diagram.png)
+![Diagram](documentation/objects_diagram.png)
 
