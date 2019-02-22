@@ -1,5 +1,9 @@
 """
 A test script (throw it away later) to create a specific dataframe.
+
+Typically you would run this file from a command line like this:
+
+     ipython.exe -i -- /deploy/cbm_runner/scripts/create_classifier_df.py
 """
 
 # Third party modules #
@@ -7,6 +11,7 @@ A test script (throw it away later) to create a specific dataframe.
 # Internal modules #
 from cbm_runner.runner import Runner
 import cbm_runner
+import numpy as np
 
 ###############################################################################
 runner = Runner(cbm_runner.repos_dir + "tests/tutorial_six/data/")
@@ -36,3 +41,15 @@ mapping = mapping.apply(lambda x: x.lower().replace(' ', '_'))
 
 # This method will rename the columns using the mapping
 classifiers = classifiers.rename(mapping, axis=1)
+
+# Remove column level
+classifiers.columns = classifiers.columns.get_level_values(1)
+
+# New challenge #
+pool = sim_result["tblPoolIndicators"]
+
+# Add three columns #
+pool = pool.set_index('UserDefdClassSetID').join(classifiers, on="UserDefdClassSetID")
+
+# Make summary #
+pool.groupby("forest_type").agg({"SW_Merch": [np.mean, np.sum]})
