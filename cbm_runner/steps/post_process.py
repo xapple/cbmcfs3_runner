@@ -12,7 +12,8 @@ from autopaths.auto_paths import AutoPaths
 ###############################################################################
 class PostProcessor(object):
     """
-    Lorem.
+    Provides access to the Access database.
+    Computes aggregates and joins to facilitate analysis. 
     """
 
     all_paths = """
@@ -32,5 +33,37 @@ class PostProcessor(object):
         return AccessDatabase(path)
 
     @property_cached
+    def classifiers(self):
+        """ Creates a mapping between 
+        UserDefdClassSetID and species, site_quality and forest_type, etc...
+        """
+        user_classes = self.sim_result["tblUserDefdClasses"]
+        user_sub_classes = self.sim_result["tblUserDefdSubclasses"]
+        user_class_sets = self.sim_result["tblUserDefdClassSets"]
+        user_class_sets_values = self.sim_result["tblUserDefdClassSetValues"]
+
+        index = ['UserDefdClassID', 'UserDefdSubclassID']
+        classifiers = user_sub_classes.set_index(index)
+        classifiers = classifiers.join(user_class_sets_values.set_index(index))
+
+        index = ['UserDefdClassID', 'UserDefdClassSetID']
+        classifiers = classifiers.reset_index().set_index(index)
+        classifiers = classifiers[['UserDefdSubClassName']].unstack('UserDefdClassID')
+
+        # This object will link: 1->species 2->forest_type etc.
+        mapping = user_classes.set_index('UserDefdClassID')['ClassDesc']
+        mapping = mapping.apply(lambda x: x.lower().replace(' ', '_'))
+
+        # This method will rename the columns using the mapping
+        classifiers = classifiers.rename(mapping, axis=1)
+
+        # Remove multilevel column index, replace by level(1) (second level)
+        classifiers.columns = classifiers.columns.get_level_values(1)
+        del(classifiers.columns.name) # Remove the confusing name
+        return(classifiers)
+    
+    @property_cached
     def predicted_inventory(self):
+        
         return 0
+
