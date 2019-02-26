@@ -32,7 +32,7 @@ class InputDataXLS(InputData):
     def xls(self): return pandas.ExcelFile(str(self.paths.xls))
 
     @property_cached
-    def inventory(self): return self.inv_xls.parse("Inventory")
+    def inventory(self): return self.xls.parse("Inventory")
 
 ###############################################################################
 class InputDataTXT(InputData):

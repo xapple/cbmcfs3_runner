@@ -1,7 +1,7 @@
 # Built-in modules #
 
 # Third party modules #
-import pandas
+import pandas, pyexcel
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
@@ -24,19 +24,9 @@ class CSVToXLS(object):
     /input/csv/inventory.csv
     /input/csv/transition_rules.csv
     /input/csv/yields.csv
+    /input/xls/inv_and_dist.xlsx
     /input/xls/inv_and_dist.xls
     """
-
-    def __init__(self, parent):
-        # Default attributes #
-        self.parent = parent
-        # Automatically access paths based on a string of many subpaths #
-        self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
-        # Check there are CSV files present #
-        pass
-
-    def __run__(self, parent):
-        pass
 
     sheet_name_to_file_name = {
         'AgeClasses':      'ageclass',
@@ -47,6 +37,28 @@ class CSVToXLS(object):
         'Growth':          'yields',
         'Transitions':     'transition_rules',
     }
+
+    def __init__(self, parent):
+        # Default attributes #
+        self.parent = parent
+        # Automatically access paths based on a string of many subpaths #
+        self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
+        # Reverse the dictionary #
+        self.file_name_to_sheet_name = {v:k for k,v in self.sheet_name_to_file_name.items()}
+        # Check there are CSV files present #
+        for name in self.file_name_to_sheet_name: assert self.paths[name].exists
+
+    def __call__(self):
+        # Create an Excel Writer #
+        writer = pandas.ExcelWriter(self.paths.inv_xlsx, engine='xlsxwriter')
+        # Add each DataFrame to a different sheet #
+        for file_name, sheet_name in self.file_name_to_sheet_name.items():
+            self.df = pandas.read_csv(self.paths[file_name])
+            self.df.to_excel(writer, sheet_name=sheet_name, index=False)
+        # Save changes #
+        writer.save()
+        # Convert from XLSX to XLS #
+        pyexcel.save_book_as(file_name=str(self.paths.inv_xlsx), dest_file_name=str(self.paths.inv_xls))
 
     def reverse_generation(self):
         """If you ever want to generate the CSVs from the Excel

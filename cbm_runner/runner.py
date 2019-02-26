@@ -55,6 +55,7 @@ class Runner(object):
 
     def __call__(self):
         self.clear_all_outputs()
+        if not self.paths.csv_dir.empty: self.csv_to_xls()
         self.standard_import_tool()
         self.compute_model()
         self.graphs()

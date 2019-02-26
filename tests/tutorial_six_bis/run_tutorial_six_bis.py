@@ -24,4 +24,4 @@ this_dir  = this_file.directory
 
 ###############################################################################
 runner = Runner(this_dir + 'data/')
-runner.csv_to_xls.reverse_generation()
+runner()#.csv_to_xls()
