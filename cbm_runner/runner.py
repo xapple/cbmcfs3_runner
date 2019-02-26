@@ -17,6 +17,7 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
 
 # Internal modules #
+from cbm_runner.orig.orig_to_csv           import OrigToCSV
 from cbm_runner.steps.csv_to_xls           import CSVToXLS
 from cbm_runner.steps.switch_aidb          import AIDBSwitcher
 from cbm_runner.steps.input_data           import InputDataXLS, InputDataTXT
@@ -55,6 +56,7 @@ class Runner(object):
 
     def __call__(self):
         self.clear_all_outputs()
+        self.orig_to_csv.calibration_parser()
         if not self.paths.csv_dir.empty: self.csv_to_xls()
         self.standard_import_tool()
         self.compute_model()
@@ -73,6 +75,10 @@ class Runner(object):
     @property_cached
     def csv_to_xls(self):
         return CSVToXLS(self)
+
+    @property_cached
+    def orig_to_csv(self):
+        return OrigToCSV(self)
 
     @property
     def is_excel_input(self):

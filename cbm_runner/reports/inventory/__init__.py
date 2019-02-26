@@ -57,3 +57,9 @@ class InvTemplate(ReportTemplate):
         label   = "input_inventory"
         return str(ScaledFigure(path, caption, label))
 
+    def predicted_inventory(self):
+        caption = "Distribution of total area according to age"
+        path    = self.graphs.predicted_inventory.path
+        label   = "predicted_inventory"
+        return str(ScaledFigure(path, caption, label))
+

@@ -24,8 +24,10 @@ this_dir  = this_file.directory
 
 ###############################################################################
 runner = Runner(this_dir + 'data/')
-#runner.clear_all_outputs()
-#runner.standard_import_tool()
-# runner()
-print(runner.post_processor.classifiers)
+#print(runner.post_processor.classifiers)
 
+
+#runner.standard_import_tool()
+#runner.compute_model()
+runner.graphs()
+runner.reports.inventory_report()

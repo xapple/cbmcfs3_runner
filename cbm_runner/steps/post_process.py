@@ -1,6 +1,8 @@
 # Built-in modules #
+import StringIO
 
 # Third party modules #
+import pandas
 
 # First party modules #
 from plumbing.databases.access_database import AccessDatabase
@@ -70,9 +72,8 @@ class PostProcessor(object):
                83,LD,0.5,0.46,Con
                86,OB,0.5,0.5,Broad
                87,OC,0.5,0.4,Con"""
-        import StringIO
         csv = StringIO.StringIO(csv)
-        return(pandas.read_csv(csv))
+        return pandas.read_csv(csv)
 
     @property_cached
     def bef_ft(self):
@@ -91,10 +92,10 @@ class PostProcessor(object):
         bef_ft = bef_ft.groupby("forest_type").agg(cols_sum)
         bef_ft['Tot_Merch']  = bef_ft.SW_Merch + bef_ft.HW_Merch
         bef_ft['Tot_ABG']    = bef_ft.SW_Merch + bef_ft.HW_Merch + \
-                             bef_ft.SW_Foliage + bef_ft.HW_Foliage + \
-                             bef_ft.HW_Other + bef_ft.SW_Other
+                               bef_ft.SW_Foliage + bef_ft.HW_Foliage + \
+                               bef_ft.HW_Other + bef_ft.SW_Other
         bef_ft['BG_Biomass'] = bef_ft.SW_Coarse + bef_ft.SW_Fine + \
-                             bef_ft.HW_Coarse + bef_ft.HW_Fine
+                               bef_ft.HW_Coarse + bef_ft.HW_Fine
         bef_ft['BEF_Tot']    = (bef_ft.Tot_ABG + bef_ft.BG_Biomass) / bef_ft.Tot_ABG
         return bef_ft 
 
