@@ -72,8 +72,8 @@
 			<integer>99693</integer>
 			<key>Points</key>
 			<array>
-				<string>{323.34446784389303, 1663.7297401689589}</string>
-				<string>{273.71627716971193, 1665.7520726269302}</string>
+				<string>{323.34446784389303, 1663.7713218977749}</string>
+				<string>{273.71627716971193, 1665.818389136324}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1904,7 +1904,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{106.29921356289404, 810.76986020968957}, {63, 14}}</string>
+					<string>{{103.29921356289404, 810.76986020968957}, {69, 14}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -1944,7 +1944,7 @@
 {\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs24 \cf0 ageless.csv}</string>
+\f0\fs24 \cf0 ageclass.csv}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -3070,7 +3070,7 @@
 			<key>Points</key>
 			<array>
 				<string>{318.64479613946884, 379.01214980027839}</string>
-				<string>{253.69905455652795, 480.59662785586431}</string>
+				<string>{253.6990545565279, 480.59662785586431}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -3229,8 +3229,8 @@
 			<integer>41279</integer>
 			<key>Points</key>
 			<array>
-				<string>{402.68268167296822, 554.4097884475018}</string>
-				<string>{342.6348232989684, 635.18110591145069}</string>
+				<string>{402.68268167296833, 554.40978844750168}</string>
+				<string>{342.63482329896851, 635.18110591145069}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -3915,7 +3915,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{365.38669495163748, 540.4097884475018}, {85, 14}}</string>
+			<string>{{368.38669495163748, 540.4097884475018}, {79, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -3955,7 +3955,7 @@
 {\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs24 \cf0 silviculture.sass}</string>
+\f0\fs24 \cf0 silviculture.sas}</string>
 				<key>VerticalPad</key>
 				<integer>0</integer>
 			</dict>
@@ -4821,7 +4821,7 @@ s.LoadCBMResults()}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{310.39370360365058, 2281.3207188767065}, {43.999988730079053, 15}}</string>
+					<string>{{310.39370360365058, 2281.3207188767065}, {43.9999887304146, 15}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -7773,7 +7773,7 @@ This document just describes a plan for processing data.}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{972.6496659192004, 76.919809698324599}, {96, 14}}</string>
+			<string>{{975.1496659192004, 76.919809698324599}, {91, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -8051,7 +8051,7 @@ This document just describes a plan for processing data.}</string>
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2019-02-20 16:24:11 +0000</string>
+	<string>2019-02-26 08:17:27 +0000</string>
 	<key>Modifier</key>
 	<string>Lucas Sinclair</string>
 	<key>NotesVisible</key>
@@ -8147,7 +8147,7 @@ This document just describes a plan for processing data.}</string>
 		<key>SidebarWidth</key>
 		<integer>0</integer>
 		<key>VisibleRegion</key>
-		<string>{{-24, 85}, {1139, 803}}</string>
+		<string>{{-24, 212}, {1139, 803}}</string>
 		<key>Zoom</key>
 		<real>1</real>
 		<key>ZoomValues</key>
