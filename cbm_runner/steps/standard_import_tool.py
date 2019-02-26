@@ -70,7 +70,7 @@ class StandardImportTool(object):
 ###############################################################################
 class ImportWithXLS(StandardImportTool):
     all_paths = StandardImportTool.all_paths + """
-    /input/inv_and_dist.xls
+    /input/xls/inv_and_dist.xls
     """
 
     template = repos_dir + 'templates/sit_xls_config.mustache'
@@ -78,18 +78,18 @@ class ImportWithXLS(StandardImportTool):
     @property
     def context(self):
         return {"mdb_output_path": self.paths.mdb.escaped,
-                "xls_input_path":  self.paths.xls.escaped}
+                "xls_input_path":  self.paths.inv_xls.escaped}
 
 ###############################################################################
 class ImportWithTXT(StandardImportTool):
     all_paths = StandardImportTool.all_paths + """
-    /input/ageclass.txt
-    /input/classifiers.txt
-    /input/disturbance_events.txt
-    /input/disturbance_types.txt
-    /input/inventory.txt
-    /input/transition_rules.txt
-    /input/yields.txt
+    /input/txt/ageclass.txt
+    /input/txt/classifiers.txt
+    /input/txt/disturbance_events.txt
+    /input/txt/disturbance_types.txt
+    /input/txt/inventory.txt
+    /input/txt/transition_rules.txt
+    /input/txt/yields.txt
     """
 
     template = repos_dir + 'templates/sit_txt_config.mustache'

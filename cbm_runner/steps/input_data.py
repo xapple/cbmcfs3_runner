@@ -25,14 +25,14 @@ class InputData(object):
 class InputDataXLS(InputData):
 
     all_paths = """
-    /input/inv_and_dist.xls
+    /input/xls/inv_and_dist.xls
     """
 
     @property_cached
     def xls(self): return pandas.ExcelFile(str(self.paths.xls))
 
     @property_cached
-    def inventory(self): return self.xls.parse("Inventory")
+    def inventory(self): return self.inv_xls.parse("Inventory")
 
 ###############################################################################
 class InputDataTXT(InputData):

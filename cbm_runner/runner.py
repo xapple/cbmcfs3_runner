@@ -17,6 +17,7 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
 
 # Internal modules #
+from cbm_runner.steps.csv_to_xls           import CSVToXLS
 from cbm_runner.steps.switch_aidb          import AIDBSwitcher
 from cbm_runner.steps.input_data           import InputDataXLS, InputDataTXT
 from cbm_runner.steps.standard_import_tool import ImportWithXLS, ImportWithTXT
@@ -33,7 +34,9 @@ class Runner(object):
     carbon stock."""
 
     all_paths = """
-    /input/
+    /input/csv/
+    /input/xls/
+    /input/txt/
     /output/
     /logs/plot.pdf
     """
@@ -49,7 +52,6 @@ class Runner(object):
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.data_dir, self.all_paths)
         # Snif if this is an excel input #
-        self.is_excel_input = bool(glob.glob(str(self.paths.input_dir) + '*.xls'))
 
     def __call__(self):
         self.clear_all_outputs()
@@ -66,6 +68,14 @@ class Runner(object):
     @property_cached
     def switcher(self):
         return AIDBSwitcher(self)
+
+    @property_cached
+    def csv_to_xls(self):
+        return CSVToXLS(self)
+
+    @property
+    def is_excel_input(self):
+        return not self.paths.xls_dir.empty
 
     @property_cached
     def input_data(self):
