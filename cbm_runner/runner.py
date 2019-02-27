@@ -35,6 +35,7 @@ class Runner(object):
     carbon stock."""
 
     all_paths = """
+    /input/
     /input/csv/
     /input/xls/
     /input/txt/
