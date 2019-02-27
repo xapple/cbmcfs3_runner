@@ -25,7 +25,7 @@ class StandardImportTool(object):
     """
 
     all_paths = """
-    /output/sit_config/sit_config.json
+    /input/sit_config/sit_config.json
     /output/cbm_formatted_db/project.mdb
     /output/cbm_formatted_db/SITLog.txt
     /logs/sit_import.log

@@ -7,7 +7,8 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
 
 # Internal modules #
-from cbm_runner.orig.calibration import CalibrationParser
+from cbm_runner.orig.calibration  import CalibrationParser
+from cbm_runner.orig.silviculture import SilvicultureParser
 
 ###############################################################################
 class OrigToCSV(object):
@@ -37,5 +38,9 @@ class OrigToCSV(object):
         return CalibrationParser(self)
 
     @property_cached
-    def xxxxxx(self):
-        pass
+    def silviculture_parser(self):
+        return SilvicultureParser(self)
+
+    @property_cached
+    def associations_parser(self):
+        return AssociationsParser(self)

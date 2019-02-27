@@ -35,6 +35,7 @@ class Runner(object):
     carbon stock."""
 
     all_paths = """
+    /orig/
     /input/
     /input/csv/
     /input/xls/
@@ -74,12 +75,12 @@ class Runner(object):
         return AIDBSwitcher(self)
 
     @property_cached
-    def csv_to_xls(self):
-        return CSVToXLS(self)
-
-    @property_cached
     def orig_to_csv(self):
         return OrigToCSV(self)
+
+    @property_cached
+    def csv_to_xls(self):
+        return CSVToXLS(self)
 
     @property
     def is_excel_input(self):

@@ -13,8 +13,8 @@ from plumbing.cache import property_cached
 ###############################################################################
 class CalibrationParser(object):
     """
-    This class takes the file "calibration.mdb" as input and generates CSVs from
-    it.
+    This class takes the file "calibration.mdb" as input and generates CSVs
+    from it.
     """
 
     all_paths = """
@@ -40,7 +40,7 @@ class CalibrationParser(object):
 
     file_to_table_name = {
         "ageclass":                     "Age Classes_CBM",
-        "inventory":                    "BACK_Inventory",
+        "inventory":                    "Back_Inventory",
         "classifiers":                  "Classifiers",
         "coefficients":                 "Coefficients",
         "disturbance_types":            "Disturbance Types_CBM",
@@ -58,11 +58,12 @@ class CalibrationParser(object):
     def __call__(self):
         """Extract several queries from the database into CSV files."""
         # Make each file #
-        for filename, tablename in self.file_to_table_name.items():
-            self.database[tablename].to_csv(str(self.paths[filename]))
+        for file_name, table_name in self.file_to_table_name.items():
+            destination = str(self.paths[file_name])
+            self.database[table_name].to_csv(destination, index=False)
 
     def check(self):
         """Check that each table exists."""
-        for filename, tablename in self.file_to_table_name.items():
-            if tablename not in self.database:
-                print("Table '%s' is missing from '%s'." % (tablename, self.database))
+        for filename, table_name in self.file_to_table_name.items():
+            if table_name not in self.database:
+                print("Table '%s' is missing from '%s'." % (table_name, self.database))
