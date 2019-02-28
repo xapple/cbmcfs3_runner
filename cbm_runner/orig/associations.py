@@ -14,7 +14,8 @@ from plumbing.common import pad_extra_whitespace
 ###############################################################################
 class AssociationsParser(object):
     """
-    This class takes the file "associations.xls" and parses it.
+    This class takes the file "associations.xls" and parses it producing JSON
+    strings for consumption by SIT.
     """
 
     all_paths = """
@@ -33,18 +34,24 @@ class AssociationsParser(object):
         self.xls = pandas.ExcelFile(str(self.paths.xlsx))
         return self.xls.parse('associations')
 
-    def query_to_json(self, query):
+    def query_to_json(self, mapping_name):
+        """Create a JSON string by picking some rows in the excel file"""
+        # Get rows #
+        query   = "A == '%s'" % mapping_name
         mapping = self.df.query(query).set_index('B')['C'].to_dict()
         mapping = [{'user_admin_boundary':k, 'default_admin_boundary':v} for k,v in mapping.items()]
-        string = json.dumps(mapping, indent=2)
-        return pad_extra_whitespace(string, 6)
+        # Format JSON #
+        string  = json.dumps(mapping, indent=2)
+        string  = pad_extra_whitespace(string, 6).strip(' ')
+        # Return #
+        return string
 
     @property_cached
     def all_mappings(self):
         """Return a dictionary of JSON structures"""
         return {
-           'map_disturbance':  self.query_to_json("A == 'MapDisturbanceType'"),
-           'map_eco_bound':    self.query_to_json("A == 'MapEcoBoundary'"),
-           'map_admin_bound':  self.query_to_json("A == 'MapAdminBoundary'"),
-           'map_species':      self.query_to_json("A == 'MapSpecies'"),
+           'map_disturbance':  self.query_to_json('MapDisturbanceType'),
+           'map_eco_bound':    self.query_to_json('MapEcoBoundary'),
+           'map_admin_bound':  self.query_to_json('MapAdminBoundary'),
+           'map_species':      self.query_to_json('MapSpecies'),
         }

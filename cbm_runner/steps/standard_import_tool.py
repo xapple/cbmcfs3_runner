@@ -23,7 +23,7 @@ class StandardImportTool(object):
     This JSON file is automatically generated based on a template.
     Finally the log file is stored, and is checked for errors.
 
-    More information about "SeperateAdminEcoClassifiers":
+    More information about "SeperateAdminEcoClassifiers" (sic):
     c.f. https://github.com/cat-cfs/StandardImportToolPlugin/wiki/Mapping-Configuration
 
           "admin_classifier": "classifier3",

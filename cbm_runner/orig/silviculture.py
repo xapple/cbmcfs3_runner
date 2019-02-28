@@ -1,54 +1,22 @@
 # Built-in modules #
 import re
+from StringIO import StringIO
 
 # Third party modules #
+import pandas
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
+from plumbing.cache import property_cached
 
 # Internal modules #
 
 ###############################################################################
 class SilvicultureParser(object):
     """
-    This class takes the file "silviculture.sas" as input and generates CSVs
+    This class takes the file "silviculture.sas" as input and generate a CSV
     from it.
-
-                tableStart <- grep("   input",sas)
-            tableEnd   <- grep ("*VARIABLE DESCRIPTION:", sas)-4
-
-            Match made using regular expression as explained in
-            1
-
-            import re
-
-            2
-
-            f = open(sas_files[1],'r')
-
-            3
-
-            sas1 = f.read()
-
-            4
-
-            silv = re.findall(r'   input(.*?)VARIABLE DESCRIPTION:', sas1, re.DOTALL)
-
-            5
-
-            #print("\n".join(silv))
-
-            6
-
-            type(silv[0])
-
-            7
-
-            silv[0].splitlines()
-            P
-            P
-            15:41
-            silv = re.findall(r'   input(.*?)VARIABLE DESCRIPTION:', sas1, re.DOTALL)
+    This should somehow detail 'dist_events_scenario.csv'.
     """
 
     all_paths = """
@@ -64,10 +32,24 @@ class SilvicultureParser(object):
     def __call__(self):
         pass
 
-    @property
-    def dist_events_scenario(self):
-        """Search the SAS file for the CSV that details dist_events_scenario"""
-        query = r' {3}input(.*?)VARIABLE DESCRIPTION:'
-        string = re.findall(query, self.paths.sas.contents, re.DOTALL)[0]
-        return string
+    @property_cached
+    def df(self):
+        """Search the SAS file for the CSV that is hidden inside and return a
+        pandas DataFrame. Yes, the SAS file has a CSV hidden somewhere in the middle."""
+        # Search #
+        query = '\n {3}input (.*?);\n {3}datalines;\n\n(.*?)\n;\nrun'
+        column_names, all_rows = re.findall(query, self.paths.sas.contents, re.DOTALL)[0]
+        # Format #
+        all_rows     = StringIO(all_rows)
+        column_names = [name.strip('$') for name in column_names.split()]
+        # Parse into table #
+        df = pandas.read_csv(all_rows, names=column_names, delim_whitespace=True)
+        # Return #
+        return df
 
+    @property_cached
+    def csv(self):
+        """Create a new disturbance table with ``df` by matching columns
+        and filling empty cells with information from the original disturbances
+        (match rows that have the same classifiers together)."""
+        pass
