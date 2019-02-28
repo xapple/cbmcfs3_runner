@@ -49,7 +49,17 @@ class SilvicultureParser(object):
 
     @property_cached
     def csv(self):
-        """Create a new disturbance table with ``df` by matching columns
+        """Create a new disturbance table from `df` by matching columns
         and filling empty cells with information from the original disturbances
         (match rows that have the same classifiers together)."""
-        pass
+        # Original disturbance table from input XLS #
+        orig_dist = self.parent.parent.input_data.disturbance_events
+        # Columns #
+        common_columns  = set(self.df.columns) & set(orig_dist.columns)
+        # TODO #
+        missing_columns = set(self.df.columns) - set(orig_dist.columns)
+        classifier_columns = ['_2', '_4', '_5', '_7']
+        # Drop columns #
+        scenario_dist = self.df[common_columns]
+        # Join #
+        return pandas.merge(scenario_dist, orig_dist, how='left')

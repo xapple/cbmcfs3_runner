@@ -34,6 +34,9 @@ class InputDataXLS(InputData):
     @property_cached
     def inventory(self): return self.xls.parse("Inventory")
 
+    @property_cached
+    def disturbance_events(self): return self.xls.parse("DistEvents")
+
 ###############################################################################
 class InputDataTXT(InputData):
 
