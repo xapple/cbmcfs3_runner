@@ -35,5 +35,9 @@ for code in tqdm(countries):
     #runner.orig_to_csv.calibration_parser()
     # Create XLS #
     #runner.csv_to_xls()
+    # Mappings #
+    #print runner.orig_to_csv.associations_parser.all_mappings
     # SIT #
     #runner.standard_import_tool()
+    x = runner.orig_to_csv.silviculture_parser
+    1/0

@@ -7,6 +7,7 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
 
 # Internal modules #
+from cbm_runner.orig.associations import AssociationsParser
 from cbm_runner.orig.calibration  import CalibrationParser
 from cbm_runner.orig.silviculture import SilvicultureParser
 

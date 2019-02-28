@@ -22,6 +22,14 @@ class StandardImportTool(object):
     It will call the binary distribution exe with a JSON file as only parameter.
     This JSON file is automatically generated based on a template.
     Finally the log file is stored, and is checked for errors.
+
+    More information about "SeperateAdminEcoClassifiers":
+    c.f. https://github.com/cat-cfs/StandardImportToolPlugin/wiki/Mapping-Configuration
+
+          "admin_classifier": "classifier3",
+          "eco_classifier":   "classifier6",
+
+    Is determined by the table "UserDefdClasses" in the calibration.mdb
     """
 
     all_paths = """
@@ -45,6 +53,13 @@ class StandardImportTool(object):
 
     def create_json_config(self):
         """The template is at the repository root in /templates/"""
+        # Get all the context #
+        extra_mappings = self.parent.orig_to_csv.associations_parser.all_mappings
+        self.context.update(extra_mappings)
+        #self.context['map_disturbance']    =  '[]'
+        #self.context['map_admin_bound']    =  '[]'
+        #self.context['map_species']        =  '[]'
+        # Render it #
         self.renderer = pystache.Renderer()
         self.json     = self.renderer.render_path(self.template, self.context)
         self.paths.json.write(self.json)
@@ -75,7 +90,7 @@ class ImportWithXLS(StandardImportTool):
 
     template = repos_dir + 'templates/sit_xls_config.mustache'
 
-    @property
+    @property_cached
     def context(self):
         return {"mdb_output_path": self.paths.mdb.escaped,
                 "xls_input_path":  self.paths.inv_xls.escaped}
@@ -94,7 +109,7 @@ class ImportWithTXT(StandardImportTool):
 
     template = repos_dir + 'templates/sit_txt_config.mustache'
 
-    @property
+    @property_cached
     def context(self):
         return {'mdb_output_path':                  self.paths.mdb.escaped,
                 'ageclass_input_path':              self.paths.ageclass.escaped,

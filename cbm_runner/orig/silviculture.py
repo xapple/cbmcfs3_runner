@@ -1,4 +1,5 @@
 # Built-in modules #
+import re
 
 # Third party modules #
 
@@ -58,7 +59,15 @@ class SilvicultureParser(object):
         # Default attributes #
         self.parent = parent
         # Automatically access paths based on a string of many subpaths #
-        self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
+        self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
 
     def __call__(self):
         pass
+
+    @property
+    def dist_events_scenario(self):
+        """Search the SAS file for the CSV that details dist_events_scenario"""
+        query = r' {3}input(.*?)VARIABLE DESCRIPTION:'
+        string = re.findall(query, self.paths.sas.contents, re.DOTALL)[0]
+        return string
+
