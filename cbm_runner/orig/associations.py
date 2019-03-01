@@ -34,12 +34,12 @@ class AssociationsParser(object):
         self.xls = pandas.ExcelFile(str(self.paths.xlsx))
         return self.xls.parse('associations')
 
-    def query_to_json(self, mapping_name):
-        """Create a JSON string by picking some rows in the excel file"""
+    def query_to_json(self, mapping_name, user, default):
+        """Create a JSON string by picking some rows in the excel file."""
         # Get rows #
         query   = "A == '%s'" % mapping_name
         mapping = self.df.query(query).set_index('B')['C'].to_dict()
-        mapping = [{'user_admin_boundary':k, 'default_admin_boundary':v} for k,v in mapping.items()]
+        mapping = [{user:k, default:v} for k,v in mapping.items()]
         # Format JSON #
         string  = json.dumps(mapping, indent=2)
         string  = pad_extra_whitespace(string, 6).strip(' ')
@@ -48,10 +48,19 @@ class AssociationsParser(object):
 
     @property_cached
     def all_mappings(self):
-        """Return a dictionary of JSON structures"""
+        """Return a dictionary of JSON structures for consumption by mustache
+        templating engine."""
         return {
-           'map_disturbance':  self.query_to_json('MapDisturbanceType'),
-           'map_eco_bound':    self.query_to_json('MapEcoBoundary'),
-           'map_admin_bound':  self.query_to_json('MapAdminBoundary'),
-           'map_species':      self.query_to_json('MapSpecies'),
+           'map_disturbance': self.query_to_json('MapDisturbanceType',
+                                                 'user_dist_type',
+                                                 'default_dist_type'),
+           'map_eco_bound':   self.query_to_json('MapEcoBoundary',
+                                                 'user_eco_boundary',
+                                                 'default_eco_boundary'),
+           'map_admin_bound': self.query_to_json('MapAdminBoundary',
+                                                 'user_admin_boundary',
+                                                 'default_admin_boundary'),
+           'map_species':     self.query_to_json('MapSpecies',
+                                                 'user_species',
+                                                 'default_species'),
         }
