@@ -23,5 +23,5 @@ this_file = FilePath((inspect.stack()[0])[1])
 this_dir  = this_file.directory
 
 ###############################################################################
-runner = Runner(this_dir + 'data/')
+runner = Runner(this_dir + 'data/', 'tutorial_two')
 runner()

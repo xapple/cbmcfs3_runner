@@ -14,12 +14,13 @@ from plumbing.common import pad_extra_whitespace
 ###############################################################################
 class AssociationsParser(object):
     """
-    This class takes the file "associations.xls" and parses it producing JSON
-    strings for consumption by SIT.
+    This class takes the file "associations.xlsx" and converts it to CSV.
+    Then later, it parses the CSV producing JSON strings for consumption by SIT.
     """
 
     all_paths = """
     /orig/associations.xlsx
+    /input/csv/associations.csv
     """
 
     def __init__(self, parent):
@@ -28,20 +29,42 @@ class AssociationsParser(object):
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
 
+    @property
+    def log(self): return self.parent.parent.log
+
+    def __call__(self):
+        """Convert the XLSX to CSV."""
+        self.log.info("Converting associations.xlsx to associations.csv")
+        self.paths.xlsx.must_exist()
+        self.xlsx = pandas.ExcelFile(str(self.paths.xlsx))
+        self.xlsx.parse('associations').to_csv(str(self.paths.csv), index=False)
+
     @property_cached
     def df(self):
-        self.paths.xlsx.must_exist()
-        self.xls = pandas.ExcelFile(str(self.paths.xlsx))
-        return self.xls.parse('associations')
+        self.paths.csv.must_exist()
+        return pandas.read_csv(str(self.paths.csv))
 
-    def query_to_json(self, mapping_name, user, default):
-        """Create a JSON string by picking some rows in the excel file."""
+    def query_to_json(self, mapping_name, user, default,
+                      standard=True, add_default=False, add_user=False):
+        """Create a JSON string by picking the appropriate rows in the CSV file.
+        If *add_default* is True, we are going to add a mapping that maps
+        all the names in AIDB back to the same name. In case these are used
+        in the calibration database. If they are not, this should have no impact.
+        If add_user is True, we will map each username back to the same username"""
         # Get rows #
         query   = "A == '%s'" % mapping_name
         mapping = self.df.query(query).set_index('B')['C'].to_dict()
-        mapping = [{user:k, default:v} for k,v in mapping.items()]
+        # The mappings #
+        standard_mapping = [{user:k, default:v} for k,v in mapping.items()]
+        user_to_user     = [{user:k, default:k} for k,v in mapping.items()]
+        deflt_to_deflt   = [{user:v, default:v} for k,v in mapping.items()]
+        # Add only the ones we want #
+        result = []
+        if standard:    result += standard_mapping
+        if add_default: result += user_to_user
+        if add_user:    result += deflt_to_deflt
         # Format JSON #
-        string  = json.dumps(mapping, indent=2)
+        string  = json.dumps(result, indent=2)
         string  = pad_extra_whitespace(string, 6).strip(' ')
         # Return #
         return string
@@ -56,10 +79,10 @@ class AssociationsParser(object):
                                                  'default_dist_type'),
            'map_eco_bound':   self.query_to_json('MapEcoBoundary',
                                                  'user_eco_boundary',
-                                                 'default_eco_boundary'),
+                                                 'default_eco_boundary', standard=False, add_user=True),
            'map_admin_bound': self.query_to_json('MapAdminBoundary',
                                                  'user_admin_boundary',
-                                                 'default_admin_boundary'),
+                                                 'default_admin_boundary', add_default=True),
            'map_species':     self.query_to_json('MapSpecies',
                                                  'user_species',
                                                  'default_species'),

@@ -32,7 +32,9 @@ class OrigToCSV(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        pass
+        self.calibration_parser()
+        self.silviculture_parser()
+        self.associations_parser()
 
     @property_cached
     def calibration_parser(self):
