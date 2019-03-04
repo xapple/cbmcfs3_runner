@@ -19,3 +19,7 @@ repos_dir = DirectoryPath(module_dir).directory
 # The module is maybe in a git repository #
 from plumbing.git import GitRepo
 git_repo = GitRepo(repos_dir, empty=True)
+
+# Change the pbs truncate cap #
+from pbs import ErrorReturnCode
+ErrorReturnCode.truncate_cap = 2000

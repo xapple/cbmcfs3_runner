@@ -4,6 +4,8 @@ import os
 # First party modules #
 from autopaths.file_path  import FilePath
 from autopaths.auto_paths import AutoPaths
+from plumbing.databases.access_database import AccessDatabase
+from plumbing.cache import property_cached
 
 # Internal modules #
 
@@ -37,3 +39,12 @@ class AIDBSwitcher(object):
         # Make a symbolic link #
         self.default_path.remove()
         self.default_path.link_from(self.paths.aidb)
+
+    @property_cached
+    def database(self): return AccessDatabase(self.paths.aidb)
+
+    @property_cached
+    def admin_boundary(self): return self.database['tblAdminBoundaryDefault']
+
+    @property_cached
+    def eco_boundary(self): return self.database['tblEcoBoundaryDefault']

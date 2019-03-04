@@ -11,10 +11,11 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 import os, logging
 
-# Third party modules #
+# First party modules #
 from autopaths.dir_path   import DirectoryPath
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
+from plumbing.common      import pad_extra_whitespace
 
 # Internal modules #
 from cbm_runner.orig.orig_to_csv           import OrigToCSV
@@ -62,7 +63,7 @@ class Runner(object):
 
     @property_cached
     def log(self):
-        """Each runner will have its own logger"""
+        """Each runner will have its own logger."""
         # Create a custom logger #
         logger = logging.getLogger(self.country_code)
         # Console logger and file logger #
@@ -89,12 +90,21 @@ class Runner(object):
         # Return #
         return logger
 
-    def __call__(self):
+    def __call__(self, silent=False):
+        try:
+            self.run()
+        except Exception:
+            message = "Country '%s' encountered an exception. See log file."
+            self.log.error(message % self.country_code)
+            self.log.exception("Exception", exc_info=1)
+            if not silent: raise
+
+    def run(self):
         self.log.info("Running country '%s'." % self.country_code)
         self.clear_all_outputs()
         self.orig_to_csv()
         if not self.paths.csv_dir.empty: self.csv_to_xls()
-        self.switcher()
+        self.aidb_switcher()
         self.standard_import_tool()
         self.compute_model()
         self.graphs()
@@ -111,7 +121,7 @@ class Runner(object):
         self.paths.logs_dir.remove()
 
     @property_cached
-    def switcher(self):
+    def aidb_switcher(self):
         return AIDBSwitcher(self)
 
     @property_cached
@@ -151,3 +161,16 @@ class Runner(object):
     @property_cached
     def reports(self):
         return Reports(self)
+
+    @property
+    def tail(self):
+        """View the end of the log file"""
+        return self.paths.log.tail()
+
+    @property
+    def summary(self):
+        """A short summary including end of the log file"""
+        msg  = "\n## Country `%s`\n" % self.country_code
+        msg += "\nTail of the log file at `%s`\n" % self.paths.log
+        msg += "\n" + pad_extra_whitespace(self.tail, 4) + "\n"
+        return msg
