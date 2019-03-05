@@ -1,0 +1,7 @@
+ClassifierNumber,ClassifierValueID,Name
+1,_CLASSIFIER,Species
+1,HP,Hispaniolan pine
+2,_CLASSIFIER,Site quality
+2,Good,Good
+3,_CLASSIFIER,Forest type
+3,Natfor,Natural forest
