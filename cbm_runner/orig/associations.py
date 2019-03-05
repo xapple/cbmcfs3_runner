@@ -61,8 +61,8 @@ class AssociationsParser(object):
         # Add only the ones we want #
         result = []
         if standard:    result += standard_mapping
-        if add_default: result += user_to_user
-        if add_user:    result += deflt_to_deflt
+        if add_user:    result += user_to_user
+        if add_default: result += deflt_to_deflt
         # Format JSON #
         string  = json.dumps(result, indent=2)
         string  = pad_extra_whitespace(string, 6).strip(' ')
@@ -82,7 +82,7 @@ class AssociationsParser(object):
                                                  'default_eco_boundary', standard=False, add_user=True),
            'map_admin_bound': self.query_to_json('MapAdminBoundary',
                                                  'user_admin_boundary',
-                                                 'default_admin_boundary', add_default=True),
+                                                 'default_admin_boundary'),
            'map_species':     self.query_to_json('MapSpecies',
                                                  'user_species',
                                                  'default_species'),

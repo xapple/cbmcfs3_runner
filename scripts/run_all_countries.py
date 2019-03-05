@@ -22,11 +22,10 @@ from cbm_runner.all_countries import *
 ###############################################################################
 # Run each country and send errors to the log  #
 for runner in all_runners:
-    continue
     try:
         runner()
     except Exception:
-        pass
+        raise
 
 ###############################################################################
 # Main loop #
