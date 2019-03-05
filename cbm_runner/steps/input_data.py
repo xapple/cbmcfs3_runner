@@ -38,7 +38,10 @@ class InputDataXLS(InputData):
     def disturbance_events(self): return self.xls.parse("DistEvents")
 
     @property_cached
-    def classifiers(self): return self.xls.parse("Classifiers")
+    def disturbance_types(self): return self.xls.parse("DistType")
+
+    @property_cached
+    def classifiers(self): return self.xls.parse("Classifiers").sort_values(by=['ClassifierNumber'])
 
 ###############################################################################
 class InputDataTXT(InputData):

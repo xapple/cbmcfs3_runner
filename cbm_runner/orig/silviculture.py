@@ -60,6 +60,8 @@ class SilvicultureParser(object):
         missing_columns = set(self.df.columns) - set(orig_dist.columns)
         classifier_columns = ['_2', '_4', '_5', '_7']
         # Drop columns #
+        classifier_columns = ['Dist_Type_ID', '', '_2', '_4', '_5', '_7']
+
         scenario_dist = self.df[common_columns]
         # Join #
         return pandas.merge(scenario_dist, orig_dist, how='left')
