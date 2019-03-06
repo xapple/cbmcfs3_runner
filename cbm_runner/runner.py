@@ -85,7 +85,7 @@ class Runner(object):
         # Add handlers to the logger
         logger.addHandler(s_handler)
         logger.addHandler(f_handler)
-        # Set the level of the logger iteself #
+        # Set the level of the logger itself #
         logger.setLevel(logging.DEBUG)
         # Return #
         return logger

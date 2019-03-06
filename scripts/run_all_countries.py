@@ -25,15 +25,15 @@ for runner in all_runners:
     try:
         runner()
     except Exception:
-        raise
+        pass
 
 ###############################################################################
 # Main loop #
-for runner in all_runners:
-    print runner.input_data.classifiers
-    print runner.aidb_switcher.admin_boundary
-    print runner.aidb_switcher.eco_boundary
-    1/0
+#for runner in all_runners:
+    #print runner.input_data.classifiers
+    #print runner.aidb_switcher.admin_boundary
+    #print runner.aidb_switcher.eco_boundary
+    #1/0
     # Create CSVs #
     #runner.orig_to_csv.calibration_parser()
     #runner.orig_to_csv.associations_parser()

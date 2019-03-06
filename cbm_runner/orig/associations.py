@@ -82,7 +82,7 @@ class AssociationsParser(object):
                                                  'default_eco_boundary', standard=False, add_user=True),
            'map_admin_bound': self.query_to_json('MapAdminBoundary',
                                                  'user_admin_boundary',
-                                                 'default_admin_boundary'),
+                                                 'default_admin_boundary', standard=False, add_default=True),
            'map_species':     self.query_to_json('MapSpecies',
                                                  'user_species',
                                                  'default_species'),

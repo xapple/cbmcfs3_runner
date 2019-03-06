@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-SMALL SWEDEN - INTEGRATION TEST
+EUROPE TRIAL - INTEGRATION TEST
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbm_runner/tests/small_sweden/run_small_sweden.py
+     ipython.exe -i -- /deploy/cbm_runner/tests/europe_trial/run_europe_trial.py
 """
 
 # Built-in modules #
@@ -23,5 +23,7 @@ this_file = FilePath((inspect.stack()[0])[1])
 this_dir  = this_file.directory
 
 ###############################################################################
-runner = Runner(this_dir + 'data/', 'small_sweden')
-runner.orig_to_csv.calibration_parser()
+runner = Runner(this_dir + 'data/', 'europe_trial')
+runner.csv_to_xls()
+runner.aidb_switcher()
+runner.standard_import_tool()

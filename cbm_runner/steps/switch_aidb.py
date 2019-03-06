@@ -31,7 +31,14 @@ class AIDBSwitcher(object):
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
-    def __call__(self):
+    def __call__(self): return self.hard_copy_call()
+
+    def hard_copy_call(self):
+        # Make a symbolic link #
+        self.default_path.remove()
+        self.paths.aidb.copy(self.default_path)
+
+    def sym_link_call(self):
         # Check if the original AIDB is still in place #
         if self.default_path.exists and not self.default_path.is_symlink:
             back_up_path = self.default_path.new_name_insert('canada')
