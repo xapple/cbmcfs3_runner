@@ -106,9 +106,9 @@ class Runner(object):
         if not self.paths.csv_dir.empty: self.csv_to_xls()
         self.aidb_switcher()
         self.standard_import_tool()
-        self.compute_model()
-        self.graphs()
-        self.reports.inventory_report()
+        #self.compute_model()
+        #self.graphs()
+        #self.reports.inventory_report()
 
     def clear_all_outputs(self):
         """Removes the directories that will be recreated by running the pipeline."""

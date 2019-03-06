@@ -17,7 +17,7 @@ class StandardImportTool(object):
     This class will run the tool found here:
     https://github.com/cat-cfs/StandardImportToolPlugin
 
-    It expects release version 1.1
+    It expects release version 1.2.1
 
     It will call the binary distribution exe with a JSON file as only parameter.
     This JSON file is automatically generated based on a template.
@@ -69,6 +69,7 @@ class StandardImportTool(object):
         """Don't forget to put the tool in your PATH variable."""
         self.log.info("Launching StandardImportToolPlugin.exe")
         pbs.Command("StandardImportToolPlugin.exe")('-c', self.paths.json)
+        self.log.info("StandardImportToolPlugin has completed")
 
     def move_log(self):
         """Because the location and name of the logfile cannot be customized."""

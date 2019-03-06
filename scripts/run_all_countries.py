@@ -21,9 +21,9 @@ from cbm_runner.all_countries import *
 
 ###############################################################################
 # Run each country and send errors to the log  #
-for runner in all_runners:
+for runner in tqdm(all_runners, ncols=60):
     try:
-        runner()
+        runner(silent=True)
     except Exception:
         pass
 

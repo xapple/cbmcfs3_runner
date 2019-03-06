@@ -10,7 +10,7 @@ Typically you would run this file from a command line like this:
 # Built-in modules #
 
 # Third party modules #
-import pbs
+
 # First party modules #
 
 # Internal modules #
@@ -24,5 +24,6 @@ summary.handle.writelines(r.summary for r in all_runners)
 summary.close()
 
 ###############################################################################
+#import pbs
 #pandoc = pbs.Command("pandoc")
 #pandoc('-s', '-o', summary.replace_extension('pdf'), summary)
