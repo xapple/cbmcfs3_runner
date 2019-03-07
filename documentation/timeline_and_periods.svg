@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1464.3 620.9" style="enable-background:new 0 0 1464.3 620.9;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#000000;stroke-width:13;stroke-miterlimit:10;}
+	.st1{fill:none;}
+	.st2{font-family:'MyriadPro-Regular';}
+	.st3{font-size:48px;}
+	.st4{font-size:21px;}
+	.st5{font-family:'Helvetica-Bold';}
+	.st6{font-size:24px;}
+	.st7{fill:none;stroke:#000000;stroke-width:3;stroke-miterlimit:10;}
+</style>
+<g>
+	<g>
+		<line class="st0" x1="17" y1="313.2" x2="1373.4" y2="308.3"/>
+		<g>
+			<path d="M1428.3,308.1c-25.8,9.7-57.8,26.2-77.6,43.6l15.5-43.3l-15.8-43.2C1370.3,282.4,1402.4,298.7,1428.3,308.1z"/>
+		</g>
+	</g>
+</g>
+<line class="st0" x1="346.6" y1="264.8" x2="346.6" y2="351.5"/>
+<rect x="297.2" y="364.4" class="st1" width="121.7" height="48.2"/>
+<text transform="matrix(1 0 0 1 297.2435 398.4653)" class="st2 st3">1995</text>
+<rect x="286.2" y="413.2" class="st1" width="164.5" height="52.6"/>
+<text transform="matrix(1 0 0 1 286.1533 428.1354)"><tspan x="0" y="0" class="st2 st4">this is variable for </tspan><tspan x="0" y="25.2" class="st2 st4">each country</tspan></text>
+<rect x="69.4" y="63.8" class="st1" width="214.9" height="84.1"/>
+<text transform="matrix(1 0 0 1 69.4063 78.7367)"><tspan x="0" y="0" class="st2 st4">This is useful for initializ</tspan><tspan x="206.3" y="0" class="st2 st4">-</tspan><tspan x="0" y="25.2" class="st2 st4">ing the carbon pools</tspan></text>
+<rect x="45" y="459.1" class="st1" width="214.9" height="171.2"/>
+<text transform="matrix(1 0 0 1 44.958 474.0155)"><tspan x="0" y="0" class="st2 st4">In this period there is no </tspan><tspan x="0" y="25.2" class="st2 st4">human influence a</tspan><tspan x="171.1" y="25.2" class="st2 st4">-</tspan><tspan x="0" y="50.4" class="st2 st4">sumed. Natural distur</tspan><tspan x="187.9" y="50.4" class="st2 st4">-</tspan><tspan x="0" y="75.6" class="st2 st4">bances are used such as </tspan><tspan x="0" y="100.8" class="st2 st4">fire</tspan></text>
+<line class="st0" x1="694.8" y1="264.8" x2="694.8" y2="351.5"/>
+<rect x="641.5" y="364.4" class="st1" width="121.7" height="48.2"/>
+<text transform="matrix(1 0 0 1 641.4571 398.4653)" class="st2 st3">2015</text>
+<rect x="619.1" y="413.6" class="st1" width="177.5" height="56.1"/>
+<text transform="matrix(1 0 0 1 619.1404 428.4877)"><tspan x="0" y="0" class="st2 st4">This is the same for </tspan><tspan x="0" y="25.2" class="st2 st4">all countries</tspan></text>
+<line class="st0" x1="887.7" y1="264.8" x2="887.7" y2="351.5"/>
+<rect x="834.4" y="364.4" class="st1" width="121.7" height="48.2"/>
+<text transform="matrix(1 0 0 1 834.3907 398.4653)" class="st2 st3">2020</text>
+<line class="st0" x1="1074.8" y1="264.8" x2="1074.8" y2="351.5"/>
+<rect x="1021.4" y="364.4" class="st1" width="121.7" height="48.2"/>
+<text transform="matrix(1 0 0 1 1021.4423 398.4653)" class="st2 st3">2025</text>
+<line class="st0" x1="1263.6" y1="270.7" x2="1263.6" y2="357.4"/>
+<rect x="1214.3" y="366.3" class="st1" width="121.7" height="48.2"/>
+<text transform="matrix(1 0 0 1 1214.2872 400.3474)" class="st2 st3">2030</text>
+<rect x="641.5" y="226.5" class="st1" width="140.4" height="28"/>
+<text transform="matrix(1 0 0 1 641.4572 243.7829)" class="st5 st6">base_year</text>
+<rect x="939.9" y="412.6" class="st1" width="140.4" height="28"/>
+<text transform="matrix(1 0 0 1 939.881 429.6186)" class="st2 st6">sim_step</text>
+<g>
+	<g>
+		<line class="st7" x1="917.3" y1="450" x2="1053.5" y2="450"/>
+		<g>
+			<rect x="916.6" y="445.1" width="1.5" height="9.8"/>
+		</g>
+		<g>
+			<rect x="1052.7" y="445.1" width="1.5" height="9.8"/>
+		</g>
+	</g>
+</g>
+<rect x="1117.5" y="413.6" class="st1" width="140.4" height="28"/>
+<text transform="matrix(1 0 0 1 1117.5211 430.6186)" class="st2 st6">sim_step</text>
+<g>
+	<g>
+		<line class="st7" x1="1095" y1="451" x2="1231.1" y2="451"/>
+		<g>
+			<rect x="1094.2" y="446.1" width="1.5" height="9.8"/>
+		</g>
+		<g>
+			<rect x="1230.3" y="446.1" width="1.5" height="9.8"/>
+		</g>
+	</g>
+</g>
+<rect x="453" y="256.6" class="st1" width="194.7" height="28"/>
+<text transform="matrix(1 0 0 1 453.0196 273.6708)" class="st2 st6">historical_period</text>
+<g>
+	<g>
+		<line class="st7" x1="377.5" y1="284.7" x2="667.6" y2="284.7"/>
+		<g>
+			<path d="M368.4,284.7c4.3,1.6,9.5,4.3,12.8,7.1l-2.6-7.1l2.6-7.1C378,280.4,372.7,283.1,368.4,284.7z"/>
+		</g>
+		<g>
+			<path d="M676.6,284.7c-4.3,1.6-9.5,4.3-12.8,7.1l2.6-7.1l-2.6-7.1C667.1,280.4,672.4,283.1,676.6,284.7z"/>
+		</g>
+	</g>
+</g>
+<rect x="721.8" y="264.8" class="st1" width="194.7" height="28"/>
+<text transform="matrix(1 0 0 1 721.8323 281.8104)" class="st2 st6">sim_period_1</text>
+<rect x="911.2" y="264.8" class="st1" width="194.7" height="28"/>
+<text transform="matrix(1 0 0 1 911.2344 281.8104)" class="st2 st6">sim_period_2</text>
+<rect x="1094.2" y="264.8" class="st1" width="194.7" height="28"/>
+<text transform="matrix(1 0 0 1 1094.2025 281.8104)" class="st2 st6">sim_period_3</text>
+<g>
+	<g>
+		<line class="st7" x1="720.7" y1="292.8" x2="862.6" y2="292.8"/>
+		<g>
+			<path d="M711.7,292.8c4.3,1.6,9.5,4.3,12.8,7.1l-2.6-7.1l2.6-7.1C721.2,288.5,715.9,291.2,711.7,292.8z"/>
+		</g>
+		<g>
+			<path d="M871.6,292.8c-4.3,1.6-9.5,4.3-12.8,7.1l2.6-7.1l-2.6-7.1C862.1,288.5,867.4,291.2,871.6,292.8z"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line class="st7" x1="904.3" y1="292.8" x2="1046.2" y2="292.8"/>
+		<g>
+			<path d="M895.2,292.8c4.3,1.6,9.5,4.3,12.8,7.1l-2.6-7.1l2.6-7.1C904.8,288.5,899.5,291.2,895.2,292.8z"/>
+		</g>
+		<g>
+			<path d="M1055.2,292.8c-4.3,1.6-9.5,4.3-12.8,7.1l2.6-7.1l-2.6-7.1C1045.7,288.5,1051,291.2,1055.2,292.8z"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line class="st7" x1="1100.3" y1="292.8" x2="1242.1" y2="292.8"/>
+		<g>
+			<path d="M1091.2,292.8c4.3,1.6,9.5,4.3,12.8,7.1l-2.6-7.1l2.6-7.1C1100.7,288.5,1095.5,291.2,1091.2,292.8z"/>
+		</g>
+		<g>
+			<path d="M1251.2,292.8c-4.3,1.6-9.5,4.3-12.8,7.1l2.6-7.1l-2.6-7.1C1241.6,288.5,1246.9,291.2,1251.2,292.8z"/>
+		</g>
+	</g>
+</g>
+<rect x="69.4" y="258.6" class="st1" width="233.2" height="28"/>
+<text transform="matrix(1 0 0 1 69.4064 275.6708)" class="st2 st6">initialization_period</text>
+<g>
+	<g>
+		<line class="st7" x1="37.4" y1="286.7" x2="327.5" y2="286.7"/>
+		<g>
+			<path d="M28.4,286.7c4.3,1.6,9.5,4.3,12.8,7.1l-2.6-7.1l2.6-7.1C37.9,282.4,32.6,285.1,28.4,286.7z"/>
+		</g>
+		<g>
+			<path d="M336.6,286.7c-4.3,1.6-9.5,4.3-12.8,7.1l2.6-7.1l-2.6-7.1C327,282.4,332.3,285.1,336.6,286.7z"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line class="st7" x1="171.2" y1="118" x2="171.2" y2="225.8"/>
+		<g>
+			<path d="M186.4,223.4c-6.3,3.7-11.3,9.6-15.2,15.8c-3.8-6.3-9-11.9-15.2-15.8v-3.7c6,3.9,11.2,8.7,15.2,14.5
+				c4-5.8,9.3-10.7,15.2-14.6V223.4z"/>
+			<path d="M186.4,214.3c-6.3,3.7-11.3,9.6-15.2,15.8c-3.8-6.3-9-11.9-15.2-15.8v-3.7c6,3.9,11.2,8.7,15.2,14.5
+				c4-5.8,9.3-10.7,15.2-14.6V214.3z"/>
+		</g>
+	</g>
+</g>
+<rect x="286.2" y="225.1" class="st1" width="140.4" height="28"/>
+<text transform="matrix(1 0 0 1 286.1533 242.3765)" class="st5 st6">period_one</text>
+</svg>
