@@ -65,7 +65,7 @@ class Runner(object):
     def log(self):
         """Each runner will have its own logger."""
         # Create a custom logger #
-        logger = logging.getLogger(self.country_code)
+        logger = logging.getLogger(self.country_iso2)
         # Console logger and file logger #
         s_handler = logging.StreamHandler()
         f_handler = logging.FileHandler(str(self.paths.log), mode="w")
@@ -95,12 +95,12 @@ class Runner(object):
             self.run()
         except Exception:
             message = "Country '%s' encountered an exception. See log file."
-            self.log.error(message % self.country_code)
+            self.log.error(message % self.country_iso2)
             self.log.exception("Exception", exc_info=1)
             if not silent: raise
 
     def run(self):
-        self.log.info("Running country '%s'." % self.country_code)
+        self.log.info("Running country '%s'." % self.country_iso2)
         self.clear_all_outputs()
         self.orig_to_csv()
         if not self.paths.csv_dir.empty: self.csv_to_xls()
@@ -169,8 +169,8 @@ class Runner(object):
 
     @property
     def summary(self):
-        """A short summary including end of the log file"""
-        msg  = "\n## Country `%s`\n" % self.country_code
+        """A short summary including the end of the log file"""
+        msg  = "\n## Country `%s`\n" % self.country_iso2
         msg += "\nTail of the log file at `%s`\n" % self.paths.log
         msg += "\n" + pad_extra_whitespace(self.tail, 4) + "\n"
         return msg

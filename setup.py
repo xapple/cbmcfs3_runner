@@ -8,6 +8,6 @@ setup(
         license          = 'MIT',
         author           = 'Lucas Sinclair',
         author_email     = 'lucas.sinclair@me.com',
-        install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pbs'],
+        install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pbs', 'pystache'],
         packages         = ['cbm_runner'],
     )

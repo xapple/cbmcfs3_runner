@@ -50,3 +50,9 @@ Below is presented a tentative UML-style diagram detailing not the inheritance o
 
 ![Diagram](documentation/objects_diagram.png)
 
+## Timeline representation
+The simulation is broken down into several periods which are represented below.
+
+![Timeline](documentation/timeline_and_periods.png)
+
+

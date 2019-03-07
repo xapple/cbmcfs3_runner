@@ -21,14 +21,14 @@ from cbm_runner.all_countries import *
 
 ###############################################################################
 # Run each country and send errors to the log  #
-for runner in tqdm(all_runners, ncols=60):
+for country in tqdm(all_countries, ncols=60):
     try:
-        runner(silent=True)
+        country(silent=True)
     except Exception:
         pass
 
 ###############################################################################
-# Main loop #
+# For debugging #
 #for runner in all_runners:
     #print runner.input_data.classifiers
     #print runner.aidb_switcher.admin_boundary

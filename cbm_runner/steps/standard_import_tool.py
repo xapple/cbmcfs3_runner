@@ -1,7 +1,10 @@
 # Built-in modules #
+import os
 
 # Third party modules #
-import pbs, pystache
+import pystache
+if os.name == "posix": import sh as pbs
+if os.name == "nt":    import pbs
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
@@ -44,6 +47,8 @@ class StandardImportTool(object):
         self.parent = parent
         # Automatic paths object #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
+        # Has this step completed successfully ? #
+        self.passed = False
 
     @property
     def log(self): return self.parent.log
@@ -53,10 +58,11 @@ class StandardImportTool(object):
         self.run_sit()
         self.move_log()
         self.check_for_errors()
+        self.passed = True
 
     def create_json_config(self):
         """The template is at the repository root in /templates/"""
-        self.log.info("Creating the SIT JSON config file")
+        self.log.info("Creating the SIT JSON config file.")
         # Get all the context #
         extra_mappings = self.parent.orig_to_csv.associations_parser.all_mappings
         self.context.update(extra_mappings)
@@ -67,9 +73,9 @@ class StandardImportTool(object):
 
     def run_sit(self):
         """Don't forget to put the tool in your PATH variable."""
-        self.log.info("Launching StandardImportToolPlugin.exe")
+        self.log.info("Launching StandardImportToolPlugin.exe.")
         pbs.Command("StandardImportToolPlugin.exe")('-c', self.paths.json)
-        self.log.info("StandardImportToolPlugin has completed")
+        self.log.info("StandardImportToolPlugin has completed.")
 
     def move_log(self):
         """Because the location and name of the logfile cannot be customized."""
