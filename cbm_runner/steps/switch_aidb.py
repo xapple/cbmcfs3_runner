@@ -55,3 +55,6 @@ class AIDBSwitcher(object):
 
     @property_cached
     def eco_boundary(self): return self.database['tblEcoBoundaryDefault']
+
+    @property_cached
+    def species_type(self): return self.database['tblSpeciesTypeDefault']

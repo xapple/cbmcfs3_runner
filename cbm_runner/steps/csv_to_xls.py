@@ -63,6 +63,7 @@ class CSVToXLS(object):
         pyexcel.save_book_as(file_name=source, dest_file_name=dest)
 
     def read_csv(self, name):
+        """For when you want to access the CSV files directly as DataFrames."""
         return pandas.read_csv(str(self.paths(name)))
 
     def reverse_generation(self):

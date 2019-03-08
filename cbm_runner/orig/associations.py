@@ -54,15 +54,11 @@ class AssociationsParser(object):
         # Get rows #
         query   = "A == '%s'" % mapping_name
         mapping = self.df.query(query).set_index('B')['C'].to_dict()
-        # The mappings #
-        standard_mapping = [{user:k, default:v} for k,v in mapping.items()]
-        user_to_user     = [{user:k, default:k} for k,v in mapping.items()]
-        deflt_to_deflt   = [{user:v, default:v} for k,v in mapping.items()]
         # Add only the ones we want #
         result = []
-        if standard:    result += standard_mapping
-        if add_user:    result += user_to_user
-        if add_default: result += deflt_to_deflt
+        if standard:    result += [{user:k, default:v} for k,v in mapping.items()]
+        if add_user:    result += [{user:k, default:k} for k,v in mapping.items()]
+        if add_default: result += [{user:v, default:v} for k,v in mapping.items()]
         # Format JSON #
         string  = json.dumps(result, indent=2)
         string  = pad_extra_whitespace(string, 6).strip(' ')
