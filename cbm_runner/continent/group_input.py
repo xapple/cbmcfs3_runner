@@ -1,11 +1,11 @@
 # Built-in modules #
+from collections import OrderedDict
 
 # Third party modules #
 import pandas
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
-from plumbing.cache import property_cached
 
 # Internal modules #
 
@@ -20,13 +20,12 @@ class GroupInput(object):
         # Default attributes #
         self.parent = parent
 
-    @property_cached
-    def all_dict(self):
+    def as_dict(self, name):
         """A dictionary of data frames, with country iso 2 code as keys."""
-        return dist_all = {c.country_code: c.sdasd.df for c in self.parent.all_countries}
+        dist_all = [(r.country_iso2, r.csv_to_xls.read_csv(name)) for r in self.parent.all_countries]
+        return OrderedDict(dist_all)
 
-    @property_cached
-    def concat_df(self):
-        """A concatenated data frame containing all ."""
-        return pandas.concat(self.contact_dict)
+    def as_concat_df(self, name):
+        """A concatenated data frame containing disturbance tables for all countries."""
+        return pandas.concat(self.as_dict(name))
 
