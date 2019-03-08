@@ -11,7 +11,7 @@ from autopaths.auto_paths import AutoPaths
 ###############################################################################
 class CSVToXLS(object):
     """
-    This class takes care of bundeling the seven input CSV files into
+    This class takes care of bundling the seven input CSV files into
     one binary Excel file with seven tables for consumption by
     the tool "StandardImportTool".
     """
@@ -61,6 +61,9 @@ class CSVToXLS(object):
         source = str(self.paths.inv_xlsx)
         dest   = str(self.paths.inv_xls)
         pyexcel.save_book_as(file_name=source, dest_file_name=dest)
+
+    def read_csv(self, name):
+        return pandas.read_csv(str(self.paths(name)))
 
     def reverse_generation(self):
         """If you ever want to generate the CSVs from the Excel
