@@ -24,18 +24,16 @@ class Continent(object):
     """Aggregates countries together. Enables access to dataframe containing
     concatenates data from all countries."""
 
-    def __init__(self, cbm_data_repos=None):
+    def __init__(self, cbm_data_repos):
         """Store the cbm_data_repos directory paths where there
         is a directory for every country."""
         self.cbm_data_repos = DirectoryPath(cbm_data_repos)
-        self.all_countries = [Country(d) for d in cbm_data_repos.flat_directories if 'orig' in d]
+        self.all_countries = [Country(d) for d in self.cbm_data_repos.flat_directories if 'orig' in d]
 
     @property
     def input(self):
-        """A."""
-        return AggregateInput(self)
+        """Return aggregated data frames from the input files."""
+        return GroupInput(self)
 
 
 
-c = Continent('/asdsad/asdsad')
-c.method()

@@ -10,9 +10,10 @@ from plumbing.cache import property_cached
 # Internal modules #
 
 ###############################################################################
-class AggregateInput(object):
+class GroupInput(object):
     """
-    A.
+    Concatenate input table in one single table for all countries available. 
+    Also provide a dictionary of data frames to investigate inconsistent conlumn names between the different countries. 
     """
 
     def __init__(self, parent):
@@ -20,11 +21,12 @@ class AggregateInput(object):
         self.parent = parent
 
     @property_cached
-    def contact_dict(self):
-        """A."""
-        return silv_all = {c.country_code: c.sdasd.df for c in self.parent.all_countries}
+    def all_dict(self):
+        """A dictionary of data frames, with country iso 2 code as keys."""
+        return dist_all = {c.country_code: c.sdasd.df for c in self.parent.all_countries}
 
     @property_cached
-    def contact_df(self):
-        """A."""
+    def concat_df(self):
+        """A concatenated data frame containing all ."""
         return pandas.concat(self.contact_dict)
+
