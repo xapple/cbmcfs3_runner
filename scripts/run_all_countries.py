@@ -10,44 +10,28 @@ Typically you would run this file from a command line like this:
 """
 
 # Built-in modules #
+import inspect
 
 # Third party modules #
 from tqdm import tqdm
 
 # First party modules #
+from autopaths.file_path import FilePath
 
 # Internal modules #
-from cbm_runner.all_countries import *
+from cbm_runner.all_countries import continent
+
+# Constants #
+this_file = FilePath((inspect.stack()[0])[1])
+this_dir  = this_file.directory
 
 ###############################################################################
 # Run each country and send errors to the log  #
-for country in tqdm(all_countries, ncols=60):
+for country in tqdm(continent.all_countries, ncols=60):
     try:
         country(silent=True)
     except Exception:
         pass
 
 ###############################################################################
-# For debugging #
-#for runner in all_runners:
-    #print runner.input_data.classifiers
-    #print runner.aidb_switcher.admin_boundary
-    #print runner.aidb_switcher.eco_boundary
-    #1/0
-    # Create CSVs #
-    #runner.orig_to_csv.calibration_parser()
-    #runner.orig_to_csv.associations_parser()
-    # Create XLS #
-    #runner.csv_to_xls()
-    # Mappings #
-    #print runner.orig_to_csv.associations_parser.all_mappings
-    # AIDB #
-    #runner.aidb_switcher()
-    # SIT #
-    #runner.standard_import_tool()
-    #runner.standard_import_tool.create_json_config()
-    #runner.standard_import_tool.run_sit()
-    #runner.standard_import_tool.move_log()
-    # SAS
-    #x = runner.orig_to_csv.silviculture_parser
-    #1/0
+execfile(this_dir + 'compile_logs.py')

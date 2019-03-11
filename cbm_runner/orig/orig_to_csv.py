@@ -14,7 +14,7 @@ from cbm_runner.orig.silviculture import SilvicultureParser
 ###############################################################################
 class OrigToCSV(object):
     """
-    This class takes as input the four "original" files.
+    This class takes as input the three "original" files.
     And produces the CSV files for the next step (CSVToXLS).
     """
 
@@ -22,7 +22,6 @@ class OrigToCSV(object):
     /orig/silviculture.sas
     /orig/calibration.mdb
     /orig/aidb_eu.mdb
-    /orig/associations.xlsx
     """
 
     def __init__(self, parent):
@@ -34,7 +33,7 @@ class OrigToCSV(object):
     def __call__(self):
         self.calibration_parser()
         self.silviculture_parser()
-        self.associations_parser()
+        self.associations_parser.regenerate_csv()
 
     @property_cached
     def calibration_parser(self):

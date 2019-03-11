@@ -1,5 +1,6 @@
 # Built-in modules #
 import json
+from collections import OrderedDict
 
 # Third party modules #
 import pandas
@@ -14,12 +15,13 @@ from plumbing.common import pad_extra_whitespace
 ###############################################################################
 class AssociationsParser(object):
     """
-    This class takes the file "associations.xlsx" and converts it to CSV.
-    Then later, it parses the CSV producing JSON strings for consumption by SIT.
+    This class takes the file "calibration.mdb" as well as the "aidb.mdb" and
+    creates a CSV containing mappings between names.
+    Then later, it parses the CSV created to produce JSON strings
+    for consumption by SIT.
     """
 
     all_paths = """
-    /orig/associations.xlsx
     /input/csv/associations.csv
     """
 
@@ -28,37 +30,90 @@ class AssociationsParser(object):
         self.parent = parent
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
+        # Used in multiple places #
+        self.keys = ['MapAdminBoundary', 'MapEcoBoundary', 'MapSpecies', 'MapDisturbanceType']
 
     @property
     def log(self): return self.parent.parent.log
 
-    def __call__(self):
-        """Convert the XLSX to CSV."""
-        self.log.info("Converting associations.xlsx to associations.csv")
-        self.paths.xlsx.must_exist()
-        self.xlsx = pandas.ExcelFile(str(self.paths.xlsx))
-        self.xlsx.parse('associations').to_csv(str(self.paths.csv), index=False)
+    @property
+    def aidb(self): return self.parent.parent.aidb_switcher.database
+
+    @property
+    def calib(self): return self.parent.calibration_parser.database
+
+    def select_rows(self, classifier_name):
+        query  = "ClassifierValueID == '_CLASSIFIER' and Name == '%s'" % classifier_name
+        number = self.calib['Classifiers'].query(query)['ClassifierNumber'].iloc[0]
+        query  = "ClassifierValueID != '_CLASSIFIER' and ClassifierNumber == %i" % number
+        rows   = self.calib['Classifiers'].query(query)
+        return rows
+
+    def regenerate_csv(self):
+        """Run this once before manually fixing the CSVs.
+        The keys are the names in the calibration.mdb
+        The values are the names in the aidb.mdb"""
+        # Admin boundaries #
+        self.admin   = [(k,k) for k in self.select_rows('Region')['Name']]
+        # Eco boundaries #
+        self.eco     = [(k,k) for k in self.select_rows('Climatic unit')['Name']]
+        # Species #
+        self.species = [(k,k) for k in self.select_rows('Forest type')['Name']]
+        # Disturbances #
+        left  = self.aidb['tblDisturbanceTypeDefault'].set_index('DistTypeID')
+        right = self.calib['tblDisturbanceType'].set_index('DefaultDistTypeID')
+        self.dist = left.join(right, how='inner', lsuffix='_archive', rsuffix='_calib')
+        self.dist = zip(self.dist['Description_calib'], self.dist['DistTypeName_archive'])
+        # Combine the four dataframes #
+        self.combined = [pandas.DataFrame(self.admin),
+                         pandas.DataFrame(self.eco),
+                         pandas.DataFrame(self.species),
+                         pandas.DataFrame(self.dist)]
+        self.combined = pandas.concat(self.combined, keys=self.keys).reset_index(0)
+        # Write the CSV #
+        self.combined.to_csv(str(self.paths.csv), header = ['A', 'B', 'C'], index=False)
+
+    def print_messages(self, default, names, key):
+        template = "%s - %s - '%s' missing from archive index database."
+        for name in names:
+            if name not in default:
+                print template % (key, self.parent.parent.country_iso2, name)
+
+    def list_missing(self):
+        # Admin boundaries #
+        default = set(self.aidb['tblAdminBoundaryDefault']['AdminBoundaryName'])
+        names   = self.key_to_rows(self.keys[0]).values()
+        self.print_messages(default, names, self.keys[0])
+        # Eco boundaries #
+        default = set(self.aidb['tblEcoBoundaryDefault']['EcoBoundaryName'])
+        names   = self.key_to_rows(self.keys[1]).values()
+        self.print_messages(default, names, self.keys[1])
+        # Species #
+        default = set(self.aidb['tblSpeciesTypeDefault']['SpeciesTypeName'])
+        names   = self.key_to_rows(self.keys[2]).values()
+        self.print_messages(default, names, self.keys[2])
+        # Disturbances #
+        default = set(self.aidb['tblDisturbanceTypeDefault']['DistTypeName'])
+        names   = self.key_to_rows(self.keys[3]).values()
+        self.print_messages(default, names, self.keys[3])
 
     @property_cached
     def df(self):
+        """Load the CSV that was produced by self.regenerate_csv"""
         self.paths.csv.must_exist()
         return pandas.read_csv(str(self.paths.csv))
 
-    def query_to_json(self, mapping_name, user, default,
-                      standard=True, add_default=False, add_user=False):
-        """Create a JSON string by picking the appropriate rows in the CSV file.
-        If *add_default* is True, we are going to add a mapping that maps
-        all the names in AIDB back to the same name. In case these are used
-        in the calibration database. If they are not, this should have no impact.
-        If add_user is True, we will map each username back to the same username"""
-        # Get rows #
+    def key_to_rows(self, mapping_name):
         query   = "A == '%s'" % mapping_name
         mapping = self.df.query(query).set_index('B')['C'].to_dict()
-        # Add only the ones we want #
-        result = []
-        if standard:    result += [{user:k, default:v} for k,v in mapping.items()]
-        if add_user:    result += [{user:k, default:k} for k,v in mapping.items()]
-        if add_default: result += [{user:v, default:v} for k,v in mapping.items()]
+        return mapping
+
+    def rows_to_json(self, mapping_name, user, default):
+        """Create a JSON string by picking the appropriate rows in the CSV file."""
+        # Get rows #
+        mapping = self.key_to_rows(mapping_name)
+        # Add rows #
+        result = [{user:k, default:v} for k,v in mapping.items()]
         # Format JSON #
         string  = json.dumps(result, indent=2)
         string  = pad_extra_whitespace(string, 6).strip(' ')
@@ -67,19 +122,20 @@ class AssociationsParser(object):
 
     @property_cached
     def all_mappings(self):
-        """Return a dictionary of JSON structures for consumption by mustache
+        """Return a dictionary of JSON structures for consumption by the mustache
         templating engine."""
         return {
-           'map_disturbance': self.query_to_json('MapDisturbanceType',
-                                                 'user_dist_type',
-                                                 'default_dist_type'),
-           'map_eco_bound':   self.query_to_json('MapEcoBoundary',
-                                                 'user_eco_boundary',
-                                                 'default_eco_boundary'),#, standard=False, add_user=True),
-           'map_admin_bound': self.query_to_json('MapAdminBoundary',
-                                                 'user_admin_boundary',
-                                                 'default_admin_boundary'),#, standard=False, add_default=True),
-           'map_species':     self.query_to_json('MapSpecies',
-                                                 'user_species',
-                                                 'default_species'),
+           'map_admin_bound': self.rows_to_json(self.keys[0],
+                                                'user_admin_boundary',
+                                                'default_admin_boundary'),
+           'map_eco_bound':   self.rows_to_json(self.keys[1],
+                                                'user_eco_boundary',
+                                                'default_eco_boundary'),
+           'map_species':     self.rows_to_json(self.keys[2],
+                                                'user_species',
+                                                'default_species'),
+           'map_disturbance': self.rows_to_json(self.keys[3],
+                                                'user_dist_type',
+                                                'default_dist_type'),
         }
+
