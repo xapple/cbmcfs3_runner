@@ -21,7 +21,7 @@ cbm_work_dir        = toolbox_install_dir + "temp/"
 class ComputeModel(object):
     """
     This class will run CBM-CFS3.exe from the command line without using the GUI.
-    It will take an Microsoft Access database (as created by SIT) as input.
+    It will take a Microsoft Access database (as created by SIT) as input.
     Then it will produce a new Microsoft Access database as output.
     If the input database is in a different location than when it was created
     by SIT, the tool will not work in the same way. Side-effects are everywhere.
@@ -60,11 +60,11 @@ class ComputeModel(object):
              LegacyDB(str(database), False) as proj:
         # Run all methods #
             self.sim_id = aidb.AddProjectToAIDB(proj)
-            s = Simulator(executablePath   = cbm_exes_path,
+            s = Simulator(executablePath   = str(cbm_exes_path),
                           simID            = self.sim_id,
                           projectPath      = str(database.directory),
-                          CBMRunDir        = cbm_work_dir,
-                          toolboxPath      = toolbox_install_dir)
+                          CBMRunDir        = str(cbm_work_dir),
+                          toolboxPath      = str(toolbox_install_dir))
             s.CleanupRunDirectory()
             s.CreateMakelistFiles()
             s.copyMakelist()

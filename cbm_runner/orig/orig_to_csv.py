@@ -33,7 +33,6 @@ class OrigToCSV(object):
     def __call__(self):
         self.calibration_parser()
         self.silviculture_parser()
-        self.associations_parser.regenerate_csv()
 
     @property_cached
     def calibration_parser(self):

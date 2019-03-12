@@ -55,3 +55,4 @@ class Country(Runner):
         # Store the reference years #
         row = ref_years.loc[ref_years['country'] == self.country_iso2].iloc[0]
         self.inventory_start_year = row['ref_year']
+        self.base_year = 2015

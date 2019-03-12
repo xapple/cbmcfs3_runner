@@ -19,7 +19,7 @@ class CSVToXLS(object):
     all_paths = """
     /input/csv/ageclass.csv
     /input/csv/classifiers.csv
-    /input/csv/disturbance_events.csv
+    /input/csv/disturbance_events_filtered.csv
     /input/csv/disturbance_types.csv
     /input/csv/inventory.csv
     /input/csv/transition_rules.csv
@@ -31,7 +31,7 @@ class CSVToXLS(object):
     sheet_name_to_file_name = {
         'AgeClasses':      'ageclass',
         'Classifiers':     'classifiers',
-        'DistEvents':      'disturbance_events',
+        'DistEvents':      'disturbance_events_filtered',
         'DistType':        'disturbance_types',
         'Inventory':       'inventory',
         'Growth':          'yields',

@@ -20,6 +20,7 @@ from plumbing.common      import pad_extra_whitespace
 # Internal modules #
 from cbm_runner.orig.orig_to_csv           import OrigToCSV
 from cbm_runner.steps.csv_to_xls           import CSVToXLS
+from cbm_runner.steps.pre_process          import PreProcessor
 from cbm_runner.steps.switch_aidb          import AIDBSwitcher
 from cbm_runner.steps.input_data           import InputDataXLS, InputDataTXT
 from cbm_runner.steps.standard_import_tool import ImportWithXLS, ImportWithTXT
@@ -103,6 +104,7 @@ class Runner(object):
         self.log.info("Running country '%s'." % self.country_iso2)
         self.clear_all_outputs()
         self.orig_to_csv()
+        self.pre_processor()
         if not self.paths.csv_dir.empty: self.csv_to_xls()
         self.aidb_switcher()
         self.standard_import_tool()
@@ -140,6 +142,10 @@ class Runner(object):
     def input_data(self):
         if self.is_excel_input: return InputDataXLS(self)
         else:                   return InputDataTXT(self)
+
+    @property_cached
+    def pre_processor(self):
+        return PreProcessor(self)
 
     @property_cached
     def standard_import_tool(self):

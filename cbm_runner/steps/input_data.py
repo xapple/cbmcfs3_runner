@@ -50,13 +50,13 @@ class InputDataXLS(InputData):
 class InputDataTXT(InputData):
 
     all_paths = """
-    /input/ageclass.txt
-    /input/classifiers.txt
-    /input/disturbance_events.txt
-    /input/disturbance_types.txt
-    /input/inventory.txt
-    /input/transition_rules.txt
-    /input/yields.txt
+    /input/txt/ageclass.txt
+    /input/txt/classifiers.txt
+    /input/txt/disturbance_events.txt
+    /input/txt/disturbance_types.txt
+    /input/txt/inventory.txt
+    /input/txt/transition_rules.txt
+    /input/txt/yields.txt
     """
 
     @property_cached
