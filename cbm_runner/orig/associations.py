@@ -49,6 +49,10 @@ class AssociationsParser(object):
         rows   = self.calib['Classifiers'].query(query)
         return rows
 
+    def __call__(self, parent):
+        raise Exception("Are you sure you want ot regenerate the associations CSV?" + \
+                        "They have been edited manually.")
+
     def regenerate_csv(self):
         """Run this once before manually fixing the CSVs.
         The keys are the names in the calibration.mdb

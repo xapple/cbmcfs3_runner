@@ -49,6 +49,8 @@ class CSVToXLS(object):
         for name in self.file_name_to_sheet_name: assert self.paths[name].exists
 
     def __call__(self):
+        # Check there are CSVs #
+        if self.paths.csv_dir.empty: raise Exception("No CSVs to generate the XLS")
         # Create an Excel Writer #
         writer = pandas.ExcelWriter(self.paths.inv_xlsx, engine='xlsxwriter')
         # Add each DataFrame to a different sheet #

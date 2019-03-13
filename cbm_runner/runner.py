@@ -101,14 +101,15 @@ class Runner(object):
             if not silent: raise
 
     def run(self):
+        #self.log.info("Regenerating CSV inputs for country '%s'." % self.country_iso2)
+        #self.orig_to_csv()
         self.log.info("Running country '%s'." % self.country_iso2)
         self.clear_all_outputs()
-        self.orig_to_csv()
         self.pre_processor()
-        if not self.paths.csv_dir.empty: self.csv_to_xls()
+        self.csv_to_xls()
         self.aidb_switcher()
         self.standard_import_tool()
-        #self.compute_model()
+        self.compute_model()
         #self.graphs()
         #self.reports.inventory_report()
 
@@ -117,10 +118,9 @@ class Runner(object):
         self.log.info("Clearing all outputs.")
         # The output directory #
         self.paths.output_dir.remove()
-        # We need to keep the log we are writing to #
+        # Empty the logs, but we need to keep the log we are writing to currently #
         for element in self.paths.logs_dir.flat_contents:
             if element != self.paths.log: element.remove()
-        self.paths.logs_dir.remove()
 
     @property_cached
     def aidb_switcher(self):
