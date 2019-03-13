@@ -10,23 +10,28 @@ Typically you would run this file from a command line like this:
 import os, inspect, StringIO
 
 # Third party modules #
-import pandas, folium
+import pandas, folium, brewer2mpl
 
 # First party modules #
-from autopaths.dir_path   import DirectoryPath
+from autopaths.dir_path import DirectoryPath
 
 # Internal modules #
-from cbm_runner.all_countries import all_countries
+from cbm_runner.all_countries import continent
 
 # Current directory #
 file_name = os.path.abspath((inspect.stack()[0])[1])
 this_dir  = DirectoryPath(os.path.dirname(os.path.abspath(file_name)))
 
+# Colors #
+palette = brewer2mpl.get_map('YlGn', 'sequential', 3)
+
 ###############################################################################
 map_data = pandas.DataFrame({
-    'A3':    [c.country_iso3 for c in all_countries],
-    'value': [int(c.standard_import_tool.passed) for c in all_countries]
+    'A3':    [c.country_iso3 for c in continent],
+    'value': [c.map_value for c in continent]
 })
+
+print map_data
 
 ###############################################################################
 m = folium.Map(
@@ -40,7 +45,7 @@ m.choropleth(
     data       = map_data,
     columns    = ['A3', 'value'],
     key_on     = 'feature.properties.A3',
-    fill_color = 'YlOrRd'
+    fill_color = 'YlGn' # palette.hex_color # 'PuBuGn'
 )
 
 ###############################################################################

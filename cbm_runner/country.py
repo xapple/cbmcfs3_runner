@@ -56,3 +56,11 @@ class Country(Runner):
         row = ref_years.loc[ref_years['country'] == self.country_iso2].iloc[0]
         self.inventory_start_year = row['ref_year']
         self.base_year = 2015
+
+    @property
+    def map_value(self, data_dir=None):
+        """Return a float that indicates how far this country is running
+        to be plotted on a map."""
+        if   'run is completed' in self.tail: return 1.0
+        elif 'SIT created'      in self.tail: return 0.5
+        else: return 0.0

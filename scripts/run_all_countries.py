@@ -29,6 +29,7 @@ this_dir  = this_file.directory
 #for c in continent.all_countries: passing_sit += [c.country_iso2] if 'Moving' in c.tail else []
 passing_sit = ['BG', 'CZ', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'LT', 'LU', 'PT', 'SI']
 passing_sit = ['BG', 'DK', 'EE', 'ES', 'FI', 'GB', 'GR', 'HR', 'LT', 'LU', 'PT', 'SI']
+passing_sit = ['CZ', 'FR', 'IT', 'SE', 'SK']
 passing_sit = [continent[c] for c in passing_sit]
 
 ###############################################################################
