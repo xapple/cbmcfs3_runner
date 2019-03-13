@@ -63,4 +63,4 @@ class Country(Runner):
         to be plotted on a map."""
         if   'run is completed' in self.tail: return 1.0
         elif 'SIT created'      in self.tail: return 0.5
-        else: return 0.0
+        else:                                 return 0.0
