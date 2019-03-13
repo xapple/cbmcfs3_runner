@@ -55,4 +55,10 @@ The simulation is broken down into several periods which are represented below.
 
 ![Timeline](documentation/timeline_and_periods.png)
 
+## Countries passing
+The higher the value, the further do the countries pass in the pipeline.
+
+![Map](documentation/europe.png)
+
+
 

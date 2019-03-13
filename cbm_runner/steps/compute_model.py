@@ -25,6 +25,8 @@ class ComputeModel(object):
     Then it will produce a new Microsoft Access database as output.
     If the input database is in a different location than when it was created
     by SIT, the tool will not work in the same way. Side-effects are everywhere.
+
+    It expects version x.x.x of the CBM software.
     """
 
     all_paths = """

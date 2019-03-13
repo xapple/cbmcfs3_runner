@@ -29,7 +29,7 @@ class PostProcessor(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     @property_cached
-    def sim_result(self):
+    def database(self):
         path = self.parent.compute_model.paths.after_mdb
         path.must_exist()
         return AccessDatabase(path)
@@ -39,9 +39,9 @@ class PostProcessor(object):
         """Creates a mapping between 'UserDefdClassSetID'
         and species, site_quality and forest_type, etc."""
         # The three tables we will need #
-        user_classes           = self.sim_result["tblUserDefdClasses"]
-        user_sub_classes       = self.sim_result["tblUserDefdSubclasses"]
-        user_class_sets_values = self.sim_result["tblUserDefdClassSetValues"]
+        user_classes           = self.database["tblUserDefdClasses"]
+        user_sub_classes       = self.database["tblUserDefdSubclasses"]
+        user_class_sets_values = self.database["tblUserDefdClassSetValues"]
         # Lorem ipsum #
         index = ['UserDefdClassID', 'UserDefdSubclassID']
         classifiers = user_sub_classes.set_index(index)
@@ -77,7 +77,7 @@ class PostProcessor(object):
 
     @property_cached
     def bef_ft(self):
-        pool = self.sim_result["tblPoolIndicators"].set_index('UserDefdClassSetID')
+        pool = self.database["tblPoolIndicators"].set_index('UserDefdClassSetID')
         bef_ft = pool.join(self.classifiers, on="UserDefdClassSetID")
         cols_sum = {'SW_Merch'  :'sum',
                     'SW_Foliage':'sum',
@@ -101,7 +101,7 @@ class PostProcessor(object):
 
     @property_cached
     def predicted_inventory(self):
-        age_indicators = self.sim_result["tblAgeIndicators"]
+        age_indicators = self.database["tblAgeIndicators"]
         inv = age_indicators.set_index('UserDefdClassSetID').join(self.classifiers, on='UserDefdClassSetID')
         inv = inv.reset_index().set_index('forest_type').join(self.bef_ft, on='forest_type')
         inv = inv.reset_index().set_index('species').join(self.coefficients.set_index('species'), on='species')
