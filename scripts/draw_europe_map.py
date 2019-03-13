@@ -4,6 +4,11 @@ A script to draw a map of all the countries that pass a certain step of the simu
 Typically you would run this file from a command line like this:
 
      ipython.exe -i -- /deploy/cbm_runner/scripts/draw_europe_map.py
+
+Color brewer makes provides a range of color palettes:
+
+    http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3
+
 """
 
 # Built-in modules #
