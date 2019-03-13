@@ -28,7 +28,7 @@ class PostProcessor(object):
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
-    @property_cached
+    @property
     def database(self):
         path = self.parent.compute_model.paths.after_mdb
         path.must_exist()

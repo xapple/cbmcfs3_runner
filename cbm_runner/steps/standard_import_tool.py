@@ -1,5 +1,6 @@
 # Built-in modules #
-import os
+import os, zipfile, io
+from six.moves.urllib.request import urlopen
 
 # Third party modules #
 import pystache
@@ -35,12 +36,22 @@ class StandardImportTool(object):
     Is determined by the table "UserDefdClasses" in the calibration.mdb
     """
 
+    url = 'https://github.com/cat-cfs/StandardImportToolPlugin/releases/download/1.2.1/Release.zip'
+
     all_paths = """
     /input/sit_config/sit_config.json
     /output/cbm_formatted_db/project.mdb
     /output/cbm_formatted_db/SITLog.txt
     /logs/sit_import.log
     """
+
+    @classmethod
+    def install(cls):
+        """A method to install the tool"""
+        path = '/Users/Administrator/test/'
+        response = urlopen(self.url)
+        archive  = zipfile.ZipFile(io.BytesIO(response.read()))
+        archive.extractall(path=path)
 
     def __init__(self, parent):
         # Keep access to the parent object #
