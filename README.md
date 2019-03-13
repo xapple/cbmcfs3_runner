@@ -38,7 +38,7 @@ When you type `import cbm_runner` python will know where to look.
 
 #### Step 3: Follow other instructions
 
-Setting up the machine and installing the required programs is covered in hte `gcbmio` repository.
+Setting up the machine and installing the required programs is covered in the `gcbmio` repository.
 
 ## Data Flowchart
 Below is drawn the flowchart describing the data processing along all the steps of `cbm_runner`:
