@@ -13,7 +13,6 @@ from autopaths.auto_paths import AutoPaths
 toolbox_install_dir = DirectoryPath("/Program Files (x86)/Operational-Scale CBM-CFS3")
 aidb_path           = toolbox_install_dir + "admin/dbs/ArchiveIndex_Beta_Install.mdb"
 cbm_exes_path       = toolbox_install_dir + "admin/executables/"
-cbm_work_dir        = toolbox_install_dir + "temp/"
 
 ###############################################################################
 class ComputeModel(object):
@@ -24,12 +23,12 @@ class ComputeModel(object):
     If the input database is in a different location than when it was created
     by SIT, the tool will not work in the same way. Side-effects are everywhere.
 
-    It expects version x.x.x of the CBM software.
+    It expects version 1.2.7004.294 of the CBM software.
     """
 
     all_paths = """
     /output/cbm_formatted_db/project.mdb
-    /output/cbm_tmp_dir/project.mdb
+    /output/cbm_tmp_dir/
     /output/after_simulation/project.mdb
     /logs/compute_model.log
     """
@@ -44,7 +43,6 @@ class ComputeModel(object):
     def log(self): return self.parent.log
 
     def __call__(self):
-        #self.setup_tmp_dir()
         self.run_simulator()
         self.copy_output()
 
@@ -59,20 +57,18 @@ class ComputeModel(object):
         https://github.com/cat-cfs/cbm3_python/blob/master/simulate.py#L36
         """
         # Paths #
-        database = self.paths.tmp_mdb # Fails for unknown reason, don't use
         database = self.paths.formatted_mdb
         # Messages #
         self.log.info("Launching the CBM-CFS3 model.")
         self.log.debug("Database path '%s'." % database)
-        self.log.debug("Working directory path '%s'." % cbm_work_dir)
         # Arguments #
         kwargs = {
-            'aidb_path'                : aidb_path,
-            'project_path'             : str(database.directory),
-            'toolbox_installation_dir' : None,
+            'aidb_path'                : str(aidb_path),
+            'project_path'             : str(self.paths.formatted_mdb),
+            'toolbox_installation_dir' : str(toolbox_install_dir),
             'cbm_exe_path'             : str(cbm_exes_path),
-            'results_database_path'    : None,
-            'tempfiles_output_dir'     : None,
+            'results_database_path'    : str(self.paths.after_simulation_mdb),
+            'tempfiles_output_dir'     : str(self.paths.cbm_tmp_dir),
             'afforestation_only'       : False,
         }
         # Use their module #

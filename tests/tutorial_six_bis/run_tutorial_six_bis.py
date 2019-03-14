@@ -23,5 +23,21 @@ this_file = FilePath((inspect.stack()[0])[1])
 this_dir  = this_file.directory
 
 ###############################################################################
+# Object #
 runner = Runner(this_dir + 'data/', 'tutorial_six_bis')
-runner.orig_to_csv.calibration_parser()
+
+# Mock params #
+runner.country_iso2 = "T6"
+runner.inventory_start_year= 2050
+runner.base_year = 2140
+
+# Run but skip some steps #
+runner.log.info("Running Tutorial 6 bis." )
+runner.clear_all_outputs()
+runner.pre_processor()
+runner.csv_to_xls()
+runner.aidb_switcher()
+runner.standard_import_tool.run_sit()
+runner.standard_import_tool.move_log()
+runner.standard_import_tool.check_for_errors()
+runner.compute_model()

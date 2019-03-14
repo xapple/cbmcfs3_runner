@@ -1,0 +1,77 @@
+{
+  "output_path": "C:\\Program Files (x86)\\Operational-Scale CBM-CFS3\\Projects\\tutorial6_json\\tutorial6_json.mdb",
+  "import_config": {
+    "path": "C:\\Program Files (x86)\\Operational-Scale CBM-CFS3\\Tutorials\\Tutorial 6\\Tutorial6.xls",
+    "ageclass_table_name": "AgeClasses$",
+    "classifiers_table_name": "Classifiers$",
+    "disturbance_events_table_name": "DistEvents$",
+    "disturbance_types_table_name": "DistType$",
+    "inventory_table_name": "Inventory$",
+    "transition_rules_table_name": "Transitions$",
+    "yield_table_name": "Growth$"
+  },
+  "mapping_config": {
+    "spatial_units": {
+      "mapping_mode": "SingleDefaultSpatialUnit",
+      "default_spuid": 42
+    },
+    "disturbance_types": {
+      "disturbance_type_mapping": [
+        {
+          "user_dist_type": "Fire",
+          "default_dist_type": "Wildfire"
+        },
+        {
+          "user_dist_type": "Firewood collection",
+          "default_dist_type": "Firewood Collection - post logging"
+        },
+        {
+          "user_dist_type": "Clearcut",
+          "default_dist_type": "Clear-cut with slash-burn"
+        },
+        {
+          "user_dist_type": "Afforestation",
+          "default_dist_type": "Afforestation"
+        },
+        {
+          "user_dist_type": "Hurricane",
+          "default_dist_type": "Generic 50% mortality"
+        }
+      ]
+    },
+    "species": {
+      "species_classifier": "Species",
+      "species_mapping": [
+        {
+          "user_species": "Hispaniolan pine",
+          "default_species": "Pine"
+        },
+        {
+          "user_species": "Nonforest",
+          "default_species": "Not stocked"
+        },
+        {
+          "user_species": "Improved pine stock",
+          "default_species": "Pine"
+        }
+      ]
+    },
+    "nonforest": {
+      "nonforest_classifier": "Forest type",
+      "nonforest_mapping": [
+        {
+          "user_nonforest_type": "Afforestation",
+          "default_nonforest_type": "Gleysolic"
+        },
+        {
+          "user_nonforest_type": "Natural forest",
+          "default_nonforest_type": "Forest Only"
+        },
+        {
+          "user_nonforest_type": "Control",
+          "default_nonforest_type": "Forest Only"
+        }
+      ]
+    }
+  }
+}

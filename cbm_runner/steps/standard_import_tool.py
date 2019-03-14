@@ -83,7 +83,7 @@ class StandardImportTool(object):
         self.paths.json.write(self.json)
 
     def run_sit(self):
-        """Don't forget to put the tool in your PATH variable."""
+        """Don't forget to put the exe in your PATH variable."""
         self.log.info("Launching StandardImportToolPlugin.exe.")
         pbs.Command("StandardImportToolPlugin.exe")('-c', self.paths.json)
         self.log.info("StandardImportToolPlugin has completed.")
