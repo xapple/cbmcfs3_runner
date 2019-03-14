@@ -1,9 +1,7 @@
 # Built-in modules #
 
 # Third party modules #
-from simulation.simulator import Simulator
-from cbm3data.aidb        import AIDB
-from cbm3data.accessdb    import AccessDB as LegacyDB
+from cbm3_python.simulation import projectsimulator
 
 # First party modules #
 from autopaths.dir_path   import DirectoryPath
@@ -67,30 +65,19 @@ class ComputeModel(object):
         self.log.info("Launching the CBM-CFS3 model.")
         self.log.debug("Database path '%s'." % database)
         self.log.debug("Working directory path '%s'." % cbm_work_dir)
-        # Open contexts managers #
-        with AIDB(aidb_path, False) as aidb, \
-             LegacyDB(str(database), False) as proj:
-        # Run all methods #
-            self.log.info("Adding the project to the AIDB.")
-            self.sim_id = aidb.AddProjectToAIDB(proj)
-            self.log.debug("Received simulation ID %i." % self.sim_id)
-            s = Simulator(executablePath   = str(cbm_exes_path),
-                          simID            = self.sim_id,
-                          projectPath      = str(database.directory),
-                          CBMRunDir        = str(cbm_work_dir),
-                          toolboxPath      = str(toolbox_install_dir))
-            s.CleanupRunDirectory()
-            s.CreateMakelistFiles()
-            s.copyMakelist()
-            s.runMakelist()
-            s.loadMakelistSVLS()
-            s.DumpMakelistSVLs()
-            s.copyMakelistOutput()
-            s.CreateCBMFiles()
-            s.CopyCBMExecutable()
-            s.RunCBM()
-            s.CopyTempFiles()
-            s.LoadCBMResults()
+        # Arguments #
+        kwargs = {
+            'aidb_path'                : aidb_path,
+            'project_path'             : str(database.directory),
+            'toolbox_installation_dir' : None,
+            'cbm_exe_path'             : str(cbm_exes_path),
+            'results_database_path'    : None,
+            'tempfiles_output_dir'     : None,
+            'afforestation_only'       : False,
+        }
+        # Use their module #
+        self.results_path = projectsimulator.run(**kwargs)
+        # Success message #
         self.log.info("The CBM-CFS3 model run is completed.")
 
     @property
