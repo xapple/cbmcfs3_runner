@@ -32,7 +32,7 @@ runner.inventory_start_year= 2050
 runner.base_year = 2140
 
 # Run but skip some steps #
-runner.log.info("Running Tutorial 6 bis." )
+runner.log.info("Running Tutorial 6 bis.")
 runner.clear_all_outputs()
 runner.pre_processor()
 runner.csv_to_xls()

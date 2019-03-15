@@ -26,7 +26,9 @@ class Continent(object):
     concatenates data from all countries."""
 
     def __getitem__(self, key): return [c for c in self.all_countries if c.country_iso2 == key][0]
+
     def __iter__(self): return iter(self.all_countries)
+    def __len__(self):  return len(self.all_countries)
 
     def __init__(self, cbm_data_repos):
         """Store the cbm_data_repos directory paths where there

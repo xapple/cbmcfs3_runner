@@ -26,15 +26,8 @@ this_file = FilePath((inspect.stack()[0])[1])
 this_dir  = this_file.directory
 
 ###############################################################################
-#for c in continent.all_countries: passing_sit += [c.country_iso2] if 'Moving' in c.tail else []
-passing_sit = ['BG', 'CZ', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'LT', 'LU', 'PT', 'SI']
-passing_sit = ['BG', 'DK', 'EE', 'ES', 'FI', 'GB', 'GR', 'HR', 'LT', 'LU', 'PT', 'SI']
-passing_sit = ['CZ', 'FR', 'IT', 'SE', 'SK']
-passing_sit = [continent[c] for c in passing_sit]
-
-###############################################################################
 # Run each country and send errors to the log #
-for country in tqdm(passing_sit): #tqdm(continent.all_countries, ncols=60):
+for country in tqdm(continent, ncols=60):
     try:
         country(silent=True)
     except Exception:
