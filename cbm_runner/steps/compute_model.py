@@ -52,10 +52,7 @@ class ComputeModel(object):
         self.paths.formatted_mdb.copy(self.paths.tmp_mdb)
 
     def run_simulator(self):
-        """
-        Part of this code was taken from:
-        https://github.com/cat-cfs/cbm3_python/blob/master/simulate.py#L36
-        """
+        """Launch CBM and all its executables."""
         # Paths #
         database = self.paths.formatted_mdb
         # Messages #
@@ -68,7 +65,7 @@ class ComputeModel(object):
             'toolbox_installation_dir' : str(toolbox_install_dir),
             'cbm_exe_path'             : str(cbm_exes_path),
             'results_database_path'    : str(self.paths.after_simulation_mdb),
-            'tempfiles_output_dir'     : str(self.paths.cbm_tmp_dir),
+            'tempfiles_output_dir'     : str(self.paths.output_dir + "cbm_tmp_dir"),
             'afforestation_only'       : False,
         }
         # Use their module #

@@ -1,7 +1,7 @@
 {
-  "output_path": "C:\\Program Files (x86)\\Operational-Scale CBM-CFS3\\Projects\\tutorial6_json\\tutorial6_json.mdb",
+  "output_path": "\\deploy\\cbm_runner\\tests\\tutorial_six_bis\\data\\output\\cbm_formatted_db\\project.mdb",
   "import_config": {
-    "path": "C:\\Program Files (x86)\\Operational-Scale CBM-CFS3\\Tutorials\\Tutorial 6\\Tutorial6.xls",
+    "path": "\\deploy\\cbm_runner\\tests\\tutorial_six_bis\\data\\input\\xls\\inv_and_dist.xls",
     "ageclass_table_name": "AgeClasses$",
     "classifiers_table_name": "Classifiers$",
     "disturbance_events_table_name": "DistEvents$",
