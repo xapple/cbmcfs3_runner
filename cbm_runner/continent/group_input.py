@@ -14,6 +14,8 @@ class GroupInput(object):
     """
     Concatenate input table in one single table for all countries available. 
     Also provide a dictionary of data frames to investigate inconsistent conlumn names between the different countries. 
+    The compare_column_names method can be used to print differences in column names compared to a reference country
+    (defaults to AT).
     """
 
     def __init__(self, parent):
@@ -29,3 +31,10 @@ class GroupInput(object):
         """A concatenated data frame containing disturbance tables for all countries."""
         return pandas.concat(self.as_dict(name))
 
+    def compare_column_names(self, name, country_ref = 'AT'):
+        """Print differences in column names, compared to a reference country"""
+        dict_of_df = self.as_dict(name) 
+        for country, table in dict_of_df.items():
+            print("\n"+country)
+            print(dict_of_df[country_ref].columns.difference(table.columns))
+            print(table.columns.difference(dict_of_df[country_ref].columns))
