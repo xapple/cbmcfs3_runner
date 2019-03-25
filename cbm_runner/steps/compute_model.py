@@ -6,6 +6,7 @@ from cbm3_python.simulation import projectsimulator
 # First party modules #
 from autopaths.dir_path   import DirectoryPath
 from autopaths.auto_paths import AutoPaths
+from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
 
@@ -44,7 +45,6 @@ class ComputeModel(object):
 
     def __call__(self):
         self.run_simulator()
-        self.copy_output()
 
     def setup_tmp_dir(self):
         """This doesn't seem to work, we don't get the same results if
@@ -76,10 +76,4 @@ class ComputeModel(object):
     @property
     def generated_database(self):
         """Will be in a directory created by CBM."""
-        path = self.paths.formatted_dir + str(self.sim_id) + '/' + str(self.sim_id) + '.mdb'
-        path.must_exist()
-        return path
-
-    def copy_output(self):
-        """Place the generated database in a separate directory."""
-        self.generated_database.copy(self.paths.after_mdb)
+        return AccessDatabase(self.paths.after_simulation_mdb)
