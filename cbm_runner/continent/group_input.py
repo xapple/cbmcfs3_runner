@@ -39,9 +39,9 @@ class GroupInput(object):
 
     def as_concat_df(self, name):
         """A concatenated data frame containing tables for all countries."""
-        df = pandas.concat(self.as_dict(name)) 
+        df = pandas.concat(self.as_dict(name))
         df = df.reset_index(level=0)
-        df.rename(columns={'level_0': 'country_iso2'})
+        df = df.rename(columns={'level_0': 'country_iso2'})
         return df
 
     def compare_column_names_in_dict_of_df(self, dict_of_df, key_ref='AT'):
