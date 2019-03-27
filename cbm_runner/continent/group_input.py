@@ -12,6 +12,10 @@ from autopaths.auto_paths import AutoPaths
 ###############################################################################
 
 
+
+
+
+
 class GroupInput(object):
     """
     Concatenate input table in one single table for all countries available.
@@ -35,20 +39,28 @@ class GroupInput(object):
 
     def as_concat_df(self, name):
         """A concatenated data frame containing tables for all countries."""
-        return pandas.concat(self.as_dict(name))
+        df = pandas.concat(self.as_dict(name))
+        df = df.reset_index(level=0)
+        df = df.rename(columns={'level_0': 'country_iso2'})
+        return df
 
-    def compare_column_names(self, name, country_ref='AT'):
-        """Print differences in column names,
-        compared to a reference country"""
+    def compare_column_names_in_dict_of_df(self, dict_of_df, key_ref='AT'):
+        """Compare column names in a dictionnary of data frames
+        to a reference data frame present under the key_ref"""
         print("(Specific to this country, present in reference country: " +
-              country_ref + ")")
-        dict_of_df = self.as_dict(name)
+              key_ref + ")")
         comparison = OrderedDict()
         for country, table in dict_of_df.items():
-            specific_to_this = list(table.columns.difference(dict_of_df[country_ref].columns))
-            present_in_ref = list(dict_of_df[country_ref].columns.difference(table.columns))
+            specific_to_this = list(table.columns.difference(dict_of_df[key_ref].columns))
+            present_in_ref = list(dict_of_df[key_ref].columns.difference(table.columns))
             comparison[country] = (specific_to_this, present_in_ref)
         for country, table in comparison.items():
             if(table[0] or table[1]):
                 print(country)
                 print(table)
+
+    def compare_column_names(self, table_name, country_ref='AT'):
+        """Print differences in column names,
+        compared to a reference country"""
+        dict_of_df = self.as_dict(table_name)
+        self.compare_column_names_in_dict_of_df(dict_of_df, country_ref)
