@@ -29,7 +29,7 @@ class PreProcessor(object):
     def __call__(self):
         self.filter_dist_events(self.paths.disturbance_events, self.paths.disturbance_events_filtered)
 
-    def filter_dist_events(self, old_path, new_path):
+    def filter_dist_events(self, old_path, new_path, remove_m_types=True):
         """The calibration database is configured to run over a period of
          100 years. We would like to limit the simulation to the historical
          period. Currently Year < 2015."""
@@ -38,5 +38,7 @@ class PreProcessor(object):
         # Filter rows #
         period_max = self.parent.base_year - self.parent.inventory_start_year + 1
         new_df = old_df.query("Step <= %s" % period_max)
+        # Special case #
+        if remove_m_types: new_df = new_df.query('Sort_Type != 6 | Measurement_type == "A"')
         # Write the result #
-        new_path.write(new_df.to_csv(index=False))
+        new_df.to_csv(str(new_path), index=False)
