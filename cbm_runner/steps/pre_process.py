@@ -32,7 +32,14 @@ class PreProcessor(object):
     def filter_dist_events(self, old_path, new_path, remove_m_types=True):
         """The calibration database is configured to run over a period of
          100 years. We would like to limit the simulation to the historical
-         period. Currently Year < 2015."""
+         period. Currently Year < 2015.
+
+         Filtering M types on Sort Type 6 is necessary to avoid the famous error:
+
+            Error:  Illegal target type for RANDOM sort in timestep 3, action number 190, in disturbance group 1, sort typ
+    e 6, target type 2.
+            Error:  Invalid disturbances found in .\input\disturb.lst.  Aborting.
+         """
         # Load the original dataframe #
         old_df = pandas.read_csv(str(old_path))
         # Filter rows #
