@@ -1,7 +1,0 @@
-!Sample Standard Import Tool Ver1.00 Transition Rules Input File
-!
-!Source Classifiers				Age Classes		Disturbance	Target Classifiers
-!1   2   3   4		UsingID		SWStart	SWEnd HWStart HWEnd	Type		1   2   3   4		RegenDelay  ResetAge  Percent
-!
-!Transition Rule for Balsam Fir after Senescence
-BF GOOD D1 W TRUE AGEID20 AGEID20 AGEID20 AGEID20 DISTID4 BF GOOD D1 W 0 0 100

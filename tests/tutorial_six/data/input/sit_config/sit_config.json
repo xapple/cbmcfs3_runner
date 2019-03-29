@@ -1,14 +1,14 @@
 {
   "output_path": "\\deploy\\cbm_runner\\tests\\tutorial_six\\data\\output\\cbm_formatted_db\\project.mdb",
   "import_config": {
-    "path":                          "\\deploy\\cbm_runner\\tests\\tutorial_six\\data\\input\\xls\\inv_and_dist.xls",
-    "ageclass_table_name":           "AgeClasses$",
-    "classifiers_table_name":        "Classifiers$",
+    "path": "\\deploy\\cbm_runner\\tests\\tutorial_six\\data\\input\\xls\\inv_and_dist.xls",
+    "ageclass_table_name": "AgeClasses$",
+    "classifiers_table_name": "Classifiers$",
     "disturbance_events_table_name": "DistEvents$",
-    "disturbance_types_table_name":  "DistType$",
-    "inventory_table_name":          "Inventory$",
-    "transition_rules_table_name":   "Transitions$",
-    "yield_table_name":              "Growth$"
+    "disturbance_types_table_name": "DistType$",
+    "inventory_table_name": "Inventory$",
+    "transition_rules_table_name": "Transitions$",
+    "yield_table_name": "Growth$"
   },
   "mapping_config": {
     "spatial_units": {

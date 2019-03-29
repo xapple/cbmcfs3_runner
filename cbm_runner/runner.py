@@ -21,9 +21,9 @@ from plumbing.common      import pad_extra_whitespace
 from cbm_runner.orig.orig_to_csv           import OrigToCSV
 from cbm_runner.steps.csv_to_xls           import CSVToXLS
 from cbm_runner.steps.pre_process          import PreProcessor
-from cbm_runner.steps.switch_aidb          import AIDBSwitcher
-from cbm_runner.steps.input_data           import InputDataXLS, InputDataTXT
-from cbm_runner.steps.standard_import_tool import ImportWithXLS, ImportWithTXT
+from cbm_runner.steps.aidb                 import AIDB
+from cbm_runner.steps.input_data           import InputData
+from cbm_runner.steps.standard_import_tool import StandardImportTool
 from cbm_runner.steps.compute_model        import ComputeModel
 from cbm_runner.steps.post_process         import PostProcessor
 from cbm_runner.graphs.graphs              import Graphs
@@ -107,7 +107,7 @@ class Runner(object):
         self.pre_processor()
         self.clear_all_outputs()
         self.csv_to_xls()
-        self.aidb_switcher()
+        self.aidb.switch()
         self.standard_import_tool()
         self.compute_model()
         #self.graphs()
@@ -120,11 +120,12 @@ class Runner(object):
         self.paths.output_dir.remove()
         # Empty the logs, but we need to keep the log we are writing to currently #
         for element in self.paths.logs_dir.flat_contents:
-            if element != self.paths.log: element.remove()
+            if element != self.paths.log:
+                element.remove()
 
     @property_cached
-    def aidb_switcher(self):
-        return AIDBSwitcher(self)
+    def aidb(self):
+        return AIDB(self)
 
     @property_cached
     def orig_to_csv(self):
@@ -134,14 +135,9 @@ class Runner(object):
     def csv_to_xls(self):
         return CSVToXLS(self)
 
-    @property
-    def is_excel_input(self):
-        return not self.paths.xls_dir.empty
-
     @property_cached
     def input_data(self):
-        if self.is_excel_input: return InputDataXLS(self)
-        else:                   return InputDataTXT(self)
+        return InputData(self)
 
     @property_cached
     def pre_processor(self):
@@ -149,8 +145,7 @@ class Runner(object):
 
     @property_cached
     def standard_import_tool(self):
-        if self.is_excel_input: return ImportWithXLS(self)
-        else:                   return ImportWithTXT(self)
+        return StandardImportTool(self)
 
     @property_cached
     def compute_model(self):
@@ -170,12 +165,12 @@ class Runner(object):
 
     @property
     def tail(self):
-        """View the end of the log file"""
+        """View the end of the log file."""
         return self.paths.log.tail()
 
     @property
     def summary(self):
-        """A short summary including the end of the log file"""
+        """A short summary showing just the end of the log file."""
         msg  = "\n## Country `%s`\n" % self.country_iso2
         msg += "\nTail of the log file at `%s`\n" % self.paths.log
         msg += "\n" + pad_extra_whitespace(self.tail, 4) + "\n"

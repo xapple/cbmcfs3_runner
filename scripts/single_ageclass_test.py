@@ -18,7 +18,7 @@ from autopaths.dir_path   import DirectoryPath
 from cbm_runner.runner import Runner
 
 # Constants #
-orig_project_path = DirectoryPath("/deploy/cbm_runner/tests/tutorial_six_bis/data/")
+orig_project_path = DirectoryPath("/deploy/cbm_runner/tests/tutorial_six/data/")
 temp_directory    = DirectoryPath("~/test/")
 
 ###############################################################################

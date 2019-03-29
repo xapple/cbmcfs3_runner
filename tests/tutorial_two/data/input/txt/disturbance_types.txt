@@ -1,9 +1,0 @@
-!
-!Sample CBMSITVer1.00 Disturbance Type Input File
-!
-
-DISTID1 'Natural forest fire'
-DISTID2 'Senescence'
-DISTID3	'Mountain pine beetle infestation'
-DISTID4 'ClearCut Harvesting'
-

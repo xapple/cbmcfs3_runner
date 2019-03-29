@@ -25,7 +25,7 @@ from cbm_runner.runner import Runner
 all_codes = pandas.read_csv(str(repos_dir + 'data/foastat_countries.csv'))
 
 # Reference years #
-ref_years = pandas.read_csv(str(repos_dir + 'data/refyears.csv'))
+ref_years = pandas.read_csv(str(repos_dir + 'data/reference_years.csv'))
 
 ###############################################################################
 class Country(Runner):
@@ -58,9 +58,9 @@ class Country(Runner):
         self.base_year = 2015
 
     @property
-    def map_value(self, data_dir=None):
-        """Return a float that indicates how far this country is running
-        to be plotted on a map."""
+    def map_value(self):
+        """Return a float that indicates how far this country is running.
+        This can be used to plot the country on a map."""
         if   'run is completed' in self.paths.log.contents: return 1.0
         elif 'SIT created'      in self.paths.log.contents: return 0.5
         else:                                               return 0.0

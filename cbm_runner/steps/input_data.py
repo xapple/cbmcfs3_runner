@@ -12,7 +12,11 @@ from plumbing.cache import property_cached
 ###############################################################################
 class InputData(object):
     """
-    This class will provide access to the input data as pandas dataframes.
+    This class will provide access to the input data as a pandas dataframes.
+    """
+
+    all_paths = """
+    /input/xls/inv_and_dist.xls
     """
 
     def __init__(self, parent):
@@ -20,13 +24,6 @@ class InputData(object):
         self.parent = parent
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
-
-###############################################################################
-class InputDataXLS(InputData):
-
-    all_paths = """
-    /input/xls/inv_and_dist.xls
-    """
 
     @property_cached
     def xls(self): return pandas.ExcelFile(str(self.paths.xls))
@@ -45,25 +42,3 @@ class InputDataXLS(InputData):
         df = self.xls.parse("Classifiers")
         return df.sort_values(by=['ClassifierNumber', 'ClassifierValueID'],
                               ascending=[True, False])
-
-###############################################################################
-class InputDataTXT(InputData):
-
-    all_paths = """
-    /input/txt/ageclass.txt
-    /input/txt/classifiers.txt
-    /input/txt/disturbance_events.txt
-    /input/txt/disturbance_types.txt
-    /input/txt/inventory.txt
-    /input/txt/transition_rules.txt
-    /input/txt/yields.txt
-    """
-
-    @property_cached
-    def inventory(self):
-        raise NotImplemented("We cannot read this custom format yet.")
-
-###############################################################################
-class InputDataCSV(InputData):
-    """This is not currently possible."""
-    pass

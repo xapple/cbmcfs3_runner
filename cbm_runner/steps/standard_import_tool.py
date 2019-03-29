@@ -1,9 +1,8 @@
 # Built-in modules #
-import os, zipfile, io
+import os, zipfile, io, json
 from six.moves.urllib.request import urlopen
 
 # Third party modules #
-import pystache
 if os.name == "posix": import sh as pbs
 if os.name == "nt":    import pbs
 
@@ -11,9 +10,6 @@ if os.name == "nt":    import pbs
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
 from plumbing.databases.access_database import AccessDatabase
-
-# Internal modules #
-from cbm_runner import repos_dir
 
 ###############################################################################
 class StandardImportTool(object):
@@ -24,14 +20,14 @@ class StandardImportTool(object):
     It expects release version 1.2.1
 
     It will call the binary distribution exe with a JSON file as only parameter.
-    This JSON file is automatically generated based on a template.
+    This JSON file is automatically generated.
     Finally the log file is stored, and is checked for errors.
 
     More information about "SeperateAdminEcoClassifiers" (sic):
     c.f. https://github.com/cat-cfs/StandardImportToolPlugin/wiki/Mapping-Configuration
 
-          "admin_classifier": "classifier3",
-          "eco_classifier":   "classifier6",
+          "admin_classifier": "Region",
+          "eco_classifier":   "Climatic unit",
 
     Is determined by the table "UserDefdClasses" in the calibration.mdb
     """
@@ -40,6 +36,7 @@ class StandardImportTool(object):
 
     all_paths = """
     /input/sit_config/sit_config.json
+    /input/xls/inv_and_dist.xls
     /output/cbm_formatted_db/project.mdb
     /output/cbm_formatted_db/SITLog.txt
     /logs/sit_import.log
@@ -49,7 +46,7 @@ class StandardImportTool(object):
     def install(cls):
         """A method to install the tool"""
         path = '/Users/Administrator/test/'
-        response = urlopen(self.url)
+        response = urlopen(cls.url)
         archive  = zipfile.ZipFile(io.BytesIO(response.read()))
         archive.extractall(path=path)
 
@@ -65,22 +62,15 @@ class StandardImportTool(object):
     def log(self): return self.parent.log
 
     def __call__(self):
-        self.create_json_config()
+        self.json_sit_config.create()
         self.run_sit()
         self.move_log()
         self.check_for_errors()
         self.passed = True
 
-    def create_json_config(self):
-        """The template is at the repository root in /templates/"""
-        self.log.info("Creating the SIT JSON config file.")
-        # Get all the context #
-        extra_mappings = self.parent.orig_to_csv.associations_parser.all_mappings
-        self.context.update(extra_mappings)
-        # Render it #
-        self.renderer = pystache.Renderer()
-        self.json     = self.renderer.render_path(self.template, self.context)
-        self.paths.json.write(self.json)
+    @property_cached
+    def json_sit_config(self):
+        return JsonSitConfig(self)
 
     def run_sit(self):
         """Don't forget to put the exe in your PATH variable."""
@@ -104,44 +94,62 @@ class StandardImportTool(object):
         return AccessDatabase(self.paths.mdb)
 
 ###############################################################################
-class ImportWithXLS(StandardImportTool):
-    all_paths = StandardImportTool.all_paths + """
-    /input/xls/inv_and_dist.xls
-    """
+class JsonSitConfig(object):
+    """This class will generate the JSON file needed by SIT."""
 
-    template = repos_dir + 'templates/sit_xls_config.mustache'
+    template = {
+      "output_path": None,
+      "import_config": {
+        "path":                          None,
+        "ageclass_table_name":           "AgeClasses$",
+        "classifiers_table_name":        "Classifiers$",
+        "disturbance_events_table_name": "DistEvents$",
+        "disturbance_types_table_name":  "DistType$",
+        "inventory_table_name":          "Inventory$",
+        "transition_rules_table_name":   "Transitions$",
+        "yield_table_name":              "Growth$"
+      },
+      "mapping_config": {
+        "spatial_units": {
+          "mapping_mode":     "SeperateAdminEcoClassifiers",
+              # Don't fix the 'Separate' spelling mistake
+          "admin_classifier": "Region",
+          "eco_classifier":   "Climatic unit",
+          "admin_mapping":    None,
+          "eco_mapping":      None,
+        }
+        ,
+        "disturbance_types": {
+          "disturbance_type_mapping": None,
+        },
+        "species": {
+          "species_classifier": "Forest type",
+          "species_mapping":    None,
+        }
+      }
+    }
 
-    @property_cached
-    def context(self):
-        return {"mdb_output_path": self.paths.mdb.escaped,
-                "xls_input_path":  self.paths.inv_xls.escaped}
+    def __init__(self, parent):
+        # Keep access to the parent object #
+        self.parent = parent
 
-###############################################################################
-class ImportWithTXT(StandardImportTool):
-    all_paths = StandardImportTool.all_paths + """
-    /input/txt/ageclass.txt
-    /input/txt/classifiers.txt
-    /input/txt/disturbance_events.txt
-    /input/txt/disturbance_types.txt
-    /input/txt/inventory.txt
-    /input/txt/transition_rules.txt
-    /input/txt/yields.txt
-    """
+    def create(self):
+        # Make a copy of the template #
+        config = self.template.copy()
+        # Two main paths #
+        config['output_path']           = self.parent.paths.mdb
+        config['import_config']['path'] = self.parent.paths.inv_xls
+        # Retrieve the four classifiers mappings #
+        mappings = self.parent.parent.orig_to_csv.associations_parser.all_mappings
+        # Set the four classifiers mappings #
+        maps = config['mapping_config']
+        maps['spatial_units']['admin_mapping']                = mappings['map_admin_bound']
+        maps['spatial_units']['eco_mapping']                  = mappings['map_eco_bound']
+        maps['disturbance_types']['disturbance_type_mapping'] = mappings['map_disturbance']
+        maps['species']['species_mapping']                    = mappings['map_species']
+        # The extra non-forest classifiers #
+        pass #TODO
+        # Create the file #
+        self.parent.paths.json.write(json.dumps(config, indent=4))
 
-    template = repos_dir + 'templates/sit_txt_config.mustache'
 
-    @property_cached
-    def context(self):
-        return {'mdb_output_path':                  self.paths.mdb.escaped,
-                'ageclass_input_path':              self.paths.ageclass.escaped,
-                'classifiers_input_path':           self.paths.classifiers.escaped,
-                'disturbance_events_input_path':    self.paths.disturbance_events.escaped,
-                'disturbance_types_input_path':     self.paths.disturbance_types.escaped,
-                'inventory_input_path':             self.paths.inventory.escaped,
-                'transition_rules_input_path':      self.paths.transition_rules.escaped,
-                'yield_input_path':                 self.paths.yields.escaped}
-
-###############################################################################
-class ImportWithCSV(StandardImportTool):
-    """This is not currently possible."""
-    pass

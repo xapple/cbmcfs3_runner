@@ -1,5 +1,5 @@
 """
-A script to create the directory structure of each country and the four "orig" files.
+A script to create the directory structure of each country and the three "orig" files.
 
 Typically you would run this file from a command line like this:
 
@@ -24,7 +24,6 @@ all_paths = """
     /orig/silviculture.sas
     /orig/calibration.mdb
     /orig/aidb_eu.mdb
-    /orig/associations.xlsx
     """
 
 # Main loop - get four files #
@@ -38,11 +37,9 @@ for code in countries:
     aidb             = from_calib_dir + '/Archive*.mdb'
     calibration_mdb  = from_calib_dir + '/%s*.mdb' % code
     silviculture_sas = from_calib_dir + '/*.sas'
-    association_xls  = from_calib_dir + '/ass*.xlsx'
     # Create #
     orig_data_dir.create_if_not_exists()
     # Copy #
-    aidb.copy(             orig_data_dir + 'aidb_eu.mdb')
-    calibration_mdb.copy(  orig_data_dir + 'calibration.mdb')
-    silviculture_sas.copy( orig_data_dir + 'silviculture.sas')
-    association_xls.copy(  orig_data_dir + 'associations.xlsx')
+    aidb.copy(            orig_data_dir + 'aidb_eu.mdb')
+    calibration_mdb.copy( orig_data_dir + 'calibration.mdb')
+    silviculture_sas.copy(orig_data_dir + 'silviculture.sas')

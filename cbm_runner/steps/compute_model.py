@@ -24,7 +24,7 @@ class ComputeModel(object):
     If the input database is in a different location than when it was created
     by SIT, the tool will not work in the same way. Side-effects are everywhere.
 
-    It expects version 1.2.7004.294 of the CBM software.
+    It currently expects a specific nightly build of the CBM software.
     """
 
     all_paths = """

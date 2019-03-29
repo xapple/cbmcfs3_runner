@@ -5,17 +5,10 @@ from collections import OrderedDict
 import pandas
 
 # First party modules #
-from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
 
 ###############################################################################
-
-
-
-
-
-
 class GroupInput(object):
     """
     Concatenate input table in one single table for all countries available.
