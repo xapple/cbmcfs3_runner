@@ -2,7 +2,6 @@ Country Code,Country,M49 Code,ISO2 Code,ISO3 Code,Start Year,End Year,Nuts Zero 
 2,Afghanistan,4,AF,AFG,,,AF,AF
 5100,Africa,2,,,,,,
 5100,Africa,2,,X06,,,,
-284,íƒland Islands,248,,ALA,,,,
 3,Albania,8,AL,ALB,,,AL,AL
 4,Algeria,12,DZ,DZA,,,DZ,DZ
 5,American Samoa,16,AS,ASM,,,AS,AS
@@ -75,10 +74,8 @@ Country Code,Country,M49 Code,ISO2 Code,ISO3 Code,Start Year,End Year,Nuts Zero 
 46,Congo,178,CG,COG,,,CG,CG
 47,Cook Islands,184,CK,COK,,,CK,CK
 48,Costa Rica,188,CR,CRI,,,CR,CR
-107,CíÇte d'Ivoire,384,CI,CIV,,,CI,CI
 98,Croatia,191,HR,HRV,1992,,HR,HR
 49,Cuba,192,CU,CUB,,,CU,CU
-279,Curaí_ao,531,,CUW,2011,,,
 50,Cyprus,196,CY,CYP,,,CY,CY
 167,Czechia,203,CZ,CZE,1993,,CZ,CZ
 51,Czechoslovakia,200,,,,1992,,
@@ -235,7 +232,6 @@ Country Code,Country,M49 Code,ISO2 Code,ISO3 Code,Start Year,End Year,Nuts Zero 
 179,Qatar,634,QA,QAT,,,QA,QA
 117,Republic of Korea,410,KR,KOR,,,KR,KR
 146,Republic of Moldova,498,MD,MDA,1992,,MD,MD
-182,Rí©union,638,RE,REU,,,RE,RE
 183,Romania,642,RO,ROU,,,RO,RO
 185,Russian Federation,643,RU,RUS,1992,,RU,RU
 184,Rwanda,646,RW,RWA,,,RW,RW

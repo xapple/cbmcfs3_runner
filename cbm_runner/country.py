@@ -22,7 +22,7 @@ from cbm_runner import repos_dir
 from cbm_runner.runner import Runner
 
 # Country codes #
-all_codes = pandas.read_csv(str(repos_dir + 'data/foastat_countries.csv'))
+all_codes = pandas.read_csv(str(repos_dir + 'data/faostat_countries.csv'))
 
 # Reference years #
 ref_years = pandas.read_csv(str(repos_dir + 'data/reference_years.csv'))
