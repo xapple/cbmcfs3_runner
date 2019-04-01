@@ -166,5 +166,8 @@ class AssociationsParser(object):
            'map_disturbance': self.rows_to_list(self.keys[3],
                                                 'user_dist_type',
                                                 'default_dist_type'),
+           'map_nonforest':   self.rows_to_list('MapNonForestType',   # Not always present
+                                                'user_nonforest_type',
+                                                'default_nonforest_type'),
         }
 
