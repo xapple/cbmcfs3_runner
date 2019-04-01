@@ -136,12 +136,12 @@ class Runner(object):
         return CSVToXLS(self)
 
     @property_cached
-    def input_data(self):
-        return InputData(self)
-
-    @property_cached
     def pre_processor(self):
         return PreProcessor(self)
+
+    @property_cached
+    def input_data(self):
+        return InputData(self)
 
     @property_cached
     def standard_import_tool(self):
