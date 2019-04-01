@@ -1,5 +1,5 @@
 # Built-in modules #
-import StringIO
+from six import StringIO
 
 # Third party modules #
 import pandas
@@ -72,7 +72,7 @@ class PostProcessor(object):
                83,LD,0.5,0.46,Con
                86,OB,0.5,0.5,Broad
                87,OC,0.5,0.4,Con"""
-        csv = StringIO.StringIO(csv)
+        csv = StringIO(csv)
         return pandas.read_csv(csv)
 
     @property_cached

@@ -8,6 +8,7 @@ setup(
         license          = 'MIT',
         author           = 'Lucas Sinclair',
         author_email     = 'lucas.sinclair@me.com',
-        install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pandas', 'pbs', 'pystache'],
+        install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pandas', 'pbs', 'pystache',
+                            'pyexcel', 'seaborn'],
         packages         = ['cbm_runner'],
     )
