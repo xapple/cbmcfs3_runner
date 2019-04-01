@@ -42,10 +42,12 @@ class PreProcessor(object):
          """
         # Load the original dataframe #
         old_df = pandas.read_csv(str(old_path))
-        # Filter rows #
+        # Filter rows based on years #
         period_max = self.parent.base_year - self.parent.inventory_start_year + 1
-        new_df = old_df.query("Step <= %s" % period_max)
+        # We copy because query() doesn't return a true new dataframe #
+        new_df = old_df.query("Step <= %s" % period_max).copy()
         # Filtering M types #
-        new_df.loc[(new_df['Sort_Type'] == 6) & (new_df['Measurement_type'] == 'M'), 'Sort_Type'] = 2
+        row_indexer = (new_df['Sort_Type'] == 6) & (new_df['Measurement_type'] == 'M')
+        new_df.loc[row_indexer, 'Sort_Type'] = 2
         # Write the result #
         new_df.to_csv(str(new_path), index=False)

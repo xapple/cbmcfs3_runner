@@ -1,5 +1,5 @@
 # Built-in modules #
-import os, zipfile, io, json
+import os, zipfile, io, json, shutil
 from six.moves.urllib.request import urlopen
 
 # Third party modules #
@@ -8,6 +8,7 @@ if os.name == "nt":    import pbs
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
+from autopaths.dir_path import DirectoryPath
 from plumbing.cache import property_cached
 from plumbing.databases.access_database import AccessDatabase
 
@@ -45,10 +46,16 @@ class StandardImportTool(object):
     @classmethod
     def install(cls):
         """A method to install the tool"""
+        # Download it #
         path = '/Users/Administrator/test/'
         response = urlopen(cls.url)
         archive  = zipfile.ZipFile(io.BytesIO(response.read()))
         archive.extractall(path=path)
+        # Move it #
+        source = DirectoryPath('/Users/Administrator/test/Release/')
+        destin = DirectoryPath('/Program Files/StandardImportToolPlugin/')
+        destin.remove()
+        source.move_to(destin)
 
     def __init__(self, parent):
         # Keep access to the parent object #
