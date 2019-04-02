@@ -9,6 +9,6 @@ setup(
         author           = 'Lucas Sinclair',
         author_email     = 'lucas.sinclair@me.com',
         install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pandas', 'pbs', 'pystache',
-                            'pyexcel', 'seaborn', 'xlrd'],
+                            'pyexcel', 'pyexcel-xlsx', 'seaborn', 'xlrd', 'xlsxwriter'],
         packages         = ['cbm_runner'],
     )

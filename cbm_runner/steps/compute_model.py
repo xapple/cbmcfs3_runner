@@ -1,7 +1,6 @@
 # Built-in modules #
 
 # Third party modules #
-from cbm3_python.simulation import projectsimulator
 
 # First party modules #
 from autopaths.dir_path   import DirectoryPath
@@ -68,6 +67,8 @@ class ComputeModel(object):
             'tempfiles_output_dir'     : str(self.paths.output_dir + "cbm_tmp_dir"),
             'afforestation_only'       : False,
         }
+        # Import #
+        from cbm3_python.simulation import projectsimulator
         # Use their module #
         self.results_path = projectsimulator.run(**kwargs)
         # Success message #

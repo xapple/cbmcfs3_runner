@@ -1,6 +1,7 @@
+# Futures #
+from __future__ import print_function
+
 # Built-in modules #
-import json
-from collections import OrderedDict
 
 # Third party modules #
 import pandas
@@ -8,7 +9,6 @@ import pandas
 # First party modules #
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
-from plumbing.common import pad_extra_whitespace
 
 # Internal modules #
 
@@ -32,27 +32,27 @@ class AssociationsParser(object):
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
         # Used in multiple places #
-        self.keys = ['MapAdminBoundary', 'MapEcoBoundary', 'MapSpecies', 'MapDisturbanceType']
-        self.extra_keys = ['MapNonForestType']
+        self.keys = ['MapAdminBoundary', 'MapEcoBoundary', 'MapSpecies',
+                     'MapDisturbanceType', 'MapNonForestType']
 
     @property
     def log(self): return self.parent.parent.log
 
     @property
     def aidb(self):
-        """Shortcut to the AIDB"""
-        return self.parent.parent.aidb_switcher.database
+        """Shortcut to the AIDB."""
+        return self.parent.parent.aidb.database
 
     @property
     def calib(self):
-        """Shortcut to the Calibration DB"""
+        """Shortcut to the Calibration DB."""
         return self.parent.calibration_parser.database
 
-    def select_rows(self, classifier_name):
+    def select_classifier_rows(self, classifier_name):
         """
         Here is an example call:
 
-        >>> self.select_rows('Climatic unit')
+        >>> self.select_classifier_rows('Climatic unit')
             ClassifierNumber ClassifierValueID   Name
         19                 6                25  CLU25
         20                 6                34  CLU34
@@ -74,11 +74,11 @@ class AssociationsParser(object):
         raise Exception("Are you sure you want to regenerate the associations CSV?" + \
                         "They have been edited manually.")
         # Admin boundaries #
-        self.admin   = [(k,k) for k in self.select_rows('Region')['Name']]
+        self.admin   = [(k,k) for k in self.select_classifier_rows('Region')['Name']]
         # Eco boundaries #
-        self.eco     = [(k,k) for k in self.select_rows('Climatic unit')['Name']]
+        self.eco     = [(k,k) for k in self.select_classifier_rows('Climatic unit')['Name']]
         # Species #
-        self.species = [(k,k) for k in self.select_rows('Forest type')['Name']]
+        self.species = [(k,k) for k in self.select_classifier_rows('Forest type')['Name']]
         # Disturbances #
         left  = self.aidb['tblDisturbanceTypeDefault'].set_index('DistTypeID')
         right = self.calib['tblDisturbanceType'].set_index('DefaultDistTypeID')
@@ -128,6 +128,16 @@ class AssociationsParser(object):
         default = set(self.aidb['tblDisturbanceTypeDefault']['DistTypeName'])
         names   = self.key_to_rows(self.keys[3]).values()
         print_messages(default, names, self.keys[3])
+        # Disturbances also have to match with disturbance_types.csv #
+        types = set(self.parent.parent.csv_to_xls.read_csv('disturbance_types')['Name'])
+        names = set(self.key_to_rows(self.keys[3]).keys())
+        unmatched = types ^ names
+        if unmatched:
+            print('disturbance_types.csv - %s - %s ' % (self.parent.parent.country_iso2, unmatched))
+        # Nonforest #
+        default = set(self.aidb['tblAfforestationPreTypeDefault']['Name'])
+        names   = self.key_to_rows(self.keys[4]).values()
+        print_messages(default, names, self.keys[4])
 
     def key_to_rows(self, mapping_name):
         """
@@ -147,7 +157,13 @@ class AssociationsParser(object):
         return mapping
 
     def rows_to_list(self, mapping_name, user, default):
-        """Create a list string by picking the appropriate rows in the CSV file."""
+        """Create a list string by picking the appropriate rows in the CSV file.
+
+        Here is an example call:
+
+        >>> self.key_to_rows('MapSpecies', 'user_species', 'default_species')
+        {...}
+        """
         return [{user:k, default:v} for k,v in self.key_to_rows(mapping_name).items()]
 
     @property_cached
@@ -166,7 +182,7 @@ class AssociationsParser(object):
            'map_disturbance': self.rows_to_list(self.keys[3],
                                                 'user_dist_type',
                                                 'default_dist_type'),
-           'map_nonforest':   self.rows_to_list('MapNonForestType',   # Not always present
+           'map_nonforest':   self.rows_to_list(self.keys[4],        # Not always present
                                                 'user_nonforest_type',
                                                 'default_nonforest_type'),
         }

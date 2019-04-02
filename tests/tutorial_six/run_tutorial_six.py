@@ -38,14 +38,15 @@ mapping['spatial_units'] = {"mapping_mode": "SingleDefaultSpatialUnit", "default
 mapping['species']['species_classifier'] = "Species"
 
 # Run #
-runner()
+#runner()
 
 # Run but skip some steps #
 #runner.log.info("Running Tutorial 6.")
 #runner.clear_all_outputs()
 #runner.pre_processor()
 #runner.csv_to_xls()
-#runner.aidb()
+#runner.aidb.switch()
+#runner.standard_import_tool.json_sit_config.create()
 #runner.standard_import_tool.run_sit()
 #runner.standard_import_tool.move_log()
 #runner.standard_import_tool.check_for_errors()
