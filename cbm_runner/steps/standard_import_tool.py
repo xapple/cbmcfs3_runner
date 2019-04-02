@@ -1,8 +1,9 @@
 # Built-in modules #
-import os, zipfile, io, json, shutil
+import os, zipfile, io
 from six.moves.urllib.request import urlopen
 
 # Third party modules #
+import simplejson as json
 if os.name == "posix": import sh as pbs
 if os.name == "nt":    import pbs
 
@@ -158,9 +159,9 @@ class JsonSitConfig(object):
         # The extra non-forest classifiers #
         if mappings['map_nonforest']:
             maps['nonforest'] = {
-                "nonforest_classifier": "Forest type",
+                "nonforest_classifier": "Status",
                 "nonforest_mapping": mappings['map_nonforest']}
         # Create the file #
-        self.parent.paths.json.write(json.dumps(config, indent=4))
+        self.parent.paths.json.write(json.dumps(config, indent=4, ignore_nan=True))
 
 
