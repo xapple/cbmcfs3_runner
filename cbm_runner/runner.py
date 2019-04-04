@@ -173,5 +173,5 @@ class Runner(object):
         """A short summary showing just the end of the log file."""
         msg  = "\n## Country `%s`\n" % self.country_iso2
         msg += "\nTail of the log file at `%s`\n" % self.paths.log
-        msg += "\n" + pad_extra_whitespace(self.tail, 4) + "\n"
+        msg += "\n" + pad_extra_whitespace("\n".join(self.tail), 4) + "\n"
         return msg

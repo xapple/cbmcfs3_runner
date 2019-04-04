@@ -27,7 +27,7 @@ this_dir  = this_file.directory
 
 ###############################################################################
 # Run each country and send errors to the log #
-for country in tqdm(continent, ncols=60):
+for country in tqdm(continent.all_countries[:11], ncols=60):
     try:
         country(silent=True)
     except Exception:
