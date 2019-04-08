@@ -23,3 +23,10 @@ class PredictedInventory(InventoryBarChart):
         self.df = self.df.query('TimeStep == 89')
         self.df = self.df.set_index('AveAge').groupby('AveAge').sum()[['Area']]
         super(PredictedInventory, self).plot(**kwargs)
+
+###############################################################################
+class InventoryScatter(Graph):
+    def plot(self, **kwargs):
+        self.df = self.parent.parent.post_processor.predicted_inventory
+        seaborn.scatterplot(x='TimeStep', y='AveAge', hue='Area', data=self.df)
+

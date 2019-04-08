@@ -5,7 +5,7 @@ from plumbing.cache import property_cached
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
-from cbmcfs3_runner.graphs.inventory import InputInventory, PredictedInventory
+from cbmcfs3_runner.graphs.inventory import InputInventory, PredictedInventory, InventoryScatter
 
 ###############################################################################
 class Graphs(object):
@@ -17,6 +17,7 @@ class Graphs(object):
     all_paths = """
     /output/graphs/inventory/input_inventory.pdf
     /output/graphs/inventory/predicted_inventory.pdf
+    /output/graphs/inventory/inventory_scatter.pdf
     """
 
     def __init__(self, parent):
@@ -28,6 +29,7 @@ class Graphs(object):
     def __call__(self):
         self.input_inventory.plot_and_save()
         self.predicted_inventory.plot_and_save()
+        self.inventory_scatter.plot_and_save()
 
     @property_cached
     def input_inventory(self):
@@ -37,3 +39,6 @@ class Graphs(object):
     def predicted_inventory(self):
         return PredictedInventory(self, self.paths.predicted_pdf)
 
+    @property_cached
+    def inventory_scatter(self):
+        return InventoryScatter(self, self.paths.scatter_pdf)

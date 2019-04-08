@@ -20,6 +20,7 @@ from plumbing.common      import pad_extra_whitespace
 # Internal modules #
 from cbmcfs3_runner.orig.orig_to_csv           import OrigToCSV
 from cbmcfs3_runner.steps.csv_to_xls           import CSVToXLS
+from cbmcfs3_runner.steps.middle_process       import MiddleProcessor
 from cbmcfs3_runner.steps.pre_process          import PreProcessor
 from cbmcfs3_runner.steps.aidb                 import AIDB
 from cbmcfs3_runner.steps.input_data           import InputData
@@ -109,6 +110,7 @@ class Runner(object):
         self.csv_to_xls()
         self.aidb.switch()
         self.standard_import_tool()
+        self.middle_processor()
         self.compute_model()
         #self.graphs()
         #self.reports.inventory_report()
@@ -146,6 +148,10 @@ class Runner(object):
     @property_cached
     def standard_import_tool(self):
         return StandardImportTool(self)
+
+    @property_cached
+    def middle_processor(self):
+        return MiddleProcessor(self)
 
     @property_cached
     def compute_model(self):

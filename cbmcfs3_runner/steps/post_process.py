@@ -63,6 +63,8 @@ class PostProcessor(object):
    
     @property_cached
     def coefficients(self):
+        """Hard coded conversion coeficients of carbon tons
+        in cubic meters of wood."""
         csv = """ID,species,C,DB,Harvest_Gr
                76,AA,0.5,0.4,Con
                77,HP,0.5,0.4,Con
@@ -110,6 +112,6 @@ class PostProcessor(object):
                    'AveAge', 'TimeStep', 'Area', 
                    'Biomass', 'BEF_Tot',
                    'DB']]
-        inv['Merch_C_ha'] = inv.Biomass / inv.BEF_Tot
+        inv['Merch_C_ha']   = inv.Biomass / inv.BEF_Tot
         inv['Merch_Vol_ha'] = inv.Merch_C_ha / inv.DB
         return inv 
