@@ -6,7 +6,7 @@ The last step is generating a report with the outcome of the simulation.
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbm_runner/scripts/run_all_countries.py
+     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/run_all_countries.py
 """
 
 # Built-in modules #
@@ -19,7 +19,7 @@ from tqdm import tqdm
 from autopaths.file_path import FilePath
 
 # Internal modules #
-from cbm_runner.all_countries import continent
+from cbmcfs3_runner.all_countries import continent
 
 # Constants #
 this_file = FilePath((inspect.stack()[0])[1])

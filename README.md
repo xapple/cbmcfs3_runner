@@ -1,6 +1,6 @@
-# `cbm_runner` version 0.2.0
+# `cbmcfs3_runner` version 0.2.1
 
-Here, `cbm_runner` is a python package for dealing with the automation and running of a complex series of models involving the European economy, carbon budgets and their interactions. Notably in relation to the CBM-CFS3 model developed by Canada.
+Here, `cbmcfs3_runner` is a python package for dealing with the automation and running of a complex series of models involving the European economy, carbon budgets and their interactions. Notably in relation to the CBM-CFS3 model developed by Canada.
 
 ## Warnings
 
@@ -8,7 +8,7 @@ This package is currently under heavy development and the master branch is subje
 
 ## Installing
 
-No automated installation has been developed for the `cbm_runner` package yet. In the meantime, following this document and typing these commands on your command-line interface should get you started. If you cannot get a functional installation set up, contact the authors.
+No automated installation has been developed for the `cbmcfs3_runner` package yet. In the meantime, following this document and typing these commands on your command-line interface should get you started. If you cannot get a functional installation set up, contact the authors.
 
 #### Step 1: Cloning the repository
 Here you will download a copy of the code from github and place it in your file system.
@@ -16,7 +16,7 @@ Here you will download a copy of the code from github and place it in your file 
     $ cd /
     $ mkdir repos
     $ cd repos
-    $ git clone https://emsincllu@webgate.ec.europa.eu/CITnet/stash/scm/bioeconomy/cbm_runner.git
+    $ git clone https://emsincllu@webgate.ec.europa.eu/CITnet/stash/scm/bioeconomy/cbmcfs3_runner.git
 
 NB: Currently the access to this repository is restricted.
 
@@ -24,12 +24,12 @@ NB: Currently the access to this repository is restricted.
 Here you will edit your ``.bashrc`` or ``.bash_profile`` to add a reference to the module you just downloaded. If you are on Windows, you can change your environment variables with the `setx` command.
 
     $ vim ~/.bash_profile
-    export PYTHONPATH="/repos/cbm_runner/":$PYTHONPATH
+    export PYTHONPATH="/repos/cbmcfs3_runner/":$PYTHONPATH
 
-When you type `import cbm_runner` python will know where to look.
+When you type `import cbmcfs3_runner` python will know where to look.
 
 #### Step 4: Install all required python packages
-`cbm_runner` uses many third party python libraries. You can get them by running these commands:
+`cbmcfs3_runner` uses many third party python libraries. You can get them by running these commands:
 
     $ pip install --user autopaths
     $ pip install --user plumbing
@@ -41,7 +41,7 @@ When you type `import cbm_runner` python will know where to look.
 Setting up the machine and installing the required programs is covered in the `gcbmio` repository.
 
 ## Data Flowchart
-Below is drawn the flowchart describing the data processing along all the steps of `cbm_runner`:
+Below is drawn the flowchart describing the data processing along all the steps of `cbmcfs3_runner`:
 
 ![Flowchart](documentation/data_flowchart.png)
 

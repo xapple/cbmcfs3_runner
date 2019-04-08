@@ -3,7 +3,7 @@ from plumbing.cache import property_cached
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
-from cbm_runner.reports.inventory import InventoryReport
+from cbmcfs3_runner.reports.inventory import InventoryReport
 
 ###############################################################################
 class Reports(object):

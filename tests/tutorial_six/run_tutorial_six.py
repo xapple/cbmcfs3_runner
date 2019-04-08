@@ -6,14 +6,14 @@ TUTORIAL SIX - INTEGRATION TEST
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbm_runner/tests/tutorial_six/run_tutorial_six.py
+     ipython.exe -i -- /deploy/cbmcfs3_runner/tests/tutorial_six/run_tutorial_six.py
 """
 
 # Built-in modules #
 import inspect
 
 # Internal modules #
-from cbm_runner.runner import Runner
+from cbmcfs3_runner.runner import Runner
 
 # Third party modules #
 from autopaths.file_path import FilePath
@@ -32,7 +32,7 @@ runner.inventory_start_year = 2050
 runner.base_year            = 2140
 
 # Monkey patch #
-from cbm_runner.steps.standard_import_tool import JsonSitConfig
+from cbmcfs3_runner.steps.standard_import_tool import JsonSitConfig
 mapping = JsonSitConfig.template['mapping_config']
 mapping['spatial_units'] = {"mapping_mode": "SingleDefaultSpatialUnit", "default_spuid": 42}
 mapping['species']['species_classifier'] = "Species"

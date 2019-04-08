@@ -1,5 +1,5 @@
 # Special variables #
-__version__ = '0.2.5'
+__version__ = '0.2.1'
 
 # Built-in modules #
 import os, sys
@@ -9,8 +9,8 @@ from autopaths.dir_path import DirectoryPath
 from plumbing.git import GitRepo
 
 # Constants #
-project_name = 'cbm_runner'
-project_url  = 'https://webgate.ec.europa.eu/CITnet/stash/projects/BIOECONOMY/repos/cbm_runner'
+project_name = 'cbmcfs3_runner'
+project_url  = 'https://webgate.ec.europa.eu/CITnet/stash/projects/BIOECONOMY/repos/cbmcfs3_runner'
 
 # Get paths to module #
 self       = sys.modules[__name__]

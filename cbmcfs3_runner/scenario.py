@@ -15,7 +15,7 @@ from autopaths.dir_path import DirectoryPath
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
-from cbm_runner.runner import Runner
+from cbmcfs3_runner.runner import Runner
 
 ###############################################################################
 class Scenario(object):

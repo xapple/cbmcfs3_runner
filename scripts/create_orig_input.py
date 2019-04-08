@@ -3,7 +3,7 @@ A script to create the directory structure of each country and the three "orig" 
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbm_runner/scripts/create_orig_input.py
+     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/create_orig_input.py
 """
 
 # Third party modules #

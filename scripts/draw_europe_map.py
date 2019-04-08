@@ -3,7 +3,7 @@ A script to draw a map of all the countries that pass a certain step of the simu
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbm_runner/scripts/draw_europe_map.py
+     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/draw_europe_map.py
 
 Color brewer makes provides a range of color palettes:
 
@@ -21,7 +21,7 @@ import pandas, folium, brewer2mpl
 from autopaths.dir_path import DirectoryPath
 
 # Internal modules #
-from cbm_runner.all_countries import continent
+from cbmcfs3_runner.all_countries import continent
 
 # Current directory #
 file_name = os.path.abspath((inspect.stack()[0])[1])

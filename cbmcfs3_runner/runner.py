@@ -18,16 +18,16 @@ from plumbing.cache       import property_cached
 from plumbing.common      import pad_extra_whitespace
 
 # Internal modules #
-from cbm_runner.orig.orig_to_csv           import OrigToCSV
-from cbm_runner.steps.csv_to_xls           import CSVToXLS
-from cbm_runner.steps.pre_process          import PreProcessor
-from cbm_runner.steps.aidb                 import AIDB
-from cbm_runner.steps.input_data           import InputData
-from cbm_runner.steps.standard_import_tool import StandardImportTool
-from cbm_runner.steps.compute_model        import ComputeModel
-from cbm_runner.steps.post_process         import PostProcessor
-from cbm_runner.graphs.graphs              import Graphs
-from cbm_runner.reports                    import Reports
+from cbmcfs3_runner.orig.orig_to_csv           import OrigToCSV
+from cbmcfs3_runner.steps.csv_to_xls           import CSVToXLS
+from cbmcfs3_runner.steps.pre_process          import PreProcessor
+from cbmcfs3_runner.steps.aidb                 import AIDB
+from cbmcfs3_runner.steps.input_data           import InputData
+from cbmcfs3_runner.steps.standard_import_tool import StandardImportTool
+from cbmcfs3_runner.steps.compute_model        import ComputeModel
+from cbmcfs3_runner.steps.post_process         import PostProcessor
+from cbmcfs3_runner.graphs.graphs              import Graphs
+from cbmcfs3_runner.reports                    import Reports
 
 ###############################################################################
 class Runner(object):

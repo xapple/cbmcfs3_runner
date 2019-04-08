@@ -3,7 +3,7 @@ A test script to test projects with a single ageclass in the inventory.
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbm_runner/scripts/single_ageclass_test.py
+     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/single_ageclass_test.py
 
 """
 
@@ -15,10 +15,10 @@ import pandas, seaborn
 from autopaths.dir_path   import DirectoryPath
 
 # Internal modules #
-from cbm_runner.runner import Runner
+from cbmcfs3_runner.runner import Runner
 
 # Constants #
-orig_project_path = DirectoryPath("/deploy/cbm_runner/tests/tutorial_six/data/")
+orig_project_path = DirectoryPath("/deploy/cbmcfs3_runner/tests/tutorial_six/data/")
 temp_directory    = DirectoryPath("~/test/")
 
 ###############################################################################

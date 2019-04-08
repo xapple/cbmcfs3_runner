@@ -3,7 +3,7 @@ A script to test if the associations.csv are good.
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbm_runner/scripts/check_associations.py
+     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/check_associations.py
 """
 
 # Built-in modules #
@@ -13,7 +13,7 @@ Typically you would run this file from a command line like this:
 # First party modules #
 
 # Internal modules #
-from cbm_runner.all_countries import continent
+from cbmcfs3_runner.all_countries import continent
 
 # Constants #
 

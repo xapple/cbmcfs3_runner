@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-        name             = 'cbm_runner',
-        version          = '0.2.0',
-        description      = 'cbm_runner is a python package for running carbon budget simulations.',
+        name             = 'cbmcfs3_runner',
+        version          = '0.2.1',
+        description      = 'cbmcfs3_runner is a python package for running carbon budget simulations.',
         long_description = open('README.md').read(),
         license          = 'MIT',
         author           = 'Lucas Sinclair',
@@ -11,5 +11,5 @@ setup(
         install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pandas', 'pbs', 'pystache',
                             'pyexcel', 'pyexcel-xlsx', 'seaborn', 'xlrd', 'xlsxwriter',
                             'simplejson'],
-        packages         = ['cbm_runner'],
+        packages         = ['cbmcfs3_runner'],
     )

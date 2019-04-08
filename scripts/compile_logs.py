@@ -4,7 +4,7 @@ summary markdown document.
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbm_runner/scripts/compile_logs.py
+     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/compile_logs.py
 """
 
 # Built-in modules #
@@ -14,7 +14,7 @@ Typically you would run this file from a command line like this:
 # First party modules #
 
 # Internal modules #
-from cbm_runner.all_countries import continent, cbm_data_repos
+from cbmcfs3_runner.all_countries import continent, cbm_data_repos
 
 ###############################################################################
 summary = cbm_data_repos + "logs_summary.md"

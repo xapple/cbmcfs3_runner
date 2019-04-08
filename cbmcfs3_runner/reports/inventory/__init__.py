@@ -4,9 +4,9 @@ from __future__ import division
 # Built-in modules #
 
 # Internal modules #
-from cbm_runner import project_name, project_url
+from cbmcfs3_runner import project_name, project_url
 
-from cbm_runner.reports.template import ReportTemplate
+from cbmcfs3_runner.reports.template import ReportTemplate
 
 # First party modules #
 from plumbing.cache    import property_cached

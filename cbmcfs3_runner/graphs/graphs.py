@@ -5,7 +5,7 @@ from plumbing.cache import property_cached
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
-from cbm_runner.graphs.inventory import InputInventory, PredictedInventory
+from cbmcfs3_runner.graphs.inventory import InputInventory, PredictedInventory
 
 ###############################################################################
 class Graphs(object):

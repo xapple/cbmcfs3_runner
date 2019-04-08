@@ -17,8 +17,8 @@ from autopaths.dir_path   import DirectoryPath
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
-from cbm_runner.country import Country
-from cbm_runner.continent.group_input import GroupInput
+from cbmcfs3_runner.country import Country
+from cbmcfs3_runner.continent.group_input import GroupInput
 
 ###############################################################################
 class Continent(object):

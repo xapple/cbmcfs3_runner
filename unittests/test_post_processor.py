@@ -2,7 +2,7 @@
 import pandas
 
 # Internal modules #
-from cbm_runner.steps.post_process import PostProcessor
+from cbmcfs3_runner.steps.post_process import PostProcessor
 
 # Constants #
 
