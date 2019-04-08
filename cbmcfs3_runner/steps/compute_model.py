@@ -5,6 +5,7 @@
 # First party modules #
 from autopaths.dir_path   import DirectoryPath
 from autopaths.auto_paths import AutoPaths
+from plumbing.cache import property_cached
 from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
@@ -74,7 +75,7 @@ class ComputeModel(object):
         # Success message #
         self.log.info("The CBM-CFS3 model run is completed.")
 
-    @property
+    @property_cached
     def generated_database(self):
         """Will be in a directory created by CBM."""
         return AccessDatabase(self.paths.after_simulation_mdb)

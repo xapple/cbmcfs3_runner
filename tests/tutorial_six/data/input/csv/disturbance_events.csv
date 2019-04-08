@@ -1,4 +1,4 @@
-Classifier1,Classifier2,Classifier3,UsingID,SW Start,SW End,HWD Start,HW End,Minimium YrsLastDist,MaxYrsLastDist,LastDist,MinTotBioC,MaxTotBioC,MinMSWBioC,MaxMSWBioC,MinMHWBioC,MaxMHWBioC,MinTotSSC,MaxTotSSC,MinTotSWSSC,MaxTotSWSSC,MinTotHWSSC,MaxTotHWSSC,MinTotMSSC,MaxTotMSSC,MinTotMSWSSC,MaxTotMSWSSC,MinTotMHWSSC,MaxTotMHWSSC,Efficiency,SortType,MeasureType,Amount,DistTypeID,Year
+Classifier1,Classifier2,Classifier3,UsingID,SW Start,SW End,HWD Start,HW End,Minimium YrsLastDist,MaxYrsLastDist,LastDist,MinTotBioC,MaxTotBioC,MinMSWBioC,MaxMSWBioC,MinMHWBioC,MaxMHWBioC,MinTotSSC,MaxTotSSC,MinTotSWSSC,MaxTotSWSSC,MinTotHWSSC,MaxTotHWSSC,MinTotMSSC,MaxTotMSSC,MinTotMSWSSC,MaxTotMSWSSC,MinTotMHWSSC,MaxTotMHWSSC,Efficiency,Sort_Type,Measurement_type,Amount,DistTypeID,Step
 NF,Poor,AF,False,0,999,0,999,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,2,A,2000,DISTID4,1
 HP,Good,?,False,80,999,80,999,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,2,A,50,DISTID2,1
 HP,Good,?,False,50,999,50,999,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,2,A,80,DISTID3,1
