@@ -2,11 +2,11 @@ A,B,C
 MapSpecies,Hispaniolan pine,Pine
 MapSpecies,Nonforest,Not stocked
 MapSpecies,Improved pine stock,Pine
-MapDisturbanceType,Fire,Wild Fire
+MapDisturbanceType,Fire,Wildfire
 MapDisturbanceType,Firewood collection,Firewood Collection - post logging
 MapDisturbanceType,Clearcut,Clear-cut with slash-burn
 MapDisturbanceType,Afforestation,Afforestation
 MapDisturbanceType,Hurricane,Generic 50% mortality
 MapNonForestType,Afforestation,Gleysolic
-MapNonForestType,Natural forest,
-MapNonForestType,Control,
+MapNonForestType,Natural forest,Forest Only
+MapNonForestType,Control,Forest Only

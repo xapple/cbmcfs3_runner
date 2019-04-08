@@ -159,7 +159,7 @@ class JsonSitConfig(object):
         # The extra non-forest classifiers #
         if mappings['map_nonforest']:
             maps['nonforest'] = {
-                "nonforest_classifier": "Status",
+                "nonforest_classifier": "Forest type",
                 "nonforest_mapping": mappings['map_nonforest']}
         # Create the file #
         self.parent.paths.json.write(json.dumps(config, indent=4, ignore_nan=True))
