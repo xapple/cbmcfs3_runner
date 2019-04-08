@@ -43,12 +43,12 @@ Setting up the machine and installing the required programs is covered in the `g
 ## Data Flowchart
 Below is drawn the flowchart describing the data processing along all the steps of `cbmcfs3_runner`:
 
-![Flowchart](documentation/data_flowchart.png)
+![Flowchart](documentation/exported_to_png/data_flowchart.png)
 
 ## Objects Diagram
 Below is presented a tentative UML-style diagram detailing not the inheritance of the classes but the use of the composition design pattern between the objects created.
 
-![Diagram](documentation/objects_diagram.png)
+![Diagram](documentation/exported_to_png/objects_diagram.png)
 
 ## Timeline representation
 The simulation is broken down into several periods which are represented below.
@@ -58,7 +58,7 @@ The simulation is broken down into several periods which are represented below.
 ## Countries passing
 The higher the value, the further do the countries pass in the pipeline.
 
-![Map](documentation/europe.png)
+![Map](documentation/others/europe.png)
 
 
 
