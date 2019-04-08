@@ -53,7 +53,7 @@ Below is presented a tentative UML-style diagram detailing not the inheritance o
 ## Timeline representation
 The simulation is broken down into several periods which are represented below.
 
-![Timeline](documentation/timeline_and_periods.png)
+![Timeline](documentation/timeline_and_periods/timeline_and_periods.png)
 
 ## Countries passing
 The higher the value, the further do the countries pass in the pipeline.
