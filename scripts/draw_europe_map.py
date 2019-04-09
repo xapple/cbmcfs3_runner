@@ -21,7 +21,7 @@ import pandas, folium, brewer2mpl
 from autopaths.dir_path import DirectoryPath
 
 # Internal modules #
-from cbmcfs3_runner.all_countries import continent
+from cbmcfs3_runner.continent import continent
 
 # Current directory #
 file_name = os.path.abspath((inspect.stack()[0])[1])

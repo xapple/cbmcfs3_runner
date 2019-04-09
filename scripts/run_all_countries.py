@@ -19,7 +19,7 @@ from tqdm import tqdm
 from autopaths.file_path import FilePath
 
 # Internal modules #
-from cbmcfs3_runner.all_countries import continent
+from cbmcfs3_runner.continent import continent
 
 # Constants #
 this_file = FilePath((inspect.stack()[0])[1])

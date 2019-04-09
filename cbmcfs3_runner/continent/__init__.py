@@ -14,11 +14,13 @@ Unit D1 Bioeconomy.
 
 # First party modules #
 from autopaths.dir_path   import DirectoryPath
-from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
 from cbmcfs3_runner.country import Country
 from cbmcfs3_runner.continent.group_input import GroupInput
+
+# Constants #
+cbm_data_repos = DirectoryPath("/repos/cbm_data/")
 
 ###############################################################################
 class Continent(object):
@@ -41,5 +43,7 @@ class Continent(object):
         """Return aggregated data frames from the input files."""
         return GroupInput(self)
 
-
+###############################################################################
+# Create list of all countries #
+continent = Continent(cbm_data_repos)
 
