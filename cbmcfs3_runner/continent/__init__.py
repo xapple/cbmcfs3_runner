@@ -20,7 +20,7 @@ from cbmcfs3_runner.country import Country
 from cbmcfs3_runner.continent.group_input import GroupInput
 
 # Constants #
-cbm_data_repos = DirectoryPath("/repos/cbm_data/")
+cbm_data_repos = DirectoryPath("/repos/cbmcfs3_data/")
 
 ###############################################################################
 class Continent(object):
