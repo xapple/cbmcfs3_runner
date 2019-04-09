@@ -46,11 +46,6 @@ class ComputeModel(object):
     def __call__(self):
         self.run_simulator()
 
-    def setup_tmp_dir(self):
-        """This doesn't seem to work, we don't get the same results if
-        we operate on a copy of the output from SIT."""
-        self.paths.formatted_mdb.copy(self.paths.tmp_mdb)
-
     def run_simulator(self):
         """Launch CBM and all its executables."""
         # Paths #
@@ -67,6 +62,7 @@ class ComputeModel(object):
             'results_database_path'    : str(self.paths.after_simulation_mdb),
             'tempfiles_output_dir'     : str(self.paths.output_dir + "cbm_tmp_dir"),
             'afforestation_only'       : False,
+            'stdout_path'              : str(self.paths.compute_model_log),
         }
         # Import #
         from cbm3_python.simulation import projectsimulator
