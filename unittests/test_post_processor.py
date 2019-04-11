@@ -1,3 +1,12 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+"""
+Test post processor - UNIT TEST
+
+This script is just a stub, and need to be completed.
+"""
+
 # Third party modules #
 import pandas
 

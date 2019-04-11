@@ -1,4 +1,4 @@
-# `cbmcfs3_runner` version 0.2.1
+# `cbmcfs3_runner` version 0.3.0
 
 Here, `cbmcfs3_runner` is a python package for dealing with the automation and running of a complex series of models involving the European economy, carbon budgets and their interactions. Notably in relation to the CBM-CFS3 model developed by Canada.
 
@@ -38,7 +38,7 @@ When you type `import cbmcfs3_runner` python will know where to look.
 
 #### Step 3: Follow other instructions
 
-Setting up the machine and installing the required programs is covered in the `gcbmio` repository.
+Setting up the machine and installing the required programs is covered in the `cbmcfs3_notes` repository.
 
 ## Data Flowchart
 Below is drawn the flowchart describing the data processing along all the steps of `cbmcfs3_runner`:

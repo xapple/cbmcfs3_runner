@@ -1,5 +1,15 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+"""
+Written by Lucas Sinclair and Paul Rougieux.
+
+JRC biomass Project.
+Unit D1 Bioeconomy.
+"""
+
 # Special variables #
-__version__ = '0.2.1'
+__version__ = '0.3.0'
 
 # Built-in modules #
 import os, sys
@@ -10,7 +20,7 @@ from plumbing.git import GitRepo
 
 # Constants #
 project_name = 'cbmcfs3_runner'
-project_url  = 'https://webgate.ec.europa.eu/CITnet/stash/projects/BIOECONOMY/repos/cbmcfs3_runner'
+project_url  = 'https://github.com/xapple/cbmcfs3_runner'
 
 # Get paths to module #
 self       = sys.modules[__name__]
