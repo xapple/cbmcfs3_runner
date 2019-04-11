@@ -24,7 +24,7 @@ from autopaths.auto_paths import AutoPaths
 ###############################################################################
 class PostProcessor(object):
     """
-    Provides access to the Access database that is created by CBM.
+    Provides access to the Access database.
     Computes aggregates and joins to facilitate analysis.
     """
 
@@ -50,28 +50,33 @@ class PostProcessor(object):
     @property_cached
     def classifiers(self):
         """Creates a mapping between 'UserDefdClassSetID'
-        and species, site_quality and forest_type, etc."""
-        # The three tables we will need #
+        and the classifiers values:
+         * species, site_quality and forest_type in tutorial six
+         * status, forest_type, region, management_type, management_strategy, climatic_unit, conifers_bradleaves
+         in the European dataset
+        """
+        # Load the three tables we will need #
         user_classes           = self.database["tblUserDefdClasses"]
         user_sub_classes       = self.database["tblUserDefdSubclasses"]
         user_class_sets_values = self.database["tblUserDefdClassSetValues"]
-        # Lorem ipsum #
+        # Join
         index = ['UserDefdClassID', 'UserDefdSubclassID']
         classifiers = user_sub_classes.set_index(index)
         classifiers = classifiers.join(user_class_sets_values.set_index(index))
-        # Lorem ipsum #
+        # Unstack
         index = ['UserDefdClassID', 'UserDefdClassSetID']
-        classifiers = classifiers.reset_index().set_index(index)
+        classifiers = classifiers.reset_index().dropna().set_index(index)
         classifiers = classifiers[['UserDefdSubClassName']].unstack('UserDefdClassID')
+        # Rename
         # This object will link: 1->species, 2->forest_type, etc.
         mapping = user_classes.set_index('UserDefdClassID')['ClassDesc']
         mapping = mapping.apply(lambda x: x.lower().replace(' ', '_'))
-        # This method will rename the columns using the mapping
         classifiers = classifiers.rename(mapping, axis=1)
         # Remove multilevel column index, replace by level(1) (second level)
         classifiers.columns = classifiers.columns.get_level_values(1)
         # Remove the confusing name #
         del classifiers.columns.name
+        classifiers = classifiers.rename(columns=lambda n:n.replace('/','_'))
         return classifiers
 
     @property_cached
