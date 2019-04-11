@@ -22,5 +22,5 @@ class StaticDemand(Scenario):
     @property_cached
     def runners(self):
         """A list of runners for each country"""
-        result = {c.iso2_code: [Runner(self, c, 1)] for c in self.continent}
+        result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         return result
