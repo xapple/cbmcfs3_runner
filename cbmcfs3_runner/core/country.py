@@ -99,6 +99,10 @@ class Country(object):
     def aidb(self):
         return AIDB(self)
 
+    @property_cached
+    def coefficients(self):
+        return pandas.read_csv(str(self.paths.coefficients))
+
     @property
     def map_value(self):
         """Return a float that indicates how far this country is running

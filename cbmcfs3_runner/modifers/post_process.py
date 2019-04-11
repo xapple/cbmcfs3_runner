@@ -40,7 +40,7 @@ class PostProcessor(object):
 
     def __call__(self):
         pass
-    
+
     @property
     def database(self):
         path = self.parent.compute_model.paths.after_mdb
