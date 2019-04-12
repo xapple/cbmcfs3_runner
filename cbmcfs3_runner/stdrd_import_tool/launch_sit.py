@@ -31,6 +31,7 @@ class LaunchSIT(object):
     """
     This class will run the tool found here:
     https://github.com/cat-cfs/StandardImportToolPlugin
+    by calling "StandardImportToolPlugin.exe" so make sure its in your PATH.
 
     It expects release version 1.2.1
 
@@ -57,9 +58,12 @@ class LaunchSIT(object):
 
     @classmethod
     def install(cls):
-        """A method to automatically install the tool."""
+        """A method to automatically install the tool.
+        >>> from cbmcfs3_runner.stdrd_import_tool.launch_sit import LaunchSIT
+        >>> LaunchSIT.install()
+        """
         # Download it #
-        path = '/Users/Administrator/test/'
+        path     = '/Users/Administrator/test/'
         response = urlopen(cls.url)
         archive  = zipfile.ZipFile(io.BytesIO(response.read()))
         archive.extractall(path=path)

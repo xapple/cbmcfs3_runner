@@ -9,6 +9,7 @@ Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
+import logging
 
 # Third party modules #
 
@@ -71,13 +72,15 @@ class LaunchCBM(object):
             'cbm_exe_path'             : str(cbm_exes_path),
             'results_database_path'    : str(self.paths.cbm_mdb),
             'tempfiles_output_dir'     : str(self.paths.output_dir + "cbm_tmp_dir"),
-            'afforestation_only'       : False,
+            'skip_makelist'            : False,
             'stdout_path'              : str(self.paths.log),
         }
         # Import #
         from cbm3_python.simulation import projectsimulator
         # Use their module #
         self.results_path = projectsimulator.run(**kwargs)
+        # Remove the stream handler that they add to the root logger :/ #
+        logging.root.handlers.pop(0)
         # Success message #
         self.log.info("The CBM-CFS3 model run is completed.")
 
