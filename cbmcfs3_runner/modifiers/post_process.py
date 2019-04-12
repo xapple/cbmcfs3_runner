@@ -81,6 +81,17 @@ class PostProcessor(object):
         """Short cut to the country conversion coefficients."""
         return self.parent.country.coefficients
 
+    
+    @property_cached
+    def classifiers_coefs(self):
+        """A join between the coefficients and classifiers table""" 
+        return (self.classifiers
+                .reset_index()
+                .set_index('forest_type')
+                .join(self.coefficients.set_index('forest_type'))
+                .reset_index())
+
+        
     @property_cached
     def bef_ft(self):
         """
@@ -111,18 +122,20 @@ class PostProcessor(object):
         return bef_ft
 
     @property_cached
-    def predicted_inventory(self):
+    def simulated_inventory(self):
         """
-        Lorem ipsum.
+        Update the inventory based on the simulation output contained in tblPoolIndicators.
         """
         age_indicators = self.database["tblAgeIndicators"]
-        inv = age_indicators.set_index('UserDefdClassSetID').join(self.classifiers, on='UserDefdClassSetID')
-        inv = inv.reset_index().set_index('forest_type').join(self.bef_ft, on='forest_type')
-        inv = inv.reset_index().set_index('species').join(self.coefficients.set_index('species'), on='species')
-        inv = inv.reset_index()
-        columns_of_interest = ['AveAge', 'TimeStep', 'Area', 'Biomass', 'BEF_Tot', 'DB']
-        classifier_columns  = list(self.classifiers.columns)
-        inv = inv[columns_of_interest + classifier_columns]
-        inv['Merch_C_ha']   = inv.Biomass    / inv.BEF_Tot
-        inv['Merch_Vol_ha'] = inv.Merch_C_ha / inv.DB
+        inv = (age_indicators
+               .set_index('UserDefdClassSetID')
+               .join(self.classifiers_coefs.set_index('UserDefdClassSetID'))
+               .reset_index()
+               .set_index('forest_type')
+               .join(self.bef_ft, on='forest_type')
+               .reset_index())
+        columns_of_interest = ['AveAge', 'TimeStep', 'Area', 'Biomass', 'BEF_Tot','db']
+        inv = inv[list(self.classifiers.columns) + columns_of_interest]
+        inv['Merch_C_ha'] = inv.Biomass / inv.BEF_Tot
+        inv['Merch_Vol_ha'] = inv.Merch_C_ha / inv.db
         return inv
