@@ -42,6 +42,9 @@ class Runner(object):
     def __repr__(self):
         return '%s object on "%s"' % (self.__class__, self.data_dir)
 
+    def __bool__(self): return self.paths.log.exists
+    __nonzero__ = __bool__
+
     def __init__(self, scenario, country, num):
         # Base attributes #
         self.scenario = scenario
