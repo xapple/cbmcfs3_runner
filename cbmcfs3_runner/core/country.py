@@ -42,10 +42,10 @@ class Country(object):
     /orig/aidb_eu.mdb
     /orig/calibration.mdb
     /orig/associations.csv
+    /orig/coefficients.csv
     /export/
     /export/ageclass.csv
     /export/classifiers.csv
-    /export/coefficients.csv
     /export/disturbance_events.csv
     /export/disturbance_types.csv
     /export/inventory.csv
