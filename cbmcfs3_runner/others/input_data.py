@@ -60,6 +60,10 @@ class InputData(object):
         return self.xls.parse("DistType")
 
     @property_cached
+    def ageclass(self):
+        return self.xls.parse("AgeClasses")
+
+    @property_cached
     def classifiers(self):
         df = self.xls.parse("Classifiers")
         sort_by = ['ClassifierNumber', 'ClassifierValueID']

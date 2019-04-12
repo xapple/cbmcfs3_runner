@@ -9,10 +9,8 @@ Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
-from six import StringIO
 
 # Third party modules #
-import pandas
 
 # First party modules #
 from plumbing.databases.access_database import AccessDatabase
@@ -80,13 +78,13 @@ class PostProcessor(object):
 
     @property_cached
     def coefficients(self):
-        """Hard coded conversion coeficients of carbon tons
-        in cubic meters of wood."""
+        """Short cut to the country conversion coefficients."""
         return self.parent.country.coefficients
 
     @property_cached
     def bef_ft(self):
         """
+        Stands for "Biomass Expansion Factor, by Forest Type".
         This is translated from an SQL query authored by RP.
         It calculates merchantable biomass.
         """
@@ -122,9 +120,9 @@ class PostProcessor(object):
         inv = inv.reset_index().set_index('forest_type').join(self.bef_ft, on='forest_type')
         inv = inv.reset_index().set_index('species').join(self.coefficients.set_index('species'), on='species')
         inv = inv.reset_index()
-        inv = inv[['species', 'forest_type',
-                   'AveAge', 'TimeStep', 'Area',
-                   'Biomass', 'BEF_Tot', 'DB']]
-        inv['Merch_C_ha']   = inv.Biomass / inv.BEF_Tot
+        columns_of_interest = ['AveAge', 'TimeStep', 'Area', 'Biomass', 'BEF_Tot', 'DB']
+        classifier_columns  = list(self.classifiers.columns)
+        inv = inv[columns_of_interest + classifier_columns]
+        inv['Merch_C_ha']   = inv.Biomass    / inv.BEF_Tot
         inv['Merch_Vol_ha'] = inv.Merch_C_ha / inv.DB
         return inv

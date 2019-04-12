@@ -33,6 +33,7 @@ class ExportCalibrationCSV(object):
     """
 
     all_paths = """
+    /orig/
     /export/ageclass.csv
     /export/classifiers.csv
     /export/disturbance_events.csv
@@ -76,8 +77,22 @@ class ExportCalibrationCSV(object):
             destination = str(self.paths[file_name])
             self.database[table_name].to_csv(destination, index=False)
 
+    def move_coefs(self):
+        """The coefficients file is a bit special. We will change one line.
+        And move it to orig as it is constant per country."""
+        # Get the path #
+        coef_file = self.paths.coefficients
+        # Rename column 'Species' #
+
+        # Move it #
+        coef_file.move_to(self.paths.orig_dir)
+
 ###############################################################################
 if __name__ == '__main__':
     exporters = [ExportCalibrationCSV(c) for c in continent]
-    for exporter in exporters: exporter.check()
-    for exporter in tqdm(exporters): exporter()
+    for exporter in tqdm(exporters):
+        exporter.check()
+        exporter()
+        exporter.move_coefs()
+
+

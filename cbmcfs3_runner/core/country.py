@@ -101,6 +101,8 @@ class Country(object):
 
     @property_cached
     def coefficients(self):
+        """Load the conversion coefficients from tons of carbon
+        to cubic meters of wood."""
         return pandas.read_csv(str(self.paths.coefficients))
 
     @property
