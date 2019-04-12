@@ -33,7 +33,8 @@ class ExportCalibrationCSV(object):
     """
 
     all_paths = """
-    /orig/
+    /orig/coefficients.csv
+    /export/
     /export/ageclass.csv
     /export/classifiers.csv
     /export/disturbance_events.csv
@@ -41,7 +42,6 @@ class ExportCalibrationCSV(object):
     /export/inventory.csv
     /export/transition_rules.csv
     /export/yields.csv
-    /export/coefficients.csv
     """
 
     def __init__(self, country):
@@ -70,29 +70,31 @@ class ExportCalibrationCSV(object):
             if table_name not in self.database:
                 print("Table '%s' is missing from '%s'." % (table_name, self.database))
 
-    def __call__(self):
+    def remove_directory(self):
+        self.paths.export_dir.remove()
+
+    def run_queries(self):
         """Extract several queries from the database into CSV files."""
         # Make each file #
         for file_name, table_name in self.file_to_table_name.items():
             destination = str(self.paths[file_name])
             self.database[table_name].to_csv(destination, index=False)
 
-    def move_coefs(self):
+    def rename_coefs(self):
         """The coefficients file is a bit special. We will change one line.
-        And move it to orig as it is constant per country."""
+        And move it to /orig/ as it is constant per country."""
         # Get the path #
         coef_file = self.paths.coefficients
-        # Rename column 'Species' #
-
-        # Move it #
-        coef_file.move_to(self.paths.orig_dir)
+        # Rename column 'Species' to match classifier 2's name #
+        coef_file.replace_line('ID,Species,C,DB,Harvest_Gr', 'ID,Forest type,C,DB,Harvest_Gr')
 
 ###############################################################################
 if __name__ == '__main__':
     exporters = [ExportCalibrationCSV(c) for c in continent]
     for exporter in tqdm(exporters):
         exporter.check()
-        exporter()
-        exporter.move_coefs()
+        exporter.remove_directory()
+        exporter.run_queries()
+        exporter.rename_coefs()
 
 
