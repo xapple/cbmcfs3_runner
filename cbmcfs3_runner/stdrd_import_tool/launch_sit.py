@@ -115,3 +115,8 @@ class LaunchSIT(object):
     def project_mdb(self):
         self.paths.mdb.must_exist()
         return AccessDatabase(self.paths.mdb)
+
+    @property
+    def tail(self):
+        """Shortcut: view the end of the log file."""
+        return self.paths.log.tail()

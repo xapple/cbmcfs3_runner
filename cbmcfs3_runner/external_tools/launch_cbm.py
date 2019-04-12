@@ -85,3 +85,8 @@ class LaunchCBM(object):
     def generated_database(self):
         """Will be in a directory created by CBM."""
         return AccessDatabase(self.paths.cbm_mdb)
+
+    @property
+    def tail(self):
+        """Shortcut: view the end of the log file."""
+        return self.paths.log.tail()

@@ -29,7 +29,7 @@ class PostProcessor(object):
     """
 
     all_paths = """
-    /output/sit/project.mdb
+    /output/cbm/project.mdb
     """
 
     def __init__(self, parent):

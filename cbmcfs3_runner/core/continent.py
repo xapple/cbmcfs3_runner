@@ -48,8 +48,7 @@ class Continent(object):
         self.scenarios_dir = self.paths.scenarios_dir
 
     def __getitem__(self, key):
-        """return a runner based on a tuple of scenario, country and step
-        """
+        """Return a runner based on a tuple of scenario, country and step."""
         return self.get_runner(*key)
 
     def __iter__(self): return iter(self.countries.values())
@@ -73,8 +72,7 @@ class Continent(object):
         return create_file_logger('continent', self.paths.log)
 
     def get_runner(self, scenario, country, step):
-        """return a runner based on scenario, country and step
-        """
+        """Return a runner based on scenario, country and step."""
         return self.scenarios[scenario].runners[country][step]
 
 ###############################################################################
