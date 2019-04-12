@@ -11,6 +11,8 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # First party modules #
+from autopaths            import Path
+from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
 
@@ -18,9 +20,17 @@ Unit D1 Bioeconomy.
 class Scenario(object):
     """This object represents a harvest and economic scenario"""
 
+    all_paths = """
+    /logs_summary.md
+    """
+
     def __init__(self, continent):
         # Save parent #
         self.continent = continent
+        # This scenario dir #
+        self.base_dir = Path(self.scenarios_dir + self.short_name + '/')
+        # Automatically access paths based on a string of many subpaths #
+        self.paths = AutoPaths(self.base_dir, self.all_paths)
 
     @property
     def scenarios_dir(self):
@@ -28,9 +38,8 @@ class Scenario(object):
         return self.continent.scenarios_dir
 
     def compile_log_tails(self, step=-1):
-        runner = self.runners
-        summary = cbm_data_repos + "logs_summary.md"
+        summary = self.paths.summary
         summary.open(mode='w')
         summary.handle.write("# Summary of all log file tails\n\n")
-        summary.handle.writelines(c.summary for c in continent.all_countries)
+        summary.handle.writelines(r[step].summary for r in self.runners.values())
         summary.close()
