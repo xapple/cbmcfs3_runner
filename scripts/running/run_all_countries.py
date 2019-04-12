@@ -19,14 +19,10 @@ import inspect
 from tqdm import tqdm
 
 # First party modules #
-from autopaths.file_path import FilePath
+from autopaths import Path
 
 # Internal modules #
 from cbmcfs3_runner.continent import continent
-
-# Constants #
-this_file = FilePath((inspect.stack()[0])[1])
-this_dir  = this_file.directory
 
 ###############################################################################
 # Run each country and send errors to the log #
@@ -37,4 +33,7 @@ for country in tqdm(continent.all_countries[:11], ncols=60):
         pass
 
 ###############################################################################
+# Update the log summary
+this_file = Path((inspect.stack()[0])[1])
+this_dir  = this_file.directory
 execfile(this_dir + 'compile_logs.py')

@@ -44,16 +44,19 @@ class MiddleProcessor(object):
     def project_database(self):
         return AccessDatabase(self.paths.project_mdb)
 
+    @property
+    def current_timestep(self):
+        """Get the current end timestep of the siumlation"""
+        query = "SELECT RunLength FROM tblRunTableDetails"
+        return self.project_database.cursor.execute(query).fetchone()[0]
+
     def extend_simulation(self, num_steps):
         """Will extend the simulation by num_steps time steps so that it runs extra
         years without any disturbances."""
         # Log message #
         self.parent.log.info("Adjusting the simulation length with extra %i steps" % num_steps)
-        # Get the current end timestep of the siumlation #
-        query = "SELECT RunLength FROM tblRunTableDetails"
-        current_run_length = self.project_database.cursor.execute(query).fetchone()[0]
         # Update the value in the database #
-        updated_run_length = current_run_length + num_steps
+        updated_run_length = self.current_timestep + num_steps
         query = "UPDATE tblRunTableDetails SET tblRunTableDetails.RunLength = %i"
         query = query % updated_run_length
         # Execute the query #

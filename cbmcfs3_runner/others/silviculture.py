@@ -31,7 +31,7 @@ class Silviculture(object):
         # Default attributes #
         self.parent = parent
         # Automatically access paths based on a string of many subpaths #
-        self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
+        self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
         pass

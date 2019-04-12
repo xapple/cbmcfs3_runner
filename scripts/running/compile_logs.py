@@ -17,7 +17,7 @@ Typically you would run this file from a command line like this:
 # First party modules #
 
 # Internal modules #
-from cbmcfs3_runner.continent import continent, cbm_data_repos
+from cbmcfs3_runner.core.continent import continent, cbm_data_repos
 
 ###############################################################################
 summary = cbm_data_repos + "logs_summary.md"

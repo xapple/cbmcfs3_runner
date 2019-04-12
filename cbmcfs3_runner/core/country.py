@@ -101,16 +101,16 @@ class Country(object):
         return AIDB(self)
 
     @property_cached
+    def silviculture(self):
+        """Load the allocation rules for harvests."""
+        return Silviculture(self)
+
+    @property_cached
     def coefficients(self):
         """Load the conversion coefficients from tons of carbon
         to cubic meters of wood."""
         df = pandas.read_csv(str(self.paths.coefficients))
         return df.rename(columns=lambda x: x.lower().replace(' ', '_'))
-
-    @property_cached
-    def silviculture(self):
-        """Load the allocation rules for harvest."""
-        return Silviculture(self)
 
     @property
     def map_value(self):

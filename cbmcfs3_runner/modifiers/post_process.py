@@ -95,7 +95,7 @@ class PostProcessor(object):
     @property_cached
     def bef_ft(self):
         """
-        Stands for "Biomass Expansion Factor, by Forest Type".
+        Stands for "Biomass Expansion Factor, by Forest Type" we think.
         This is translated from an SQL query authored by RP.
         It calculates merchantable biomass.
         """

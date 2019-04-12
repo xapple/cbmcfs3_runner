@@ -26,3 +26,11 @@ class Scenario(object):
     def scenarios_dir(self):
         """Shortcut to the scenarios directory"""
         return self.continent.scenarios_dir
+
+    def compile_log_tails(self, step=-1):
+        runner = self.runners
+        summary = cbm_data_repos + "logs_summary.md"
+        summary.open(mode='w')
+        summary.handle.write("# Summary of all log file tails\n\n")
+        summary.handle.writelines(c.summary for c in continent.all_countries)
+        summary.close()

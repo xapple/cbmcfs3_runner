@@ -11,16 +11,16 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # First party modules #
-from autopaths.file_path  import FilePath
+from autopaths            import Path
 from autopaths.auto_paths import AutoPaths
+from plumbing.cache       import property_cached
 from plumbing.databases.access_database import AccessDatabase
-from plumbing.cache import property_cached
 
 # Internal modules #
 
 # Constants #
 default_path = "/Program Files (x86)/Operational-Scale CBM-CFS3/Admin/DBs/ArchiveIndex_Beta_Install.mdb"
-default_path = FilePath(default_path)
+default_path = Path(default_path)
 
 ###############################################################################
 class AIDB(object):

@@ -86,7 +86,8 @@ class ExportCalibrationCSV(object):
         # Get the path #
         coef_file = self.paths.coefficients
         # Rename column 'Species' to match classifier 2's name #
-        coef_file.replace_line('ID,Species,C,DB,Harvest_Gr', 'ID,Forest type,C,DB,Harvest_Gr')
+        coef_file.replace_line('ID,Species,C,DB,Harvest_Gr',
+                               'ID,Forest type,C,DB,Harvest_Gr')
 
 ###############################################################################
 if __name__ == '__main__':
