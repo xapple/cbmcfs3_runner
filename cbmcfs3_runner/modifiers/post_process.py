@@ -29,7 +29,7 @@ class PostProcessor(object):
     """
 
     all_paths = """
-    /output/after_simulation/project.mdb
+    /output/sit/project.mdb
     """
 
     def __init__(self, parent):
@@ -43,8 +43,7 @@ class PostProcessor(object):
 
     @property
     def database(self):
-        path = self.parent.compute_model.paths.after_mdb
-        path.must_exist()
+        path = self.paths.mdb
         return AccessDatabase(path)
 
     @property_cached
@@ -83,44 +82,41 @@ class PostProcessor(object):
     def coefficients(self):
         """Hard coded conversion coeficients of carbon tons
         in cubic meters of wood."""
-        csv = """ID,species,C,DB,Harvest_Gr
-               76,AA,0.5,0.4,Con
-               77,HP,0.5,0.4,Con
-               79,PS,0.5,0.42,Con
-               80,FS,0.5,0.58,Broad
-               81,QR,0.5,0.58,Broad
-               83,LD,0.5,0.46,Con
-               86,OB,0.5,0.5,Broad
-               87,OC,0.5,0.4,Con"""
-        csv = StringIO(csv)
-        return pandas.read_csv(csv)
+        return self.parent.country.coefficients
 
     @property_cached
     def bef_ft(self):
+        """
+        This is translated from an SQL query authored by RP.
+        It calculates merchantable biomass.
+        """
         pool = self.database["tblPoolIndicators"].set_index('UserDefdClassSetID')
         bef_ft = pool.join(self.classifiers, on="UserDefdClassSetID")
-        cols_sum = {'SW_Merch'  :'sum',
-                    'SW_Foliage':'sum',
-                    'SW_Other'  :'sum',
-                    'HW_Merch'  :'sum',
-                    'HW_Foliage':'sum',
-                    'HW_Other'  :'sum',
-                    'SW_Coarse' :'sum',
-                    'SW_Fine'   :'sum',
-                    'HW_Coarse' :'sum',
-                    'HW_Fine'   :'sum'}
+        cols_sum = {'SW_Merch'  : 'sum',
+                    'SW_Foliage': 'sum',
+                    'SW_Other'  : 'sum',
+                    'HW_Merch'  : 'sum',
+                    'HW_Foliage': 'sum',
+                    'HW_Other'  : 'sum',
+                    'SW_Coarse' : 'sum',
+                    'SW_Fine'   : 'sum',
+                    'HW_Coarse' : 'sum',
+                    'HW_Fine'   : 'sum'}
         bef_ft = bef_ft.groupby("forest_type").agg(cols_sum)
-        bef_ft['Tot_Merch']  = bef_ft.SW_Merch + bef_ft.HW_Merch
-        bef_ft['Tot_ABG']    = bef_ft.SW_Merch + bef_ft.HW_Merch + \
+        bef_ft['Tot_Merch']  = bef_ft.SW_Merch   + bef_ft.HW_Merch
+        bef_ft['Tot_ABG']    = bef_ft.SW_Merch   + bef_ft.HW_Merch + \
                                bef_ft.SW_Foliage + bef_ft.HW_Foliage + \
-                               bef_ft.HW_Other + bef_ft.SW_Other
-        bef_ft['BG_Biomass'] = bef_ft.SW_Coarse + bef_ft.SW_Fine + \
-                               bef_ft.HW_Coarse + bef_ft.HW_Fine
-        bef_ft['BEF_Tot']    = (bef_ft.Tot_ABG + bef_ft.BG_Biomass) / bef_ft.Tot_ABG
+                               bef_ft.HW_Other   + bef_ft.SW_Other
+        bef_ft['BG_Biomass'] = bef_ft.SW_Coarse  + bef_ft.SW_Fine + \
+                               bef_ft.HW_Coarse  + bef_ft.HW_Fine
+        bef_ft['BEF_Tot']    = (bef_ft.Tot_ABG   + bef_ft.BG_Biomass) / bef_ft.Tot_ABG
         return bef_ft
 
     @property_cached
     def predicted_inventory(self):
+        """
+        Lorem ipsum.
+        """
         age_indicators = self.database["tblAgeIndicators"]
         inv = age_indicators.set_index('UserDefdClassSetID').join(self.classifiers, on='UserDefdClassSetID')
         inv = inv.reset_index().set_index('forest_type').join(self.bef_ft, on='forest_type')
@@ -128,8 +124,7 @@ class PostProcessor(object):
         inv = inv.reset_index()
         inv = inv[['species', 'forest_type',
                    'AveAge', 'TimeStep', 'Area',
-                   'Biomass', 'BEF_Tot',
-                   'DB']]
+                   'Biomass', 'BEF_Tot', 'DB']]
         inv['Merch_C_ha']   = inv.Biomass / inv.BEF_Tot
         inv['Merch_Vol_ha'] = inv.Merch_C_ha / inv.DB
         return inv
