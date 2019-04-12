@@ -23,6 +23,7 @@ from plumbing.cache       import property_cached
 from cbmcfs3_runner import module_dir
 from cbmcfs3_runner.stdrd_import_tool.associations import Associations
 from cbmcfs3_runner.others.aidb                    import AIDB
+from cbmcfs3_runner.others.silviculture            import Silviculture
 
 # Constants #
 country_code_path = module_dir + 'extra_data/country_codes.csv'
@@ -105,6 +106,11 @@ class Country(object):
         to cubic meters of wood."""
         df = pandas.read_csv(str(self.paths.coefficients))
         return df.rename(columns=lambda x: x.lower().replace(' ', '_'))
+
+    @property_cached
+    def silviculture(self):
+        """Load the allocation rules for harvest."""
+        return Silviculture(self)
 
     @property
     def map_value(self):
