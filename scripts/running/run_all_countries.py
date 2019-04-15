@@ -13,13 +13,11 @@ Typically you would run this file from a command line like this:
 """
 
 # Built-in modules #
-import inspect
 
 # Third party modules #
 from tqdm import tqdm
 
 # First party modules #
-from autopaths import Path
 
 # Internal modules #
 from cbmcfs3_runner.core.continent import continent
