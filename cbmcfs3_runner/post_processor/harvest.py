@@ -78,24 +78,26 @@ class Harvest(object):
         # Load tables #
         disturbance_type = self.parent.database['tblDisturbanceType']
         # Compute #
-        hs = (self.check
-          .set_index('DistTypeID')
-          .join(disturbance_type.set_index('DistTypeID'))
-          .groupby(['DistTypeID',
-                    'DistTypeName',
-                    'TimeStep',
-                    'status',
-                    'forest_type',
-                    'management_type',
-                    'management_strategy'])
-          .agg({'Vol_Merch':           'sum',
-                'Vol_Snags':           'sum',
-                'Vol_SubMerch':        'sum',
-                'Forest_residues_Vol': 'sum',
-                'TC':                  'sum'})
-         .reset_index())
-        hs['tot_vol'] = hs.Vol_Merch + hs.Vol_Snags + hs.Vol_SubMerch
-        return hs
+        result = (self.check
+                  .set_index('DistTypeID')
+                  .join(disturbance_type.set_index('DistTypeID'))
+                  .groupby(['DistTypeID',
+                            'DistTypeName',
+                            'TimeStep',
+                            'status',
+                            'forest_type',
+                            'management_type',
+                            'management_strategy'])
+                  .agg({'Vol_Merch':           'sum',
+                        'Vol_Snags':           'sum',
+                        'Vol_SubMerch':        'sum',
+                        'Forest_residues_Vol': 'sum',
+                        'TC':                  'sum'})
+                  .reset_index())
+        # Add the total volume column #
+        result['tot_vol'] = hs.Vol_Merch + hs.Vol_Snags + hs.Vol_SubMerch
+        # Return result #
+        return result
 
     @property_cached
     def total(self):
@@ -105,18 +107,20 @@ class Harvest(object):
         # Load tables #
         disturbance_type = self.parent.database['tblDisturbanceType']
         # Compute #
-        th = (self.check
-          .set_index('DistTypeID')
-          .join(disturbance_type.set_index('DistTypeID'))
-          .groupby(['DistTypeName'])
-          .agg({'TC':                  'sum',
-                'Vol_Merch':           'sum',
-                'Vol_SubMerch':        'sum',
-                'Vol_Snags':           'sum',
-                'Forest_residues_Vol': 'sum'})
-          .reset_index())
-        th['tot_vol'] = th.Vol_Merch + th.Vol_SubMerch + th.Vol_Snags
-        return th
+        result = (self.check
+                  .set_index('DistTypeID')
+                  .join(disturbance_type.set_index('DistTypeID'))
+                  .groupby(['DistTypeName'])
+                  .agg({'TC':                  'sum',
+                        'Vol_Merch':           'sum',
+                        'Vol_SubMerch':        'sum',
+                        'Vol_Snags':           'sum',
+                        'Forest_residues_Vol': 'sum'})
+                  .reset_index())
+        # Add the total volume column #
+        result['tot_vol'] = th.Vol_Merch + th.Vol_SubMerch + th.Vol_Snags
+        # Return result #
+        return result
 
     @property_cached
     def expected_provided(self):
@@ -132,8 +136,8 @@ class Harvest(object):
         user_classes = user_classes.apply(lambda x: x.lower().replace(' ', '_'))
         # user_classes is a dict-like object #
         disturbances = disturbances.rename(columns = user_classes)
-        disturbances = disturbances.rename(columns = {'Step':'TimeStep',
-                                                      'Dist_Type_ID':'DistTypeName'})
+        disturbances = disturbances.rename(columns = {'Step':         'TimeStep',
+                                                      'Dist_Type_ID': 'DistTypeName'})
         # Index columns to join disturbances and harvest check #
         index = ['status',
                  'TimeStep',
@@ -141,17 +145,17 @@ class Harvest(object):
                  'forest_type',
                  'management_type',
                  'management_strategy']
-        hep = (self.summary_check
-                    .set_index(index)
-                    .join(disturbances.set_index(index)))
-        hep = (hep
-               .groupby(index)
-               .agg({'Amount':'sum',
-                     'TC':    'sum'})
-               .rename(columns = {'Amount': 'expected',
-                                  'TC':     'provided'})
-               .reset_index())
+        result = (self.summary_check
+                  .set_index(index)
+                  .join(disturbances.set_index(index)))
+        result = (result
+                  .groupby(index)
+                  .agg({'Amount':'sum',
+                        'TC':    'sum'})
+                  .rename(columns = {'Amount': 'expected',
+                                     'TC':     'provided'})
+                  .reset_index())
         # Add the difference column #
-        hep['delta'] = (hep.provided - hep.expected) / hep.expected * 100
-        # Return result
-        return hep
+        result['delta'] = (result.provided - result.expected) / result.expected * 100
+        # Return result #
+        return result

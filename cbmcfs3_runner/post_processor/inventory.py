@@ -67,7 +67,8 @@ class Inventory(object):
     @property_cached
     def simulated_inventory(self):
         """
-        Update the inventory based on the simulation output contained in tblPoolIndicators.
+        Update the inventory based on the simulation output contained in
+        table 'tblPoolIndicators'.
         """
         age_indicators = self.database["tblAgeIndicators"]
         inv = (age_indicators
