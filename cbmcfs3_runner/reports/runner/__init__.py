@@ -59,7 +59,7 @@ class RunnerTemplate(ReportTemplate):
         return self.runner.short_name
 
     def log_tail(self):
-        return self.runner.tail
+        return self.runner.paths.log.pretty_tail
 
     def aaaaa(self):
         caption = "Distribution of total area according to age"
@@ -72,5 +72,8 @@ class RunnerTemplate(ReportTemplate):
 
     def inventory_scatter(self): return 0
 
-    def harvest_expected_predicted(self):
-        return self.graphs.harvest_expected_predicted()
+    def harvested_wood_prodcuts(self): return 0
+
+    def harvest_expected_provided(self):
+        return self.graphs.harvest_expected_provided()
+

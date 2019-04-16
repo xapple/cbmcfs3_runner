@@ -15,7 +15,7 @@ __version__ = '0.3.0'
 import os, sys
 
 # First party modules #
-from autopaths.dir_path import DirectoryPath
+from autopaths import Path
 from plumbing.git import GitRepo
 
 # Constants #
@@ -24,7 +24,7 @@ project_url  = 'https://github.com/xapple/cbmcfs3_runner'
 
 # Get paths to module #
 self       = sys.modules[__name__]
-module_dir = DirectoryPath(os.path.dirname(self.__file__))
+module_dir = Path(os.path.dirname(self.__file__))
 
 # The repository directory #
 repos_dir = module_dir.directory

@@ -132,15 +132,10 @@ class Runner(object):
 
     @property
     def tail(self):
-        """Shortcut: view the end of the log file."""
-        return "\n" + pad_extra_whitespace("\n".join(self.paths.log.tail()), 4) + "\n"
-
-    @property
-    def summary(self):
         """A short summary showing just the end of the log file."""
         msg  = "\n## Runner `%s`\n" % self.short_name
         msg += "\nTail of the log file at `%s`\n" % self.paths.log
-        msg += self.tail
+        msg += self.paths.log.pretty_tail
         return msg
 
     @property_cached
