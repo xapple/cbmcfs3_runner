@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -35,7 +35,7 @@ git_repo = GitRepo(repos_dir, empty=True)
 # Change the pbs truncate cap for longer stderr #
 if os.name == "posix":
     import sh
-    sh.ErrorReturnCode.truncate_cap = 2000
+    sh.ErrorReturnCode.truncate_cap  = 2000
 if os.name == "nt":
     import pbs
     pbs.ErrorReturnCode.truncate_cap = 2000
