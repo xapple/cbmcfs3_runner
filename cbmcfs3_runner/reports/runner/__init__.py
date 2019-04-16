@@ -19,19 +19,16 @@ class RunnerReport(Document):
     def __init__(self, parent):
         # Attributes #
         self.parent = parent
+        self.runner = parent
         # Paths #
         self.output_path = self.parent.paths.pdf
 
     @property_cached
     def template(self): return RunnerTemplate(self)
 
-    def generate(self):
-        # Dynamic templates #
-        self.markdown = unicode(self.template)
-        # Render to latex #
-        self.make_body()
-        self.make_latex({'title': 'Runner report'})
-        self.make_pdf(safe=False)
+    def load_markdown(self):
+        self.params = {'title': 'Runner report'}
+        self.markdown = str(self.template)
 
 ###############################################################################
 class RunnerTemplate(ReportTemplate):
@@ -40,5 +37,24 @@ class RunnerTemplate(ReportTemplate):
 
     def __repr__(self): return '<%s object on %s>' % (self.__class__.__name__, self.parent)
 
-    def __init__(self):
-        pass
+    def __init__(self, parent):
+        # Attributes #
+        self.parent = parent
+        self.report = parent
+        self.runner = self.report.parent
+
+    def short_name(self):
+        return self.runner.data_dir.directory.name
+
+    def log_tail(self):
+        return self.runner.summary
+
+    def aaaaa(self):
+        caption = "Distribution of total area according to age"
+        path    = self.graphs.input_inventory.path
+        label   = "input_inventory"
+        return str(ScaledFigure(path, caption, label))
+
+    def input_inventory(self): return 0
+
+    def predicted_inventory(self): return 0
