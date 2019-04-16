@@ -18,7 +18,7 @@ from plumbing.logger      import create_file_logger
 
 # Internal modules #
 import cbmcfs3_runner
-from cbmcfs3_runner.graphs                        import runner_graphs
+from cbmcfs3_runner.graphs import runner_graphs, make_graphs_property
 from cbmcfs3_runner.modifiers.pre_process         import PreProcessor
 from cbmcfs3_runner.modifiers.middle_process      import MiddleProcessor
 from cbmcfs3_runner.post_processor                import PostProcessor
@@ -145,15 +145,7 @@ class Runner(object):
 
     @property_cached
     def graphs(self):
-        """Sorry for the black magic. The result is an object whose attributes
-        are all the graphs found in taxa_table_graphs.py initialized with this
-        instance as only argument."""
-        class Graphs(object): pass
-        result = Graphs()
-        for graph in runner_graphs.__all__:
-            cls = getattr(runner_graphs, graph)
-            setattr(result, cls.short_name, cls(self))
-        return result
+        return make_graphs_property(self, runner_graphs)
 
     @property_cached
     def report(self):

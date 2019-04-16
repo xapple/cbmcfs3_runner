@@ -6,7 +6,7 @@ A script to run the current feature that is being developed and test it.
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/running/current.py
+     ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/current.py
 """
 
 # Built-in modules #
@@ -24,12 +24,5 @@ from cbmcfs3_runner.core.continent import continent
 scenario = continent.scenarios['static_demand']
 runners  = [r[0] for k,r in scenario.runners.items()]
 
-for r in tqdm(runners, ncols=60):
-    try:
-        r(silent=True)
-    except Exception:
-        pass
-
-###############################################################################
-# Update the log summary
-scenario.compile_log_tails()
+for r in tqdm(runners[0:1], ncols=60):
+    r.report()
