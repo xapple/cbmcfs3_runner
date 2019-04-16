@@ -54,23 +54,30 @@ class Harvest(object):
                      .set_index('UserDefdClassSetID')
                      .join(self.parent.classifiers_coefs.reset_index().set_index('UserDefdClassSetID')))
         # Then group #
-        return (ungrouped
-                .groupby(['DistTypeID',
-                          'TimeStep',
-                          'status',
-                          'forest_type',
-                          'management_type',
-                          'management_strategy',
-                          'conifers_bradleaves',
-                          # Not real grouping variables only here to keep them in the final table
-                          'DOMProduction',
-                          'CO2Production',
-                          'MerchLitterInput',
-                          'OthLitterInput',
-                          'db'])
-                .agg({'SoftProduction': 'sum',
-                      'HardProduction': 'sum'})
-                .reset_index())
+        df = (ungrouped
+              .groupby(['DistTypeID',
+                        'TimeStep',
+                        'status',
+                        'forest_type',
+                        'management_type',
+                        'management_strategy',
+                        'conifers_bradleaves',
+                        # Not real grouping variables only here to keep them in the final table
+                        'DOMProduction',
+                        'CO2Production',
+                        'MerchLitterInput',
+                        'OthLitterInput',
+                        'db'])
+              .agg({'SoftProduction': 'sum',
+                    'HardProduction': 'sum'})
+              .reset_index())
+        df['TC'] = df.SoftProduction + df.HardProduction
+        df['Vol_Merch'] =  (df.TC*2)/df.db
+        df['Vol_SubMerch'] = (df.CO2Production*2)/df.db
+        df['Vol_Snags'] = (df.DOMProduction*2)/df.db
+        df['Forest_residues_Vol'] = ((df.MerchLitterInput + df.OthLitterInput) * 2)/df.db
+        return(df)
+
 
     @property_cached
     def summary_check(self):
