@@ -1,0 +1,46 @@
+Runner report "{{short_name}}"
+==============================
+
+General Information
+-------------------
+This is an report based on a <Runner> object. It thus pertains to a single a single CBM-CFS3 simulation
+    and its results.
+
+* This report and all the analysis was generated using the `{{project_name}}` python pipeline at:
+
+<{{project_url}}>
+
+* Version `{{project_version}}` of the pipeline was used.
+
+* This document was generated at `{{now}}` on host `{{hostname}}`.
+
+{{#git}}
+* The exact git hash of the latest commit was: {{git_hash}}
+
+* Also more simply referred to by its shortened tag `{{git_tag}}`.
+{{/git}}
+
+ Inventory
+
+-------
+
+
+---------
+
+Inventory
+---------
+
+### Inventory Before Simulation ###
+
+{{input_inventory}}
+
+
+### Inventory After Simulation ###
+
+{{predicted_inventory}}
+
+
+Harvest
+-------
+
+### Inventory After Simulation ###
