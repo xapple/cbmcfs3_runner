@@ -13,8 +13,10 @@ Unit D1 Bioeconomy.
 # First party modules #
 from autopaths            import Path
 from autopaths.auto_paths import AutoPaths
+from plumbing.cache       import property_cached
 
 # Internal modules #
+from cbmcfs3_runner.reports.scenario import ScenarioReport
 
 ###############################################################################
 class Scenario(object):
@@ -43,3 +45,7 @@ class Scenario(object):
         summary.handle.write("# Summary of all log file tails\n\n")
         summary.handle.writelines(r[step].summary for r in self.runners.values() if r[step])
         summary.close()
+
+    @property_cached
+    def report(self):
+        return ScenarioReport(self)

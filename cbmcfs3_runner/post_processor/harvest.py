@@ -69,7 +69,7 @@ class Harvest(object):
                           'OthLitterInput',
                           'db'])
                 .agg({'SoftProduction': 'sum',
-                       'HardProduction':'sum'})
+                      'HardProduction': 'sum'})
                 .reset_index())
 
     @property_cached
@@ -153,7 +153,7 @@ class Harvest(object):
         df = (self.summary_check
               .set_index(index)
               .join(disturbances.set_index(index)))
-        df = (result
+        df = (df
               .groupby(index)
               .agg({'Amount':'sum',
                     'TC':    'sum'})

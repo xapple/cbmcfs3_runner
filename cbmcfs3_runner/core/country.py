@@ -21,6 +21,7 @@ from plumbing.cache       import property_cached
 
 # Internal modules #
 from cbmcfs3_runner import module_dir
+from cbmcfs3_runner.reports.country                import CountryReport
 from cbmcfs3_runner.stdrd_import_tool.associations import Associations
 from cbmcfs3_runner.others.aidb                    import AIDB
 from cbmcfs3_runner.others.silviculture            import Silviculture
@@ -120,3 +121,7 @@ class Country(object):
         if   'run is completed' in self.paths.log.contents: return 1.0
         elif 'SIT created'      in self.paths.log.contents: return 0.5
         else:                                               return 0.0
+
+    @property_cached
+    def report(self):
+        return CountryReport(self)
