@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -40,7 +40,7 @@ class Harvest(object):
         """
         Converts flux indicators in tons of carbon to harvested
         wood products volumes in cubic meters of wood.
-        
+
         Based on Roberto's query `Harvest analysis check` visible in the original calibration database.
         """
         # Load tables #
@@ -129,7 +129,7 @@ class Harvest(object):
         """
         Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
         to the amount of harvest actually performed by the model (extracted from the flux indicator table).
-        
+
         Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
         """
         # Load tables #
