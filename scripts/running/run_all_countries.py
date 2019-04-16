@@ -9,7 +9,7 @@ The last step is generating a report with the outcome of the simulation.
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_all_countries.py
+     ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_all_countries.py
 """
 
 # Built-in modules #

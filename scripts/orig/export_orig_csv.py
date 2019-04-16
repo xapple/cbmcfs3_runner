@@ -7,7 +7,7 @@ are all extracted from the "calibration.mdb" database.
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/orig/export_orig_csv.py
+     ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/orig/export_orig_csv.py
 """
 
 # Built-in modules #

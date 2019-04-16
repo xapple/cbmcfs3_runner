@@ -6,7 +6,7 @@ A script to check that the years add up.
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/others/check_end_years.py
+     ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/others/check_end_years.py
 """
 
 # Futures #

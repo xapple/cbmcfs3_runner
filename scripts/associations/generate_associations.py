@@ -8,7 +8,7 @@ creates a CSV containing mappings between names. It generates the
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbmcfs3_runner/scripts/generate_associations.py
+     ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/generate_associations.py
 """
 
 # Built-in modules #

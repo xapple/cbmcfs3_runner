@@ -6,7 +6,7 @@ TUTORIAL LUX - INTEGRATION TEST
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbmcfs3_runner/tests/lux/run_lux.py
+     ipython3.exe -i -- /deploy/cbmcfs3_runner/tests/lux/run_lux.py
 """
 
 # Built-in modules #

@@ -6,7 +6,7 @@ TUTORIAL SIX - INTEGRATION TEST
 
 Typically you would run this file from a command line like this:
 
-     ipython.exe -i -- /deploy/cbmcfs3_runner/tests/tutorial_six/run_tutorial_six.py
+     ipython3.exe -i -- /deploy/cbmcfs3_runner/tests/tutorial_six/run_tutorial_six.py
 """
 
 # Built-in modules #
