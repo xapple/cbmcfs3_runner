@@ -40,6 +40,8 @@ class Harvest(object):
         """
         Converts flux indicators in tons of carbon to harvested
         wood products volumes in cubic meters of wood.
+        
+        Based on Roberto's query `Harvest analysis check` visible in the original calibration database.
         """
         # Load tables #
         flux_indicators  = self.parent.database['tblFluxIndicators']
@@ -73,12 +75,12 @@ class Harvest(object):
     @property_cached
     def summary_check(self):
         """
-        Lorem ipsum.
+        Based on Roberto's query `Harvest summay check` visible in the original calibration database.
         """
         # Load tables #
         disturbance_type = self.parent.database['tblDisturbanceType']
         # Compute #
-        result = (self.check
+        df = (self.check
                   .set_index('DistTypeID')
                   .join(disturbance_type.set_index('DistTypeID'))
                   .groupby(['DistTypeID',
@@ -95,19 +97,19 @@ class Harvest(object):
                         'TC':                  'sum'})
                   .reset_index())
         # Add the total volume column #
-        result['tot_vol'] = hs.Vol_Merch + hs.Vol_Snags + hs.Vol_SubMerch
+        df['tot_vol'] = df.Vol_Merch + df.Vol_Snags + df.Vol_SubMerch
         # Return result #
-        return result
+        return df
 
     @property_cached
     def total(self):
         """
-        Lorem ipsum.
+        Based on Roberto's query `TOT_Harvest` visible in the original calibration database.
         """
         # Load tables #
         disturbance_type = self.parent.database['tblDisturbanceType']
         # Compute #
-        result = (self.check
+        df = (self.check
                   .set_index('DistTypeID')
                   .join(disturbance_type.set_index('DistTypeID'))
                   .groupby(['DistTypeName'])
@@ -118,23 +120,26 @@ class Harvest(object):
                         'Forest_residues_Vol': 'sum'})
                   .reset_index())
         # Add the total volume column #
-        result['tot_vol'] = th.Vol_Merch + th.Vol_SubMerch + th.Vol_Snags
+        df['tot_vol'] = df.Vol_Merch + df.Vol_SubMerch + df.Vol_Snags
         # Return result #
-        return result
+        return df
 
     @property_cached
     def expected_provided(self):
         """
-        Lorem ipsum.
+        Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
+        to the amount of harvest actually performed by the model (extracted from the flux indicator table).
+        
+        Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
         """
         # Load tables #
         disturbances = self.parent.parent.input_data.disturbance_events
         user_classes = self.parent.database['tblUserDefdClasses']
-        # Add an underscore to each cell #
+        # Rename classifier columns in the disturbance table
+        # Add an underscore to the classifier number so it can be used for renaming #
         user_classes['id'] = '_' + user_classes.UserDefdClassID.astype(str)
         user_classes = user_classes.set_index('id')['ClassDesc']
         user_classes = user_classes.apply(lambda x: x.lower().replace(' ', '_'))
-        # user_classes is a dict-like object #
         disturbances = disturbances.rename(columns = user_classes)
         disturbances = disturbances.rename(columns = {'Step':         'TimeStep',
                                                       'Dist_Type_ID': 'DistTypeName'})
@@ -145,17 +150,17 @@ class Harvest(object):
                  'forest_type',
                  'management_type',
                  'management_strategy']
-        result = (self.summary_check
-                  .set_index(index)
-                  .join(disturbances.set_index(index)))
-        result = (result
-                  .groupby(index)
-                  .agg({'Amount':'sum',
-                        'TC':    'sum'})
-                  .rename(columns = {'Amount': 'expected',
-                                     'TC':     'provided'})
-                  .reset_index())
+        df = (self.summary_check
+              .set_index(index)
+              .join(disturbances.set_index(index)))
+        df = (result
+              .groupby(index)
+              .agg({'Amount':'sum',
+                    'TC':    'sum'})
+              .rename(columns = {'Amount': 'expected',
+                                 'TC':     'provided'})
+              .reset_index())
         # Add the difference column #
-        result['delta'] = (result.provided - result.expected) / result.expected * 100
+        df['delta'] = (df.provided - df.expected) / df.expected * 100
         # Return result #
-        return result
+        return df
