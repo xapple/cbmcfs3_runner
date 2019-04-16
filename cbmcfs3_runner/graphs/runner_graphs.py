@@ -17,4 +17,4 @@ from cbmcfs3_runner.graphs.inventory import InputInventory, PredictedInventory, 
 from cbmcfs3_runner.graphs.harvest   import HarvestExpectedPredicted
 
 # Constants #
-__all__ = ['InputInventory', 'PredictedInventory', 'InventoryScatter', 'HarvestExpectedPredicted']
+__all__ = ['HarvestExpectedPredicted']

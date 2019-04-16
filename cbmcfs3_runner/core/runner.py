@@ -18,7 +18,7 @@ from plumbing.logger      import create_file_logger
 
 # Internal modules #
 import cbmcfs3_runner
-from cbmcfs3_runner.graphs import runner_graphs, make_graphs_property
+from cbmcfs3_runner.graphs import runner_graphs, load_graphs_from_module
 from cbmcfs3_runner.modifiers.pre_process         import PreProcessor
 from cbmcfs3_runner.modifiers.middle_process      import MiddleProcessor
 from cbmcfs3_runner.post_processor                import PostProcessor
@@ -145,7 +145,7 @@ class Runner(object):
 
     @property_cached
     def graphs(self):
-        return make_graphs_property(self, runner_graphs)
+        return load_graphs_from_module(self, runner_graphs)
 
     @property_cached
     def report(self):

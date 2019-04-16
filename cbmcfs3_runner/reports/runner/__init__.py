@@ -53,6 +53,7 @@ class RunnerTemplate(ReportTemplate):
         self.parent = parent
         self.report = parent
         self.runner = self.report.parent
+        self.graphs = self.runner.graphs
 
     def short_name(self):
         return self.runner.short_name
@@ -70,3 +71,6 @@ class RunnerTemplate(ReportTemplate):
     def inventory_predicted(self): return 0
 
     def inventory_scatter(self): return 0
+
+    def harvest_expected_predicted(self):
+        return self.graphs.harvest_expected_predicted()

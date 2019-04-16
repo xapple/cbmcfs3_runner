@@ -8,13 +8,13 @@ JRC biomass Project.
 Unit D1 Bioeconomy.
 """
 
-# Third party modules #
-import seaborn
-
 # First party modules #
 from plumbing.graphs import Graph
+
+# Third party modules #
+import seaborn
 
 ###############################################################################
 class HarvestExpectedPredicted(Graph):
     def plot(self, **kwargs):
-        seaborn.barplot(self.df.index, self.df['Area'])
+        pass
