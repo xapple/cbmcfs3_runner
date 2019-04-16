@@ -38,7 +38,8 @@ class MiddleProcessor(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        self.extend_simulation(100)
+        pass
+        #self.extend_simulation(100)
 
     @property_cached
     def project_database(self):

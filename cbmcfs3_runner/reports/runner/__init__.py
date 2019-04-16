@@ -25,6 +25,7 @@ from pymarktex.figures import ScaledFigure
 class RunnerReport(Document):
     """A report generated in PDF describing a single CBM-CFS3 simulation
     and its results."""
+    builtin_template = 'sinclair_bio'
 
     def __init__(self, parent):
         # Attributes #
@@ -54,17 +55,18 @@ class RunnerTemplate(ReportTemplate):
         self.runner = self.report.parent
 
     def short_name(self):
-        return self.runner.data_dir.directory.name
+        return self.runner.short_name
 
     def log_tail(self):
-        return self.runner.summary
+        return self.runner.tail
 
     def aaaaa(self):
         caption = "Distribution of total area according to age"
-        path    = self.graphs.input_inventory.path
-        label   = "input_inventory"
-        return str(ScaledFigure(path, caption, label))
+        graph   = self.graphs.input_inventory
+        return str(ScaledFigure(graph=graph, caption=caption))
 
-    def input_inventory(self): return 0
+    def inventory_input(self): return 0
 
-    def predicted_inventory(self): return 0
+    def inventory_predicted(self): return 0
+
+    def inventory_scatter(self): return 0

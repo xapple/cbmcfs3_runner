@@ -17,6 +17,8 @@ from plumbing.common      import pad_extra_whitespace
 from plumbing.logger      import create_file_logger
 
 # Internal modules #
+import cbmcfs3_runner
+from cbmcfs3_runner.graphs                        import runner_graphs
 from cbmcfs3_runner.modifiers.pre_process         import PreProcessor
 from cbmcfs3_runner.modifiers.middle_process      import MiddleProcessor
 from cbmcfs3_runner.post_processor                import PostProcessor
@@ -38,6 +40,7 @@ class Runner(object):
     /input/json/
     /output/
     /logs/runner.log
+    /graphs/
     /report/report.pdf
     """
 
@@ -76,15 +79,18 @@ class Runner(object):
             if not silent: raise
 
     def run(self):
+        self.log.info("Using module at '%s'" % cbmcfs3_runner)
         self.log.info("Runner '%s' starting" % self.short_name)
         self.remove_directory()
         self.input_data.copy_from_country()
         self.pre_processor()
         self.country.aidb.switch()
         self.launch_sit()
-        #self.middle_processor()
+        self.middle_processor()
         self.launch_cbm()
         #self.post_processor()
+        for graph in self.graphs: graph()
+        self.report()
 
     def remove_directory(self):
         """Removes the directory that will be recreated by running this runner.
@@ -127,15 +133,27 @@ class Runner(object):
     @property
     def tail(self):
         """Shortcut: view the end of the log file."""
-        return self.paths.log.tail()
+        return "\n" + pad_extra_whitespace("\n".join(self.paths.log.tail()), 4) + "\n"
 
     @property
     def summary(self):
         """A short summary showing just the end of the log file."""
         msg  = "\n## Runner `%s`\n" % self.short_name
         msg += "\nTail of the log file at `%s`\n" % self.paths.log
-        msg += "\n" + pad_extra_whitespace("\n".join(self.tail), 4) + "\n"
+        msg += self.tail
         return msg
+
+    @property_cached
+    def graphs(self):
+        """Sorry for the black magic. The result is an object whose attributes
+        are all the graphs found in taxa_table_graphs.py initialized with this
+        instance as only argument."""
+        class Graphs(object): pass
+        result = Graphs()
+        for graph in runner_graphs.__all__:
+            cls = getattr(runner_graphs, graph)
+            setattr(result, cls.short_name, cls(self))
+        return result
 
     @property_cached
     def report(self):
