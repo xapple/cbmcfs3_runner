@@ -33,7 +33,7 @@ class Harvest(object):
         # Default attributes #
         self.parent = parent
         # Directories #
-        self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
+        self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
 
     @property_cached
     def check(self):
