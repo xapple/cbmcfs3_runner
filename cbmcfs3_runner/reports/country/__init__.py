@@ -4,7 +4,7 @@ from __future__ import division
 # Built-in modules #
 
 # Internal modules #
-from cbmcfs3_runner.reports.template import ReportTemplate
+from cbmcfs3_runner.reports.base_template import ReportTemplate
 
 # First party modules #
 from plumbing.cache    import property_cached
