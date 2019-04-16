@@ -19,7 +19,7 @@ from plumbing.logger      import create_file_logger
 # Internal modules #
 from cbmcfs3_runner.modifiers.pre_process         import PreProcessor
 from cbmcfs3_runner.modifiers.middle_process      import MiddleProcessor
-from cbmcfs3_runner.modifiers.post_process        import PostProcessor
+from cbmcfs3_runner.post_process                  import PostProcessor
 from cbmcfs3_runner.others.input_data             import InputData
 from cbmcfs3_runner.stdrd_import_tool.launch_sit  import LaunchSIT
 from cbmcfs3_runner.external_tools.launch_cbm     import LaunchCBM
