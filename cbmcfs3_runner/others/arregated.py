@@ -21,8 +21,8 @@ import pandas
 ###############################################################################
 class AggregatedInput(object):
     """
-    Concatenate input tables in one single table for all countries available.
-    Also provide a dictionary of data frames. E.g. to investigate inconsistent
+    Concatenates input tables in one single table for all countries available.
+    Also provides a dictionary of data frames. E.g. to investigate inconsistent
     column names between the different countries.
 
     The `compare_column_names` method can be used to print differences in
@@ -62,6 +62,6 @@ class AggregatedInput(object):
 
     def compare_column_names(self, table_name, key_ref='AT'):
         """Print differences in column names,
-        compared to a reference country."""
+        as compared to a reference country."""
         dict_of_df = self.as_dict(table_name)
         self.compare_column_names_in_dict_of_df(dict_of_df, key_ref)

@@ -53,11 +53,11 @@ class PreProcessor(object):
                     in disturbance group 1, sort type 6, target type 2.
             Error:  Invalid disturbances found in .\input\disturb.lst.  Aborting.
          """
-        # Load the original dataframe #
+        # Load the original data frame #
         old_df = pandas.read_csv(str(old_path))
         # Filter rows based on years #
         period_max = self.country.base_year - self.country.inventory_start_year + 1
-        # We copy because query() doesn't return a true new dataframe #
+        # We copy because query() doesn't return a true new data frame #
         new_df = old_df.query("Step <= %s" % period_max).copy()
         # Filtering M types #
         row_indexer = (new_df['Sort_Type'] == 6) & (new_df['Measurement_type'] == 'M')
