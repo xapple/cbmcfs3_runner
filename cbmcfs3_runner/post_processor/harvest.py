@@ -71,13 +71,14 @@ class Harvest(object):
               .agg({'SoftProduction': 'sum',
                     'HardProduction': 'sum'})
               .reset_index())
-        df['TC'] = df.SoftProduction + df.HardProduction
-        df['Vol_Merch'] =  (df.TC*2)/df.db
-        df['Vol_SubMerch'] = (df.CO2Production*2)/df.db
-        df['Vol_Snags'] = (df.DOMProduction*2)/df.db
+        # Create new columns #
+        df['TC']                  = df.SoftProduction + df.HardProduction
+        df['Vol_Merch']           = (df.TC*2)/df.db
+        df['Vol_SubMerch']        = (df.CO2Production*2)/df.db
+        df['Vol_Snags']           = (df.DOMProduction*2)/df.db
         df['Forest_residues_Vol'] = ((df.MerchLitterInput + df.OthLitterInput) * 2)/df.db
-        return(df)
-
+        # Return #
+        return df
 
     @property_cached
     def summary_check(self):
