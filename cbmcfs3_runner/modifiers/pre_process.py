@@ -14,7 +14,6 @@ Unit D1 Bioeconomy.
 import pandas
 
 # First party modules #
-from plumbing.cache import property_cached
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #

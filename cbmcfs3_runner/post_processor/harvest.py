@@ -138,6 +138,8 @@ class Harvest(object):
         to the amount of harvest actually performed by the model (extracted from the flux indicator table).
 
         Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
+
+        See notebook "simulated_harvest.ipynb" for more details.
         """
         # Load tables #
         disturbances = self.parent.parent.input_data.disturbance_events

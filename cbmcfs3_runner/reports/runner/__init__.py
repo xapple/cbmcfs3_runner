@@ -75,5 +75,8 @@ class RunnerTemplate(ReportTemplate):
     def harvested_wood_prodcuts(self): return 0
 
     def harvest_expected_provided(self):
-        return self.graphs.harvest_expected_provided()
+        caption = "Lorem ipsum"
+        graph   = self.graphs.harvest_expected_provided
+        return str(ScaledFigure(graph=graph, caption=caption))
+
 

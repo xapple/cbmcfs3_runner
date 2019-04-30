@@ -68,6 +68,8 @@ class Inventory(object):
         """
         Update the inventory based on the simulation output contained in
         table 'tblPoolIndicators'.
+
+        See notebook "simulated_harvest.ipynb" for more details.
         """
         age_indicators = self.parent.database["tblAgeIndicators"]
         inv = (age_indicators
