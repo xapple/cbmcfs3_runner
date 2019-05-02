@@ -100,4 +100,13 @@ class PostProcessor(object):
     def harvest(self):
         return Harvest(self)
 
+    def timestep_to_years(self, timestep):
+        """
+        Will convert a Series containing simulation time-steps such as:
+           [1, 2, 3, 4, 5]
+       to actual corresponding simulation years such as:
+           [1996, 1997, 1998, 1999, 2000]
 
+        #TODO check that there is not an off by one error here
+        """
+        return timestep + self.parent.country.inventory_start_year

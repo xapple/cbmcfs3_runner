@@ -21,7 +21,7 @@ from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
 # Run each country and send errors to the log #
-scenario = continent.scenarios['static_demand']
+scenario = continent.scenarios['calibration']
 runners  = [r[0] for k,r in scenario.runners.items()]
 
 for r in tqdm(runners[1:2], ncols=60):

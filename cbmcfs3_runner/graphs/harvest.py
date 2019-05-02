@@ -37,6 +37,9 @@ class HarvestExpectedProvided(Graph):
         self.df = self.parent.post_processor.harvest.expected_provided
         self.df = self.df.groupby(grp_cols).agg(agg_cols).reset_index()
 
+        # Add years #
+        self.df['year'] = self.parent.post_processor.timestep_to_years(self.df.TimeStep)
+
         # Colors #
         import brewer2mpl
         colors = brewer2mpl.get_map('Pastel1', 'qualitative', 3).mpl_colors
@@ -57,11 +60,11 @@ class HarvestExpectedProvided(Graph):
             axes = pyplot.gca()
             df = kwargs.pop("data")
             delta = (df.expected - df.provided)
-            pyplot.bar(x=df.TimeStep, height=delta, bottom=df.provided, **kwargs)
+            pyplot.bar(x=df['year'], height=delta, bottom=df.provided, **kwargs)
 
         # Make the two skinny lines #
-        p.map_dataframe(line_plot, 'TimeStep', 'provided', color=name_to_color['Provided'])
-        p.map_dataframe(line_plot, 'TimeStep', 'expected', color=name_to_color['Expected'])
+        p.map_dataframe(line_plot, 'year', 'provided', color=name_to_color['Provided'])
+        p.map_dataframe(line_plot, 'year', 'expected', color=name_to_color['Expected'])
 
         # Make the fat bars #
         p.map_dataframe(bar_plot, color=name_to_color['Difference'])
@@ -74,7 +77,7 @@ class HarvestExpectedProvided(Graph):
         p.map(formatter)
 
         # Change the axis limits #
-        p.set(xlim=(self.df.TimeStep.min() - 1 , self.df.TimeStep.max() + 1))
+        p.set(xlim=(self.df.year.min() - 1 , self.df.year.max() + 1))
 
         # Add a legend #
         patches = [matplotlib.patches.Patch(color=v, label=k) for k,v in name_to_color.items()]
@@ -83,7 +86,7 @@ class HarvestExpectedProvided(Graph):
             p.add_legend(handles=patches)
 
         # Change the labels #
-        p.set_axis_labels("Time step", "Volume in [m^3]")
+        p.set_axis_labels("Year", "Volume in [m^3]")
 
         # Change the titles #
         p.set_titles("Type: {col_name}")

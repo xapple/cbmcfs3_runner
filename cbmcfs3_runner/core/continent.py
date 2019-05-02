@@ -63,7 +63,7 @@ class Continent(object):
     @property_cached
     def scenarios(self):
         """Return a dictionary of scenario names to Scenario objects."""
-        all_scenarios = [S(self) for S in scen_classes]
+        all_scenarios = [Scen(self) for Scen in scen_classes]
         return {s.short_name: s for s in all_scenarios}
 
     @property_cached

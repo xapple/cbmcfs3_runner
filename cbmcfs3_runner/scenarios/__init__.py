@@ -11,6 +11,7 @@ A list of all scenarios classes.
 
 # Internal modules #
 from cbmcfs3_runner.scenarios.static_demand import StaticDemand
+from cbmcfs3_runner.scenarios.calibration   import Calibration
 
 ###############################################################################
-scen_classes = [StaticDemand]
+scen_classes = [StaticDemand, Calibration]

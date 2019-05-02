@@ -3,8 +3,16 @@ Runner report "{{short_name}}"
 
 General Information
 -------------------
-This is an report based on a `Runner` object. It thus pertains to a single a single CBM-CFS3 simulation
+This is an report based on a `Runner` object. It thus pertains to a single CBM-CFS3 simulation
     and its results.
+
+{{#is_calibration}}
+Warning: This is a calibration scenario runner. We have copied the required files directly into the directory
+structure for this "fake" calibration scenario that we will not actually run.
+Instead we pretend it has been run by directly copying the output database into the output directory.
+{{/is_calibration}}
+
+{{extra_information}}
 
 ### Pipeline ###
 

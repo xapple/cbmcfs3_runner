@@ -54,17 +54,17 @@ class RunnerTemplate(ReportTemplate):
         self.report = parent
         self.runner = self.report.parent
         self.graphs = self.runner.graphs
+        self.scenario = self.report.parent
 
     def short_name(self):
         return self.runner.short_name
 
-    def log_tail(self):
-        return self.runner.paths.log.pretty_tail
+    def is_calibration(self):
+        return self.runner.scenario.short_name == 'calibration'
 
-    def aaaaa(self):
-        caption = "Distribution of total area according to age"
-        graph   = self.graphs.input_inventory
-        return str(ScaledFigure(graph=graph, caption=caption))
+    def log_tail(self):
+        if not self.runner.paths.log: return ""
+        return self.runner.paths.log.pretty_tail
 
     def inventory_input(self): return 0
 
