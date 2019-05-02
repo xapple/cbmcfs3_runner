@@ -49,10 +49,32 @@ class InputData(object):
     #-------------------------- Specific sheets ------------------------------#
     @property_cached
     def inventory(self):
+        """
+        Columns are:
+
+        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'UsingID', 'Age', 'Area',
+        'Delay', 'UNFCCCL', 'HistDist', 'LastDist']
+        """
         return self.xls.parse("Inventory")
 
     @property_cached
     def disturbance_events(self):
+        """
+        Columns are:
+
+        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'UsingID', 'SWStart', 'SWEnd',
+        'HWStart', 'HWEnd', 'Min_since_last_Dist', 'Max_since_last_Dist',
+        'Last_Dist_ID', 'Min_tot_biom_C', 'Max_tot_biom_C',
+        'Min_merch_soft_biom_C', 'Max_merch_soft_biom_C',
+        'Min_merch_hard_biom_C', 'Max_merch_hard_biom_C', 'Min_tot_stem_snag_C',
+        'Max_tot_stem_snag_C', 'Min_tot_soft_stem_snag_C',
+        'Max_tot_soft_stem_snag_C', 'Min_tot_hard_stem_snag_C',
+        'Max_tot_hard_stem_snag_C', 'Min_tot_merch_stem_snag_C',
+        'Max_tot_merch_stem_snag_C', 'Min_tot_merch_soft_stem_snag_C',
+        'Max_tot_merch_soft_stem_snag_C', 'Min_tot_merch_hard_stem_snag_C',
+        'Max_tot_merch_hard_stem_snag_C', 'Efficency', 'Sort_Type',
+        'Measurement_type', 'Amount', 'Dist_Type_ID', 'Step']
+        """
         return self.xls.parse("DistEvents")
 
     @property_cached

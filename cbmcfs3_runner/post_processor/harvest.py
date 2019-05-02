@@ -13,7 +13,6 @@ Unit D1 Bioeconomy.
 # Third party modules #
 
 # First party modules #
-from plumbing.databases.access_database import AccessDatabase
 from plumbing.cache import property_cached
 from autopaths.auto_paths import AutoPaths
 
@@ -22,7 +21,7 @@ from autopaths.auto_paths import AutoPaths
 ###############################################################################
 class Harvest(object):
     """
-    See notebook "simulated_harvest.ipynb" for more details.
+    See notebook "simulated_harvest.ipynb" for more details about the methods below.
     """
 
     all_paths = """
@@ -42,6 +41,8 @@ class Harvest(object):
         wood products volumes in cubic meters of wood.
 
         Based on Roberto's query `Harvest analysis check` visible in the original calibration database.
+
+        What are the units?
         """
         # Load tables #
         flux_indicators  = self.parent.database['tblFluxIndicators']
@@ -73,17 +74,21 @@ class Harvest(object):
               .reset_index())
         # Create new columns #
         df['TC']                  = df.SoftProduction + df.HardProduction
-        df['Vol_Merch']           = (df.TC*2)/df.db
-        df['Vol_SubMerch']        = (df.CO2Production*2)/df.db
-        df['Vol_Snags']           = (df.DOMProduction*2)/df.db
-        df['Forest_residues_Vol'] = ((df.MerchLitterInput + df.OthLitterInput) * 2)/df.db
+        df['Vol_Merch']           = (df.TC * 2) / df.db
+        df['Vol_SubMerch']        = (df.CO2Production * 2) / df.db
+        df['Vol_Snags']           = (df.DOMProduction * 2) / df.db
+        df['Forest_residues_Vol'] = ((df.MerchLitterInput + df.OthLitterInput) * 2) / df.db
         # Return #
         return df
 
     @property_cached
     def summary_check(self):
         """
-        Based on Roberto's query `Harvest summay check` visible in the original calibration database.
+        Based on Roberto's query `Harvest summary check` visible in the original calibration database.
+
+        Columns are: ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
+                      'management_type', 'management_strategy', 'Vol_Merch', 'Vol_Snags',
+                      'Vol_SubMerch', 'Forest_residues_Vol', 'TC', 'tot_vol']
         """
         # Load tables #
         disturbance_type = self.parent.database['tblDisturbanceType']
@@ -113,6 +118,9 @@ class Harvest(object):
     def total(self):
         """
         Based on Roberto's query `TOT_Harvest` visible in the original calibration database.
+
+        Columns are: ['DistTypeName', 'TC', 'Vol_Merch', 'Vol_SubMerch', 'Vol_Snags',
+                      'Forest_residues_Vol', 'tot_vol'
         """
         # Load tables #
         disturbance_type = self.parent.database['tblDisturbanceType']
@@ -140,17 +148,20 @@ class Harvest(object):
 
         Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
 
-        See notebook "simulated_harvest.ipynb" for more details.
+        Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
+                      'management_strategy', 'expected', 'provided', 'delta'],
         """
         # Load tables #
         disturbances = self.parent.parent.input_data.disturbance_events
         user_classes = self.parent.database['tblUserDefdClasses']
-        # Rename classifier columns in the disturbance table
         # Add an underscore to the classifier number so it can be used for renaming #
         user_classes['id'] = '_' + user_classes.UserDefdClassID.astype(str)
+        # This makes user_classes a pandas.Series linking "_1" to "forest_type" #
         user_classes = user_classes.set_index('id')['ClassDesc']
         user_classes = user_classes.apply(lambda x: x.lower().replace(' ', '_'))
+        # Now instead of being called _1, _2, _3 the columns are called forest_type, region, etc. #
         disturbances = disturbances.rename(columns = user_classes)
+        # These columns also need to be manually renamed #
         disturbances = disturbances.rename(columns = {'Step':         'TimeStep',
                                                       'Dist_Type_ID': 'DistTypeName'})
         # Index columns to join disturbances and harvest check #
@@ -160,17 +171,22 @@ class Harvest(object):
                  'forest_type',
                  'management_type',
                  'management_strategy']
+        # Do the join #
         df = (self.summary_check
               .set_index(index)
               .join(disturbances.set_index(index)))
+        # Sum two columns #
         df = (df
               .groupby(index)
-              .agg({'Amount':'sum',
-                    'TC':    'sum'})
+              .agg({'Amount': 'sum',
+                    'TC':     'sum'})
               .rename(columns = {'Amount': 'expected',
                                  'TC':     'provided'})
               .reset_index())
+        # Remove rows where expected and provided are both zero #
+        selector = (df['expected'] != 0.0) & (df['provided'] != 0.0)
+        df = df[selector]
         # Add the difference column #
-        df['delta'] = (df.provided - df.expected) / df.expected * 100
+        df['delta'] = (df.expected - df.provided)
         # Return result #
         return df

@@ -75,7 +75,7 @@ class RunnerTemplate(ReportTemplate):
     def harvested_wood_prodcuts(self): return 0
 
     def harvest_expected_provided(self):
-        caption = "Lorem ipsum"
+        caption = "Comparision of expected against provided harvest"
         graph   = self.graphs.harvest_expected_provided
         return str(ScaledFigure(graph=graph, caption=caption))
 

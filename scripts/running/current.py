@@ -25,6 +25,6 @@ scenario = continent.scenarios['static_demand']
 runners  = [r[0] for k,r in scenario.runners.items()]
 
 for r in tqdm(runners[1:2], ncols=60):
-    #r.graphs(rerun=True)
+    r.graphs(rerun=True)
     r.report()
     #r.graphs.harvest_expected_predicted(rerun=True)

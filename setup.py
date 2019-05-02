@@ -12,5 +12,5 @@ setup(
         packages         = find_packages(),
         install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pandas', 'pbs', 'pystache',
                             'pyexcel', 'pyexcel-xlsx', 'seaborn', 'xlrd', 'xlsxwriter',
-                            'simplejson'],
+                            'simplejson', 'brewer2mpl', 'matplotlib'],
     )

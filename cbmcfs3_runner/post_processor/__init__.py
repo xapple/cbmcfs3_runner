@@ -43,8 +43,8 @@ class PostProcessor(object):
 
     @property
     def database(self):
-        path = self.paths.mdb
-        return AccessDatabase(path)
+        """The CBM database, after the model is run."""
+        return AccessDatabase(self.paths.mdb)
 
     @property_cached
     def classifiers(self):
@@ -80,12 +80,12 @@ class PostProcessor(object):
 
     @property
     def coefficients(self):
-        """Short cut to the country conversion coefficients."""
+        """Shortcut to the countrys conversion coefficients."""
         return self.parent.country.coefficients
 
     @property_cached
     def classifiers_coefs(self):
-        """A join between the coefficients and classifiers table."""
+        """A join between the coefficients and the classifiers table."""
         return (self.classifiers
                 .reset_index()
                 .set_index('forest_type')
