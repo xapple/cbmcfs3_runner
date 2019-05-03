@@ -24,10 +24,10 @@ from cbmcfs3_runner.core.continent import continent
 scenario = continent.scenarios['calibration']
 runners  = [r[0] for k,r in scenario.runners.items()]
 
-#for r in tqdm(runners[1:2], ncols=60):
-#    r.graphs(rerun=True)
-#    r.report()
+for r in tqdm(runners[0:1], ncols=60):
+    r.graphs(rerun=True)
+    r.report()
 
-for c in tqdm(continent, ncols=60):
-    runners = [r.graphs(rerun=True) for runners in c.scenarios.values() for r in runners]
-    c.report()
+#for c in tqdm(continent, ncols=60):
+#    runners = [r.graphs(rerun=True) for runners in c.scenarios.values() for r in runners]
+#    c.report()

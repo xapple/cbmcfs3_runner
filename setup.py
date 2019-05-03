@@ -10,7 +10,7 @@ setup(
         author           = 'Lucas Sinclair',
         author_email     = 'lucas.sinclair@me.com',
         packages         = find_packages(),
-        install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pandas', 'pbs', 'pystache',
+        install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pbs3', 'pandas', 'pystache',
                             'pyexcel', 'pyexcel-xlsx', 'seaborn', 'xlrd', 'xlsxwriter',
                             'simplejson', 'brewer2mpl', 'matplotlib'],
     )
