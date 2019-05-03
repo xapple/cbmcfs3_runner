@@ -1,9 +1,9 @@
-Inventory report "{{short_name}}"
-=================================
+Country report for "{{short_name}}" ({{iso2_code}})
+===================================================
 
 General Information
 -------------------
-This is an inventory report.
+This is an country report that can include information from several scenarios.
 
 Processing
 ----------
@@ -22,15 +22,13 @@ Processing
 {{/git}}
 -------
 
-Inventory Before Simulation
----------------------------
+Comparison of harvest fulfillment
+---------------------------------
+Below we compare the outcome between the two different scenarios `static_demand` and `calibration` (respectively) by
+taking their "expected harvest against the provided harvest" graphs.
 
-{{input_inventory}}
+{{harvest_exp_pro_static}}
 
-
-Inventory After Simulation
---------------------------
-
-{{predicted_inventory}}
+{{harvest_exp_pro_calib}}
 
 

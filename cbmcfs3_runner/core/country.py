@@ -36,7 +36,8 @@ ref_years = pandas.read_csv(str(ref_years_path))
 
 ###############################################################################
 class Country(object):
-    """This object gives access to the data pertaining to one country."""
+    """This object gives access to the data pertaining to one country
+    amongst the 26 EU member states we are examining."""
 
     all_paths = """
     /orig/
@@ -54,6 +55,8 @@ class Country(object):
     /export/transition_rules.csv
     /export/yields.csv
     /logs/country.log
+    /graphs/
+    /report/report.pdf
     """
 
     def __init__(self, data_dir=None):
@@ -68,7 +71,17 @@ class Country(object):
         self.set_years()
 
     def set_codes(self):
-        """Update all the country codes for this country."""
+        """Update all the country codes for this country.
+        Typically the result will look something like this:
+
+         'iso2_code':      'BE',
+         'country_num':    255,
+         'country_name':   'Belgium',
+         'country_m49':    56,
+         'country_iso3':   'BEL',
+         'nuts_zero_2006': 'BE',
+         'nuts_zero_2016': 'BE',
+        """
         # The reference ISO2 code #
         self.iso2_code = self.data_dir.name
         # Load name mappings #
@@ -84,21 +97,26 @@ class Country(object):
 
     def set_years(self):
         """Update all the reference years for this country."""
+        # This is the same for all countries #
+        self.base_year = 2015
+        # This is variable #
         row = ref_years.loc[ref_years['country'] == self.iso2_code].iloc[0]
         self.inventory_start_year = row['ref_year']
-        self.base_year = 2015
 
     @property_cached
     def log(self):
-        """Each runner will have its own logger."""
+        """Each runner will have its own logger to create log files."""
         return create_file_logger(self.iso2_code, self.paths.log)
 
     @property_cached
     def associations(self):
+        """Associations of admin/eco/species/disturbances names between
+        the input and the reference."""
         return Associations(self)
 
     @property_cached
     def aidb(self):
+        """Archive Index Database."""
         return AIDB(self)
 
     @property_cached
@@ -121,6 +139,13 @@ class Country(object):
         if   'run is completed' in self.paths.log.contents: return 1.0
         elif 'SIT created'      in self.paths.log.contents: return 0.5
         else:                                               return 0.0
+
+    @property_cached
+    def scenarios(self):
+        """A dictionary linking scenario names to a list of runners
+        that concern only this country."""
+        from cbmcfs3_runner.core.continent import continent
+        return {n: s.runners[self.iso2_code] for n,s in continent.scenarios.items()}
 
     @property_cached
     def report(self):

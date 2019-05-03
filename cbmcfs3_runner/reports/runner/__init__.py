@@ -25,6 +25,7 @@ from pymarktex.figures import ScaledFigure
 class RunnerReport(Document):
     """A report generated in PDF describing a single CBM-CFS3 simulation
     and its results."""
+
     builtin_template = 'sinclair_bio'
 
     def __init__(self, parent):
@@ -44,6 +45,7 @@ class RunnerReport(Document):
 ###############################################################################
 class RunnerTemplate(ReportTemplate):
     """All the parameters to be rendered in the markdown template."""
+
     delimiters = (u'{{', u'}}')
 
     def __repr__(self): return '<%s object on %s>' % (self.__class__.__name__, self.parent)
