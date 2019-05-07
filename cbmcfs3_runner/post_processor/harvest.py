@@ -141,6 +141,46 @@ class Harvest(object):
         return df
 
     @property_cached
+    def disturbances(self):
+        """
+        It could be a good idea to check why some countries have DistTypeName as int64
+        and others have DistTypeName as object.
+
+        Columns are: ['status', 'forest_type', 'region', 'management_type',
+                      'management_strategy', 'climatic_unit', 'conifers/bradleaves',
+                      'UsingID', 'SWStart', 'SWEnd', 'HWStart', 'HWEnd',
+                      'Min_since_last_Dist', 'Max_since_last_Dist', 'Last_Dist_ID',
+                      'Min_tot_biom_C', 'Max_tot_biom_C', 'Min_merch_soft_biom_C',
+                      'Max_merch_soft_biom_C', 'Min_merch_hard_biom_C',
+                      'Max_merch_hard_biom_C', 'Min_tot_stem_snag_C', 'Max_tot_stem_snag_C',
+                      'Min_tot_soft_stem_snag_C', 'Max_tot_soft_stem_snag_C',
+                      'Min_tot_hard_stem_snag_C', 'Max_tot_hard_stem_snag_C',
+                      'Min_tot_merch_stem_snag_C', 'Max_tot_merch_stem_snag_C',
+                      'Min_tot_merch_soft_stem_snag_C', 'Max_tot_merch_soft_stem_snag_C',
+                      'Min_tot_merch_hard_stem_snag_C', 'Max_tot_merch_hard_stem_snag_C',
+                      'Efficency', 'Sort_Type', 'Measurement_type', 'Amount', 'DistTypeName',
+                      'TimeStep']
+        """
+        # Load user_classes table from DB #
+        user_classes = self.parent.database['tblUserDefdClasses']
+        # Add an underscore to the classifier number so it can be used for renaming #
+        user_classes['id'] = '_' + user_classes.UserDefdClassID.astype(str)
+        # This makes user_classes a pandas.Series linking "_1" to "forest_type" #
+        user_classes = user_classes.set_index('id')['ClassDesc']
+        user_classes = user_classes.apply(lambda x: x.lower().replace(' ', '_'))
+        # Load disturbances table from excel file #
+        df = self.parent.parent.input_data.disturbance_events
+        # Now instead of being called _1, _2, _3 the columns are called forest_type, region, etc. #
+        df = df.rename(columns = user_classes)
+        # These columns also need to be manually renamed #
+        df = df.rename(columns = {'Step':         'TimeStep',
+                                  'Dist_Type_ID': 'DistTypeName'})
+        # For joining with other data frames, DistTypeName has to be of dtype object not int64 #
+        df['DistTypeName'] = df['DistTypeName'].astype(object)
+        # Return result #
+        return df
+
+    @property_cached
     def expected_provided(self):
         """
         Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
@@ -149,21 +189,8 @@ class Harvest(object):
         Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
 
         Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
-                      'management_strategy', 'expected', 'provided', 'delta'],
+                      'management_strategy', 'expected', 'provided', 'delta']
         """
-        # Load tables #
-        disturbances = self.parent.parent.input_data.disturbance_events
-        user_classes = self.parent.database['tblUserDefdClasses']
-        # Add an underscore to the classifier number so it can be used for renaming #
-        user_classes['id'] = '_' + user_classes.UserDefdClassID.astype(str)
-        # This makes user_classes a pandas.Series linking "_1" to "forest_type" #
-        user_classes = user_classes.set_index('id')['ClassDesc']
-        user_classes = user_classes.apply(lambda x: x.lower().replace(' ', '_'))
-        # Now instead of being called _1, _2, _3 the columns are called forest_type, region, etc. #
-        disturbances = disturbances.rename(columns = user_classes)
-        # These columns also need to be manually renamed #
-        disturbances = disturbances.rename(columns = {'Step':         'TimeStep',
-                                                      'Dist_Type_ID': 'DistTypeName'})
         # Index columns to join disturbances and harvest check #
         index = ['status',
                  'TimeStep',
@@ -174,7 +201,7 @@ class Harvest(object):
         # Do the join #
         df = (self.summary_check
               .set_index(index)
-              .join(disturbances.set_index(index)))
+              .join(self.disturbances.set_index(index)))
         # Sum two columns #
         df = (df
               .groupby(index)
