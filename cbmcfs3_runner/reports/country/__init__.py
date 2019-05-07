@@ -39,7 +39,7 @@ class CountryReport(Document):
     def template(self): return CountryTemplate(self)
 
     def load_markdown(self):
-        self.params = {'title': 'cbmcfs3_runner - Country report'}
+        self.params = {'title': 'cbmcfs3\_runner - Country report'}
         self.markdown = str(self.template)
 
 ###############################################################################
@@ -64,13 +64,20 @@ class CountryTemplate(ReportTemplate):
         return self.country.country_name
 
     def harvest_exp_pro_static(self):
-        caption = "Comparision of expected against provided harvest in the static demand scenario."
+        caption = "Comparison of expected against provided harvest in the static demand scenario."
         caption += " Values are grouped into one plot for each disturbance type."
         graph   = self.scenarios['static_demand'][0].graphs.harvest_expected_provided
         return str(ScaledFigure(graph=graph, caption=caption))
 
     def harvest_exp_pro_calib(self):
-        caption = "Comparision of expected against provided harvest in the calibration scenario."
+        caption = "Comparison of expected against provided harvest in the calibration scenario."
         caption += " Values are grouped into one plot for each disturbance type."
         graph   = self.scenarios['calibration'][0].graphs.harvest_expected_provided
         return str(ScaledFigure(graph=graph, caption=caption))
+
+    def harvest_discrepancy(self):
+        caption = "Sum of total absolute discrepancy of expected against provided harvest"
+        caption += " between the two aforementioned scenarios."
+        graph   = self.country.graphs.harvest_discrepancy
+        return str(ScaledFigure(graph=graph, caption=caption))
+

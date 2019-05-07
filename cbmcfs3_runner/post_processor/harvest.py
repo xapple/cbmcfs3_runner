@@ -190,3 +190,22 @@ class Harvest(object):
         df['delta'] = (df.expected - df.provided)
         # Return result #
         return df
+
+    @property_cached
+    def exp_prov_by_year(self):
+        """
+        Same thing as above but with years instead of TimeSteps and with unvarying columns
+        removed.
+
+        Columns are: ['year', 'DistTypeName', 'forest_type', 'expected', 'provided', 'delta'],
+        """
+        # Take a reference #
+        df = self.expected_provided
+        # Drop columns #
+        useless_columns = ['status', 'management_type', 'management_strategy']
+        df = df.drop(useless_columns, axis=1)
+        # Add year #
+        df['year'] = self.parent.timestep_to_years(df['TimeStep'])
+        df = df.drop('TimeStep', axis=1)
+        # Return result #
+        return df

@@ -21,6 +21,7 @@ from plumbing.cache       import property_cached
 
 # Internal modules #
 from cbmcfs3_runner import module_dir
+from cbmcfs3_runner.graphs import country_graphs, load_graphs_from_module
 from cbmcfs3_runner.reports.country                import CountryReport
 from cbmcfs3_runner.stdrd_import_tool.associations import Associations
 from cbmcfs3_runner.others.aidb                    import AIDB
@@ -146,6 +147,10 @@ class Country(object):
         that concern only this country."""
         from cbmcfs3_runner.core.continent import continent
         return {n: s.runners[self.iso2_code] for n,s in continent.scenarios.items()}
+
+    @property_cached
+    def graphs(self):
+        return load_graphs_from_module(self, country_graphs)
 
     @property_cached
     def report(self):

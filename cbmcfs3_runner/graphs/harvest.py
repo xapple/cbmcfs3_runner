@@ -29,16 +29,13 @@ class HarvestExpectedProvided(Graph):
     def plot(self, **kwargs):
         # Columns #
         grp_cols = ['DistTypeName',
-                    'TimeStep']
+                    'year']
         agg_cols = {'expected': 'sum',
                     'provided': 'sum'}
 
         # Data #
-        self.df = self.parent.post_processor.harvest.expected_provided
+        self.df = self.parent.post_processor.harvest.exp_prov_by_year
         self.df = self.df.groupby(grp_cols).agg(agg_cols).reset_index()
-
-        # Add years #
-        self.df['year'] = self.parent.post_processor.timestep_to_years(self.df.TimeStep)
 
         # Colors #
         import brewer2mpl
@@ -86,7 +83,59 @@ class HarvestExpectedProvided(Graph):
             p.add_legend(handles=patches)
 
         # Change the labels #
-        p.set_axis_labels("Year", "Volume in [m^3]")
+        p.set_axis_labels("Year (simulated)", "Volume in [m^3]")
+
+        # Change the titles #
+        p.set_titles("Type: {col_name}")
+
+        # Save #
+        self.save_plot(**kwargs)
+
+###############################################################################
+class HarvestDiscrepancy(Graph):
+    def plot(self, **kwargs):
+        # Columns #
+        grp_cols = ['DistTypeName',
+                    'year']
+        idx_cols = ['DistTypeName',
+                    'year',
+                    'forest_type']
+        agg_cols = {'delta': 'sum'}
+
+        # Data #
+        static = self.parent.scenarios['static_demand'][0].post_processor.harvest.exp_prov_by_year
+        calibr = self.parent.scenarios['calibration'][0].post_processor.harvest.exp_prov_by_year
+        static = static.set_index(idx_cols)
+        calibr = calibr.set_index(idx_cols)
+
+        # Difference
+        discrepancy = (calibr - static)
+        discrepancy.delta = abs(discrepancy.delta)
+
+        # Data frame #
+        self.df = discrepancy.groupby(grp_cols).agg(agg_cols).reset_index()
+
+        # Facet grid #
+        p = seaborn.FacetGrid(data=self.df, col='DistTypeName', sharey=False, col_wrap=2, height=6.0)
+
+        # Functions #
+        def bar_plot(x, y, **kwargs): pyplot.bar(x=x, height=y, **kwargs)
+
+        # Make the bars #
+        p.map_dataframe(bar_plot, 'year', 'delta', color='red')
+
+        # Add a thousands separator #
+        def formatter(**kwargs):
+            from plumbing.common import split_thousands
+            splitter = lambda x,pos: split_thousands(x)
+            pyplot.gca().yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(splitter))
+        p.map(formatter)
+
+        # Change the axis limits #
+        p.set(xlim=(self.df.year.min() - 1 , self.df.year.max() + 1))
+
+        # Change the labels #
+        p.set_axis_labels("Year (simulated)", "Volume in [m^3]")
 
         # Change the titles #
         p.set_titles("Type: {col_name}")
