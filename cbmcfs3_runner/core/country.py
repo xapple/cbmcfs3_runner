@@ -60,6 +60,9 @@ class Country(object):
     /report/report.pdf
     """
 
+    def __repr__(self):
+        return '%s object code "%s"' % (self.__class__, self.iso2_code)
+
     def __init__(self, data_dir=None):
         """Store the data directory paths where everything will start from."""
         # Main directory #

@@ -97,21 +97,21 @@ class Harvest(object):
         disturbance_type = self.parent.database['tblDisturbanceType']
         # Compute #
         df = (self.check
-                  .set_index('DistTypeID')
-                  .join(disturbance_type.set_index('DistTypeID'))
-                  .groupby(['DistTypeID',
-                            'DistTypeName',
-                            'TimeStep',
-                            'status',
-                            'forest_type',
-                            'management_type',
-                            'management_strategy'])
-                  .agg({'Vol_Merch':           'sum',
-                        'Vol_Snags':           'sum',
-                        'Vol_SubMerch':        'sum',
-                        'Forest_residues_Vol': 'sum',
-                        'TC':                  'sum'})
-                  .reset_index())
+              .set_index('DistTypeID')
+              .join(disturbance_type.set_index('DistTypeID'))
+              .groupby(['DistTypeID',
+                        'DistTypeName',
+                        'TimeStep',
+                        'status',
+                        'forest_type',
+                        'management_type',
+                        'management_strategy'])
+              .agg({'Vol_Merch':           'sum',
+                    'Vol_Snags':           'sum',
+                    'Vol_SubMerch':        'sum',
+                    'Forest_residues_Vol': 'sum',
+                    'TC':                  'sum'})
+              .reset_index())
         # Add the total volume column #
         df['tot_vol'] = df.Vol_Merch + df.Vol_Snags + df.Vol_SubMerch
         # Return result #
@@ -124,21 +124,21 @@ class Harvest(object):
         Based on Roberto's query `TOT_Harvest` visible in the original calibration database.
 
         Columns are: ['DistTypeName', 'TC', 'Vol_Merch', 'Vol_SubMerch', 'Vol_Snags',
-                      'Forest_residues_Vol', 'tot_vol'
+                      'Forest_residues_Vol', 'tot_vol']
         """
         # Load tables #
         disturbance_type = self.parent.database['tblDisturbanceType']
         # Compute #
         df = (self.check
-                  .set_index('DistTypeID')
-                  .join(disturbance_type.set_index('DistTypeID'))
-                  .groupby(['DistTypeName'])
-                  .agg({'TC':                  'sum',
-                        'Vol_Merch':           'sum',
-                        'Vol_SubMerch':        'sum',
-                        'Vol_Snags':           'sum',
-                        'Forest_residues_Vol': 'sum'})
-                  .reset_index())
+              .set_index('DistTypeID')
+              .join(disturbance_type.set_index('DistTypeID'))
+              .groupby(['DistTypeName'])
+              .agg({'TC':                  'sum',
+                    'Vol_Merch':           'sum',
+                    'Vol_SubMerch':        'sum',
+                    'Vol_Snags':           'sum',
+                    'Forest_residues_Vol': 'sum'})
+              .reset_index())
         # Add the total volume column #
         df['tot_vol'] = df.Vol_Merch + df.Vol_SubMerch + df.Vol_Snags
         # Return result #
@@ -181,7 +181,7 @@ class Harvest(object):
         df = df.rename(columns = {'Step':         'TimeStep',
                                   'Dist_Type_ID': 'DistTypeName'})
         # For joining with other data frames, DistTypeName has to be of dtype object not int64 #
-        df['DistTypeName'] = df['DistTypeName'].astype(object)
+        df['DistTypeName'] = df['DistTypeName'].astype(str)
         # Return result #
         return df
 
@@ -236,7 +236,8 @@ class Harvest(object):
         df = self.expected_provided
         # Keep rows where either expected or provided are non-zero #
         selector = (df['expected'] != 0.0) | (df['provided'] != 0.0)
-        df = df.loc[selector]
+        # Don't forget to copy (see SettingWithCopyWarning) #
+        df = df.loc[selector].copy()
         # Add the delta column #
         df['delta'] = (df.expected - df.provided)
         # Drop columns with no information #
@@ -245,5 +246,10 @@ class Harvest(object):
         # Add year and remove TimeStep #
         df['year'] = self.parent.timestep_to_years(df['TimeStep'])
         df = df.drop('TimeStep', axis=1)
+        # Only if we are in the calibration scenario #
+        # Patch the harvest data frame to stop at the simulation year #
+        if self.parent.parent.scenario.short_name == 'calibration':
+            selector = df['year'] <= self.parent.parent.country.base_year
+            df = df.loc[selector].copy()
         # Return result #
         return df

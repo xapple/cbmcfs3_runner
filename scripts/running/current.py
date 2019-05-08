@@ -20,28 +20,30 @@ from tqdm import tqdm
 from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
-# Run each country and send errors to the log #
 #scenario = continent.scenarios['calibration']
 #runners  = [r[0] for k,r in scenario.runners.items()]
-
+#
 #for r in tqdm(runners[1:2], ncols=60):
 #    r.graphs(rerun=True)
 #    r.report()
 
 ###############################################################################
-# Get one country #
-c = continent.countries['GR']
+## Get one country #
+#c = continent.countries['GR']
+#
+## Get runners #
+#runners = [r for runners in c.scenarios.values() for r in runners]
+#
+## Regen graphs #
+#for r in runners: r.graphs(rerun=True)
+#c.graphs(rerun=True)
+#
+## Make report #
+#c.report()
 
-# Get runners #
-runners = [r for runners in c.scenarios.values() for r in runners]
-
-# Regen graphs #
-for r in runners: r.graphs(rerun=True)
-c.graphs(rerun=True)
-
-# Make report #
-c.report()
-
-#for c in tqdm(continent, ncols=60):
-#    runners = [r.graphs(rerun=True) for runners in c.scenarios.values() for r in runners]
-#    c.report()
+###############################################################################
+for c in tqdm(continent, ncols=60):
+    runners = [r for runners in c.scenarios.values() for r in runners]
+    for r in runners: r.graphs(rerun=True)
+    c.graphs(rerun=True)
+    c.report()

@@ -75,7 +75,13 @@ class PostProcessor(object):
         classifiers.columns = classifiers.columns.get_level_values(1)
         # Remove the confusing name #
         del classifiers.columns.name
+        # Lower case everything #
         classifiers = classifiers.rename(columns=lambda n:n.replace('/','_'))
+        # In the calibration scenario we can't change names and there is a conflict #
+        # This should not impact other scenarios #
+        # C.f the Broad/Conifers to Conifers/Bradleaves problem #
+        classifiers = classifiers.rename(columns={'broad_conifers': 'conifers_bradleaves'})
+        # Return result #
         return classifiers
 
     @property
@@ -85,7 +91,13 @@ class PostProcessor(object):
 
     @property_cached
     def classifiers_coefs(self):
-        """A join between the coefficients and the classifiers table."""
+        """A join between the coefficients and the classifiers table.
+
+        Columns are: ['index', 'forest_type', 'UserDefdClassSetID', 'status', 'region',
+                      'management_type', 'management_strategy', 'climatic_unit',
+                      'conifers_bradleaves', 'id', 'c', 'db', 'harvest_gr']
+        """
+
         return (self.classifiers
                 .reset_index()
                 .set_index('forest_type')
@@ -104,9 +116,9 @@ class PostProcessor(object):
         """
         Will convert a Series containing simulation time-steps such as:
            [1, 2, 3, 4, 5]
-       to actual corresponding simulation years such as:
+        to actual corresponding simulation years such as:
            [1996, 1997, 1998, 1999, 2000]
 
         #TODO check that there is not an off by one error here
         """
-        return timestep + self.parent.country.inventory_start_year
+        return timestep + self.parent.country.inventory_start_year - 1

@@ -32,10 +32,8 @@ class Calibration(Scenario):
             other_runner = other_scen.runners[c.iso2_code][0]
             this_runner.input_data = other_runner.input_data
         # Patch the run method to never get executed #
-        def calibration_run():
-            raise Exception("You cannot run the fake 'calibration' runners.")
-        for c in self.continent:
-            runner = result[c.iso2_code][0]
-            runner.run = calibration_run
+        def do_not_run(): raise Exception("You cannot run the fake 'calibration' runners.")
+        for runners in result.values(): runners[0].run      = do_not_run
+        for runners in result.values(): runners[0].__call__ = do_not_run
         # Return #
         return result

@@ -43,7 +43,7 @@ class Scenario(object):
         summary = self.paths.summary
         summary.open(mode='w')
         summary.handle.write("# Summary of all log file tails\n\n")
-        summary.handle.writelines(r[step].summary for r in self.runners.values() if r[step])
+        summary.handle.writelines(r[step].tail for r in self.runners.values() if r[step])
         summary.close()
 
     @property_cached

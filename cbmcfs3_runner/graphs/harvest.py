@@ -95,20 +95,27 @@ class HarvestExpectedProvided(Graph):
 class HarvestDiscrepancy(Graph):
     def plot(self, **kwargs):
         # Columns #
-        grp_cols = ['DistTypeName',
-                    'year']
         idx_cols = ['DistTypeName',
                     'year',
                     'forest_type']
+        grp_cols = ['DistTypeName',
+                    'year']
         agg_cols = {'delta': 'sum'}
 
         # Data #
         static = self.parent.scenarios['static_demand'][0].post_processor.harvest.exp_prov_by_year
         calibr = self.parent.scenarios['calibration'][0].post_processor.harvest.exp_prov_by_year
+
+        # Filter the years that we don't use from the calibration scenario #
+        max_year = static.year.max()
+        selector = calibr['year'] <= max_year
+        calibr   = calibr.loc[selector].copy()
+
+        # Set index #
         static = static.set_index(idx_cols)
         calibr = calibr.set_index(idx_cols)
 
-        # Difference
+        # Difference #
         discrepancy = (calibr - static)
         discrepancy.delta = abs(discrepancy.delta)
 

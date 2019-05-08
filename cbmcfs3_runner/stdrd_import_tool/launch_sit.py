@@ -33,7 +33,7 @@ class LaunchSIT(object):
     https://github.com/cat-cfs/StandardImportToolPlugin
     by calling "StandardImportToolPlugin.exe" so make sure its in your PATH.
 
-    It expects release version 1.2.1
+    It expects release version 1.3.0.1
 
     It will call the binary distribution exe with a JSON file as only parameter.
     This JSON file is automatically generated.
@@ -48,7 +48,7 @@ class LaunchSIT(object):
     Is determined by the table "UserDefdClasses" in the calibration.mdb
     """
 
-    url = 'https://github.com/cat-cfs/StandardImportToolPlugin/releases/download/1.2.1/Release.zip'
+    url = 'https://github.com/cat-cfs/StandardImportToolPlugin/releases/download/1.3.0.1/Release.zip'
 
     all_paths = """
     /output/sit/project.mdb
@@ -58,16 +58,20 @@ class LaunchSIT(object):
 
     @classmethod
     def install(cls):
-        """A method to automatically install the tool.
+        """A method to automatically install the tool. Use it like this:
         >>> from cbmcfs3_runner.stdrd_import_tool.launch_sit import LaunchSIT
         >>> LaunchSIT.install()
         """
         # Download it #
+        print('Downloading...')
         path     = '/Users/Administrator/test/'
         response = urlopen(cls.url)
+        # Decompress it #
+        print('Decompressing...')
         archive  = zipfile.ZipFile(io.BytesIO(response.read()))
         archive.extractall(path=path)
         # Move it #
+        print('Moving...')
         source = DirectoryPath('/Users/Administrator/test/Release/')
         destin = DirectoryPath('/Program Files/StandardImportToolPlugin/')
         destin.remove()
