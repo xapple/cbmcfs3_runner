@@ -236,7 +236,7 @@ class Harvest(object):
         df = self.expected_provided
         # Keep rows where either expected or provided are non-zero #
         selector = (df['expected'] != 0.0) | (df['provided'] != 0.0)
-        df = df[selector]
+        df = df.loc[selector]
         # Add the delta column #
         df['delta'] = (df.expected - df.provided)
         # Drop columns with no information #

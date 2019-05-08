@@ -26,7 +26,7 @@ from cbmcfs3_runner.core.continent import continent
 # Run each country and send errors to the log #
 scenario = continent.scenarios['static_demand']
 runners  = [r[0] for k,r in scenario.runners.items()]
-runners  = [r for r in runners if r.iso2_code in ('GB', 'GR', 'HR', 'LT', 'LV')]
+runners  = [r for r in runners if r.country.iso2_code in ('GB', 'GR', 'HR', 'LT', 'LV')]
 
 for r in tqdm(runners, ncols=60):
     try:
