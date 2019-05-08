@@ -30,7 +30,7 @@ from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
 # Get one country #
-c = continent.countries['AT']
+c = continent.countries['GR']
 
 # Get runners #
 runners = [r for runners in c.scenarios.values() for r in runners]

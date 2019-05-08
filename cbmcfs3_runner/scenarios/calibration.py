@@ -22,6 +22,7 @@ class Calibration(Scenario):
     @property_cached
     def runners(self):
         """A list of runners for each country"""
+        # Create all runners #
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         # Get a second scenario #
         other_scen = self.continent.scenarios['static_demand']
@@ -30,5 +31,11 @@ class Calibration(Scenario):
             this_runner  = result[c.iso2_code][0]
             other_runner = other_scen.runners[c.iso2_code][0]
             this_runner.input_data = other_runner.input_data
+        # Patch the run method to never get executed #
+        def calibration_run():
+            raise Exception("You cannot run the fake 'calibration' runners.")
+        for c in self.continent:
+            runner = result[c.iso2_code][0]
+            runner.run = calibration_run
         # Return #
         return result

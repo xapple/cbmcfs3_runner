@@ -34,6 +34,7 @@ class Harvest(object):
         # Directories #
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def check(self):
         """
@@ -47,13 +48,14 @@ class Harvest(object):
         # Load tables #
         flux_indicators  = self.parent.database['tblFluxIndicators']
         disturbance_type = self.parent.database['tblDisturbanceType']
+        coefficients     = self.parent.classifiers_coefs.reset_index()
         # First ungrouped #
         ungrouped = (flux_indicators
                      .set_index('DistTypeID')
                      .join(disturbance_type.set_index('DistTypeID'))
                      .reset_index()
                      .set_index('UserDefdClassSetID')
-                     .join(self.parent.classifiers_coefs.reset_index().set_index('UserDefdClassSetID')))
+                     .join(coefficients.set_index('UserDefdClassSetID')))
         # Then group #
         df = (ungrouped
               .groupby(['DistTypeID',
@@ -81,6 +83,7 @@ class Harvest(object):
         # Return #
         return df
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def summary_check(self):
         """
@@ -114,6 +117,7 @@ class Harvest(object):
         # Return result #
         return df
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def total(self):
         """
@@ -140,6 +144,7 @@ class Harvest(object):
         # Return result #
         return df
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def disturbances(self):
         """
@@ -180,6 +185,7 @@ class Harvest(object):
         # Return result #
         return df
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def expected_provided(self):
         """
@@ -198,10 +204,11 @@ class Harvest(object):
                  'forest_type',
                  'management_type',
                  'management_strategy']
+        # Set the same index on both data frames #
+        df    = self.summary_check.set_index(index)
+        dists = self.disturbances.set_index(index)
         # Do the join #
-        df = (self.summary_check
-              .set_index(index)
-              .join(self.disturbances.set_index(index)))
+        df = (df.join(dists))
         # Sum two columns #
         df = (df
               .groupby(index)
@@ -210,28 +217,32 @@ class Harvest(object):
               .rename(columns = {'Amount': 'expected',
                                  'TC':     'provided'})
               .reset_index())
-        # Remove rows where expected and provided are both zero #
-        selector = (df['expected'] != 0.0) & (df['provided'] != 0.0)
-        df = df[selector]
-        # Add the difference column #
-        df['delta'] = (df.expected - df.provided)
         # Return result #
         return df
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def exp_prov_by_year(self):
         """
-        Same thing as above but with years instead of TimeSteps and with unvarying columns
-        removed.
+        Same thing as above but with:
+         - Years instead of TimeSteps
+         - Unvarying columns removed.
+         - Rows where expected and provided are both zero removed
+         - An extra column indicating the delta between expected and provided
 
         Columns are: ['year', 'DistTypeName', 'forest_type', 'expected', 'provided', 'delta'],
         """
         # Take a reference #
         df = self.expected_provided
-        # Drop columns #
+        # Keep rows where either expected or provided are non-zero #
+        selector = (df['expected'] != 0.0) | (df['provided'] != 0.0)
+        df = df[selector]
+        # Add the delta column #
+        df['delta'] = (df.expected - df.provided)
+        # Drop columns with no information #
         useless_columns = ['status', 'management_type', 'management_strategy']
         df = df.drop(useless_columns, axis=1)
-        # Add year #
+        # Add year and remove TimeStep #
         df['year'] = self.parent.timestep_to_years(df['TimeStep'])
         df = df.drop('TimeStep', axis=1)
         # Return result #

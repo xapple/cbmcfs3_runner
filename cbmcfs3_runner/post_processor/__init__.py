@@ -80,7 +80,7 @@ class PostProcessor(object):
 
     @property
     def coefficients(self):
-        """Shortcut to the countrys conversion coefficients."""
+        """Shortcut to the countries' conversion coefficients."""
         return self.parent.country.coefficients
 
     @property_cached
