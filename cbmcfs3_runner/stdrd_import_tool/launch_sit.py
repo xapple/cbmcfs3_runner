@@ -13,8 +13,7 @@ import os, zipfile, io
 from six.moves.urllib.request import urlopen
 
 # Third party modules #
-if os.name == "posix": import sh as pbs
-if os.name == "nt":    import pbs
+import pbs3
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
@@ -76,6 +75,9 @@ class LaunchSIT(object):
         destin = DirectoryPath('/Program Files/StandardImportToolPlugin/')
         destin.remove()
         source.move_to(destin)
+        # Check it #
+        print('Checking installation...')
+        print(pbs3.Command("StandardImportToolPlugin.exe")('--version'))
 
     def __init__(self, parent):
         # Keep access to the parent object #
@@ -101,7 +103,7 @@ class LaunchSIT(object):
     def run_sit(self):
         """Don't forget to put the exe in your PATH variable."""
         self.log.info("Launching StandardImportToolPlugin.exe.")
-        pbs.Command("StandardImportToolPlugin.exe")('-c', self.create_json.paths.json)
+        pbs3.Command("StandardImportToolPlugin.exe")('-c', self.create_json.paths.json)
         self.log.info("StandardImportToolPlugin has completed.")
 
     def move_log(self):
