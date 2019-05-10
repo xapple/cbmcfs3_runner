@@ -93,11 +93,3 @@ class CreateJSON(object):
                 "nonforest_mapping": mappings['map_nonforest']}
         # Return result #
         return config
-
-###############################################################################
-class ImportJSON(CreateJSON):
-    """This class will generate the JSON file needed by SIT."""
-
-###############################################################################
-class AppendJSON(CreateJSON):
-    """This class will generate the JSON file needed by SIT."""

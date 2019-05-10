@@ -48,13 +48,6 @@ class Country(object):
     /orig/associations.csv
     /orig/coefficients.csv
     /export/
-    /export/ageclass.csv
-    /export/classifiers.csv
-    /export/disturbance_events.csv
-    /export/disturbance_types.csv
-    /export/inventory.csv
-    /export/transition_rules.csv
-    /export/yields.csv
     /logs/country.log
     /graphs/
     /report/report.pdf

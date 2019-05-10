@@ -36,12 +36,13 @@ class ExportCalibrationCSV(object):
     /orig/coefficients.csv
     /export/
     /export/ageclass.csv
+    /export/inventory.csv
     /export/classifiers.csv
     /export/disturbance_events.csv
     /export/disturbance_types.csv
-    /export/inventory.csv
     /export/transition_rules.csv
     /export/yields.csv
+    /export/historical_yields.csv
     """
 
     def __init__(self, country):
@@ -51,14 +52,15 @@ class ExportCalibrationCSV(object):
         self.paths = AutoPaths(self.country.data_dir, self.all_paths)
 
     file_to_table_name = {
+        "coefficients":                 "Coefficients",
         "ageclass":                     "Age Classes_CBM",
         "inventory":                    "Back_Inventory",
         "classifiers":                  "Classifiers",
-        "coefficients":                 "Coefficients",
         "disturbance_types":            "Disturbance Types_CBM",
         "disturbance_events":           "Dist_Events_Const",
-        "yields":                       "SELECTED_CURRENT_YTS",
         "transition_rules":             "TRANSITION_CBM",
+        "yields":                       "SELECTED_CURRENT_YTS",
+        "historical_yields":            "SELECTED_HISTORICAL_YTS",
     }
 
     @property_cached

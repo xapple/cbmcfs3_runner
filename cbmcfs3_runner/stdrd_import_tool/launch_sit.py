@@ -49,12 +49,6 @@ class LaunchSIT(object):
 
     url = 'https://github.com/cat-cfs/StandardImportToolPlugin/releases/download/1.3.0.1/Release.zip'
 
-    all_paths = """
-    /output/sit/project.mdb
-    /output/sit/SITLog.txt
-    /logs/sit_import.log
-    """
-
     @classmethod
     def install(cls):
         """A method to automatically install the tool. Use it like this:
@@ -86,9 +80,9 @@ class LaunchSIT(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        self.import_json()
-        self.append_json()
-        self.run_sit()
+        self.create_xls()
+        self.create_json()
+        self.run_sit(self.append)
         self.move_log()
         self.check_for_errors()
 
@@ -97,16 +91,17 @@ class LaunchSIT(object):
         return CreateXLS(self)
 
     @property_cached
-    def import_json(self): return ImportJSON(self)
-    @property_cached
-    def append_json(self): return AppendJSON(self)
+    def create_json(self):
+        return CreateJSON(self)
 
-    def run_sit(self):
+    def run_sit(self, append):
         """Don't forget to put the exe in your PATH variable."""
-        self.log.info("Launching StandardImportToolPlugin.exe (in import mode).")
-        pbs3.Command("StandardImportToolPlugin.exe")('-c', self.import_json.paths.json)
-        self.log.info("Launching StandardImportToolPlugin.exe (in append mode).")
-        pbs3.Command("StandardImportToolPlugin.exe")('-a', '-c', self.append_json.paths.json)
+        # Parameters #
+        if append: cmd = ('-c', self.create_json.paths.json)
+        else:      cmd = ('-c', '-a', self.create_json.paths.json)
+        # Do it #
+        self.log.info("Launching StandardImportToolPlugin.exe.")
+        pbs3.Command("StandardImportToolPlugin.exe")(*cmd)
         self.log.info("StandardImportToolPlugin has completed.")
 
     def move_log(self):
@@ -133,3 +128,30 @@ class LaunchSIT(object):
     def tail(self):
         """Shortcut: view the end of the log file."""
         return self.paths.log.tail()
+
+###############################################################################
+class DefaultSIT(LaunchSIT):
+    """
+    To be run first to create the project.
+    """
+    append = False
+
+    all_paths = """
+    /output/sit/project.mdb
+    /output/sit/SITLog.txt
+    /logs/sit_default.log
+    """
+
+###############################################################################
+class AppendSIT(LaunchSIT):
+    """
+    To be run second to append the yield curve as new CBM assumptions in
+    the project with the DefaultSIT instance.
+    """
+    append = True
+
+    all_paths = """
+    /output/sit/project.mdb
+    /output/sit/SITLog.txt
+    /logs/sit_append.log
+    """

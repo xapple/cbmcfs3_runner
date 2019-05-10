@@ -23,7 +23,7 @@ from plumbing.cache import property_cached
 class InputData(object):
     """
     This class will provide access to the input data of a Runner
-    as pandas dataframe.
+    as a pandas dataframe.
     """
 
     all_paths = """

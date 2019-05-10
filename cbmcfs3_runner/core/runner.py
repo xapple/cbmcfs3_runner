@@ -13,7 +13,6 @@ Unit D1 Bioeconomy.
 # First party modules #
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
-from plumbing.common      import pad_extra_whitespace
 from plumbing.logger      import create_file_logger
 
 # Internal modules #
@@ -24,7 +23,7 @@ from cbmcfs3_runner.modifiers.middle_process      import MiddleProcessor
 from cbmcfs3_runner.post_processor                import PostProcessor
 from cbmcfs3_runner.others.input_data             import InputData
 from cbmcfs3_runner.reports.runner                import RunnerReport
-from cbmcfs3_runner.stdrd_import_tool.launch_sit  import LaunchSIT
+from cbmcfs3_runner.stdrd_import_tool.launch_sit  import DefaultSIT, AppendSIT
 from cbmcfs3_runner.external_tools.launch_cbm     import LaunchCBM
 
 ###############################################################################
@@ -85,7 +84,8 @@ class Runner(object):
         self.input_data.copy_from_country()
         self.pre_processor()
         self.country.aidb.switch()
-        self.launch_sit()
+        self.default_sit()
+        self.append_sit()
         self.middle_processor()
         self.launch_cbm()
         #self.post_processor()
@@ -115,8 +115,9 @@ class Runner(object):
         return PreProcessor(self)
 
     @property_cached
-    def launch_sit(self):
-        return LaunchSIT(self)
+    def launch_sit(self): return DefaultSIT(self)
+    @property_cached
+    def launch_sit(self): return AppendSIT(self)
 
     @property_cached
     def middle_processor(self):
