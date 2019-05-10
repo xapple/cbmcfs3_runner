@@ -111,9 +111,12 @@ class LaunchSIT(object):
 
     def check_for_errors(self):
         """This method has not been checked yet."""
+        # Let's check for the word error, you never know #
         if "error" in self.paths.log.contents.lower():
             raise Exception("SIT did not run properly.")
-        assert self.paths.log.contents.endswith("Done\n")
+        # For some reason when appending we don't get the "Done" at the end #
+        if not self.append:
+            assert self.paths.log.contents.endswith("Done\n")
 
     @property
     def log(self):
@@ -160,6 +163,6 @@ class AppendSIT(LaunchSIT):
     /input/xls/append_tables.xlsx                            
     /input/xls/append_tables.xls                               
     /output/sit/project.mdb
-    /output/sit/SITLog.txt
+    /output/sit/SITLog_append.txt
     /logs/sit_append.log
     """

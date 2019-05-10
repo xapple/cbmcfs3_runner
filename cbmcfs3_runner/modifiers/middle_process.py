@@ -73,7 +73,7 @@ class MiddleProcessor(object):
         # Log message #
         self.parent.log.info("Executing final appending queries")
         # Screen-shot 1 of page 4 of <roberto_proj_creation.pdf> #
-        query = 'DELETE FROM tblSimulation WHERE tblSimulation.SimulationID=2;'
+        query = "DELETE FROM tblSimulation WHERE tblSimulation.SimulationID=2;"
         self.project_database.cursor.execute(query)
         # Screen-shot 2 of page 4 of <roberto_proj_creation.pdf> optional #
         #query = 'UPDATE tblSimulation SET Name="new name" WHERE tblSimulation.SimulationID=1;'
