@@ -115,9 +115,9 @@ class Runner(object):
         return PreProcessor(self)
 
     @property_cached
-    def launch_sit(self): return DefaultSIT(self)
+    def default_sit(self): return DefaultSIT(self)
     @property_cached
-    def launch_sit(self): return AppendSIT(self)
+    def append_sit(self): return AppendSIT(self)
 
     @property_cached
     def middle_processor(self):

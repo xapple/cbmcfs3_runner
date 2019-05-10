@@ -38,8 +38,8 @@ class MiddleProcessor(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        pass
         #self.extend_simulation(100)
+        self.finish_append()
 
     @property_cached
     def project_database(self):
@@ -63,3 +63,30 @@ class MiddleProcessor(object):
         # Execute the query #
         self.project_database.cursor.execute(query)
         self.project_database.cursor.commit()
+
+    def finish_append(self):
+        """
+        According to Scott this is what we should do to finish the "yield appending" procedure
+        so that it matches Roberto's procedure.
+        See ticket on JIRA at https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-178
+        """
+        # Log message #
+        self.parent.log.info("Executing final appending queries")
+        # Screen-shot 1 of page 4 of <roberto_proj_creation.pdf> #
+        query = 'DELETE FROM tblSimulation WHERE tblSimulation.SimulationID=2;'
+        self.project_database.cursor.execute(query)
+        # Screen-shot 2 of page 4 of <roberto_proj_creation.pdf> optional #
+        #query = 'UPDATE tblSimulation SET Name="new name" WHERE tblSimulation.SimulationID=1;'
+        #self.project_database.cursor.execute(query)
+        # Screen-shot 1 of page 5 of <roberto_proj_creation.pdf> #
+        query = 'DELETE FROM tblRunTable WHERE tblRunTable.RunID=2;'
+        self.project_database.cursor.execute(query)
+        # Screen-shot 2 of page 5 of <roberto_proj_creation.pdf> #
+        query = """UPDATE tblStandInitialization SET
+                        RunGrowthScenarioID            = 2,
+                        RunGrowthMultiplierScenarioID  = 2,
+                        StandInitDistAssumptionID      = 2,
+                        StandInitGCAssumptionID        = 2,
+                        StandInitNonForestAssumptionID = 2
+                    WHERE tblStandInitialization.StandInitID = 1;"""
+        self.project_database.cursor.execute(query)

@@ -54,8 +54,7 @@ class CreateXLS(object):
         self.parent = parent
         self.runner = parent.parent
         # Automatically access paths based on a string of many subpaths #
-        self.paths = AutoPaths(self.runner.data_dir, self.all_paths)
-
+        self.paths = AutoPaths(self.runner.data_dir, self.all_paths + self.parent.all_paths)
 
     def __call__(self):
         # Check there are CSVs #

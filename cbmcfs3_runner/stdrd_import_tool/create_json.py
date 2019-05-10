@@ -24,10 +24,6 @@ from autopaths.auto_paths import AutoPaths
 class CreateJSON(object):
     """This class will generate the JSON file needed by SIT."""
 
-    all_paths = """
-    /input/sit_config/sit_config.json
-    """
-
     template = {
       "output_path": None,
       "import_config": {
@@ -66,7 +62,7 @@ class CreateJSON(object):
         self.parent = parent
         self.runner = parent.parent
         # Automatically access paths based on a string of many subpaths #
-        self.paths = AutoPaths(self.runner.data_dir, self.all_paths)
+        self.paths = AutoPaths(self.runner.data_dir, self.parent.all_paths)
 
     def __call__(self):
         self.paths.json.write(json.dumps(self.content, indent=4, ignore_nan=True))

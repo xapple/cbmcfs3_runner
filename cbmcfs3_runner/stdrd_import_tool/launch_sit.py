@@ -82,7 +82,7 @@ class LaunchSIT(object):
     def __call__(self):
         self.create_xls()
         self.create_json()
-        self.run_sit(self.append)
+        self.run_sit()
         self.move_log()
         self.check_for_errors()
 
@@ -94,13 +94,13 @@ class LaunchSIT(object):
     def create_json(self):
         return CreateJSON(self)
 
-    def run_sit(self, append):
+    def run_sit(self):
         """Don't forget to put the exe in your PATH variable."""
         # Parameters #
-        if append: cmd = ('-c', self.create_json.paths.json)
-        else:      cmd = ('-c', '-a', self.create_json.paths.json)
+        if self.append: cmd = ('-a', '-c', self.create_json.paths.json)
+        else:           cmd = (      '-c', self.create_json.paths.json)
         # Do it #
-        self.log.info("Launching StandardImportToolPlugin.exe.")
+        self.log.info("Launching StandardImportToolPlugin.exe in %s." % self.short_name)
         pbs3.Command("StandardImportToolPlugin.exe")(*cmd)
         self.log.info("StandardImportToolPlugin has completed.")
 
@@ -135,8 +135,12 @@ class DefaultSIT(LaunchSIT):
     To be run first to create the project.
     """
     append = False
+    short_name = "default mode"
 
     all_paths = """
+    /input/sit_config/default_config.json
+    /input/xls/default_tables.xlsx                            
+    /input/xls/default_tables.xls                               
     /output/sit/project.mdb
     /output/sit/SITLog.txt
     /logs/sit_default.log
@@ -149,8 +153,12 @@ class AppendSIT(LaunchSIT):
     the project with the DefaultSIT instance.
     """
     append = True
+    short_name = "append mode"
 
     all_paths = """
+    /input/sit_config/append_config.json
+    /input/xls/append_tables.xlsx                            
+    /input/xls/append_tables.xls                               
     /output/sit/project.mdb
     /output/sit/SITLog.txt
     /logs/sit_append.log
