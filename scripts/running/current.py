@@ -20,9 +20,14 @@ from tqdm import tqdm
 from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
+## Run each country and send errors to the log #
 #scenario = continent.scenarios['calibration']
 #runners  = [r[0] for k,r in scenario.runners.items()]
-#
+
+## Filter #
+#runners  = [r for r in runners if r.country.iso2_code in ('GB', 'GR', 'HR', 'LT', 'LV')]
+
+## Do it #
 #for r in tqdm(runners[1:2], ncols=60):
 #    r.graphs(rerun=True)
 #    r.report()

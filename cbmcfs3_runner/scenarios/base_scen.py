@@ -14,6 +14,7 @@ Unit D1 Bioeconomy.
 from autopaths            import Path
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
+from tqdm import tqdm
 
 # Internal modules #
 from cbmcfs3_runner.reports.scenario import ScenarioReport
@@ -33,6 +34,12 @@ class Scenario(object):
         self.base_dir = Path(self.scenarios_dir + self.short_name + '/')
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.base_dir, self.all_paths)
+
+    def __call__(self):
+        for code, steps in tqdm(self.runners.items(), ncols=60):
+            for r in steps:
+                r(silent=True)
+        self.compile_log_tails()
 
     @property
     def scenarios_dir(self):

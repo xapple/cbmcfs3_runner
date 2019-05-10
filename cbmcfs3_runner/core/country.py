@@ -69,6 +69,11 @@ class Country(object):
         # Store the reference years #
         self.set_years()
 
+    def __call__(self):
+        self.graphs(rerun=True)
+        self.report()
+        #c.report.copy_to_outbox()
+
     def set_codes(self):
         """Update all the country codes for this country.
         Typically the result will look something like this:

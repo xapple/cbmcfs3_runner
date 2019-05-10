@@ -78,8 +78,10 @@ class Runner(object):
             if not silent: raise
 
     def run(self):
+        # Messages #
         self.log.info("Using module at '%s'" % cbmcfs3_runner)
         self.log.info("Runner '%s' starting" % self.short_name)
+        # Main steps #
         self.remove_directory()
         self.input_data.copy_from_country()
         self.pre_processor()
@@ -88,7 +90,8 @@ class Runner(object):
         self.append_sit()
         self.middle_processor()
         self.launch_cbm()
-        #self.post_processor()
+        self.post_processor()
+        # Reporting #
         for graph in self.graphs: graph()
         self.report()
 
