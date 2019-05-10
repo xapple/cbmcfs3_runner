@@ -86,8 +86,8 @@ class LaunchSIT(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        self.create_xls()
-        self.create_json()
+        self.import_json()
+        self.append_json()
         self.run_sit()
         self.move_log()
         self.check_for_errors()
@@ -97,13 +97,16 @@ class LaunchSIT(object):
         return CreateXLS(self)
 
     @property_cached
-    def create_json(self):
-        return CreateJSON(self)
+    def import_json(self): return ImportJSON(self)
+    @property_cached
+    def append_json(self): return AppendJSON(self)
 
     def run_sit(self):
         """Don't forget to put the exe in your PATH variable."""
-        self.log.info("Launching StandardImportToolPlugin.exe.")
-        pbs3.Command("StandardImportToolPlugin.exe")('-c', self.create_json.paths.json)
+        self.log.info("Launching StandardImportToolPlugin.exe (in import mode).")
+        pbs3.Command("StandardImportToolPlugin.exe")('-c', self.import_json.paths.json)
+        self.log.info("Launching StandardImportToolPlugin.exe (in append mode).")
+        pbs3.Command("StandardImportToolPlugin.exe")('-a', '-c', self.append_json.paths.json)
         self.log.info("StandardImportToolPlugin has completed.")
 
     def move_log(self):

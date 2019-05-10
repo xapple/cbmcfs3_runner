@@ -57,7 +57,7 @@ class CreateXLS(object):
 
     def __call__(self):
         # Check there are CSVs #
-        if self.paths.csv_dir.empty: raise Exception("No CSVs present to generate the XLS")
+        if self.paths.csv_dir.empty: raise Exception("No CSVs present to generate the XLS.")
         # Check there are CSV files present #
         for name in self.file_name_to_sheet_name: assert self.paths[name].exists
         # Create an Excel Writer #
