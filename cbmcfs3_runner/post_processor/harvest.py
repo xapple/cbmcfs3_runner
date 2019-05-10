@@ -177,6 +177,8 @@ class Harvest(object):
         df = self.parent.parent.input_data.disturbance_events
         # Now instead of being called _1, _2, _3 the columns are called forest_type, region, etc. #
         df = df.rename(columns = user_classes)
+        # C.f the PL column problem #
+        df = df.rename(columns={'natural_forest_region': 'management_type'})
         # These columns also need to be manually renamed #
         df = df.rename(columns = {'Step':         'TimeStep',
                                   'Dist_Type_ID': 'DistTypeName'})
@@ -195,7 +197,7 @@ class Harvest(object):
         Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
 
         Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
-                      'management_strategy', 'expected', 'provided', 'delta']
+                      'management_strategy', 'expected', 'provided']
         """
         # Index columns to join disturbances and harvest check #
         index = ['status',
@@ -226,29 +228,25 @@ class Harvest(object):
         """
         Same thing as above but with:
          - Years instead of TimeSteps
-         - Unvarying columns removed.
          - Rows where expected and provided are both zero removed
          - An extra column indicating the delta between expected and provided
 
-        Columns are: ['year', 'DistTypeName', 'forest_type', 'expected', 'provided', 'delta'],
+        Columns are: ['year', 'DistTypeName', 'forest_type', 'expected', 'provided', 'delta'
+                      'status', 'management_type', 'management_strategy'],
         """
         # Take a reference #
         df = self.expected_provided
-        # Keep rows where either expected or provided are non-zero #
-        selector = (df['expected'] != 0.0) | (df['provided'] != 0.0)
-        # Don't forget to copy (see SettingWithCopyWarning) #
-        df = df.loc[selector].copy()
+        # Remove rows where both expected and provided are zero #
+        selector = (df['expected'] == 0.0) & (df['provided'] == 0.0)
+        df = df.loc[~selector].copy()
         # Add the delta column #
         df['delta'] = (df.expected - df.provided)
-        # Drop columns with no information #
-        useless_columns = ['status', 'management_type', 'management_strategy']
-        df = df.drop(useless_columns, axis=1)
         # Add year and remove TimeStep #
         df['year'] = self.parent.timestep_to_years(df['TimeStep'])
         df = df.drop('TimeStep', axis=1)
         # Only if we are in the calibration scenario #
-        # Patch the harvest data frame to stop at the simulation year #
         if self.parent.parent.scenario.short_name == 'calibration':
+            # Patch the harvest data frame to stop at the simulation year #
             selector = df['year'] <= self.parent.parent.country.base_year
             df = df.loc[selector].copy()
         # Return result #

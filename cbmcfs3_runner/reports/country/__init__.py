@@ -30,10 +30,13 @@ class CountryReport(Document):
 
     def __init__(self, parent):
         # Attributes #
-        self.parent = parent
-        self.runner = parent
+        self.parent  = parent
+        self.country = parent
         # Paths #
         self.output_path = self.parent.paths.pdf
+        # Basic export path #
+        self.outbox  = self.country.continent.paths.reports_dir
+        self.outbox += 'countries/' + self.country.iso2_code + '.pdf'
 
     @property_cached
     def template(self): return CountryTemplate(self)

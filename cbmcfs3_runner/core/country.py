@@ -63,8 +63,10 @@ class Country(object):
     def __repr__(self):
         return '%s object code "%s"' % (self.__class__, self.iso2_code)
 
-    def __init__(self, data_dir=None):
+    def __init__(self, continent, data_dir=None):
         """Store the data directory paths where everything will start from."""
+        # Parent #
+        self.continent = continent
         # Main directory #
         self.data_dir = DirectoryPath(data_dir)
         # Automatically access paths based on a string of many subpaths #

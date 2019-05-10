@@ -33,6 +33,7 @@ class Continent(object):
     all_paths = """
     /countries/
     /scenarios/
+    /reports/
     /logs/continent.log
     """
 
@@ -57,7 +58,7 @@ class Continent(object):
     @property_cached
     def countries(self):
         """Return a list with country objects inside."""
-        all_countries = [Country(d) for d in self.countries_dir.flat_directories]
+        all_countries = [Country(self, d) for d in self.countries_dir.flat_directories]
         return {c.iso2_code: c for c in all_countries}
 
     @property_cached

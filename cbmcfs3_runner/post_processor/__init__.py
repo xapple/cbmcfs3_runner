@@ -78,9 +78,11 @@ class PostProcessor(object):
         # Lower case everything #
         classifiers = classifiers.rename(columns=lambda n:n.replace('/','_'))
         # In the calibration scenario we can't change names and there is a conflict #
-        # This should not impact other scenarios #
-        # C.f the Broad/Conifers to Conifers/Bradleaves problem #
+        # This should not impact other scenarios hopefully #
+        # C.f the "Broad/Conifers" to "Conifers/Bradleaves" problem in several countries #
         classifiers = classifiers.rename(columns={'broad_conifers': 'conifers_bradleaves'})
+        # C.f the PL column problem #
+        classifiers = classifiers.rename(columns={'natural_forest_region': 'management_type'})
         # Return result #
         return classifiers
 
