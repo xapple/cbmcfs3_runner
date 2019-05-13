@@ -58,6 +58,8 @@ class Silviculture(object):
         column_names = [name.strip('$') for name in column_names.split()]
         # Parse into table #
         df = pandas.read_csv(all_rows, names=column_names, delim_whitespace=True)
+        # Rename columns #
+        #df = df.rename()
         # Return #
         return df
 

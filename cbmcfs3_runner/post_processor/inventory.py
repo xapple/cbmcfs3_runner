@@ -37,12 +37,16 @@ class Inventory(object):
     @property_cached
     def bef_ft(self):
         """
-        Stands for "Biomass Expansion Factor, by Forest Type" we think.
+        Stands for "Biomass Expansion Factor, by Forest Type", we think.
         This is translated from an SQL query authored by RP.
         It calculates merchantable biomass.
         """
-        pool = self.parent.database["tblPoolIndicators"].set_index('UserDefdClassSetID')
-        bef_ft = pool.join(self.parent.classifiers, on="UserDefdClassSetID")
+        # Load tables #
+        pool  = self.parent.database["tblPoolIndicators"].set_index('UserDefdClassSetID')
+        clifr = self.parent.classifiers
+        # Join #
+        df = pool.join(clifr, on="UserDefdClassSetID")
+        # Sum for everyone #
         cols_sum = {'SW_Merch'  : 'sum',
                     'SW_Foliage': 'sum',
                     'SW_Other'  : 'sum',
@@ -53,23 +57,24 @@ class Inventory(object):
                     'SW_Fine'   : 'sum',
                     'HW_Coarse' : 'sum',
                     'HW_Fine'   : 'sum'}
-        bef_ft = bef_ft.groupby("forest_type").agg(cols_sum)
-        bef_ft['Tot_Merch']  = bef_ft.SW_Merch   + bef_ft.HW_Merch
-        bef_ft['Tot_ABG']    = bef_ft.SW_Merch   + bef_ft.HW_Merch   + \
-                               bef_ft.SW_Foliage + bef_ft.HW_Foliage + \
-                               bef_ft.HW_Other   + bef_ft.SW_Other
-        bef_ft['BG_Biomass'] = bef_ft.SW_Coarse  + bef_ft.SW_Fine    + \
-                               bef_ft.HW_Coarse  + bef_ft.HW_Fine
-        bef_ft['BEF_Tot']    = (bef_ft.Tot_ABG   + bef_ft.BG_Biomass) / bef_ft.Tot_ABG
-        return bef_ft
+        # Group and aggregate #
+        df = df.groupby("forest_type").agg(cols_sum).reset_index()
+        # Make new columns #
+        df['Tot_Merch']  = df.SW_Merch   + df.HW_Merch
+        df['Tot_ABG']    = df.SW_Merch   + df.HW_Merch   + \
+                           df.SW_Foliage + df.HW_Foliage + \
+                           df.HW_Other   + df.SW_Other
+        df['BG_Biomass'] = df.SW_Coarse  + df.SW_Fine    + \
+                           df.HW_Coarse  + df.HW_Fine
+        df['BEF_Tot']    = (df.Tot_ABG   + df.BG_Biomass) / df.Tot_ABG
+        # Return result #
+        return df
 
     @property_cached
     def simulated(self):
         """
         Update the inventory based on the simulation output contained in
         table 'tblPoolIndicators'.
-
-        See notebook "simulated_harvest.ipynb" for more details.
 
         Columns of the output are:
 
@@ -80,20 +85,23 @@ class Inventory(object):
         """
         # Load table #
         age_indicators = self.parent.database["tblAgeIndicators"]
+        classifr_coefs = self.parent.classifiers_coefs
+        # Set the same index #
+        age_indicators = age_indicators.set_index('UserDefdClassSetID')
+        classifr_coefs = classifr_coefs.set_index('UserDefdClassSetID')
         # Double join #
-        inv = (age_indicators
-               .set_index('UserDefdClassSetID')
-               .join(self.parent.classifiers_coefs.set_index('UserDefdClassSetID'))
+        df = (age_indicators
+               .join(classifr_coefs)
                .reset_index()
                .set_index('forest_type')
-               .join(self.bef_ft, on='forest_type')
+               .join(self.bef_ft.set_index('forest_type'))
                .reset_index())
         # Select only some columns #
         columns_of_interest  = ['AveAge', 'TimeStep', 'Area', 'Biomass', 'BEF_Tot','db']
-        columns_of_interest += self.parent.classifiers.columns
-        inv = inv[columns_of_interest].copy()
+        columns_of_interest += list(self.parent.classifiers.columns)
+        df = df[columns_of_interest].copy()
         # Divide #
-        inv['Merch_C_ha']   = inv.Biomass    / inv.BEF_Tot
-        inv['Merch_Vol_ha'] = inv.Merch_C_ha / inv.db
+        df['Merch_C_ha']   = df.Biomass    / df.BEF_Tot
+        df['Merch_Vol_ha'] = df.Merch_C_ha / df.db
         # Return result #
-        return inv
+        return df
