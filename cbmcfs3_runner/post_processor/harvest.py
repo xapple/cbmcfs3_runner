@@ -178,7 +178,7 @@ class Harvest(object):
         # Now instead of being called _1, _2, _3 the columns are called forest_type, region, etc. #
         df = df.rename(columns = user_classes)
         # C.f the PL column problem #
-        df = df.rename(columns={'natural_forest_region': 'management_type'})
+        df = df.rename(columns = {'natural_forest_region': 'management_type'})
         # These columns also need to be manually renamed #
         df = df.rename(columns = {'Step':         'TimeStep',
                                   'Dist_Type_ID': 'DistTypeName'})

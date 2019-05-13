@@ -55,10 +55,10 @@ class Inventory(object):
                     'HW_Fine'   : 'sum'}
         bef_ft = bef_ft.groupby("forest_type").agg(cols_sum)
         bef_ft['Tot_Merch']  = bef_ft.SW_Merch   + bef_ft.HW_Merch
-        bef_ft['Tot_ABG']    = bef_ft.SW_Merch   + bef_ft.HW_Merch + \
+        bef_ft['Tot_ABG']    = bef_ft.SW_Merch   + bef_ft.HW_Merch   + \
                                bef_ft.SW_Foliage + bef_ft.HW_Foliage + \
                                bef_ft.HW_Other   + bef_ft.SW_Other
-        bef_ft['BG_Biomass'] = bef_ft.SW_Coarse  + bef_ft.SW_Fine + \
+        bef_ft['BG_Biomass'] = bef_ft.SW_Coarse  + bef_ft.SW_Fine    + \
                                bef_ft.HW_Coarse  + bef_ft.HW_Fine
         bef_ft['BEF_Tot']    = (bef_ft.Tot_ABG   + bef_ft.BG_Biomass) / bef_ft.Tot_ABG
         return bef_ft
@@ -70,8 +70,17 @@ class Inventory(object):
         table 'tblPoolIndicators'.
 
         See notebook "simulated_harvest.ipynb" for more details.
+
+        Columns of the output are:
+
+            ['status', 'forest_type', 'region', 'management_type',
+             'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'AveAge',
+             'TimeStep', 'Area', 'Biomass', 'BEF_Tot', 'db', 'Merch_C_ha',
+             'Merch_Vol_ha']
         """
+        # Load table #
         age_indicators = self.parent.database["tblAgeIndicators"]
+        # Double join #
         inv = (age_indicators
                .set_index('UserDefdClassSetID')
                .join(self.parent.classifiers_coefs.set_index('UserDefdClassSetID'))
@@ -79,8 +88,12 @@ class Inventory(object):
                .set_index('forest_type')
                .join(self.bef_ft, on='forest_type')
                .reset_index())
-        columns_of_interest = ['AveAge', 'TimeStep', 'Area', 'Biomass', 'BEF_Tot','db']
-        inv = inv[list(self.parent.classifiers.columns) + columns_of_interest]
-        inv['Merch_C_ha'] = inv.Biomass / inv.BEF_Tot
+        # Select only some columns #
+        columns_of_interest  = ['AveAge', 'TimeStep', 'Area', 'Biomass', 'BEF_Tot','db']
+        columns_of_interest += self.parent.classifiers.columns
+        inv = inv[columns_of_interest].copy()
+        # Divide #
+        inv['Merch_C_ha']   = inv.Biomass    / inv.BEF_Tot
         inv['Merch_Vol_ha'] = inv.Merch_C_ha / inv.db
+        # Return result #
         return inv
