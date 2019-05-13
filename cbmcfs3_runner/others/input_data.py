@@ -27,7 +27,7 @@ class InputData(object):
     """
 
     all_paths = """
-    /input/xls/input_tables.xls
+    /input/xls/default_tables.xls
     """
 
     def __init__(self, parent):

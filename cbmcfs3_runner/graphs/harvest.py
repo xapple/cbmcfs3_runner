@@ -103,7 +103,7 @@ class HarvestExpectedProvided(Graph):
             p.add_legend(handles=patches)
 
         # Change the labels #
-        p.set_axis_labels("Year (simulated)", "Volume in [m^3]")
+        p.set_axis_labels("Year (simulated)", "Volume in [m^3]") # TODO check units
 
         # Change the titles #
         p.set_titles(facet_col + " : {col_name}")

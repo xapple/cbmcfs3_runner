@@ -11,6 +11,7 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
+from tqdm import tqdm
 
 # First party modules #
 from autopaths            import Path
@@ -54,6 +55,10 @@ class Continent(object):
 
     def __iter__(self): return iter(self.countries.values())
     def __len__(self):  return len(self.countries.values())
+
+    def __call__(self):
+        for country in tqdm(self, ncols=60):
+            country()
 
     @property_cached
     def countries(self):

@@ -89,9 +89,9 @@ class Harvest(object):
         """
         Based on Roberto's query `Harvest summary check` visible in the original calibration database.
 
-        Columns are: ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
-                      'management_type', 'management_strategy', 'Vol_Merch', 'Vol_Snags',
-                      'Vol_SubMerch', 'Forest_residues_Vol', 'TC', 'tot_vol']
+        Columns are:    ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
+        (of the output)  'management_type', 'management_strategy', 'Vol_Merch', 'Vol_Snags',
+                         'Vol_SubMerch', 'Forest_residues_Vol', 'TC', 'tot_vol']
         """
         # Load tables #
         disturbance_type = self.parent.database['tblDisturbanceType']
