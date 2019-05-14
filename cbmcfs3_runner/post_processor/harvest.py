@@ -66,6 +66,8 @@ class Harvest(object):
                         'management_strategy',
                         'conifers_bradleaves',
                         # Not real grouping variables only here to keep them in the final table
+                        # Their values should be unique for the all combination of the other grouping vars
+                        # But in fact they are not! But we will group again later with other vars
                         'DOMProduction',
                         'CO2Production',
                         'MerchLitterInput',
