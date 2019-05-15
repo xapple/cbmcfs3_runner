@@ -6,6 +6,11 @@ Written by Lucas Sinclair and Paul Rougieux.
 
 JRC biomass Project.
 Unit D1 Bioeconomy.
+
+You can use this object like this:
+
+    from cbmcfs3_runner.core.continent import continent
+    print(continent)
 """
 
 # Built-in modules #
