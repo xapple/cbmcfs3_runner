@@ -11,6 +11,7 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
+import numpy as np
 
 # First party modules #
 from plumbing.cache import property_cached
@@ -59,6 +60,7 @@ class Harvest(object):
         # Then group #
         df = (ungrouped
               .groupby(['DistTypeID',
+                        'DistTypeName',
                         'TimeStep',
                         'status',
                         'forest_type',
@@ -95,12 +97,9 @@ class Harvest(object):
         (of the output)  'management_type', 'management_strategy', 'Vol_Merch', 'Vol_Snags',
                          'Vol_SubMerch', 'Forest_residues_Vol', 'TC', 'tot_vol']
         """
-        # Load tables #
-        disturbance_type = self.parent.database['tblDisturbanceType']
         # Compute #
         df = (self.check
               .set_index('DistTypeID')
-              .join(disturbance_type.set_index('DistTypeID'))
               .groupby(['DistTypeID',
                         'DistTypeName',
                         'TimeStep',
@@ -128,12 +127,9 @@ class Harvest(object):
         Columns are: ['DistTypeName', 'TC', 'Vol_Merch', 'Vol_SubMerch', 'Vol_Snags',
                       'Forest_residues_Vol', 'tot_vol']
         """
-        # Load tables #
-        disturbance_type = self.parent.database['tblDisturbanceType']
         # Compute #
         df = (self.check
               .set_index('DistTypeID')
-              .join(disturbance_type.set_index('DistTypeID'))
               .groupby(['DistTypeName'])
               .agg({'TC':                  'sum',
                     'Vol_Merch':           'sum',
@@ -148,8 +144,26 @@ class Harvest(object):
 
     #-------------------------------------------------------------------------#
     @property_cached
+    def classifiers_mapping(self):
+        """ Map classifiers columns to a better descriptive name
+            This mapping table will enable us to rename 
+            classifier columns _1, _2, _3 to forest_type, region, etc.
+        """ 
+        # Load user_classes table from DB #
+        user_classes = self.parent.database['tblUserDefdClasses']
+        # Add an underscore to the classifier number so it can be used for renaming #
+        user_classes['id'] = '_' + user_classes.UserDefdClassID.astype(str)
+        # This makes user_classes a pandas.Series linking "_1" to "forest_type" #
+        user_classes = user_classes.set_index('id')['ClassDesc']
+        user_classes = user_classes.apply(lambda x: x.lower().replace(' ', '_'))
+        return user_classes
+    
+    
+    #-------------------------------------------------------------------------#
+    @property_cached
     def disturbances(self):
         """
+        Prepare the disturbance table for join operation with harvest tables.
         It could be a good idea to check why some countries have DistTypeName as int64
         and others have DistTypeName as object.
 
@@ -168,17 +182,10 @@ class Harvest(object):
                       'Efficency', 'Sort_Type', 'Measurement_type', 'Amount', 'DistTypeName',
                       'TimeStep']
         """
-        # Load user_classes table from DB #
-        user_classes = self.parent.database['tblUserDefdClasses']
-        # Add an underscore to the classifier number so it can be used for renaming #
-        user_classes['id'] = '_' + user_classes.UserDefdClassID.astype(str)
-        # This makes user_classes a pandas.Series linking "_1" to "forest_type" #
-        user_classes = user_classes.set_index('id')['ClassDesc']
-        user_classes = user_classes.apply(lambda x: x.lower().replace(' ', '_'))
         # Load disturbances table from excel file #
         df = self.parent.parent.input_data.disturbance_events
-        # Now instead of being called _1, _2, _3 the columns are called forest_type, region, etc. #
-        df = df.rename(columns = user_classes)
+        # Rename classifier columns _1, _2, _3 to forest_type, region, etc. #
+        df = df.rename(columns = self.classifiers_mapping)
         # C.f the PL column problem #
         df = df.rename(columns = {'natural_forest_region': 'management_type'})
         # These columns also need to be manually renamed #
@@ -187,6 +194,21 @@ class Harvest(object):
         # For joining with other data frames, DistTypeName has to be of dtype object not int64 #
         df['DistTypeName'] = df['DistTypeName'].astype(str)
         # Return result #
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def silviculture(self):
+        """ Prepare the silviculture table for join operations with harvest tables.  
+        """
+#         disturbances = runner.input_data.disturbance_events.rename(columns=classifiers_mapping) 
+#         df = self.parent.parent.input_data.disturbance_events
+#         silviculture = runner.country.silviculture.df.rename(columns=classifiers_mapping)
+        df = self.parent.parent.country.silviculture.df
+        df = df.rename(columns = self.classifiers_mapping)
+        df = df.rename(columns = {'Dist_Type_ID':'DistTypeName'})
+        # Change DistTypeName to type string so that it has the same type as harvest_check DistTypeName column
+        df['DistTypeName'] = df['DistTypeName'].astype(str)
         return df
 
     #-------------------------------------------------------------------------#
@@ -253,3 +275,150 @@ class Harvest(object):
             df = df.loc[selector].copy()
         # Return result #
         return df
+    
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def hwp_intermediate(self):
+        """
+        Intermediate table based on `self.check`.
+        Joins disturbance id from the silviculture table
+        to allocate specific disturbances to specific wood products.
+        """
+        join_index = ['DistTypeName',
+                      'forest_type',
+                      'management_type',
+                      'management_strategy']
+        silviculture2 = self.silviculture[join_index + ['HWP']]
+        df = (self.check
+              .reset_index()
+              .set_index(join_index)
+              .join(silviculture2.set_index(join_index))
+              .groupby(['TimeStep', 'HWP'])
+              .agg({'Vol_Merch':'sum',
+                    'Vol_SubMerch':'sum',
+                    'Vol_Snags':'sum',
+                    'TC':'sum'})
+              .reset_index())
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def irw_b(self):
+        """ Harvest volumes of Industrial Round Wood Broadleaves
+        """    
+        df = (self.hwp_intermediate
+              .query('HWP == "IRW_B"')
+              .rename(columns={'Vol_Merch':'Vol_Merch_IRW_B',
+                               'Vol_SubMerch':'Vol_SubMerch_IRW_B',
+                               'Vol_Snags':'Vol_Snags_IRW_B',
+                               'TC':'TC_IRW_B'}))
+        # Drop hwp column 
+        # because it doesn't make sense anymore below when we join different products together
+        df = df.drop('HWP', axis = 1)
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def irw_c(self):
+        """ Harvest volumes of Industrial Round Wood Coniferous
+        """    
+        df = (self.hwp_intermediate
+              .query('HWP == "IRW_C"')
+              .rename(columns={'Vol_Merch':'Vol_Merch_IRW_C',
+                               'Vol_SubMerch':'Vol_SubMerch_IRW_C',
+                               'Vol_Snags':'Vol_Snags_IRW_C',
+                               'TC':'TC_IRW_C'}))
+        df = df.drop('HWP', axis = 1)
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def fw_b(self):
+        """ Harvest volumes of Fuel Wood Broadleaves
+        """    
+        df = (self.hwp_intermediate
+              .query('HWP == "FW_B"')
+              .rename(columns={'Vol_Merch':'Vol_Merch_FW_B',
+                               'Vol_SubMerch':'Vol_SubMerch_FW_B',
+                               'Vol_Snags':'Vol_Snags_FW_B',
+                               'TC':'TC_FW_B'}))
+        return df
+    
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def fw_b_total(self):
+        """ Harvest volumes of Fuel Wood Broadleaves 
+            Join Industrial Round Wood co-products: 'Vol_SubMerch_IRW_B' and 'Vol_Snags_IRW_B'
+            into the fuel wood total.
+        """    
+        df = (self.fw_b
+              .set_index('TimeStep')
+              .join(self.irw_b.set_index(['TimeStep']))
+              .reset_index())
+        df['TOT_Vol_FW_B'] = sum([df.Vol_Merch_FW_B,
+                                  df.Vol_SubMerch_FW_B,
+                                  df.Vol_Snags_FW_B,
+                                  df.Vol_SubMerch_IRW_B,
+                                  df.Vol_Snags_IRW_B])
+        df = df[['TimeStep',
+                 'Vol_Merch_FW_B', 'Vol_SubMerch_FW_B', 'Vol_Snags_FW_B',
+                 'Vol_SubMerch_IRW_B', 'Vol_Snags_IRW_B',
+                 'TOT_Vol_FW_B']]
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def fw_c(self):
+        """ Harvest volumes of Fuel Wood Coniferous
+        """
+        df = (self.hwp_intermediate
+              .query('HWP == "FW_C"')
+              .rename(columns={'Vol_Merch':'Vol_Merch_FW_C',
+                               'Vol_SubMerch':'Vol_SubMerch_FW_C',
+                               'Vol_Snags':'Vol_Snags_FW_C',
+                               'TC':'TC_FW_C'}))
+        return df 
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def fw_c_total(self):
+        """ Harvest volumes of Fuel Wood Coniferous
+            Join Industrial Round Wood co-products.
+        """    
+        df = (self.fw_c
+                  .set_index('TimeStep')
+                  .join(self.irw_c.set_index(['TimeStep']))
+                  .reset_index())
+        df['TOT_Vol_FW_C'] = np.where(df['Vol_Merch_FW_C']>=0,
+                                      sum([df.Vol_Merch_FW_C,
+                                           df.Vol_SubMerch_FW_C,
+                                           df.Vol_Snags_FW_C,
+                                           df.Vol_SubMerch_IRW_C,
+                                           df.Vol_Snags_IRW_C]),
+                                      sum([df.Vol_SubMerch_IRW_C,
+                                           df.Vol_Snags_IRW_C]))
+        df = df[['TimeStep',
+                 'Vol_Merch_FW_C','Vol_SubMerch_FW_C','Vol_Snags_FW_C',
+                 'Vol_SubMerch_IRW_C','Vol_Snags_IRW_C',
+                 'TOT_Vol_FW_C']]
+        return df
+        
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def hwp(self):
+        """ Volumes of Harvested Wood Products (HWP)
+            Matching the product description available in the economic model
+            and in the FAOSTAT historical data. 
+            
+            Join "Vol_Merch" columns from irw_b and irw_c
+            to the total columns from fw_b_total and fw_c_total,
+            using time step as an index.
+        """
+        df = (self.irw_c
+              .set_index('TimeStep')[['Vol_Merch_IRW_C']]
+              .join(self.irw_b.set_index('TimeStep')[['Vol_Merch_IRW_B']])
+              .join(self.fw_c_total.set_index('TimeStep')[['TOT_Vol_FW_C']])
+              .join(self.fw_b_total.set_index('TimeStep')[['TOT_Vol_FW_B']])
+              .reset_index())
+        return df
+    
