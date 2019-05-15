@@ -10,7 +10,7 @@ Unit D1 Bioeconomy.
 You can use this object like this:
 
     from cbmcfs3_runner.faostat import faostat
-    print(faostat.fo)
+    print(faostat.forestry)
 """
 
 # Built-in modules #
@@ -61,12 +61,20 @@ class Faostat(object):
             handle.write(zip_archive.read(file_name))
 
     @property_cached
-    def fo(self):
-        """We need to use DataFrame.stack() to place the
+    def forestry(self):
+        """Transform the raw data table to something adapted to our needs.
+        For instance, We need to use DataFrame.stack() to place the
         years as rows instead of columns.
 
         The resulting data frame will have missing data, for instance
         in Belgium, the ref_year is 1999 but data only starts in 2000.
+
+        Futhermore, we are only interested in these products:
+
+               'Roundwood, coniferous (production)',
+               'Roundwood, non-coniferous (production)',
+               'Wood fuel, coniferous',
+               'Wood fuel, non-coniferous',
         """
         # Read #
         df = pandas.read_csv(str(faostat_fo_path))
@@ -96,6 +104,8 @@ class Faostat(object):
         df = df[selector].copy()
         # Add the correct iso2 code #
         df = df.replace({"country": all_codes.set_index('Country')['ISO2 Code']})
+        # Filter products #
+        pass
         # Return #
         return df
 
