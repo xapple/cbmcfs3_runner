@@ -38,6 +38,11 @@ class Faostat(object):
     Provides access to the databases from http://www.fao.org/.
     """
 
+    products = ['Roundwood, coniferous (production)',
+                'Roundwood, non-coniferous (production)',
+                'Wood fuel, coniferous',
+                'Wood fuel, non-coniferous']
+
     @classmethod
     def download(cls):
         """A method to automatically downloaded the needed CSV file.
@@ -69,21 +74,17 @@ class Faostat(object):
         The resulting data frame will have missing data, for instance
         in Belgium, the ref_year is 1999 but data only starts in 2000.
 
-        Futhermore, we are only interested in these products:
-
-               'Roundwood, coniferous (production)',
-               'Roundwood, non-coniferous (production)',
-               'Wood fuel, coniferous',
-               'Wood fuel, non-coniferous',
+        Futhermore, we are only interested in these products mentioned
+        in self.products
         """
         # Read #
         df = pandas.read_csv(str(faostat_fo_path))
         # Rename all columns to lower case #
         df = df.rename(columns=lambda name: name.replace(' ', '_').lower())
-        # Areas are actually countries #
-        df = df.rename(columns={'area': 'country'})
+        # Areas are actually countries, items are products #
+        df = df.rename(columns={'area': 'country', 'item': 'product'})
         # Columns we want to keep #
-        cols_to_keep = ['area_code', 'country', 'item_code', 'item', 'element_code', 'element', 'unit']
+        cols_to_keep = ['area_code', 'country', 'item_code', 'product', 'element_code', 'element', 'unit']
         # Get rid of all the remaining columns by pivoting the table #
         df = df.set_index(cols_to_keep)
         df = df.stack()
@@ -105,7 +106,8 @@ class Faostat(object):
         # Add the correct iso2 code #
         df = df.replace({"country": all_codes.set_index('Country')['ISO2 Code']})
         # Filter products #
-        pass
+        selector = df['product'].isin(self.products)
+        df = df[selector].copy()
         # Return #
         return df
 
