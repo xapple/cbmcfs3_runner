@@ -20,6 +20,7 @@ To test this file you can proceed like this for instance:
 If you just want to test one function:
 
     In [1]: from cbmcfs3_runner.post_processor.bin_discretizer import generate_bins
+    In [1]: from cbmcfs3_runner.post_processor.bin_discretizer import bin_to_discrete
     In [2]: generate_bins()
 """
 
@@ -37,7 +38,7 @@ CBM_BIN_WIDTH = 20.0
 CBM_PRECISION = 0.1
 
 ###############################################################################
-def bin_to_discrete(bin_height, bin_center, bin_width):
+def bin_to_discrete(bin_height, bin_center, bin_width, precision):
     """This function is more or less the inverse of the pandas.cut method.
     Starting with binned data, we will assume a uniform distribution and
     transform it back to discrete data with a given precision.
@@ -47,15 +48,13 @@ def bin_to_discrete(bin_height, bin_center, bin_width):
 
     We will check that we left bound cannot exceed zero.
 
-    >>> categorical_to_discrete(4, 5, 6, 1)
-    array([0., 0., 0., 5., 5.])
-    >>> categorical_to_discrete(1, 6, 10, 1)
-    array([1., 1., 1., 1., 1., 1.])
+    >>> bin_to_discrete(1, 6, 10, 1)
+    array([0. , 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])
     """
     # Round to precision #
     bin_radius = bin_width / 2
-    bin_radius = int(numpy.round(bin_radius / CBM_PRECISION))
-    bin_center = int(numpy.round(bin_center / CBM_PRECISION))
+    bin_radius = int(numpy.round(bin_radius / precision))
+    bin_center = int(numpy.round(bin_center / precision))
     # Edges #
     bin_left   = bin_center - bin_radius
     bin_right  = bin_center + bin_radius
@@ -73,7 +72,7 @@ def bin_to_discrete(bin_height, bin_center, bin_width):
 ###############################################################################
 def apply_discretizer(row, height_key, center_key):
     """Given a row from our dataframe, return the discretized vector."""
-    return bin_to_discrete(row[height_key], row[center_key], CBM_BIN_WIDTH)
+    return bin_to_discrete(row[height_key], row[center_key], CBM_BIN_WIDTH, CBM_PRECISION)
 
 ###############################################################################
 def aggregator(df, sum_col, bin_col):
@@ -92,7 +91,6 @@ def aggregator(df, sum_col, bin_col):
 def generate_bins(vector, bin_width, verbose=False):
     """Starting from a discretized vector, yield bins.
 
-                                        -----   -------   -----
     >>> list(generate_bins(numpy.array([1,1,2,2,3,4,4,1,1,1,5,6,9]), 0.4))
     [(0.0, 0.4, 6),
      (0.4, 0.8, 12),
@@ -110,7 +108,7 @@ def generate_bins(vector, bin_width, verbose=False):
         # The bin total sum #
         bin = vector[bin_left:bin_right]
         val = bin.sum()
-        # Return one bin #
+        # Optional messages #
         if verbose:
             print(f"vector: {vector}")
             print(vector[bin_left:bin_right])
