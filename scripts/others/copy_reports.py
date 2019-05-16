@@ -20,4 +20,4 @@ home = os.environ.get('HOME', '~') + '/'
 
 ###############################################################################
 pbs3.rsync('-avz', 'paulaws:repos/cbmcfs3_data/reports/countries/',
-                   home + 'repos/cbmcfs3_data/reports/countries/')
+                    home + 'repos/cbmcfs3_data/reports/countries/')

@@ -11,55 +11,15 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
-import pandas, numpy
+import pandas
+from tqdm import tqdm
+
+# Internal modules #
+from .bin_discretizer import aggregator, make_bins
 
 # First party modules #
 from plumbing.cache import property_cached
 from autopaths.auto_paths import AutoPaths
-
-###############################################################################
-# This value is in years and needs to be confimed with Scott
-CBM_BIN_WIDTH = 20.0
-
-# This value is in years and can be changed to adjust the precision of the discretisation
-CBM_PRECISION = 0.01
-
-def categorical_to_discrete(bin_center, bin_height, bin_width, precision):
-    """This function is more or less the inverse of the pandas.cut method.
-    Starting with binned data, we will assume a uniform distribution and
-    transform it back to discrete data with a given precision.
-
-    Given the center and width of a bin we will create a numpy vector
-    with conservation of total mass (i.e. bin_height).
-
-    We will check that we left bound cannot exceed zero.
-
-    >>> categorical_to_discrete(4, 5, 6, 1)
-    array([0., 0., 0., 5., 5.])
-    >>> categorical_to_discrete(1, 6, 10, 1)
-    array([1., 1., 1., 1., 1., 1.])
-    """
-    # Round to precision #
-    bin_radius = bin_width / 2
-    bin_radius = int(numpy.round(bin_radius / precision))
-    bin_center = int(numpy.round(bin_center / precision))
-    # Edges #
-    bin_left   = bin_center - bin_radius
-    bin_right  = bin_center + bin_radius
-    # Check that the left edge is never negative #
-    bin_left = max(bin_left, 0)
-    # Build vector like this: 0,0,0,0,1,1,1,1,1,1,1,1 #
-    vector = numpy.append(numpy.zeros(bin_left), numpy.ones(bin_right - bin_left))
-    # Multiply by the matching height #
-    vector *= bin_height / (bin_right - bin_left)
-    # Check mass is conserved #
-    numpy.testing.assert_allclose(vector.sum(),  bin_height)
-    # Return #
-    return vector
-
-def apply_discretizer(row, key):
-    """Given a row from our dataframe, return the discretized vector."""
-    return categorical_to_discrete(row['AveAge'], row[key], CBM_BIN_WIDTH, CBM_PRECISION)
 
 ###############################################################################
 class Inventory(object):
@@ -77,6 +37,7 @@ class Inventory(object):
         # Directories #
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def bef_ft(self):
         """
@@ -113,6 +74,7 @@ class Inventory(object):
         # Return result #
         return df
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def simulated(self):
         """
@@ -149,30 +111,86 @@ class Inventory(object):
         # Return result #
         return df
 
+    #-------------------------------------------------------------------------#
     @property_cached
-    def grouped(self):
+    def grouped_vectors(self):
         """
-        Group the simulated inventory data frame and collapse columns.
-        """
-        def aggregator(df):
-            """The input df is a data frame with multiple rows and
-            the grouping columns still present. One must return a
-            series (i.e. only one row) with the grouping columns absent."""
-            # Get the discretized version of all rows #
-            all_vectors = df.apply(apply_discretizer, axis=1, key='Area')
-            all_vectors = pandas.DataFrame(v for v in all_vectors).fillna(0.0)
-            # Sum them up #
-            final_vector = all_vectors.sum()
-            # Return #
-            return pandas.Series(dict(area_per_age=final_vector))
-        # Columns we will keep #
-        group_cols = ['TimeStep', 'forest_type']
-        # Do it #
-        df = (self.simulated
-              .groupby(group_cols)
-              .agg(aggregator)
-              .reset_index())
-        # Return #
-        return df
+        Group the simulated inventory data frame and collapse columns
+        by vectorizing according to the AveAge.
 
-###############################################################################
+        The dataframe will look like this:
+
+                 TimeStep forest_type                           Area
+            0           0          DF  [0.0, 5.0, 0.0, 0.0, 8.0, ...
+            1           0          FS  [0.0, 6.0, 0.0, 0.0, 7.0, ...
+            2           0          OB  [0.0, 0.2, 4.0, 0.0, 6.0, ...
+            3           0          OC  [0.0, 0.2, 0.0, 0.0, 5.0, ...
+            4           0          PA  [0.0, 0.2, 0.0, 0.0, 4.0, ...
+            5           0          QR  [0.0, 0.2, 0.0, 0.0, 0.0, ...
+            6           1          DF  [0.0, 0.0, 0.3, 0.0, 0.0, ...
+            7           1          FS  [1.0, 1.0, 2.3, 0.0, 3.0, ...
+            8           1          OB  [1.0, 0.0, 0.3, 0.0, 0.0, ...
+            9           1          OC  [1.0, 0.0, 0.3, 0.0, 0.0, ...
+            ...         ...        ... ...
+        """
+        # Columns we will keep and group on #
+        self.group_cols = ['TimeStep', 'forest_type']
+        # Column we will keep and sum on #
+        self.sum_col = 'Area'
+        # Column we will use for the summing #
+        self.bin_col = 'AveAge'
+        # Group #
+        grouped = self.simulated.groupby(self.group_cols)
+        # Iterate #
+        result = []
+        for col_values, df in grouped:
+            # Keep the current values of the group columns #
+            current = dict(zip(self.group_cols, col_values))
+            # Compute a discrete numpy vector #
+            current[self.sum_col] = aggregator(df, self.sum_col, self.bin_col)
+            # Make a Series and append #
+            result.append(pandas.Series(current))
+        # Put all series into a data frame #
+        result = pandas.DataFrame(result)
+        # Return #
+        return result
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def grouped_bins(self):
+        """Using the vectorized version, recreate bins and average values.
+
+         The dataframe will look like this:
+
+                 TimeStep forest_type AveAge Area
+                        0          DF     10   56
+                        0          DF     30   33
+                        0          DF     50   99
+                        0          FS     10   55
+                        0          FS     30   12
+                        0          FS     50    3
+                        0          OB     50   12
+                      ...        ...     ...  ...
+        """
+        # Load the vector version #
+        df = self.grouped_vectors
+        # Empty data frame to contain result #
+        columns = self.group_cols + [self.bin_col, self.sum_col]
+        result  = pandas.DataFrame(columns=columns)
+        # Iterate #
+        for i, row in df.iterrows():
+            # Compute a data frame containing the recreated bins #
+            current = make_bins(row[self.sum_col], self.sum_col, self.bin_col)
+            # Keep the current values of the group columns as an index #
+            col_values = [row[col] for col in self.group_cols]
+            current = current.assign(**dict(zip(self.group_cols, col_values)))
+            current = current.set_index(self.group_cols)
+            # Append #
+            result = result.append(current)
+        # Return #
+        return result
+
+    #-------------------------------------------------------------------------#
+    def check_conservation(self):
+        """Assert that total area of forest is conserved."""
+        pass
