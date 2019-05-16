@@ -11,11 +11,10 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
-import pandas
-from tqdm import tqdm
+import pandas, numpy
 
 # Internal modules #
-from .bin_discretizer import aggregator, make_bins
+from .bin_discretizer import aggregator, binner
 
 # First party modules #
 from plumbing.cache import property_cached
@@ -148,7 +147,7 @@ class Inventory(object):
             current = dict(zip(self.group_cols, col_values))
             # Compute a discrete numpy vector #
             current[self.sum_col] = aggregator(df, self.sum_col, self.bin_col)
-            # Make a Series and append #
+            # Make a series and append #
             result.append(pandas.Series(current))
         # Put all series into a data frame #
         result = pandas.DataFrame(result)
@@ -160,27 +159,28 @@ class Inventory(object):
     def grouped_bins(self):
         """Using the vectorized version, recreate bins and average values.
 
-         The dataframe will look like this:
+         The data frame will look like this:
 
-                 TimeStep forest_type AveAge Area
-                        0          DF     10   56
-                        0          DF     30   33
-                        0          DF     50   99
-                        0          FS     10   55
-                        0          FS     30   12
-                        0          FS     50    3
-                        0          OB     50   12
-                      ...        ...     ...  ...
+                                      age_start  age_end         Area
+                TimeStep forest_type
+                0        DF                 0.0     20.0   792.530945
+                         DF                20.0     40.0   663.677941
+                         DF                40.0     60.0   618.225475
+                         DF                60.0     80.0   524.963490
+                         FS                 0.0     20.0  1390.616846
+                         FS                20.0     40.0  1549.103840
+                         FS                40.0     60.0   979.168979
+                ...     ...                 ...      ...          ...
         """
         # Load the vector version #
         df = self.grouped_vectors
         # Empty data frame to contain result #
-        columns = self.group_cols + [self.bin_col, self.sum_col]
-        result  = pandas.DataFrame(columns=columns)
+        result  = pandas.DataFrame()
         # Iterate #
         for i, row in df.iterrows():
             # Compute a data frame containing the recreated bins #
-            current = make_bins(row[self.sum_col], self.sum_col, self.bin_col)
+            bin_width = 20.0
+            current = binner(row[self.sum_col], self.sum_col, bin_width)
             # Keep the current values of the group columns as an index #
             col_values = [row[col] for col in self.group_cols]
             current = current.assign(**dict(zip(self.group_cols, col_values)))
@@ -191,6 +191,11 @@ class Inventory(object):
         return result
 
     #-------------------------------------------------------------------------#
-    def check_conservation(self):
+    def check_conservation(self, tolerance=0.005):
         """Assert that total area of forest is conserved."""
-        pass
+        # Compute #
+        df1 = self.simulated
+        df2 = self.grouped_bins
+        all_close = numpy.testing.assert_allclose
+        # Check #
+        all_close(df1[self.sum_col].sum(), df2[self.sum_col].sum(), rtol=tolerance)

@@ -13,7 +13,13 @@ pass the data into discrete form for the addition then back to categorical.
 
 To test this file you can proceed like this for instance:
 
-    continent[('static_demand', 'LU', 0)].post_processor.inventory.check_conservation()
+    In [1]: from cbmcfs3_runner.core.continent import continent
+    In [2]: inv = continent[('static_demand', 'LU', 0)].post_processor.inventory
+    In [3]: inv.check_conservation(tolerance=1e-7)
+
+Typically a CBM_PRECISION of 0.1 will lead to a discrepancy of 0.5% in area
+      and a CBM_PRECISION of 0.01 will lead to a discrepancy of 0.05% in area
+      but will be slower to compute.
 """
 
 # Built-in modules #
@@ -23,14 +29,14 @@ import pandas, numpy
 
 # First party modules #
 
-# This value is in years and needs to be confirmed with Scott
+# This value is in years and needs to be confirmed with Scott #
 CBM_BIN_WIDTH = 20.0
 
 # This value is in years and can be changed to adjust the granularity of the process #
 CBM_PRECISION = 0.1
 
 ###############################################################################
-def bin_to_discrete(bin_height, bin_center, bin_width, precision):
+def bin_to_discrete(bin_height, bin_center, bin_width):
     """This function is more or less the inverse of the pandas.cut method.
     Starting with binned data, we will assume a uniform distribution and
     transform it back to discrete data with a given precision.
@@ -47,8 +53,8 @@ def bin_to_discrete(bin_height, bin_center, bin_width, precision):
     """
     # Round to precision #
     bin_radius = bin_width / 2
-    bin_radius = int(numpy.round(bin_radius / precision))
-    bin_center = int(numpy.round(bin_center / precision))
+    bin_radius = int(numpy.round(bin_radius / CBM_PRECISION))
+    bin_center = int(numpy.round(bin_center / CBM_PRECISION))
     # Edges #
     bin_left   = bin_center - bin_radius
     bin_right  = bin_center + bin_radius
@@ -66,7 +72,7 @@ def bin_to_discrete(bin_height, bin_center, bin_width, precision):
 ###############################################################################
 def apply_discretizer(row, height_key, center_key):
     """Given a row from our dataframe, return the discretized vector."""
-    return bin_to_discrete(row[height_key], row[center_key], CBM_BIN_WIDTH, CBM_PRECISION)
+    return bin_to_discrete(row[height_key], row[center_key], CBM_BIN_WIDTH)
 
 ###############################################################################
 def aggregator(df, sum_col, bin_col):
@@ -80,8 +86,33 @@ def aggregator(df, sum_col, bin_col):
     return pandas.DataFrame(v for v in all_vectors).fillna(0.0).sum().values
 
 ###############################################################################
-def make_bins(vector, sum_col, bin_col):
-    """Starting from a discretized vector, make bins. In other words,
-    going from a continuous variable to a categorical variable.
-    Similar to pandas.cut()."""
-    return pandas.cut(vector)
+###############################################################################
+###############################################################################
+def generate_bins(vector, bin_width):
+    """Starting from a discretized vector, yield bins."""
+    # Round to precision #
+    bin_width = int(numpy.round(bin_width / CBM_PRECISION))
+    # Initialize #
+    bin_left = 0
+    # Iterate #
+    while True:
+        # Compute current bin end #
+        bin_right = bin_left + bin_width - 1
+        # The bin total sum #
+        bin = vector[bin_left:bin_right]
+        val = bin.sum()
+        # Return one bin #
+        yield bin_left*CBM_PRECISION, (bin_right+1)*CBM_PRECISION, val
+        # Next bin's start #
+        bin_left = bin_right + 1
+        # End condition #
+        if bin_left >= len(vector): break
+
+###############################################################################
+def binner(vector, sum_col, bin_width):
+    """Starting from a discretized vector, create a dataframe
+    with each row describing a bin."""
+    # Make bins #
+    all_bins = generate_bins(vector, bin_width)
+    # Make data frame #
+    return pandas.DataFrame(all_bins, columns=['age_start', 'age_end', sum_col])
