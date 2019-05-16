@@ -15,11 +15,12 @@ To test this file you can proceed like this for instance:
 
     In [1]: from cbmcfs3_runner.core.continent import continent
     In [2]: inv = continent[('static_demand', 'LU', 0)].post_processor.inventory
-    In [3]: inv.check_conservation(tolerance=1e-7)
+    In [3]: inv.check_conservation()
 
-Typically a CBM_PRECISION of 0.1 will lead to a discrepancy of 0.5% in area
-      and a CBM_PRECISION of 0.01 will lead to a discrepancy of 0.05% in area
-      but will be slower to compute.
+If you just want to test one function:
+
+    In [1]: from cbmcfs3_runner.post_processor.bin_discretizer import generate_bins
+    In [2]: generate_bins()
 """
 
 # Built-in modules #
@@ -88,8 +89,16 @@ def aggregator(df, sum_col, bin_col):
 ###############################################################################
 ###############################################################################
 ###############################################################################
-def generate_bins(vector, bin_width):
-    """Starting from a discretized vector, yield bins."""
+def generate_bins(vector, bin_width, verbose=False):
+    """Starting from a discretized vector, yield bins.
+
+                                        -----   -------   -----
+    >>> list(generate_bins(numpy.array([1,1,2,2,3,4,4,1,1,1,5,6,9]), 0.4))
+    [(0.0, 0.4, 6),
+     (0.4, 0.8, 12),
+     (0.8, 1.2, 13),
+     (1.2, 1.6, 9)]
+     """
     # Round to precision #
     bin_width = int(numpy.round(bin_width / CBM_PRECISION))
     # Initialize #
@@ -97,14 +106,22 @@ def generate_bins(vector, bin_width):
     # Iterate #
     while True:
         # Compute current bin end #
-        bin_right = bin_left + bin_width - 1
+        bin_right = bin_left + bin_width
         # The bin total sum #
         bin = vector[bin_left:bin_right]
         val = bin.sum()
         # Return one bin #
-        yield bin_left*CBM_PRECISION, (bin_right+1)*CBM_PRECISION, val
+        if verbose:
+            print(f"vector: {vector}")
+            print(vector[bin_left:bin_right])
+            print(f"bin_left: {bin_left}")
+            print(f"bin_right: {bin_right}")
+            print(f"val: {val}")
+            print("----------")
+        # Return one bin #
+        yield bin_left*CBM_PRECISION, (bin_right)*CBM_PRECISION, val
         # Next bin's start #
-        bin_left = bin_right + 1
+        bin_left = bin_right
         # End condition #
         if bin_left >= len(vector): break
 

@@ -191,11 +191,12 @@ class Inventory(object):
         return result
 
     #-------------------------------------------------------------------------#
-    def check_conservation(self, tolerance=0.005):
-        """Assert that total area of forest is conserved."""
+    def check_conservation(self):
+        """Assert that total area of forest is conserved after
+        successive steps of discretization and rebinning."""
         # Compute #
         df1 = self.simulated
         df2 = self.grouped_bins
         all_close = numpy.testing.assert_allclose
         # Check #
-        all_close(df1[self.sum_col].sum(), df2[self.sum_col].sum(), rtol=tolerance)
+        all_close(df1[self.sum_col].sum(), df2[self.sum_col].sum())
