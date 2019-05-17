@@ -87,17 +87,17 @@ def aggregator(df, sum_col, bin_col):
 ###############################################################################
 ###############################################################################
 ###############################################################################
-def generate_bins(vector, bin_width):
+def generate_bins(vector, bin_width, precision = CBM_PRECISION):
     """Starting from a discretized vector, yield bins.
 
-    >>> list(generate_bins(numpy.array([1,1,2,2,3,4,4,1,1,1,5,6,9]), 0.4))
-    [(0.0, 0.4, 6),
+    >>> list(generate_bins(numpy.array([1,1,2,2,3,4,4,1,1,1,5,6,9]), 0.4, 0.1))
+    [(0.0, 0.4, 6 ),
      (0.4, 0.8, 12),
      (0.8, 1.2, 13),
-     (1.2, 1.6, 9)]
+     (1.2, 1.6, 9 )]
      """
     # Round to precision #
-    bin_width = int(numpy.round(bin_width / CBM_PRECISION))
+    bin_width = int(numpy.round(bin_width / precision))
     # Initialize #
     bin_left = 0
     # Iterate #
@@ -108,7 +108,7 @@ def generate_bins(vector, bin_width):
         bin = vector[bin_left:bin_right]
         val = bin.sum()
         # Return one bin #
-        yield bin_left*CBM_PRECISION, (bin_right)*CBM_PRECISION, val
+        yield bin_left*precision, (bin_right)*precision, val
         # Next bin's start #
         bin_left = bin_right
         # End condition #
