@@ -93,6 +93,8 @@ class InventoryFacet(Graph):
         p.fig.suptitle(self.title)
         # Save #
         self.save_plot(**kwargs)
+        # Return #
+        return p
 
 ###############################################################################
 class InventoryAtStart(InventoryFacet):
