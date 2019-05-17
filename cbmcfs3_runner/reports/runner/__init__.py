@@ -68,13 +68,18 @@ class RunnerTemplate(ReportTemplate):
         if not self.runner.paths.log: return ""
         return self.runner.paths.log.pretty_tail
 
-    def inventory_input(self): return 0
+    #------------------------------ Inventory --------------------------------#
+    def inventory_at_start(self):
+        graph   = self.graphs.inventory_at_start
+        return str(ScaledFigure(graph=graph, caption=graph.caption))
 
-    def inventory_predicted(self): return 0
+    def inventory_at_end(self):
+        graph   = self.graphs.inventory_at_end
+        return str(ScaledFigure(graph=graph, caption=graph.caption))
 
-    def inventory_scatter(self): return 0
-
-    def harvested_wood_prodcuts(self): return 0
+    #------------------------------ Harvest ----------------------------------#
+    def harvested_wood_prodcuts(self):
+        return 0
 
     def harvest_expected_provided(self):
         caption = "Comparision of expected against provided harvest"

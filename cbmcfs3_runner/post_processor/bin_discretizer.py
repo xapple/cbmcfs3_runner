@@ -30,6 +30,7 @@ If you just want to test one function:
 import pandas, numpy
 
 # First party modules #
+from plumbing.common import sum_vectors_with_padding
 
 # This value is in years and needs to be confirmed with Scott #
 CBM_BIN_WIDTH = 20.0
@@ -38,7 +39,9 @@ CBM_BIN_WIDTH = 20.0
 CBM_PRECISION = 0.1
 
 ###############################################################################
-def bin_to_discrete(bin_height, bin_center, bin_width, precision):
+def bin_to_discrete(bin_height, bin_center,
+                    bin_width = CBM_BIN_WIDTH,
+                    precision = CBM_PRECISION):
     """This function is more or less the inverse of the pandas.cut method.
     Starting with binned data, we will assume a uniform distribution and
     transform it back to discrete data with a given precision.
@@ -70,25 +73,21 @@ def bin_to_discrete(bin_height, bin_center, bin_width, precision):
     return vector
 
 ###############################################################################
-def apply_discretizer(row, height_key, center_key):
-    """Given a row from our dataframe, return the discretized vector."""
-    return bin_to_discrete(row[height_key], row[center_key], CBM_BIN_WIDTH, CBM_PRECISION)
-
-###############################################################################
 def aggregator(df, sum_col, bin_col):
     """The input df is a data frame with multiple rows and
-    the grouping columns still present. One must return a
+    the grouping columns still present. One must return a numpy
     vector representing the Area per Age. (i.e. the sum_col per bin_col)"""
-    # Get the discretized version of all rows #
-    all_vectors = df.apply(apply_discretizer, axis=1, height_key=sum_col, center_key=bin_col)
-    # Instead of a Series of lists, make a DataFrame #
-    # and then sum them up vertically to get a single numpy vector #
-    return pandas.DataFrame(v for v in all_vectors).fillna(0.0).sum().values
+    # Helper function #
+    discretizer = lambda row: bin_to_discrete(row[sum_col], row[bin_col])
+    # Get the discretized version of all rows as vectors #
+    all_vectors = [discretizer(row) for i, row in df.iterrows()]
+    # Sum them up vertically to get a single numpy vector #
+    return sum_vectors_with_padding(all_vectors)
 
 ###############################################################################
 ###############################################################################
 ###############################################################################
-def generate_bins(vector, bin_width, verbose=False):
+def generate_bins(vector, bin_width):
     """Starting from a discretized vector, yield bins.
 
     >>> list(generate_bins(numpy.array([1,1,2,2,3,4,4,1,1,1,5,6,9]), 0.4))
@@ -108,14 +107,6 @@ def generate_bins(vector, bin_width, verbose=False):
         # The bin total sum #
         bin = vector[bin_left:bin_right]
         val = bin.sum()
-        # Optional messages #
-        if verbose:
-            print(f"vector: {vector}")
-            print(vector[bin_left:bin_right])
-            print(f"bin_left: {bin_left}")
-            print(f"bin_right: {bin_right}")
-            print(f"val: {val}")
-            print("----------")
         # Return one bin #
         yield bin_left*CBM_PRECISION, (bin_right)*CBM_PRECISION, val
         # Next bin's start #

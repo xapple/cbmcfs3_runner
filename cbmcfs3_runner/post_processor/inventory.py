@@ -111,7 +111,16 @@ class Inventory(object):
         return df
 
     #-------------------------------------------------------------------------#
-    @property_cached
+    # Columns we will keep and group on #
+    group_cols = ['TimeStep', 'forest_type']
+    # Column we will keep and sum on #
+    sum_col = 'Area'
+    # Column we will use for the summing #
+    bin_col = 'AveAge'
+    # The bin width we will use when recreating bins #
+    bin_width = 20.0
+
+    @property
     def grouped_vectors(self):
         """
         Group the simulated inventory data frame and collapse columns
@@ -132,12 +141,6 @@ class Inventory(object):
             9           1          OC  [1.0, 0.0, 0.3, 0.0, 0.0, ...
             ...         ...        ... ...
         """
-        # Columns we will keep and group on #
-        self.group_cols = ['TimeStep', 'forest_type']
-        # Column we will keep and sum on #
-        self.sum_col = 'Area'
-        # Column we will use for the summing #
-        self.bin_col = 'AveAge'
         # Group #
         grouped = self.simulated.groupby(self.group_cols)
         # Iterate #
@@ -179,8 +182,7 @@ class Inventory(object):
         # Iterate #
         for i, row in df.iterrows():
             # Compute a data frame containing the recreated bins #
-            bin_width = 20.0
-            current = binner(row[self.sum_col], self.sum_col, bin_width)
+            current = binner(row[self.sum_col], self.sum_col, self.bin_width)
             # Keep the current values of the group columns as an index #
             col_values = [row[col] for col in self.group_cols]
             current = current.assign(**dict(zip(self.group_cols, col_values)))
@@ -200,3 +202,20 @@ class Inventory(object):
         all_close = numpy.testing.assert_allclose
         # Check #
         all_close(df1[self.sum_col].sum(), df2[self.sum_col].sum())
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def bins_per_year(self):
+        """Same as grouped_bins but with the TimeStep swtiched to years."""
+        # Load the vector version #
+        df = self.grouped_bins.reset_index()
+        # Add year and remove TimeStep #
+        df['year'] = self.parent.timestep_to_years(df['TimeStep'])
+        df = df.drop('TimeStep', axis=1)
+        # Only if we are in the calibration scenario #
+        if self.parent.parent.scenario.short_name == 'calibration':
+            # Patch the harvest data frame to stop at the simulation year #
+            selector = df['year'] <= self.parent.parent.country.base_year
+            df = df.loc[selector].copy()
+        # Return #
+        return df

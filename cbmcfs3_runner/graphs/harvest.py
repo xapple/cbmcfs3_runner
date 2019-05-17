@@ -15,8 +15,7 @@ import warnings, math
 from plumbing.graphs import Graph
 
 # Third party modules #
-import seaborn
-import matplotlib
+import seaborn, brewer2mpl, matplotlib
 from matplotlib import pyplot
 
 ###############################################################################
@@ -26,31 +25,30 @@ class HarvestedWoodProducts(Graph):
 
 ###############################################################################
 class HarvestExpectedProvided(Graph):
+
+    grp_cols = ['DistTypeName',
+            'year']
+
+    agg_cols = {'expected': 'sum',
+                'provided': 'sum'}
+
+    facet_col = 'DistTypeName'
+
     def plot(self, **kwargs):
-        # Columns #
-        grp_cols = ['DistTypeName',
-                    'year']
-
-        agg_cols = {'expected': 'sum',
-                    'provided': 'sum'}
-
-        facet_col = 'DistTypeName'
-
         # Data #
         self.df = self.parent.post_processor.harvest.exp_prov_by_year
-        self.df = self.df.groupby(grp_cols).agg(agg_cols).reset_index()
+        self.df = self.df.groupby(grp_cols).agg(self.agg_cols).reset_index()
 
         # Colors #
-        import brewer2mpl
         colors = brewer2mpl.get_map('Pastel1', 'qualitative', 3).mpl_colors
         name_to_color = {'Expected':   colors[1],
                          'Provided':   colors[0],
                          'Difference': 'blue'}
 
         # Facet grid #
-        col_wrap = math.ceil(len(self.df[facet_col].unique()) / 8.0) + 1
+        col_wrap = math.ceil(len(self.df[self.facet_col].unique()) / 8.0) + 1
         p = seaborn.FacetGrid(data     = self.df,
-                              col      = facet_col,
+                              col      = self.facet_col,
                               sharey   = False,
                               col_wrap = col_wrap,
                               height   = 6.0)
@@ -82,8 +80,8 @@ class HarvestExpectedProvided(Graph):
         p.map(formatter)
 
         # Change the axis limits for x #
-        x_axis_min = self.df.year.min() - 1
-        x_axis_max = self.df.year.max() + 1
+        x_axis_min = self.df['year'].min() - 1
+        x_axis_max = self.df['year'].max() + 1
         p.set(xlim=(x_axis_min , x_axis_max))
 
         # Check the auto-scale axis limits aren't too small for y #
@@ -106,27 +104,30 @@ class HarvestExpectedProvided(Graph):
         p.set_axis_labels("Year (simulated)", "Volume in [m^3]") # TODO check units
 
         # Change the titles #
-        p.set_titles(facet_col + " : {col_name}")
+        p.set_titles(self.facet_col + " : {col_name}")
 
         # Save #
         self.save_plot(**kwargs)
 
 ###############################################################################
 class HarvestDiscrepancy(Graph):
+
+    caption = ("Sum of total absolute discrepancy of expected against provided harvest"
+               " between the two aforementioned scenarios.")
+
+    idx_cols = ['DistTypeName',
+                'year',
+                'forest_type',
+                'status', 'management_type', 'management_strategy']
+
+    grp_cols = ['DistTypeName',
+                'year']
+
+    agg_cols = {'delta': 'sum'}
+
+    facet_col = 'DistTypeName'
+
     def plot(self, **kwargs):
-        # Columns #
-        idx_cols = ['DistTypeName',
-                    'year',
-                    'forest_type',
-                    'status', 'management_type', 'management_strategy']
-
-        grp_cols = ['DistTypeName',
-                    'year']
-
-        agg_cols = {'delta': 'sum'}
-
-        facet_col = 'DistTypeName'
-
         # Data #
         static = self.parent.scenarios['static_demand'][0].post_processor.harvest.exp_prov_by_year
         calibr = self.parent.scenarios['calibration'][0].post_processor.harvest.exp_prov_by_year
@@ -137,20 +138,20 @@ class HarvestDiscrepancy(Graph):
         calibr   = calibr.loc[selector].copy()
 
         # Set index #
-        static = static.set_index(idx_cols)
-        calibr = calibr.set_index(idx_cols)
+        static = static.set_index(self.idx_cols)
+        calibr = calibr.set_index(self.idx_cols)
 
         # Difference #
         discrepancy = (calibr - static)
         discrepancy.delta = abs(discrepancy.delta)
 
         # Data frame #
-        self.df = discrepancy.groupby(grp_cols).agg(agg_cols).reset_index()
+        self.df = discrepancy.groupby(self.grp_cols).agg(self.agg_cols).reset_index()
 
         # Facet grid #
-        col_wrap = math.ceil(len(self.df[facet_col].unique()) / 8.0) + 1
+        col_wrap = math.ceil(len(self.df[self.facet_col].unique()) / 8.0) + 1
         p = seaborn.FacetGrid(data     = self.df,
-                              col      = facet_col,
+                              col      = self.facet_col,
                               sharey   = False,
                               col_wrap = col_wrap,
                               height   = 6.0)
@@ -169,8 +170,8 @@ class HarvestDiscrepancy(Graph):
         p.map(formatter)
 
         # Change the axis limits for x #
-        x_axis_min = self.df.year.min() - 1
-        x_axis_max = self.df.year.max() + 1
+        x_axis_min = self.df['year'].min() - 1
+        x_axis_max = self.df['year'].max() + 1
         p.set(xlim=(x_axis_min , x_axis_max))
 
         # Check the auto-scale axis limits aren't too small for y #

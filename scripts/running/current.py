@@ -48,9 +48,11 @@ from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
 for c in tqdm(continent, ncols=60):
-    #if c.iso2_code not in ('SK',): continue
-    runners = [r for runners in c.scenarios.values() for r in runners]
-    for r in runners: r.graphs(rerun=True)
-    c.graphs(rerun=True)
+    if c.iso2_code not in ('LU',): continue
+    #runners = [r for runners in c.scenarios.values() for r in runners]
+    #for r in runners:
+    #    r.graphs.inventory_at_start(rerun=True)
+    #    r.graphs.inventory_at_end(rerun=True)
+    #c.graphs.inventory_discrepancy(rerun=True)
     c.report()
     c.report.copy_to_outbox()

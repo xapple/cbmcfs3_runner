@@ -13,7 +13,8 @@ Unit D1 Bioeconomy.
 # First party modules #
 
 # Internal modules #
-from cbmcfs3_runner.graphs.harvest import HarvestDiscrepancy
+from cbmcfs3_runner.graphs.harvest   import HarvestDiscrepancy
+from cbmcfs3_runner.graphs.inventory import InventoryDiscrepancy
 
 # Constants #
-__all__ = ['HarvestDiscrepancy']
+__all__ = ['HarvestDiscrepancy', 'InventoryDiscrepancy']

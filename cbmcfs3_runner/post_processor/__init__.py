@@ -114,6 +114,7 @@ class PostProcessor(object):
     def harvest(self):
         return Harvest(self)
 
+    #-------------------------------------------------------------------------#
     def timestep_to_years(self, timestep):
         """
         Will convert a Series containing simulation time-steps such as:

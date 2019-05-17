@@ -1,6 +1,6 @@
 # `cbmcfs3_runner` version 0.4.0
 
-Here, `cbmcfs3_runner` is a python package for dealing with the automation and running of a complex series of models involving the European economy, carbon budgets and their interactions. Notably in relation to the CBM-CFS3 model developed by Canada.
+`cbmcfs3_runner` is a python package for dealing with the automation and running of a complex series of models involving the European economy, carbon budgets and their interactions. Notably in relation to the CBM-CFS3 model developed by Canada.
 
 ## Warnings
 
@@ -16,7 +16,7 @@ Here you will download a copy of the code from github and place it in your file 
     $ cd /
     $ mkdir repos
     $ cd repos
-    $ git clone https://emsincllu@webgate.ec.europa.eu/CITnet/stash/scm/bioeconomy/cbmcfs3_runner.git
+    $ git clone git@github.com:xapple/cbmcfs3_runner.git
 
 NB: Currently the access to this repository is restricted.
 
