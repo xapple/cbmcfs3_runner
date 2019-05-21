@@ -75,14 +75,21 @@ class HarvestExpectedProvided(Graph):
         # Add a thousands separator #
         def formatter(**kw):
             from plumbing.common import split_thousands
-            splitter = lambda x,pos: split_thousands(x)
-            pyplot.gca().yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(splitter))
+            func     = lambda x,pos: split_thousands(x)
+            splitter = matplotlib.ticker.FuncFormatter(func)
+            pyplot.gca().yaxis.set_major_formatter(splitter)
         p.map(formatter)
 
         # Change the axis limits for x #
         x_axis_min = self.df['year'].min() - 1
         x_axis_max = self.df['year'].max() + 1
         p.set(xlim=(x_axis_min , x_axis_max))
+
+        # Force integer ticks on the x axis (no half years) #
+        def formatter(**kw):
+            locator = matplotlib.ticker.MaxNLocator(integer=True)
+            pyplot.gca().xaxis.set_major_locator(locator)
+        p.map(formatter)
 
         # Check the auto-scale axis limits aren't too small for y #
         def autoscale_y(minimum=5.0, **kw):
@@ -162,29 +169,36 @@ class HarvestDiscrepancy(Graph):
         # Make the bars #
         p.map_dataframe(bar_plot, 'year', 'delta', color='red')
 
-        # Add a thousands separator #
-        def formatter(**kwargs):
-            from plumbing.common import split_thousands
-            splitter = lambda x,pos: split_thousands(x)
-            pyplot.gca().yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(splitter))
-        p.map(formatter)
-
         # Change the axis limits for x #
         x_axis_min = self.df['year'].min() - 1
         x_axis_max = self.df['year'].max() + 1
         p.set(xlim=(x_axis_min , x_axis_max))
 
-        # Check the auto-scale axis limits aren't too small for y #
+        # Force integer ticks on the x axis (no half years) #
+        def formatter(**kw):
+            locator = matplotlib.ticker.MaxNLocator(integer=True)
+            pyplot.gca().xaxis.set_major_locator(locator)
+        p.map(formatter)
+
+        # Add a thousands separator on the y axis #
+        def formatter(**kw):
+            from plumbing.common import split_thousands
+            func     = lambda x,pos: split_thousands(x)
+            splitter = matplotlib.ticker.FuncFormatter(func)
+            pyplot.gca().yaxis.set_major_formatter(splitter)
+        p.map(formatter)
+
+        # Check the auto-scale y axis limits aren't too small #
         def autoscale_y(**kw):
             axes        = pyplot.gca()
             bottom, top = axes.get_ylim()
-            if top < 2.0: axes.set_ylim(bottom, 2.0)
+            if top < 5.0: axes.set_ylim(bottom, 5.0)
         p.map(autoscale_y)
 
         # Change the labels #
         p.set_axis_labels("Year (simulated)", "Volume in [m^3]")
 
-        # Change the titles #
+        # Change the titles for each facet #
         p.set_titles("Type: {col_name}")
 
         # Save #

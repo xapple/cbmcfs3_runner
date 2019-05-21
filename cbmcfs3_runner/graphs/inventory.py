@@ -55,6 +55,9 @@ class InventoryFacet(Graph):
                               sharey   = False,
                               col_wrap = col_wrap,
                               height   = 6.0)
+        # Main plot title #
+        p.fig.suptitle(self.title)
+
         # Functions #
         def bar_plot(**kwargs):
             df = kwargs.pop("data")
@@ -66,35 +69,45 @@ class InventoryFacet(Graph):
         # Make the bars #
         p.map_dataframe(bar_plot, color=self.color)
 
-        # Add a thousands separator #
-        def formatter(**kw):
-            from plumbing.common import split_thousands
-            splitter = lambda x,pos: split_thousands(x)
-            pyplot.gca().yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(splitter))
-        p.map(formatter)
-
-        # Add horizontal lines #
-        grid_on = lambda **kw: pyplot.gca().yaxis.grid(True, linestyle=':')
-        p.map(grid_on)
-
-        # Set the y ticks to the same width #
+        # Set the x ticks to the same width in years #
         def tick_freq(freq=self.width, **kw):
             func = pyplot.gca().xaxis.set_major_locator
             func(matplotlib.ticker.MultipleLocator(freq))
         p.map(tick_freq)
 
-        # Main plot title #
-        p.fig.suptitle(self.title)
+        # Add a thousands separator on the y axis #
+        def formatter(**kw):
+            from plumbing.common import split_thousands
+            func     = lambda x,pos: split_thousands(x)
+            splitter = matplotlib.ticker.FuncFormatter(func)
+            pyplot.gca().yaxis.set_major_formatter(splitter)
+        p.map(formatter)
+
+        # Add horizontal lines on the y axis #
+        grid_on = lambda **kw: pyplot.gca().yaxis.grid(True, linestyle=':')
+        p.map(grid_on)
+
+        # Check the auto-scale y axis limits aren't too small #
+        def autoscale_y(**kw):
+            axes        = pyplot.gca()
+            bottom, top = axes.get_ylim()
+            if top < 5.0: axes.set_ylim(bottom, 5.0)
+        p.map(autoscale_y)
+
         # Change the labels #
         p.set_axis_labels("Age of forest in %i year bins" % self.width,
                           self.value_col + " in [m^3]") # TODO check units
-        # Change the titles #
-        p.set_titles(self.facet_var.replace('_', ' ').title()+" : {col_name}")
+
+        # Change the titles for each facet #
+        p.set_titles(self.facet_var.replace('_', ' ').title() + " : {col_name}")
+
         # Set main title #
         pyplot.subplots_adjust(top=0.95)
+
         # Save #
         self.save_plot(**kwargs)
-        # Return #
+
+        # Return for display in notebooks for instance #
         return p
 
 ###############################################################################

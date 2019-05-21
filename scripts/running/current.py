@@ -59,6 +59,7 @@ from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
 for c in tqdm(list(continent.countries.values())[:], ncols=60):
+    if c.iso2_code not in ('AT',): continue
     runners = [r for runners in c.scenarios.values() for r in runners]
     for r in runners:
         r.graphs.harvest_expected_provided(rerun=True)
