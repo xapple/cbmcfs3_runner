@@ -74,8 +74,15 @@ class Scenario(object):
 
     def concact_as_df(self, *args, **kwargs):
         """A data frame with many countries together."""
+        # Get data #
+        dict_of_df = self.concact_as_dict(*args, **kwargs)
+        # Add column '_8' for all countries except BG #
+        for iso2, df in dict_of_df.items():
+            if iso2 == "BG": continue
+            loc = list(dict_of_df['BG'].columns).index('_8')
+            df.insert(loc, '_8', '')
         # DataFrame #
-        df = pandas.concat(self.concact_as_dict(*args, **kwargs))
+        df = pandas.concat(dict_of_df)
         df = df.reset_index(level=0)
         df = df.rename(columns={'level_0': 'country_iso2'})
         # Return result #
