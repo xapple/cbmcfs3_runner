@@ -79,7 +79,15 @@ class InputData(object):
 
     @property_cached
     def disturbance_types(self):
-        return self.xls.parse("DistType")
+        """
+        Columns are: ['DisturbanceTypeID', 'Name']
+        """
+        # Get the sheet #
+        df = self.xls.parse("DistType")
+        # DisturbanceTypeID has to be strings for joining purposes #
+        df.DisturbanceTypeID = df.DisturbanceTypeID.astype(str)
+        # Return #
+        return df
 
     @property_cached
     def ageclass(self):

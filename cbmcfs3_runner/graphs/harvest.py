@@ -111,7 +111,7 @@ class HarvestExpectedProvided(Graph):
         p.set_axis_labels("Year (simulated)", "Volume in [m^3]") # TODO check units
 
         # Change the titles #
-        p.set_titles(self.facet_col + " : {col_name}")
+        p.set_titles("{col_name}")
 
         # Save #
         self.save_plot(**kwargs)
@@ -199,7 +199,7 @@ class HarvestDiscrepancy(Graph):
         p.set_axis_labels("Year (simulated)", "Volume in [m^3]")
 
         # Change the titles for each facet #
-        p.set_titles("Type: {col_name}")
+        p.set_titles("{col_name}")
 
         # Save #
         self.save_plot(**kwargs)
