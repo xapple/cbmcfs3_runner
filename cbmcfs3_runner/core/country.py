@@ -139,7 +139,8 @@ class Country(object):
     @property_cached
     def faostat(self):
         """Load the faostat forestry dataset of this country."""
-        return faostat.forestry.query('country == "%s"' % self.iso2_code).drop('country')
+        df = faostat.forestry.query('country == "%s"' % self.iso2_code)
+        return df.drop(columns='country')
 
     @property
     def map_value(self):
