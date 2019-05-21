@@ -68,7 +68,7 @@ class Scenario(object):
         if func is None:
             func = lambda r: r.input_data.disturbance_events
         # Retrieve data #
-        result = [(iso2, func(runners[step])) for iso2,runners in self.runners.items()]
+        result = [(iso2, func(runners[step]).copy()) for iso2,runners in self.runners.items()]
         # Return result #
         return OrderedDict(result)
 
