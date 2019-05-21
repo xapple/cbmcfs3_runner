@@ -103,7 +103,7 @@ class InventoryFacet(Graph):
         pyplot.subplots_adjust(top=0.95)
 
         # Main plot title #
-        p.fig.suptitle(self.title)
+        pyplot.gcf().suptitle(self.title)
 
         # Save #
         self.save_plot(**kwargs)

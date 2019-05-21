@@ -41,7 +41,8 @@ CBM_PRECISION = 0.1
 ###############################################################################
 def bin_to_discrete(bin_height, bin_center,
                     bin_width = CBM_BIN_WIDTH,
-                    precision = CBM_PRECISION):
+                    precision = CBM_PRECISION,
+                    testing   = False):
     """This function is more or less the inverse of the pandas.cut method.
     Starting with binned data, we will assume a uniform distribution and
     transform it back to discrete data with a given precision.
@@ -68,7 +69,7 @@ def bin_to_discrete(bin_height, bin_center,
     # Multiply by the matching height #
     vector *= bin_height / (bin_right - bin_left)
     # Check mass is conserved #
-    numpy.testing.assert_allclose(vector.sum(),  bin_height)
+    if testing: numpy.testing.assert_allclose(vector.sum(), bin_height)
     # Return #
     return vector
 
