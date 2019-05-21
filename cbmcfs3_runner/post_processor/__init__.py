@@ -106,6 +106,7 @@ class PostProcessor(object):
                 .join(self.coefficients.set_index('forest_type'))
                 .reset_index())
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def inventory(self):
         return Inventory(self)

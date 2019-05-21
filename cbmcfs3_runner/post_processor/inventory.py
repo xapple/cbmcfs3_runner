@@ -115,7 +115,7 @@ class Inventory(object):
     group_cols = ['TimeStep', 'forest_type']
     # Column we will keep and sum on #
     sum_col = 'Area'
-    # Column we will use for the summing #
+    # Column we will use for the summing, this will never change #
     bin_col = 'AveAge'
     # The bin width we will use when recreating bins #
     bin_width = 20.0
@@ -176,7 +176,7 @@ class Inventory(object):
                 ...     ...                 ...      ...          ...
         """
         # Load the vector version #
-        df = self.grouped_vectors
+        df = self.grouped_vectors('Area')
         # Empty data frame to contain result #
         result  = pandas.DataFrame()
         # Iterate #
@@ -206,7 +206,11 @@ class Inventory(object):
     #-------------------------------------------------------------------------#
     @property_cached
     def bins_per_year(self):
-        """Same as grouped_bins but with the TimeStep swtiched to years."""
+        """Same as grouped_bins but with the TimeStep swtiched to years.
+        The four important class attributes are:
+            * group_cols, sum_col, bin_col, bin_width
+        Adapting these variables will modify the behavior of this final dataframe.
+        """
         # Load the vector version #
         df = self.grouped_bins.reset_index()
         # Add year and remove TimeStep #

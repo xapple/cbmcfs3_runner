@@ -20,7 +20,7 @@ from matplotlib import pyplot
 
 ###############################################################################
 class InventoryFacet(Graph):
-    facet_col = 'forest_type'
+    facet_var = 'forest_type'
     value_col = 'Area'
     age_cols  = ['age_start', 'age_end']
 
@@ -49,9 +49,9 @@ class InventoryFacet(Graph):
         self.df      = self.df.loc[selector].copy()
 
         # Facet grid #
-        col_wrap = math.ceil(len(self.df[self.facet_col].unique()) / 8.0) + 1
+        col_wrap = math.ceil(len(self.df[self.facet_var].unique()) / 8.0)+1
         p = seaborn.FacetGrid(data     = self.df,
-                              col      = self.facet_col,
+                              col      = self.facet_var,
                               sharey   = False,
                               col_wrap = col_wrap,
                               height   = 6.0)
@@ -83,14 +83,15 @@ class InventoryFacet(Graph):
             func(matplotlib.ticker.MultipleLocator(freq))
         p.map(tick_freq)
 
+        # Main plot title #
+        p.fig.suptitle(self.title)
         # Change the labels #
         p.set_axis_labels("Age of forest in %i year bins" % self.width,
                           self.value_col + " in [m^3]") # TODO check units
         # Change the titles #
-        p.set_titles(self.facet_col.replace('_', ' ').title() + " : {col_name}")
+        p.set_titles(self.facet_var.replace('_', ' ').title()+" : {col_name}")
         # Set main title #
         pyplot.subplots_adjust(top=0.95)
-        p.fig.suptitle(self.title)
         # Save #
         self.save_plot(**kwargs)
         # Return #
@@ -119,7 +120,7 @@ class InventoryDiscrepancy(InventoryFacet):
     @property
     def data(self):
         # Columns #
-        cols = self.age_cols + [self.facet_col] + ['year']
+        cols = self.age_cols+[self.facet_var]+['year']
         # Data #
         static = self.parent.scenarios['static_demand'][0].post_processor
         calibr = self.parent.scenarios['calibration'][0].post_processor

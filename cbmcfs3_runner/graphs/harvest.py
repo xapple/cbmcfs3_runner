@@ -27,7 +27,7 @@ class HarvestedWoodProducts(Graph):
 class HarvestExpectedProvided(Graph):
 
     grp_cols = ['DistTypeName',
-            'year']
+                'year']
 
     agg_cols = {'expected': 'sum',
                 'provided': 'sum'}
@@ -37,7 +37,7 @@ class HarvestExpectedProvided(Graph):
     def plot(self, **kwargs):
         # Data #
         self.df = self.parent.post_processor.harvest.exp_prov_by_year
-        self.df = self.df.groupby(grp_cols).agg(self.agg_cols).reset_index()
+        self.df = self.df.groupby(self.grp_cols).agg(self.agg_cols).reset_index()
 
         # Colors #
         colors = brewer2mpl.get_map('Pastel1', 'qualitative', 3).mpl_colors

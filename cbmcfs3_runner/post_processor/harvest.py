@@ -96,6 +96,8 @@ class Harvest(object):
         Columns are:    ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
         (of the output)  'management_type', 'management_strategy', 'Vol_Merch', 'Vol_Snags',
                          'Vol_SubMerch', 'Forest_residues_Vol', 'TC', 'tot_vol']
+
+        This corresponds to the "provided" aspect of "expected_provided" harvest.
         """
         # Compute #
         df = (self.check
@@ -169,18 +171,11 @@ class Harvest(object):
 
         Columns are: ['status', 'forest_type', 'region', 'management_type',
                       'management_strategy', 'climatic_unit', 'conifers/bradleaves',
-                      'UsingID', 'SWStart', 'SWEnd', 'HWStart', 'HWEnd',
-                      'Min_since_last_Dist', 'Max_since_last_Dist', 'Last_Dist_ID',
-                      'Min_tot_biom_C', 'Max_tot_biom_C', 'Min_merch_soft_biom_C',
-                      'Max_merch_soft_biom_C', 'Min_merch_hard_biom_C',
-                      'Max_merch_hard_biom_C', 'Min_tot_stem_snag_C', 'Max_tot_stem_snag_C',
-                      'Min_tot_soft_stem_snag_C', 'Max_tot_soft_stem_snag_C',
-                      'Min_tot_hard_stem_snag_C', 'Max_tot_hard_stem_snag_C',
-                      'Min_tot_merch_stem_snag_C', 'Max_tot_merch_stem_snag_C',
-                      'Min_tot_merch_soft_stem_snag_C', 'Max_tot_merch_soft_stem_snag_C',
-                      'Min_tot_merch_hard_stem_snag_C', 'Max_tot_merch_hard_stem_snag_C',
+                      'UsingID', 'SWStart', 'SWEnd', 'HWStart', 'HWEnd', 'Last_Dist_ID',
                       'Efficency', 'Sort_Type', 'Measurement_type', 'Amount', 'DistTypeName',
-                      'TimeStep']
+                      'TimeStep'],
+
+        This corresponds to the "expected" aspect of "expected_provided" harvest.
         """
         # Load disturbances table from excel file #
         df = self.parent.parent.input_data.disturbance_events
@@ -193,6 +188,8 @@ class Harvest(object):
                                   'Dist_Type_ID': 'DistTypeName'})
         # For joining with other data frames, DistTypeName has to be of dtype object not int64 #
         df['DistTypeName'] = df['DistTypeName'].astype(str)
+        # Remove columns that are not really used #
+        df = df.drop(columns=[c for c in df.columns if c.startswith("Min") or c.startswith("Max")])
         # Return result #
         return df
 
@@ -219,7 +216,7 @@ class Harvest(object):
         df    = self.summary_check.set_index(index)
         dists = self.disturbances.set_index(index)
         # Do the join #
-        df = (df.join(dists))
+        df = (df.join(dists, how='outer'))
         # Sum two columns #
         df = (df
               .groupby(index)
