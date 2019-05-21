@@ -62,7 +62,7 @@ class Scenario(object):
         return ScenarioReport(self)
 
     #-------------------------------------------------------------------------#
-    def concact_as_dict(self, step=-1, func=None):
+    def concat_as_dict(self, step=-1, func=None):
         """A dictionary of data frames, with country iso 2 code as keys."""
         # Default option, function that takes a runner, returns a data frame #
         if func is None:
@@ -72,15 +72,16 @@ class Scenario(object):
         # Return result #
         return OrderedDict(result)
 
-    def concact_as_df(self, *args, **kwargs):
+    def concat_as_df(self, *args, **kwargs):
         """A data frame with many countries together."""
         # Get data #
-        dict_of_df = self.concact_as_dict(*args, **kwargs)
-        # Add column '_8' for all countries except BG #
-        for iso2, df in dict_of_df.items():
-            if iso2 == "BG": continue
-            loc = list(dict_of_df['BG'].columns).index('_8')
-            df.insert(loc, '_8', '')
+        dict_of_df = self.concat_as_dict(*args, **kwargs)
+        # Add column '_8' for all countries except BG when classifiers are present #
+        if '_7' in dict_of_df['AT'.columns]:
+            for iso2, df in dict_of_df.items():
+                if iso2 == "BG": continue
+                loc = list(dict_of_df['BG'].columns).index('_8')
+                df.insert(loc, '_8', '')
         # DataFrame #
         df = pandas.concat(dict_of_df)
         df = df.reset_index(level=0)
@@ -97,7 +98,7 @@ class Scenario(object):
         # Message #
         print("Specific to this country, present in reference country: ", key_ref)
         # Get data #
-        dict_of_df = self.concact_as_dict(*args, **kwargs)
+        dict_of_df = self.concat_as_dict(*args, **kwargs)
         # Iterate #
         ref_columns = set(dict_of_df[key_ref].columns)
         comparison  = {iso2: set(df.columns) ^ ref_columns for iso2, df in dict_of_df.items()}
