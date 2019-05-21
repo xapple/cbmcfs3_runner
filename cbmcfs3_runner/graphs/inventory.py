@@ -55,8 +55,6 @@ class InventoryFacet(Graph):
                               sharey   = False,
                               col_wrap = col_wrap,
                               height   = 6.0)
-        # Main plot title #
-        p.fig.suptitle(self.title)
 
         # Functions #
         def bar_plot(**kwargs):
@@ -69,7 +67,7 @@ class InventoryFacet(Graph):
         # Make the bars #
         p.map_dataframe(bar_plot, color=self.color)
 
-        # Set the x ticks to the same width in years #
+        # Set the x ticks to the same width as the bins in years #
         def tick_freq(freq=self.width, **kw):
             func = pyplot.gca().xaxis.set_major_locator
             func(matplotlib.ticker.MultipleLocator(freq))
@@ -91,7 +89,7 @@ class InventoryFacet(Graph):
         def autoscale_y(**kw):
             axes        = pyplot.gca()
             bottom, top = axes.get_ylim()
-            if top < 5.0: axes.set_ylim(bottom, 5.0)
+            if top < 5.0: axes.set_ylim(0.0, 5.0)
         p.map(autoscale_y)
 
         # Change the labels #
@@ -101,8 +99,11 @@ class InventoryFacet(Graph):
         # Change the titles for each facet #
         p.set_titles(self.facet_var.replace('_', ' ').title() + " : {col_name}")
 
-        # Set main title #
+        # Leave some space for the main title #
         pyplot.subplots_adjust(top=0.95)
+
+        # Main plot title #
+        p.fig.suptitle(self.title)
 
         # Save #
         self.save_plot(**kwargs)

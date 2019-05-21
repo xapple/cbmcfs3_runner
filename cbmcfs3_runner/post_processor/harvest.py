@@ -250,6 +250,8 @@ class Harvest(object):
         # Add year and remove TimeStep #
         df['year'] = self.parent.timestep_to_years(df['TimeStep'])
         df = df.drop('TimeStep', axis=1)
+        # Rename the disturbances from their number to their real name #
+        df['DistTypeName'] = df.replace({'DistTypeName': {}})
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
             # Patch the harvest data frame to stop at the simulation year #

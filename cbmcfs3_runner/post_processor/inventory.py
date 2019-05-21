@@ -176,7 +176,7 @@ class Inventory(object):
                 ...     ...                 ...      ...          ...
         """
         # Load the vector version #
-        df = self.grouped_vectors('Area')
+        df = self.grouped_vectors
         # Empty data frame to contain result #
         result  = pandas.DataFrame()
         # Iterate #
