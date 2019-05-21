@@ -43,6 +43,8 @@ class Faostat(object):
                 'Wood fuel, coniferous',
                 'Wood fuel, non-coniferous']
 
+    short_names = ['IRW_C', 'IRW_B', 'FW_C', 'FW_B']
+
     @classmethod
     def download(cls):
         """A method to automatically downloaded the needed CSV file.
@@ -108,6 +110,8 @@ class Faostat(object):
         # Filter products #
         selector = df['product'].isin(self.products)
         df = df[selector].copy()
+        # Rename the products to their shorter names #
+        df = df.replace({'product': dict(zip(self.products, self.short_names))})
         # Return #
         return df
 
