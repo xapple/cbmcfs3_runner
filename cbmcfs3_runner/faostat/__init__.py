@@ -25,7 +25,6 @@ from plumbing.cache       import property_cached
 
 # Internal modules #
 from cbmcfs3_runner import module_dir
-from cbmcfs3_runner.core.country import all_codes, ref_years
 from tqdm import tqdm
 
 # Constants #
@@ -79,6 +78,8 @@ class Faostat(object):
         Futhermore, we are only interested in these products mentioned
         in self.products
         """
+        # Import internal modules #
+        from cbmcfs3_runner.core.country import all_codes, ref_years
         # Read #
         df = pandas.read_csv(str(faostat_fo_path))
         # Rename all columns to lower case #
