@@ -26,6 +26,7 @@ from cbmcfs3_runner.reports.country                import CountryReport
 from cbmcfs3_runner.stdrd_import_tool.associations import Associations
 from cbmcfs3_runner.others.aidb                    import AIDB
 from cbmcfs3_runner.others.silviculture            import Silviculture
+from cbmcfs3_runner.faostat                        import faostat
 
 # Constants #
 country_code_path = module_dir + 'extra_data/country_codes.csv'
@@ -134,6 +135,11 @@ class Country(object):
         to cubic meters of wood."""
         df = pandas.read_csv(str(self.paths.coefficients))
         return df.rename(columns=lambda x: x.lower().replace(' ', '_'))
+
+    @property_cached
+    def faostat(self):
+        """Load the faostat forestry dataset of this country."""
+        return faostat.query('country == "%s"' % self.iso2_code).drop('country')
 
     @property
     def map_value(self):
