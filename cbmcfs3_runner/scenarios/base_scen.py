@@ -9,6 +9,10 @@ Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
+from collections import OrderedDict
+
+# Third party modules #
+import pandas
 
 # First party modules #
 from autopaths            import Path
@@ -56,3 +60,40 @@ class Scenario(object):
     @property_cached
     def report(self):
         return ScenarioReport(self)
+
+    #-------------------------------------------------------------------------#
+    def concact_as_dict(self, step=-1, func=None):
+        """A dictionary of data frames, with country iso 2 code as keys."""
+        # Default option, function that takes a runner, returns a data frame #
+        if func is None:
+            func = lambda r: r.input_data.disturbance_events
+        # Retrieve data #
+        result = [(iso2, func(runners[step])) for iso2,runners in self.runners.items()]
+        # Return result #
+        return OrderedDict(result)
+
+    def concact_as_df(self, *args, **kwargs):
+        """A data frame with many countries together."""
+        # DataFrame #
+        df = pandas.concat(self.concact_as_dict(*args, **kwargs))
+        df = df.reset_index(level=0)
+        df = df.rename(columns={'level_0': 'country_iso2'})
+        # Return result #
+        return df
+
+    def compare_col_names(self, *args, **kwargs):
+        """Compare column names in a dictionnary of data frames
+        to a reference data frame present under the key_ref"""
+        # Reference key #
+        key_ref = kwargs.get('key_ref')
+        if key_ref is None: key_ref = "AT"
+        # Message #
+        print("Specific to this country, present in reference country: ", key_ref)
+        # Get data #
+        dict_of_df = self.concact_as_dict(*args, **kwargs)
+        # Iterate #
+        ref_columns = set(dict_of_df[key_ref].columns)
+        comparison  = {iso2: set(df.columns) ^ ref_columns for iso2, df in dict_of_df.items()}
+        # Print result #
+        print(comparison)
+
