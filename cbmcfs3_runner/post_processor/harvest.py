@@ -269,6 +269,8 @@ class Harvest(object):
         # Change the type of DistTypeName to string so that it has the same type as
         # the `harvest_check` DistTypeName column
         df['DistTypeName'] = df['DistTypeName'].astype(str)
+        # Change the type of management_strategy to string (for SI)
+        df['management_strategy'] = df['management_strategy'].astype(str)
         # Return #
         return df
 
