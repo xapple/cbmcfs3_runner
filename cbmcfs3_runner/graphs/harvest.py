@@ -26,13 +26,13 @@ class HarvestedWoodProducts(Graph):
 ###############################################################################
 class HarvestExpectedProvided(Graph):
 
-    grp_cols = ['DistTypeName',
+    grp_cols = ['DistDescription',
                 'year']
 
     agg_cols = {'expected': 'sum',
                 'provided': 'sum'}
 
-    facet_col = 'DistTypeName'
+    facet_col = 'DistDescription'
 
     def plot(self, **kwargs):
         # Data #
@@ -123,16 +123,17 @@ class HarvestDiscrepancy(Graph):
                " between the two aforementioned scenarios.")
 
     idx_cols = ['DistTypeName',
+                'DistDescription',
                 'year',
                 'forest_type',
                 'status', 'management_type', 'management_strategy']
 
-    grp_cols = ['DistTypeName',
+    grp_cols = ['DistDescription',
                 'year']
 
     agg_cols = {'delta': 'sum'}
 
-    facet_col = 'DistTypeName'
+    facet_col = 'DistDescription'
 
     def plot(self, **kwargs):
         # Data #

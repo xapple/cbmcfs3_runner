@@ -230,6 +230,7 @@ class Harvest(object):
          - Years instead of TimeSteps
          - Rows where expected and provided are both zero removed
          - An extra column indicating the delta between expected and provided
+         - An extra column indicating the disturbance description sentence.
 
         Columns are: ['year', 'DistTypeName', 'forest_type', 'expected', 'provided', 'delta'
                       'status', 'management_type', 'management_strategy'],
@@ -244,10 +245,15 @@ class Harvest(object):
         # Add year and remove TimeStep #
         df['year'] = self.parent.timestep_to_years(df['TimeStep'])
         df = df.drop('TimeStep', axis=1)
-        # Rename the disturbances from their number to their real name #
-        mapping = self.parent.parent.input_data.disturbance_types
-        mapping = mapping.set_index('DisturbanceTypeID')['Name']
-        df = df.replace({'DistTypeName': mapping})
+        # Get the disturbances full name from their number #
+        dist_type = (self.parent.parent.input_data.disturbance_types
+                     .rename(columns={'DisturbanceTypeID': 'DistTypeName',
+                                                   'Name': 'DistDescription'})
+                     .set_index('DistTypeName'))
+        # Add a column named 'DistDescription' #
+        df = (df.set_index('DistTypeName')
+                .join(dist_type)
+                .reset_index())
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
             # Patch the harvest data frame to stop at the simulation year #
