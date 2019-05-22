@@ -40,7 +40,7 @@ class ScenarioReport(Document):
         self.markdown = unicode(self.template)
         # Render to latex #
         self.make_body()
-        self.make_latex({'title': 'Scenario report'})
+        self.make_latex({'main_title': 'Scenario report'})
         self.make_pdf(safe=False)
 
 ###############################################################################

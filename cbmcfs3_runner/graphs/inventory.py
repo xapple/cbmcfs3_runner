@@ -36,7 +36,7 @@ class InventoryFacet(Graph):
         return self.parent.post_processor.inventory.bin_width
 
     @property
-    def title(self):
+    def main_title(self):
         return 'Predicted inventory at year %i' % self.year_to_plot
 
     def plot(self, **kwargs):
@@ -96,14 +96,14 @@ class InventoryFacet(Graph):
         p.set_axis_labels("Age of forest in %i year bins" % self.width,
                           self.value_col + " in [m^3]") # TODO check units
 
+        # Main plot main_title #
+        pyplot.gcf().suptitle(self.main_title)
+
         # Change the titles for each facet #
         p.set_titles(self.facet_var.replace('_', ' ').title() + " : {col_name}")
 
-        # Leave some space for the main title #
+        # Leave some space for the main main_title #
         pyplot.subplots_adjust(top=0.95)
-
-        # Main plot title #
-        pyplot.gcf().suptitle(self.title)
 
         # Save #
         self.save_plot(**kwargs)
@@ -144,5 +144,5 @@ class InventoryDiscrepancy(InventoryFacet):
         return abs(static - calibr).reset_index()
 
     @property
-    def title(self):
+    def main_title(self):
         return 'Absolute delta at year %i between static demand and calibration' % self.year_to_plot

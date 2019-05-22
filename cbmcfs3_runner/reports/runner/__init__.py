@@ -39,7 +39,7 @@ class RunnerReport(Document):
     def template(self): return RunnerTemplate(self)
 
     def load_markdown(self):
-        self.params = {'title': 'Runner report'}
+        self.params = {'main_title': 'Runner report'}
         self.markdown = str(self.template)
 
 ###############################################################################

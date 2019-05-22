@@ -42,7 +42,7 @@ class CountryReport(Document):
     def template(self): return CountryTemplate(self)
 
     def load_markdown(self):
-        self.params = {'title': 'cbmcfs3\_runner - Country report'}
+        self.params = {'main_title': 'cbmcfs3\_runner - Country report'}
         self.markdown = str(self.template)
 
 ###############################################################################
