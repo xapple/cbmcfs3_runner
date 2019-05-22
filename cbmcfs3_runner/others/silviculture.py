@@ -9,8 +9,6 @@ Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
-import re
-from six import StringIO
 
 # Third party modules #
 import pandas
@@ -34,7 +32,7 @@ class Silviculture(object):
     """
 
     all_paths = """
-    /orig/silviculture.sas
+    /orig/silviculture.csv
     """
 
     def __init__(self, parent):
@@ -48,37 +46,5 @@ class Silviculture(object):
 
     @property_cached
     def df(self):
-        """Search the SAS file for the CSV that is hidden inside and return a
-        pandas DataFrame. Yes, the SAS file has a CSV hidden somewhere in the middle."""
-        # Search #
-        query = '\n {3}input (.*?);\n {3}datalines;\n\n(.*?)\n;\nrun'
-        column_names, all_rows = re.findall(query, self.paths.sas.contents, re.DOTALL)[0]
-        # Format #
-        all_rows     = StringIO(all_rows)
-        column_names = [name.strip('$') for name in column_names.split()]
-        # Parse into table #
-        df = pandas.read_csv(all_rows, names=column_names, delim_whitespace=True)
-        # Rename columns #
-        #df = df.rename()
-        # Return #
-        return df
-
-    @property_cached
-    def csv(self):
-        """Create a new disturbance table from `df` by matching columns
-        and filling empty cells with information from the original disturbances
-        (match rows that have the same classifiers together)."""
-        # Original disturbance table from input XLS #
-        orig_dist = self.parent.parent.input_data.disturbance_events
-        # Columns #
-        common_columns  = set(self.df.columns) & set(orig_dist.columns)
-        # TODO #
-        # TODO #
-        # TODO #
-        missing_columns = set(self.df.columns) - set(orig_dist.columns)
-        classifier_columns = ['_2', '_4', '_5', '_7']
-        # Drop columns #
-        classifier_columns = ['Dist_Type_ID', '', '_2', '_4', '_5', '_7']
-        scenario_dist = self.df[common_columns]
-        # Join #
-        return pandas.merge(scenario_dist, orig_dist, how='left')
+        """Load the CSV that is 'silviculture.csv'."""
+        return pandas.read_csv(str(self.paths.csv))

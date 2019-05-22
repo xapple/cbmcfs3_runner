@@ -11,7 +11,7 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
-import numpy as np
+import numpy
 
 # First party modules #
 from plumbing.cache import property_cached
@@ -57,27 +57,38 @@ class Harvest(object):
                      .reset_index()
                      .set_index('UserDefdClassSetID')
                      .join(coefficients.set_index('UserDefdClassSetID')))
+        # The index we will use for grouping #
+        index = ['DistTypeID',
+                 'DistTypeName',
+                 'TimeStep',
+                 'status',
+                 'forest_type',
+                 'management_type',
+                 'management_strategy',
+                 'conifers_bradleaves']
+        # Not real grouping variables only here to keep them in the final table
+        # Their values should be unique for the all combination of the other grouping vars
+        # But in fact they are not! But we will group again later with other vars
+        secondary_index = ['DOMProduction',
+                           'CO2Production',
+                           'MerchLitterInput',
+                           'OthLitterInput',
+                           'db']
+        # Check that we don't produce NaNs #
+        # See ~/repos/examples/python_modules/pandas/join_and_produce_nan.py
+        # Check for NaNs coming from a join tables to avoid using them in an aggregation index
+        # (currently ES, HU have some in the secondary_index) #
+        assert not ungrouped[index].isna().any().any()
         # Then group #
         df = (ungrouped
-              .groupby(['DistTypeID',
-                        'DistTypeName',
-                        'TimeStep',
-                        'status',
-                        'forest_type',
-                        'management_type',
-                        'management_strategy',
-                        'conifers_bradleaves',
-                        # Not real grouping variables only here to keep them in the final table
-                        # Their values should be unique for the all combination of the other grouping vars
-                        # But in fact they are not! But we will group again later with other vars
-                        'DOMProduction',
-                        'CO2Production',
-                        'MerchLitterInput',
-                        'OthLitterInput',
-                        'db'])
+              .groupby(index + secondary_index)
               .agg({'SoftProduction': 'sum',
                     'HardProduction': 'sum'})
               .reset_index())
+        # Check conservation of total mass #
+        is_equal = numpy.testing.assert_allclose
+        is_equal(flux_indicators['SoftProduction'].sum(), df['SoftProduction'].sum())
+        is_equal(flux_indicators['HardProduction'].sum(), df['HardProduction'].sum())
         # Create new columns #
         df['TC']                  = df.SoftProduction + df.HardProduction
         df['Vol_Merch']           = (df.TC * 2) / df.db
@@ -286,17 +297,24 @@ class Harvest(object):
                       'forest_type',
                       'management_type',
                       'management_strategy']
-        silviculture_mod = self.silviculture[join_index + ['HWP']]
+        # Take only a few columns #
+        silv = self.silviculture[join_index + ['HWP']]
+        silv = silv.set_index(join_index)
+        # Join #
         df = (self.check
               .reset_index()
               .set_index(join_index)
-              .join(silviculture_mod.set_index(join_index))
-              .groupby(['TimeStep', 'HWP'])
-              .agg({'Vol_Merch':'sum',
-                    'Vol_SubMerch':'sum',
-                    'Vol_Snags':'sum',
-                    'TC':'sum'})
-              .reset_index())
+              .join(silv))
+        # Avoid the columns being thrown away #
+        df['HWP'] = df['HWP'].fillna('NaN')
+        # Group #
+        df = (df.groupby(['TimeStep', 'HWP'])
+                .agg({'Vol_Merch':    'sum',
+                      'Vol_SubMerch': 'sum',
+                      'Vol_Snags':    'sum',
+                      'TC':           'sum'})
+                .reset_index())
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -305,10 +323,10 @@ class Harvest(object):
         """Harvest volumes of Industrial Round Wood Broadleaves."""
         df = (self.hwp_intermediate
               .query('HWP == "IRW_B"')
-              .rename(columns={'Vol_Merch':'Vol_Merch_IRW_B',
-                               'Vol_SubMerch':'Vol_SubMerch_IRW_B',
-                               'Vol_Snags':'Vol_Snags_IRW_B',
-                               'TC':'TC_IRW_B'}))
+              .rename(columns={'Vol_Merch':    'Vol_Merch_IRW_B',
+                               'Vol_SubMerch': 'Vol_SubMerch_IRW_B',
+                               'Vol_Snags':    'Vol_Snags_IRW_B',
+                               'TC':           'TC_IRW_B'}))
         # Drop hwp column
         # because it doesn't make sense anymore below when we join different products together
         df = df.drop('HWP', axis = 1)
@@ -320,10 +338,10 @@ class Harvest(object):
         """Harvest volumes of Industrial Round Wood Coniferous."""
         df = (self.hwp_intermediate
               .query('HWP == "IRW_C"')
-              .rename(columns={'Vol_Merch':'Vol_Merch_IRW_C',
-                               'Vol_SubMerch':'Vol_SubMerch_IRW_C',
-                               'Vol_Snags':'Vol_Snags_IRW_C',
-                               'TC':'TC_IRW_C'}))
+              .rename(columns={'Vol_Merch':    'Vol_Merch_IRW_C',
+                               'Vol_SubMerch': 'Vol_SubMerch_IRW_C',
+                               'Vol_Snags':    'Vol_Snags_IRW_C',
+                               'TC':           'TC_IRW_C'}))
         df = df.drop('HWP', axis = 1)
         return df
 
@@ -333,10 +351,10 @@ class Harvest(object):
         """Harvest volumes of Fuel Wood Broadleaves."""
         df = (self.hwp_intermediate
               .query('HWP == "FW_B"')
-              .rename(columns={'Vol_Merch':'Vol_Merch_FW_B',
-                               'Vol_SubMerch':'Vol_SubMerch_FW_B',
-                               'Vol_Snags':'Vol_Snags_FW_B',
-                               'TC':'TC_FW_B'}))
+              .rename(columns={'Vol_Merch':    'Vol_Merch_FW_B',
+                               'Vol_SubMerch': 'Vol_SubMerch_FW_B',
+                               'Vol_Snags':    'Vol_Snags_FW_B',
+                               'TC':           'TC_FW_B'}))
         return df
 
     #-------------------------------------------------------------------------#
@@ -368,10 +386,10 @@ class Harvest(object):
         """Harvest volumes of Fuel Wood Coniferous."""
         df = (self.hwp_intermediate
               .query('HWP == "FW_C"')
-              .rename(columns={'Vol_Merch':'Vol_Merch_FW_C',
-                               'Vol_SubMerch':'Vol_SubMerch_FW_C',
-                               'Vol_Snags':'Vol_Snags_FW_C',
-                               'TC':'TC_FW_C'}))
+              .rename(columns={'Vol_Merch':    'Vol_Merch_FW_C',
+                               'Vol_SubMerch': 'Vol_SubMerch_FW_C',
+                               'Vol_Snags':    'Vol_Snags_FW_C',
+                               'TC':           'TC_FW_C'}))
         return df
 
     #-------------------------------------------------------------------------#
@@ -385,7 +403,7 @@ class Harvest(object):
                   .set_index('TimeStep')
                   .join(self.irw_c.set_index(['TimeStep']))
                   .reset_index())
-        df['TOT_Vol_FW_C'] = np.where(df['Vol_Merch_FW_C']>=0,
+        df['TOT_Vol_FW_C'] = numpy.where(df['Vol_Merch_FW_C'] >= 0,
                                       sum([df.Vol_Merch_FW_C,
                                            df.Vol_SubMerch_FW_C,
                                            df.Vol_Snags_FW_C,
