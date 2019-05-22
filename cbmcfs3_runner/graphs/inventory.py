@@ -94,7 +94,7 @@ class InventoryFacet(Graph):
 
         # Change the labels #
         p.set_axis_labels("Age of forest in %i year bins" % self.width,
-                          self.value_col + " in [m^3]") # TODO check units
+                          self.value_col + " in [hectares]") # TODO check units
 
         # Main plot main_title #
         pyplot.gcf().suptitle(self.main_title)

@@ -45,6 +45,12 @@ class Harvest(object):
         Based on Roberto's query `Harvest analysis check` visible in the original calibration database.
 
         What are the units?
+
+        Columns are: ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
+                      'management_type', 'management_strategy', 'conifers_bradleaves',
+                      'DOMProduction', 'CO2Production', 'MerchLitterInput', 'OthLitterInput',
+                      'db', 'SoftProduction', 'HardProduction', 'TC', 'Vol_Merch',
+                      'Vol_SubMerch', 'Vol_Snags', 'Forest_residues_Vol']
         """
         # Load tables #
         flux_indicators  = self.parent.database['tblFluxIndicators']
@@ -196,8 +202,15 @@ class Harvest(object):
 
         Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
 
+        Then we add:
+
+         - Years instead of TimeSteps
+         - Rows where expected and provided are both zero removed
+         - An extra column indicating the delta between expected and provided
+         - An extra column indicating the disturbance description sentence.
+
         Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
-                      'management_strategy', 'expected', 'provided']
+                      'management_strategy', 'expected', 'provided', 'Measurement_type']
         """
         # Index columns to join disturbances and harvest check #
         index = ['status',
@@ -205,7 +218,7 @@ class Harvest(object):
                  'DistTypeName',
                  'forest_type',
                  'management_type',
-                 'management_strategy']
+                 'management_strategy',]
         # Set the same index on both data frames #
         df    = self.summary_check.set_index(index)
         dists = self.disturbances.set_index(index)
@@ -213,30 +226,12 @@ class Harvest(object):
         df = (df.join(dists, how='outer'))
         # Sum two columns #
         df = (df
-              .groupby(index)
+              .groupby(index + ['Measurement_type'])
               .agg({'Amount': 'sum',
                     'TC':     'sum'})
               .rename(columns = {'Amount': 'expected',
                                  'TC':     'provided'})
               .reset_index())
-        # Return result #
-        return df
-
-    #-------------------------------------------------------------------------#
-    @property_cached
-    def exp_prov_by_year(self):
-        """
-        Same thing as above but with:
-         - Years instead of TimeSteps
-         - Rows where expected and provided are both zero removed
-         - An extra column indicating the delta between expected and provided
-         - An extra column indicating the disturbance description sentence.
-
-        Columns are: ['year', 'DistTypeName', 'forest_type', 'expected', 'provided', 'delta'
-                      'status', 'management_type', 'management_strategy'],
-        """
-        # Take a reference #
-        df = self.expected_provided
         # Remove rows where both expected and provided are zero #
         selector = (df['expected'] == 0.0) & (df['provided'] == 0.0)
         df = df.loc[~selector].copy()
@@ -259,6 +254,30 @@ class Harvest(object):
             # Patch the harvest data frame to stop at the simulation year #
             selector = df['year'] <= self.parent.parent.country.base_year
             df = df.loc[selector].copy()
+        # Return result #
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def exp_prov_by_year_by_area(self):
+        """Measurement_type == 'A'"""
+        # Take a reference #
+        df = self.expected_provided
+        # Filter #
+        df = df.query("Measurement_type == 'A'")
+        # Extra processing #
+        #TODO use the table that roberto said 'TblDistIndicators', 'AreaDisturbed' column
+        pass
+        # Return result #
+        return df
+
+    @property_cached
+    def exp_prov_by_year_by_volume(self):
+        """Measurement_type == 'M'"""
+        # Take a reference #
+        df = self.expected_provided
+        # Filter #
+        df = df.query("Measurement_type == 'M'")
         # Return result #
         return df
 
@@ -300,13 +319,9 @@ class Harvest(object):
               .reset_index()
               .set_index(join_index)
               .join(silv))
-        # Avoid the columns being thrown away #
-        #df['HWP'] = df['HWP'].fillna('NaN')
-        # Print mismatches in DistTypeName #
-        a = set(silv.reset_index().DistTypeName.unique()) ^ set(self.disturbances.DistTypeName.unique())
-        print(a)
-        # Check that we don't produce NaNs #
-        assert not df[join_index].isna().any().any()
+        # We want the columns with NaNs to be thrown away
+        # Because they represent disturbances that do not produce any harvest
+        # Otherwise we would do: assert not df[join_index].isna().any().any()
         # Group #
         df = (df.groupby(['TimeStep', 'HWP'])
                 .agg({'Vol_Merch':    'sum',
