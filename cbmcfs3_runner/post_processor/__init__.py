@@ -108,6 +108,25 @@ class PostProcessor(object):
 
     #-------------------------------------------------------------------------#
     @property_cached
+    def classifiers_mapping(self):
+        """
+        Map classifiers columns to a better descriptive name
+        This mapping table will enable us to rename
+        classifier columns [_1, _2, _3] to [forest_type, region, etc.]
+        """
+        # Load user_classes table from DB #
+        df = self.database['tblUserDefdClasses']
+        # Add an underscore to the classifier number so it can be used for renaming #
+        df['id'] = '_' + df['UserDefdClassID'].astype(str)
+        # This makes df a pandas.Series #
+        df = df.set_index('id')['ClassDesc']
+        # Lower case names everywhere #
+        df = df.apply(lambda x: x.lower().replace(' ', '_'))
+        # Return #
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
     def inventory(self):
         return Inventory(self)
 

@@ -157,23 +157,6 @@ class Harvest(object):
 
     #-------------------------------------------------------------------------#
     @property_cached
-    def classifiers_mapping(self):
-        """
-        Map classifiers columns to a better descriptive name
-        This mapping table will enable us to rename
-        classifier columns _1, _2, _3 to forest_type, region, etc.
-        """
-        # Load user_classes table from DB #
-        user_classes = self.parent.database['tblUserDefdClasses']
-        # Add an underscore to the classifier number so it can be used for renaming #
-        user_classes['id'] = '_' + user_classes.UserDefdClassID.astype(str)
-        # This makes user_classes a pandas.Series linking "_1" to "forest_type" #
-        user_classes = user_classes.set_index('id')['ClassDesc']
-        user_classes = user_classes.apply(lambda x: x.lower().replace(' ', '_'))
-        return user_classes
-
-    #-------------------------------------------------------------------------#
-    @property_cached
     def disturbances(self):
         """
         Prepare the disturbance table for join operation with harvest tables.
@@ -191,7 +174,7 @@ class Harvest(object):
         # Load disturbances table from excel file #
         df = self.parent.parent.input_data.disturbance_events
         # Rename classifier columns _1, _2, _3 to forest_type, region, etc. #
-        df = df.rename(columns = self.classifiers_mapping)
+        df = df.rename(columns = self.parent.classifiers_mapping)
         # C.f the PL column problem #
         df = df.rename(columns = {'natural_forest_region': 'management_type'})
         # These columns also need to be manually renamed #
@@ -277,12 +260,16 @@ class Harvest(object):
     @property_cached
     def silviculture(self):
         """Prepare the silviculture table for joining operations with harvest tables."""
+        # Load file #
         df = self.parent.parent.country.silviculture.df
-        df = df.rename(columns = self.classifiers_mapping)
-        df = df.rename(columns = {'Dist_Type_ID':'DistTypeName'})
+        # Rename classifiers from _1 to forest etc. #
+        df = df.rename(columns = self.parent.classifiers_mapping)
+        # Rename a column #
+        df = df.rename(columns = {'Dist_Type_ID': 'DistTypeName'})
         # Change the type of DistTypeName to string so that it has the same type as
-        # the harvest_check DistTypeName column
+        # the `harvest_check` DistTypeName column
         df['DistTypeName'] = df['DistTypeName'].astype(str)
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -306,7 +293,12 @@ class Harvest(object):
               .set_index(join_index)
               .join(silv))
         # Avoid the columns being thrown away #
-        df['HWP'] = df['HWP'].fillna('NaN')
+        #df['HWP'] = df['HWP'].fillna('NaN')
+        # Print mismatches in DistTypeName #
+        a = set(silv.reset_index().DistTypeName.unique()) ^ set(self.disturbances.DistTypeName.unique())
+        print(a)
+        # Check that we don't produce NaNs #
+        assert not df[join_index].isna().any().any()
         # Group #
         df = (df.groupby(['TimeStep', 'HWP'])
                 .agg({'Vol_Merch':    'sum',
@@ -327,7 +319,7 @@ class Harvest(object):
                                'Vol_SubMerch': 'Vol_SubMerch_IRW_B',
                                'Vol_Snags':    'Vol_Snags_IRW_B',
                                'TC':           'TC_IRW_B'}))
-        # Drop hwp column
+        # Drop HWP column
         # because it doesn't make sense anymore below when we join different products together
         df = df.drop('HWP', axis = 1)
         return df
