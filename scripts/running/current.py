@@ -48,14 +48,14 @@ from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
 for c in tqdm(list(continent.countries.values())[:], ncols=60):
- #   if c.iso2_code not in ('LU',): continue
- #   runners = [r for runners in c.scenarios.values() for r in runners]
- #   for r in runners:
- #       r.graphs.inventory_at_start(rerun=True)
- #       r.graphs.inventory_at_end(rerun=True)
- #   c.graphs.inventory_discrepancy(rerun=True)
- #   c.report()
- #   c.report.copy_to_outbox()
+    if c.iso2_code not in ('LU',): continue
+    runners = [r for runners in c.scenarios.values() for r in runners]
+    for r in runners:
+        r.graphs.inventory_at_start(rerun=True)
+        r.graphs.inventory_at_end(rerun=True)
+    c.graphs.inventory_discrepancy(rerun=True)
+    c.report()
+    c.report.copy_to_outbox()
 
 ###############################################################################
 for c in tqdm(list(continent.countries.values())[:], ncols=60):
@@ -64,5 +64,13 @@ for c in tqdm(list(continent.countries.values())[:], ncols=60):
     for r in runners:
         r.graphs.harvest_expected_provided(rerun=True)
     c.graphs.harvest_discrepancy(rerun=True)
+    c.report()
+    c.report.copy_to_outbox()
+
+###############################################################################
+for c in tqdm(list(continent.countries.values())[:], ncols=60):
+    if c.iso2_code not in ('LU',): continue
+    c.graphs.merch_stock_at_start(rerun=True)
+    c.graphs.merch_stock_at_end(rerun=True)
     c.report()
     c.report.copy_to_outbox()

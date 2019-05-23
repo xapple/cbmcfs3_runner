@@ -136,8 +136,8 @@ class InventoryDiscrepancy(InventoryFacet):
         # Columns #
         cols = self.age_cols+[self.facet_var]+['year']
         # Data #
-        static = self.parent.scenarios['static_demand'][0].post_processor
-        calibr = self.parent.scenarios['calibration'][0].post_processor
+        static = self.parent.scenarios['static_demand'][-1].post_processor
+        calibr = self.parent.scenarios['calibration'][-1].post_processor
         static = static.inventory.bins_per_year.set_index(cols)
         calibr = calibr.inventory.bins_per_year.set_index(cols)
         # Subtract #

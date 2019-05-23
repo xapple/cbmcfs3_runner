@@ -81,6 +81,15 @@ class CountryTemplate(ReportTemplate):
         graph   = self.country.graphs.inventory_discrepancy
         return str(ScaledFigure(graph=graph, caption=graph.caption))
 
+    #------------------------------ Stock --------------------------------#
+    def merch_stock_at_start(self):
+        graph   = self.country.graphs.merch_stock_at_start
+        return str(ScaledFigure(graph=graph, caption=graph.caption))
+
+    def merch_stock_at_end(self):
+        graph   = self.country.graphs.merch_stock_at_end
+        return str(ScaledFigure(graph=graph, caption=graph.caption))
+
     #------------------------------ Harvest ----------------------------------#
     def harvest_exp_pro_static(self):
         caption = ("Comparison of expected against provided harvest in the static demand scenario."

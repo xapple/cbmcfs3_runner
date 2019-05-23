@@ -53,6 +53,9 @@ class PostProcessor(object):
          * species, site_quality and forest_type in tutorial six
          * status, forest_type, region, management_type, management_strategy, climatic_unit, conifers_bradleaves
          in the European dataset
+
+         Columns are: ['UserDefdClassID', 'status', 'forest_type', 'region', 'management_type',
+                       'management_strategy', 'climatic_unit', 'conifers_bradleaves']
         """
         # Load the three tables we will need #
         user_classes           = self.database["tblUserDefdClasses"]
@@ -84,7 +87,7 @@ class PostProcessor(object):
         # C.f the PL column problem #
         classifiers = classifiers.rename(columns={'natural_forest_region': 'management_type'})
         # Return result #
-        return classifiers
+        return classifiers.reset_index()
 
     @property
     def coefficients(self):
@@ -101,7 +104,6 @@ class PostProcessor(object):
         """
 
         return (self.classifiers
-                .reset_index()
                 .set_index('forest_type')
                 .join(self.coefficients.set_index('forest_type'))
                 .reset_index())

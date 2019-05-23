@@ -46,7 +46,7 @@ class Inventory(object):
         """
         # Load tables #
         pool  = self.parent.database["tblPoolIndicators"].set_index('UserDefdClassSetID')
-        clifr = self.parent.classifiers
+        clifr = self.parent.classifiers.set_index("UserDefdClassSetID")
         # Join #
         df = pool.join(clifr, on="UserDefdClassSetID")
         # Sum for everyone #
@@ -101,7 +101,7 @@ class Inventory(object):
                .join(self.bef_ft.set_index('forest_type'))
                .reset_index())
         # Select only some columns #
-        columns_of_interest  = ['AveAge', 'TimeStep', 'Area', 'Biomass', 'BEF_Tot','db']
+        columns_of_interest  = ['AveAge', 'TimeStep', 'Area', 'Biomass', 'BEF_Tot', 'db']
         columns_of_interest += list(self.parent.classifiers.columns)
         df = df[columns_of_interest].copy()
         # Divide #
@@ -221,5 +221,46 @@ class Inventory(object):
             # Patch the harvest data frame to stop at the simulation year #
             selector = df['year'] <= self.parent.parent.country.base_year
             df = df.loc[selector].copy()
+        # Return #
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def sum_merch_stock(self):
+        """
+        Total biomass *stock* per forest type coming from the pool indicators table.
+        It's an indication of the overall evolution of the growing stock
+        (not yet disturbed). This is useful for making a high level check avoiding
+        intermediate queries which could be sources of errors.
+        The mass is measured as tons of carbon.
+
+        Columns are: ['year', 'forest_type', 'conifers_bradleaves', 'mass']
+        """
+        # Load data #
+        df    = self.parent.database['tblPoolIndicators']
+        clifr = self.parent.classifiers.set_index("UserDefdClassSetID")
+        # Our index #
+        index = ['TimeStep', 'forest_type']
+        # Join #
+        df = (df
+              .set_index('UserDefdClassSetID')
+              .join(clifr)
+              .groupby(index)
+              .agg({'HW_Merch': 'sum',
+                    'SW_Merch': 'sum'})
+              .reset_index())
+        # Add year and remove TimeStep #
+        df['year'] = self.parent.timestep_to_years(df['TimeStep'])
+        df = df.drop('TimeStep', axis=1)
+        # Check for mixed species that would produce both hard and soft #
+        import warnings
+        for i, row in df.iterrows():
+            if row['HW_Merch'] > 0.0 and row['SW_Merch'] > 0.0:
+                warnings.warn("There is a mixed species at row %i.\n%s" % (i,row))
+        # Convert from wide to long format #
+        df = df.melt(id_vars    = ['year', 'forest_type'],
+                     value_vars = ['HW_Merch', 'SW_Merch'],
+                     var_name   = 'conifers_bradleaves',
+                     value_name = 'mass')
         # Return #
         return df

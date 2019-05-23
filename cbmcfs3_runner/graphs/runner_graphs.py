@@ -13,9 +13,11 @@ Unit D1 Bioeconomy.
 # First party modules #
 
 # Internal modules #
-from cbmcfs3_runner.graphs.harvest   import HarvestExpectedProvided, HarvestedWoodProducts
-from cbmcfs3_runner.graphs.inventory import InventoryAtStart, InventoryAtEnd
+from cbmcfs3_runner.graphs.inventory   import InventoryAtStart, InventoryAtEnd
+from cbmcfs3_runner.graphs.harvest     import HarvestExpectedProvided, HarvestedWoodProducts
 
 # Constants #
-__all__ = ['HarvestExpectedProvided', 'HarvestedWoodProducts',
-           'InventoryAtStart', 'InventoryAtEnd']
+__all__ = [
+    'InventoryAtStart', 'InventoryAtEnd',
+    'HarvestExpectedProvided', 'HarvestedWoodProducts',
+]
