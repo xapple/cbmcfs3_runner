@@ -106,7 +106,7 @@ class Harvest(object):
 
     #-------------------------------------------------------------------------#
     @property_cached
-    def summary_check(self):
+    def provided_volume(self):
         """
         Based on Roberto's query `Harvest summary check` visible in the original calibration database.
 
@@ -114,7 +114,8 @@ class Harvest(object):
         (of the output)  'management_type', 'management_strategy', 'Vol_Merch', 'Vol_Snags',
                          'Vol_SubMerch', 'Forest_residues_Vol', 'TC', 'tot_vol']
 
-        This corresponds to the "provided" aspect of "expected_provided" harvest.
+        This corresponds to the "provided" aspect of "expected_provided" harvest and contains
+        only volumes ('M').
         """
         # Compute #
         df = (self.check
@@ -134,6 +135,28 @@ class Harvest(object):
               .reset_index())
         # Add the total volume column #
         df['tot_vol'] = df.Vol_Merch + df.Vol_Snags + df.Vol_SubMerch
+        # Add the Measurement_type #
+        df['Measurement_type'] = 'M'
+        # Return result #
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def provided_area(self):
+        """
+        Load data from the table 'TblDistIndicators'
+
+        Columns are:    ['DistIndID', 'SPUID', 'DistTypeID', 'TimeStep', 'UserDefdClassSetID',
+                         'LandClassID', 'kf2', 'kf3', 'kf4', 'kf5', 'kf6', 'DistArea',
+                         'DistProduct']
+
+        This corresponds to the "provided" aspect of "expected_provided" harvest and contains
+        only areas ('A').
+        """
+        # Load #
+        df = self.parent.database['TblDistIndicators']
+        # Add the Measurement_type #
+        df['Measurement_type'] = 'A'
         # Return result #
         return df
 
@@ -165,7 +188,9 @@ class Harvest(object):
     @property_cached
     def disturbances(self):
         """
-        Prepare the disturbance table for join operation with harvest tables.
+        Measurement_type can be 'M' for mass or 'A' for area.
+
+        Prepare the disturbance table for join operations with harvest tables.
         It could be a good idea to check why some countries have DistTypeName as int64
         and others have DistTypeName as object.
 
@@ -195,7 +220,7 @@ class Harvest(object):
 
     #-------------------------------------------------------------------------#
     @property_cached
-    def expected_provided(self):
+    def exp_prov_by_volume(self):
         """
         Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
         to the amount of harvest actually performed by the model (extracted from the flux indicator table).
@@ -208,6 +233,63 @@ class Harvest(object):
          - Rows where expected and provided are both zero removed
          - An extra column indicating the delta between expected and provided
          - An extra column indicating the disturbance description sentence.
+
+        Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
+                      'management_strategy', 'expected', 'provided', 'Measurement_type',
+                      'DistDescription']
+        """
+        # Index columns to join disturbances and harvest check #
+        index = ['status',
+                 'TimeStep',
+                 'DistTypeName',
+                 'forest_type',
+                 'management_type',
+                 'management_strategy',]
+        # Set the same index on both data frames #
+        check = self.summary_check.set_index(index)
+        dists = self.disturbances.set_index(index)
+        # Filter #
+        #dists = dists.query("Measurement_type == 'M'")
+        # Do the join #
+        df = (check.join(dists)).reset_index()
+        # Sum two columns #
+        df = (df
+              .groupby(index + ['Measurement_type'])
+              .agg({'Amount': 'sum',
+                    'TC':     'sum'})
+              .rename(columns = {'Amount': 'expected',
+                                 'TC':     'provided'})
+              .reset_index())
+        # Remove rows where both expected and provided are zero #
+        selector = (df['expected'] == 0.0) & (df['provided'] == 0.0)
+        df = df.loc[~selector].copy()
+        # Add the delta column #
+        df['delta'] = (df.expected - df.provided)
+        # Add year and remove TimeStep #
+        df['year'] = self.parent.timestep_to_years(df['TimeStep'])
+        df = df.drop('TimeStep', axis=1)
+        # Get the disturbances full name from their number #
+        dist_type = (self.parent.parent.input_data.disturbance_types
+                     .rename(columns={'DisturbanceTypeID': 'DistTypeName',
+                                                   'Name': 'DistDescription'})
+                     .set_index('DistTypeName'))
+        # Add a column named 'DistDescription' #
+        df = (df.set_index('DistTypeName')
+                .join(dist_type)
+                .reset_index())
+        # Only if we are in the calibration scenario #
+        if self.parent.parent.scenario.short_name == 'calibration':
+            # Patch the harvest data frame to stop at the simulation year #
+            selector = df['year'] <= self.parent.parent.country.base_year
+            df = df.loc[selector].copy()
+        # Return result #
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def exp_prov_by_area(self):
+        """
+        Same as above but for "Measurement_type == 'A'"
 
         Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
                       'management_strategy', 'expected', 'provided', 'Measurement_type',
@@ -255,30 +337,6 @@ class Harvest(object):
             # Patch the harvest data frame to stop at the simulation year #
             selector = df['year'] <= self.parent.parent.country.base_year
             df = df.loc[selector].copy()
-        # Return result #
-        return df
-
-    #-------------------------------------------------------------------------#
-    @property_cached
-    def exp_prov_by_year_by_area(self):
-        """Measurement_type == 'A'"""
-        # Take a reference #
-        df = self.expected_provided
-        # Filter #
-        df = df.query("Measurement_type == 'A'")
-        # Extra processing #
-        #TODO use the table that roberto said 'TblDistIndicators', 'AreaDisturbed' column
-        pass
-        # Return result #
-        return df
-
-    @property_cached
-    def exp_prov_by_year_by_volume(self):
-        """Measurement_type == 'M'"""
-        # Take a reference #
-        df = self.expected_provided
-        # Filter #
-        df = df.query("Measurement_type == 'M'")
         # Return result #
         return df
 

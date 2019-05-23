@@ -121,9 +121,6 @@ class CountryTemplate(ReportTemplate):
     #------------------------------ Tables --------------------------------#
     def table_forest_type(self):
         return 0
-        table = self.static_runner.post_processor
-        table = tabulate(table, numalign="right", tablefmt="pipe")
-        return table + "\n\n   : Lorem ipsum."
 
     def table_disturbance_type(self):
         # New column names #

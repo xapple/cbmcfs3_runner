@@ -132,7 +132,8 @@ class Country(object):
     @property_cached
     def coefficients(self):
         """Load the conversion coefficients from tons of carbon
-        to cubic meters of wood."""
+        to cubic meters of wood.
+        Columns are: ['id', 'forest_type', 'c', 'db', 'harvest_gr']"""
         df = pandas.read_csv(str(self.paths.coefficients))
         return df.rename(columns=lambda x: x.lower().replace(' ', '_'))
 
