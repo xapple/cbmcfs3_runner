@@ -21,6 +21,9 @@ from plumbing.cache    import property_cached
 from pymarktex         import Document
 from pymarktex.figures import ScaledFigure
 
+# Third party modules #
+from tabulate import tabulate
+
 ###############################################################################
 class CountryReport(Document):
     """A report generated in PDF describing a country and
@@ -66,15 +69,21 @@ class CountryTemplate(ReportTemplate):
     def short_name(self):
         return self.country.country_name
 
+    def static_runner(self):
+        return elf.scenarios['static_demand'][-1]
+
+    def calibr_runner(self):
+        return elf.scenarios['calibration'][-1]
+
     #------------------------------ Inventory --------------------------------#
     def inventory_at_end_static(self):
         caption = "Inventory at the end of the static demand simulation."
-        graph   = self.scenarios['static_demand'][0].graphs.inventory_at_end
+        graph   = self.static_runner.graphs.inventory_at_end
         return str(ScaledFigure(graph=graph, caption=caption))
 
     def inventory_at_end_calib(self):
         caption = "Inventory at the end of the calibration simulation."
-        graph   = self.scenarios['calibration'][0].graphs.inventory_at_end
+        graph   = self.calibr_runner.graphs.inventory_at_end
         return str(ScaledFigure(graph=graph, caption=caption))
 
     def inventory_discrepancy(self):
@@ -107,3 +116,15 @@ class CountryTemplate(ReportTemplate):
         graph   = self.country.graphs.harvest_discrepancy
         return str(ScaledFigure(graph=graph, caption=graph.caption))
 
+    #------------------------------ Tables --------------------------------#
+    def table_forest_type(self):
+        return 0
+        table = self.static_runner.post_processor
+        table = tabulate(table, numalign="right", tablefmt="pipe")
+        return table + "\n\n   : Lorem ipsum."
+
+    def table_disturbance_type(self):
+        return 0
+        table = self.static_runner.post_processor
+        table = tabulate(table, numalign="right", tablefmt="pipe")
+        return table + "\n\n   : Lorem ipsum."
