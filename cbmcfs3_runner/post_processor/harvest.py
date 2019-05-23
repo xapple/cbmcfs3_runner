@@ -210,7 +210,8 @@ class Harvest(object):
          - An extra column indicating the disturbance description sentence.
 
         Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
-                      'management_strategy', 'expected', 'provided', 'Measurement_type']
+                      'management_strategy', 'expected', 'provided', 'Measurement_type',
+                      'DistDescription']
         """
         # Index columns to join disturbances and harvest check #
         index = ['status',
@@ -223,7 +224,7 @@ class Harvest(object):
         df    = self.summary_check.set_index(index)
         dists = self.disturbances.set_index(index)
         # Do the join #
-        df = (df.join(dists, how='outer'))
+        df = (df.join(dists, how='outer')).reset_index()
         # Sum two columns #
         df = (df
               .groupby(index + ['Measurement_type'])

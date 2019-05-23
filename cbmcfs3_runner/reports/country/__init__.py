@@ -69,11 +69,13 @@ class CountryTemplate(ReportTemplate):
     def short_name(self):
         return self.country.country_name
 
+    @property
     def static_runner(self):
-        return elf.scenarios['static_demand'][-1]
+        return self.scenarios['static_demand'][-1]
 
+    @property
     def calibr_runner(self):
-        return elf.scenarios['calibration'][-1]
+        return self.scenarios['calibration'][-1]
 
     #------------------------------ Inventory --------------------------------#
     def inventory_at_end_static(self):
@@ -124,7 +126,14 @@ class CountryTemplate(ReportTemplate):
         return table + "\n\n   : Lorem ipsum."
 
     def table_disturbance_type(self):
-        return 0
-        table = self.static_runner.post_processor
-        table = tabulate(table, numalign="right", tablefmt="pipe")
-        return table + "\n\n   : Lorem ipsum."
+        # New column names #
+        names = {'DisturbanceTypeID': 'Disturbance ID',
+                 'Name':              'Description'}
+        # Get the disturbances full name from their number #
+        df = self.static_runner.input_data.disturbance_types
+        df = df.rename(columns=names)
+        df = df.set_index('Disturbance ID')
+        # Make a string #
+        table = tabulate(df, headers="keys", numalign="right", tablefmt="pipe")
+        # Add a caption #
+        return table + "\n\n   : Disturbance number and their corresponding description."
