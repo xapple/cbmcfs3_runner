@@ -262,5 +262,10 @@ class Inventory(object):
                      value_vars = ['HW_Merch', 'SW_Merch'],
                      var_name   = 'conifers_bradleaves',
                      value_name = 'mass')
+        # Only if we are in the calibration scenario #
+        if self.parent.parent.scenario.short_name == 'calibration':
+            # Patch the harvest data frame to stop at the simulation year #
+            selector = df['year'] <= self.parent.parent.country.base_year
+            df = df.loc[selector].copy()
         # Return #
         return df

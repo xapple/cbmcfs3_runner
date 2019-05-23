@@ -20,10 +20,23 @@ from matplotlib import pyplot
 
 ###############################################################################
 class MerchStock(Graph):
+    sep = ('y')
+    y_grid = True
 
     @property
-    def color(self):
-        return brewer2mpl.get_map('Dark2', 'qualitative', 3).mpl_colors[1]
+    def static(self):
+        """The last step in the static_demand scenario for the same country"""
+        return self.parent.scenarios['static_demand'][-1].post_processor
+
+    @property
+    def calibr(self):
+        """The last step in the calibration scenario for the same country"""
+        return self.parent.scenarios['calibration'][-1].post_processor
+
+    @property
+    def main_title(self):
+        return ('Comparison of merchantable stock between static demand'
+                '\n and calibration at year %i' % self.year_to_plot)
 
     @property
     def data(self):
@@ -35,29 +48,39 @@ class MerchStock(Graph):
         static['scenario'] = 'static_demand'
         calibr['scenario'] = 'calibration'
         df = static.append(calibr)
-        # Filter #
+        # Filter for year #
         self.year_to_plot = self.year_selection(df['year'].unique())
         selector          = df['year'] == self.year_to_plot
         df                = df.loc[selector].copy()
+        # Filter for positive mass #
+        selector = df['mass'] > 0.0
+        df       = df.loc[selector].copy()
+        # Switch to million of tons #
+        df['mass'] = df['mass'] / 1e6
         # Return #
         return df
 
-    @property
-    def main_title(self):
-        return 'Comparison of merchantable stock between static demand and calibration' % self.year_to_plot
-
     def plot(self, **kwargs):
-        df = kwargs.pop("data")
-        start, end  = df[self.age_cols[0]], df[self.age_cols[1]]
-        center = start + (end - start) / 2
-        height = df[self.value_col]
-        pyplot.bar(x=center, height=height, width=self.width, **kwargs)
+        # Plot #
+        g = seaborn.catplot(x="forest_type", y="mass", hue="scenario",
+                           data=self.data, kind="bar", palette="muted")
+        # Adjust #
+        g.despine(left=True)
+        g.set_ylabels("Merchantable mass [million tons of carbon]")
+        # Title #
+        pyplot.subplots_adjust(top =0.90)
+        pyplot.subplots_adjust(left=0.30)
+        pyplot.gcf().suptitle(self.main_title)
+        # Save #
+        self.save_plot(**kwargs)
+        # Return for display in notebooks for instance #
+        return g
 
 ###############################################################################
 class MerchStockAtStart(MerchStock):
-    caption = "Merchantable stock at the beginning of the simulation."
+    caption = "Total merchantable stock at the beginning of the simulation."
     year_selection = lambda self, years: min(years)
 
 class MerchStockAtEnd(MerchStock):
-    caption = "Merchantable stock at the end of the simulation."
+    caption = "Total merchantable stock at the end of the simulation."
     year_selection = lambda self, years: max(years)
