@@ -19,5 +19,5 @@ import pbs3
 home = os.environ.get('HOME', '~') + '/'
 
 ###############################################################################
-pbs3.rsync('-avz', 'paulaws:repos/cbmcfs3_data/reports/countries/',
-                    home + 'repos/cbmcfs3_data/reports/countries/')
+pbs3.rsync('-avz', 'cbm1:repos/cbmcfs3_data/reports/countries/',
+                 home + 'repos/cbmcfs3_data/reports/countries/')

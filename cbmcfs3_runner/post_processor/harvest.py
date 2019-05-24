@@ -106,6 +106,30 @@ class Harvest(object):
 
     #-------------------------------------------------------------------------#
     @property_cached
+    def total(self):
+        """
+        Based on Roberto's query `TOT_Harvest` visible in the original calibration database.
+
+        Columns are: ['DistTypeName', 'TC', 'Vol_Merch', 'Vol_SubMerch', 'Vol_Snags',
+                      'Forest_residues_Vol', 'tot_vol']
+        """
+        # Compute #
+        df = (self.check
+              .set_index('DistTypeID')
+              .groupby(['DistTypeName'])
+              .agg({'TC':                  'sum',
+                    'Vol_Merch':           'sum',
+                    'Vol_SubMerch':        'sum',
+                    'Vol_Snags':           'sum',
+                    'Forest_residues_Vol': 'sum'})
+              .reset_index())
+        # Add the total volume column #
+        df['tot_vol'] = df.Vol_Merch + df.Vol_SubMerch + df.Vol_Snags
+        # Return result #
+        return df
+
+    #-------------------------------------------------------------------------#
+    @property_cached
     def provided_volume(self):
         """
         Based on Roberto's query `Harvest summary check` visible in the original calibration database.
@@ -162,30 +186,6 @@ class Harvest(object):
 
     #-------------------------------------------------------------------------#
     @property_cached
-    def total(self):
-        """
-        Based on Roberto's query `TOT_Harvest` visible in the original calibration database.
-
-        Columns are: ['DistTypeName', 'TC', 'Vol_Merch', 'Vol_SubMerch', 'Vol_Snags',
-                      'Forest_residues_Vol', 'tot_vol']
-        """
-        # Compute #
-        df = (self.check
-              .set_index('DistTypeID')
-              .groupby(['DistTypeName'])
-              .agg({'TC':                  'sum',
-                    'Vol_Merch':           'sum',
-                    'Vol_SubMerch':        'sum',
-                    'Vol_Snags':           'sum',
-                    'Forest_residues_Vol': 'sum'})
-              .reset_index())
-        # Add the total volume column #
-        df['tot_vol'] = df.Vol_Merch + df.Vol_SubMerch + df.Vol_Snags
-        # Return result #
-        return df
-
-    #-------------------------------------------------------------------------#
-    @property_cached
     def disturbances(self):
         """
         Measurement_type can be 'M' for mass or 'A' for area.
@@ -200,7 +200,8 @@ class Harvest(object):
                       'Efficency', 'Sort_Type', 'Measurement_type', 'Amount', 'DistTypeName',
                       'TimeStep'],
 
-        This corresponds to the "expected" aspect of "expected_provided" harvest.
+        This corresponds to the "expected" aspect of "expected_provided" harvest
+        and will contain both Area ('A') and Volumes ('M').
         """
         # Load disturbances table from excel file #
         df = self.parent.parent.input_data.disturbance_events

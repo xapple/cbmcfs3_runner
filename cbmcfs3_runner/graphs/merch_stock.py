@@ -20,7 +20,7 @@ from matplotlib import pyplot
 
 ###############################################################################
 class MerchStock(Graph):
-    sep = ('y')
+    sep = ('y',)
     y_grid = True
 
     @property
