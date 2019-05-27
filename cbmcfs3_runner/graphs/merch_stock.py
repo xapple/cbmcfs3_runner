@@ -22,6 +22,7 @@ from matplotlib import pyplot
 class MerchStock(Graph):
     sep = ('y',)
     y_grid = True
+    y_label = "Merchantable mass [million tons of carbon]"
 
     @property
     def static(self):
@@ -34,14 +35,13 @@ class MerchStock(Graph):
         return self.parent.scenarios['calibration'][-1].post_processor
 
     @property
-    def main_title(self):
+    def title(self):
         return ('Comparison of merchantable stock between static demand'
                 '\n and calibration at year %i' % self.year_to_plot)
 
     @property
     def data(self):
         # Load tables #
-        index = ['year', 'forest_type', 'conifers_bradleaves']
         static = self.static.inventory.sum_merch_stock.copy()
         calibr = self.calibr.inventory.sum_merch_stock.copy()
         # Append #
@@ -62,15 +62,10 @@ class MerchStock(Graph):
 
     def plot(self, **kwargs):
         # Plot #
-        g = seaborn.catplot(x="forest_type", y="mass", hue="scenario",
-                           data=self.data, kind="bar", palette="muted")
-        # Adjust #
-        g.despine(left=True)
-        g.set_ylabels("Merchantable mass [million tons of carbon]")
-        # Title #
-        pyplot.subplots_adjust(top =0.90)
-        pyplot.subplots_adjust(left=0.30)
-        pyplot.gcf().suptitle(self.main_title)
+        g = seaborn.barplot(x="forest_type", y="mass", hue="scenario",
+                            palette='dark', data=self.data)
+        # Lines #
+        pyplot.gca().yaxis.grid(True, linestyle=':')
         # Save #
         self.save_plot(**kwargs)
         # Return for display in notebooks for instance #
