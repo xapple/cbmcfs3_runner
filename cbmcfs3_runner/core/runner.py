@@ -87,7 +87,6 @@ class Runner(object):
         self.pre_processor()
         self.country.aidb.switch()
         self.default_sit()
-        self.append_sit()
         self.middle_processor()
         self.launch_cbm()
         self.post_processor()
@@ -119,8 +118,6 @@ class Runner(object):
 
     @property_cached
     def default_sit(self): return DefaultSIT(self)
-    @property_cached
-    def append_sit(self): return AppendSIT(self)
 
     @property_cached
     def middle_processor(self):

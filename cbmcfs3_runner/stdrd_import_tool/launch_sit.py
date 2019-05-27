@@ -138,7 +138,7 @@ class DefaultSIT(LaunchSIT):
     To be run first to create the project.
     """
     append = False
-    short_name = "default mode"
+    short_name = "default_mode"
 
     all_paths = """
     /input/sit_config/default_config.json
@@ -147,22 +147,4 @@ class DefaultSIT(LaunchSIT):
     /output/sit/project.mdb
     /output/sit/SITLog.txt
     /logs/sit_default.log
-    """
-
-###############################################################################
-class AppendSIT(LaunchSIT):
-    """
-    To be run second to append the yield curve as new CBM assumptions in
-    the project with the DefaultSIT instance.
-    """
-    append = True
-    short_name = "append mode"
-
-    all_paths = """
-    /input/sit_config/append_config.json
-    /input/xls/append_tables.xlsx                            
-    /input/xls/append_tables.xls                               
-    /output/sit/project.mdb
-    /output/sit/SITLog_append.txt
-    /logs/sit_append.log
     """
