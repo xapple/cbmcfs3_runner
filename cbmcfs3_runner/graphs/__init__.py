@@ -24,7 +24,7 @@ class Graphs(object):
         self.instances = []
 
     def __call__(self, *args, **kwargs):
-        for i in self.instances: i(*args, **kwargs)
+        return [i(*args, **kwargs) for i in self.instances]
 
 ###############################################################################
 def load_graphs_from_module(parent, submodule):
