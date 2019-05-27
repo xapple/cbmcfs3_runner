@@ -77,7 +77,13 @@ class Runner(object):
             self.log.exception("Exception", exc_info=1)
             if not silent: raise
 
-    def run(self):
+    def run(self, verbose=False):
+        """ Run the full modelling pipeline 
+            for a given country, a given scenario and a given step.
+        """
+        # Send message to console #
+        if verbose:
+            self.log.handlers[0].setLevel("DEBUG")
         # Messages #
         self.log.info("Using module at '%s'" % cbmcfs3_runner)
         self.log.info("Runner '%s' starting" % self.short_name)
