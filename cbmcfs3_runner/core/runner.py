@@ -87,7 +87,7 @@ class Runner(object):
         self.pre_processor()
         self.country.aidb.switch()
         self.default_sit()
-        self.middle_processor()
+        #self.middle_processor()
         self.launch_cbm()
         self.post_processor()
         # Reporting #
@@ -117,7 +117,8 @@ class Runner(object):
         return PreProcessor(self)
 
     @property_cached
-    def default_sit(self): return DefaultSIT(self)
+    def default_sit(self):
+        return DefaultSIT(self)
 
     @property_cached
     def middle_processor(self):
