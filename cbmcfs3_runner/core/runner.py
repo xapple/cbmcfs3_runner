@@ -23,7 +23,7 @@ from cbmcfs3_runner.modifiers.middle_process      import MiddleProcessor
 from cbmcfs3_runner.post_processor                import PostProcessor
 from cbmcfs3_runner.others.input_data             import InputData
 from cbmcfs3_runner.reports.runner                import RunnerReport
-from cbmcfs3_runner.stdrd_import_tool.launch_sit  import DefaultSIT, AppendSIT
+from cbmcfs3_runner.stdrd_import_tool.launch_sit  import DefaultSIT
 from cbmcfs3_runner.external_tools.launch_cbm     import LaunchCBM
 
 ###############################################################################
