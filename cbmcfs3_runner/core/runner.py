@@ -78,15 +78,14 @@ class Runner(object):
             if not silent: raise
 
     def run(self, verbose=False):
-        """ Run the full modelling pipeline 
+        """ Run the full modelling pipeline
             for a given country, a given scenario and a given step.
         """
-        # Send message to console #
-        if verbose:
-            self.log.handlers[0].setLevel("DEBUG")
+        # Send messages to console #
+        if verbose: self.log.handlers[0].setLevel("DEBUG")
         # Messages #
-        self.log.info("Using module at '%s'" % cbmcfs3_runner)
-        self.log.info("Runner '%s' starting" % self.short_name)
+        self.log.info("Using module at '%s'." % cbmcfs3_runner)
+        self.log.info("Runner '%s' starting." % self.short_name)
         # Main steps #
         self.remove_directory()
         self.input_data.copy_from_country()
@@ -97,8 +96,11 @@ class Runner(object):
         self.launch_cbm()
         self.post_processor()
         # Reporting #
+        self.log.info("Creating runner report.")
         for graph in self.graphs: graph()
         self.report()
+        # Messages #
+        self.log.info("Done." % cbmcfs3_runner)
 
     def remove_directory(self):
         """Removes the directory that will be recreated by running this runner.
