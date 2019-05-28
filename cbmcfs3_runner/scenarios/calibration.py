@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This scenarios represent a demand that is pre-calculated and is not a function of the
+This scenario represents a demand that is pre-calculated and is not a function of the
 maximum wood supply.
 """
 
