@@ -31,7 +31,7 @@ class FakeYields(Scenario):
             # Copy the class attribute into the instance of the class #
             xls = runner.default_sit.create_xls
             xls.file_name_to_sheet_name = xls.file_name_to_sheet_name.copy()
-            # Switch the relevent key #
+            # Switch the relevant key #
             runner.default_sit.create_xls.file_name_to_sheet_name.pop('historical_yields')
             runner.default_sit.create_xls.file_name_to_sheet_name['yields'] = 'Growth'
         # Return #
