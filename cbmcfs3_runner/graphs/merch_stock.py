@@ -25,29 +25,23 @@ class MerchStock(Graph):
     y_label = "Merchantable mass [million tons of carbon]"
 
     @property
-    def static(self):
-        """The last step in the static_demand scenario for the same country"""
-        return self.parent.scenarios['static_demand'][-1].post_processor
-
-    @property
-    def calibr(self):
-        """The last step in the calibration scenario for the same country"""
-        return self.parent.scenarios['calibration'][-1].post_processor
-
-    @property
     def title(self):
-        return ('Comparison of merchantable stock between static demand'
-                '\n and calibration at year %i' % self.year_to_plot)
+        return ('Comparison of merchantable stock between all scenarios'
+                '\n at year %i' % self.year_to_plot)
+
+    def get_sum_merch_stock(self, scenario):
+        """ Extract the total merchantable stock for a given scenario"""
+        p = self.parent.scenarios[scenario][-1].post_processor
+        df = p.inventory.sum_merch_stock.copy()
+        df['scenario'] = scenario
+        return df
 
     @property
     def data(self):
-        def get_sum_merch_stock(scenario):
-            r = self.parent.scenarios[scenario][-1].post_processor
-            df = r.inventory.sum_merch_stock.copy()
-            df['scenario'] = scenario
-            return df
-        
-        merch = [get_sum_merch_stock(scen) for scen in self.parent.scenarios.keys()]
+        """Extract the total merchangable stock for all scenarios 
+           and filter data for the plot"""
+        scen_names = self.parent.scenarios.keys()
+        merch = [self.get_sum_merch_stock(scen) for scen in scen_names]
         df = pandas.concat(merch)
         df['mass_1e6'] = df['mass']/1e6
         # Filter for year #
