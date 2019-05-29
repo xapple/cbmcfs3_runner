@@ -9,14 +9,14 @@ Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
-import math
 
 # First party modules #
 from plumbing.graphs import Graph
 
 # Third party modules #
-import seaborn, brewer2mpl, matplotlib
+import seaborn
 from matplotlib import pyplot
+import pandas
 
 ###############################################################################
 class MerchStock(Graph):
@@ -41,13 +41,15 @@ class MerchStock(Graph):
 
     @property
     def data(self):
-        # Load tables #
-        static = self.static.inventory.sum_merch_stock.copy()
-        calibr = self.calibr.inventory.sum_merch_stock.copy()
-        # Append #
-        static['scenario'] = 'static_demand'
-        calibr['scenario'] = 'calibration'
-        df = static.append(calibr)
+        def get_sum_merch_stock(scenario):
+            r = self.parent.scenarios[scenario][-1].post_processor
+            df = r.inventory.sum_merch_stock.copy()
+            df['scenario'] = scenario
+            return df
+        
+        merch = [get_sum_merch_stock(scen) for scen in self.parent.scenarios.keys()]
+        df = pandas.concat(merch)
+        df['mass_1e6'] = df['mass']/1e6
         # Filter for year #
         self.year_to_plot = self.year_selection(df['year'].unique())
         selector          = df['year'] == self.year_to_plot
@@ -56,13 +58,13 @@ class MerchStock(Graph):
         selector = df['mass'] > 0.0
         df       = df.loc[selector].copy()
         # Switch to million of tons #
-        df['mass'] = df['mass'] / 1e6
+        df['mass_1e6'] = df['mass'] / 1e6
         # Return #
         return df
 
     def plot(self, **kwargs):
         # Plot #
-        g = seaborn.barplot(x="forest_type", y="mass", hue="scenario",
+        g = seaborn.barplot(x="forest_type", y="mass_1e6", hue="scenario",
                             palette='dark', data=self.data)
         # Lines #
         pyplot.gca().yaxis.grid(True, linestyle=':')
