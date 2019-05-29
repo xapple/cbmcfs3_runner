@@ -31,6 +31,7 @@ class MerchStock(Graph):
 
     def get_sum_merch_stock(self, scenario):
         """ Extract the total merchantable stock for a given scenario"""
+        # Here self.parent is a country
         p = self.parent.scenarios[scenario][-1].post_processor
         df = p.inventory.sum_merch_stock.copy()
         df['scenario'] = scenario
@@ -38,7 +39,7 @@ class MerchStock(Graph):
 
     @property
     def data(self):
-        """Extract the total merchangable stock for all scenarios 
+        """Extract the total merchantable stock for all scenarios 
            and filter data for the plot"""
         scen_names = self.parent.scenarios.keys()
         merch = [self.get_sum_merch_stock(scen) for scen in scen_names]
