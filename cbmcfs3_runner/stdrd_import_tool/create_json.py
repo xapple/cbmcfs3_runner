@@ -17,7 +17,6 @@ if os.name == "posix": import sh as pbs
 if os.name == "nt":    import pbs
 
 # First party modules #
-from plumbing.cache import property_cached
 from autopaths.auto_paths import AutoPaths
 
 ###############################################################################

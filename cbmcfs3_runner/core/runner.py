@@ -78,9 +78,8 @@ class Runner(object):
             if not silent: raise
 
     def run(self, verbose=False):
-        """ Run the full modelling pipeline
-            for a given country, a given scenario and a given step.
-        """
+        """Run the full modelling pipeline for a given country,
+        a given scenario and a given step."""
         # Send messages to console #
         if verbose: self.log.handlers[0].setLevel("DEBUG")
         # Messages #
