@@ -40,9 +40,12 @@ class MerchStock(Graph):
     @property
     def data(self):
         """Extract the total merchantable stock for all scenarios 
-           and filter data for the plot"""
-        scen_names = self.parent.scenarios.keys()
-        merch = [self.get_sum_merch_stock(scen) for scen in scen_names]
+           and filter data for the plot.
+           By default data is returned for all scenarios. 
+           User can specify a list of scenarios as a property."""
+        if not hasattr(self, 'scenario_names'):
+            self.scenario_names = self.parent.scenarios.keys()
+        merch = [self.get_sum_merch_stock(scen) for scen in self.scenario_names]
         df = pandas.concat(merch)
         df['mass_1e6'] = df['mass']/1e6
         # Filter for year #
