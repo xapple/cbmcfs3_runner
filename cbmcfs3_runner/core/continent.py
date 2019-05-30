@@ -67,7 +67,7 @@ class Continent(object):
 
     @property_cached
     def countries(self):
-        """Return a list with country objects inside."""
+        """Return a dictionary of country iso2 code to country objects."""
         all_countries = [Country(self, d) for d in self.countries_dir.flat_directories]
         return {c.iso2_code: c for c in all_countries}
 
