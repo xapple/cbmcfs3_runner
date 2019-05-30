@@ -73,9 +73,11 @@ class MerchStock(Graph):
 
 ###############################################################################
 class MerchStockAtStart(MerchStock):
+    scenario_names = ['static_demand', 'calibration']
     caption = "Total merchantable stock at the beginning of the simulation."
     year_selection = lambda self, years: min(years)
 
 class MerchStockAtEnd(MerchStock):
+    scenario_names = ['static_demand', 'calibration']
     caption = "Total merchantable stock at the end of the simulation."
     year_selection = lambda self, years: max(years)
