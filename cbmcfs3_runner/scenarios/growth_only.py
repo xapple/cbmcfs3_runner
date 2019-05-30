@@ -17,6 +17,12 @@ from plumbing.cache import property_cached
 from cbmcfs3_runner.scenarios.base_scen import Scenario
 from cbmcfs3_runner.core.runner import Runner
 
+def filter_df(df, base_year, inv_start_year):
+    """Takes the old event dataframe and returns only disturbances for 2020."""
+    only_this_year = base_year - inv_start_year + 5
+    return df.query("Step == %s" % only_this_year)
+
+
 ###############################################################################
 class GrowthOnly(Scenario):
     short_name = 'growth_only'
@@ -27,14 +33,10 @@ class GrowthOnly(Scenario):
         # Create all runners #
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         # Modify these runners #
-#        for c in self.continent:
-#            # Get the runner of the last step #
-#            runner = result[c.iso2_code][-1]
-#            # Copy the class attribute into the instance of the class #
-#            xls = runner.default_sit.create_xls
-#            xls.file_name_to_sheet_name = xls.file_name_to_sheet_name.copy()
-#            # Switch the relevant key #
-#            growth = xls.file_name_to_sheet_name.pop('historical_yields')
-#            xls.file_name_to_sheet_name['yields'] = growth
+        for c in self.continent:
+            # Get the runner of the last step #
+            runner = result[c.iso2_code][-1]
+            # Monkey patch the pre processor filter method #
+            runner.pre_processor.filter_df = filter_df
         # Return #
         return result
