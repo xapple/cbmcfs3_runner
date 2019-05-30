@@ -13,6 +13,7 @@ A list of all scenarios classes.
 from cbmcfs3_runner.scenarios.static_demand import StaticDemand
 from cbmcfs3_runner.scenarios.calibration   import Calibration
 from cbmcfs3_runner.scenarios.fake_yields   import FakeYields
+from cbmcfs3_runner.scenarios.fake_yields   import GrowthOnly
 
 ###############################################################################
 scen_classes = [StaticDemand, Calibration, FakeYields, GrowthOnly]
