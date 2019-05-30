@@ -15,4 +15,4 @@ from cbmcfs3_runner.scenarios.calibration   import Calibration
 from cbmcfs3_runner.scenarios.fake_yields   import FakeYields
 
 ###############################################################################
-scen_classes = [StaticDemand, Calibration, FakeYields]
+scen_classes = [StaticDemand, Calibration, FakeYields, GrowthOnly]

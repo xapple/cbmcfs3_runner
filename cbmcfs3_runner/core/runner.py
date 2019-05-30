@@ -99,7 +99,7 @@ class Runner(object):
         for graph in self.graphs: graph()
         self.report()
         # Messages #
-        self.log.info("Done." % cbmcfs3_runner)
+        self.log.info("Done.")
 
     def remove_directory(self):
         """Removes the directory that will be recreated by running this runner.
