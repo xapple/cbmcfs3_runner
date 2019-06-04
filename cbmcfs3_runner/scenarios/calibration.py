@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This scenario represents a demand that is pre-calculated and is not a function of the
-maximum wood supply.
+#TODO write scenario description
 """
 
 # Built-in modules #
@@ -21,7 +20,7 @@ class Calibration(Scenario):
 
     @property_cached
     def runners(self):
-        """A list of runners for each country"""
+        """A dictionary of country codes as keys with a list of runners as values."""
         # Create all runners #
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         # Get a second scenario #

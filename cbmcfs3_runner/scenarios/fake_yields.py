@@ -5,7 +5,9 @@
 This scenario is the same as `static_demand` except that we use the
 current yield tables for the historical period simulation.
 We are normally not supposed to do this. But, for comparison purposes,
-we are going to do so anyway to see what effect has this change of yield.
+we are going to do so anyway to see what effect this change has on results.
+
+#TODO change scenario as the key 'historical_yields' doesn't exist anymore.
 """
 
 # Built-in modules #
@@ -23,7 +25,7 @@ class FakeYields(Scenario):
 
     @property_cached
     def runners(self):
-        """A dictionary of country codes with a list of runners (for each country)."""
+        """A dictionary of country codes as keys with a list of runners as values."""
         # Create all runners #
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         # Modify these runners #
