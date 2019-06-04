@@ -23,7 +23,7 @@ from cbmcfs3_runner.modifiers.middle_process      import MiddleProcessor
 from cbmcfs3_runner.post_processor                import PostProcessor
 from cbmcfs3_runner.others.input_data             import InputData
 from cbmcfs3_runner.reports.runner                import RunnerReport
-from cbmcfs3_runner.stdrd_import_tool.launch_sit  import DefaultSIT
+from cbmcfs3_runner.stdrd_import_tool.launch_sit  import DefaultSIT, AppendSIT
 from cbmcfs3_runner.external_tools.launch_cbm     import LaunchCBM
 
 ###############################################################################
@@ -91,6 +91,7 @@ class Runner(object):
         self.pre_processor()
         self.country.aidb.switch()
         self.default_sit()
+        self.append_sit()
         #self.middle_processor()
         self.launch_cbm()
         self.post_processor()
@@ -124,8 +125,9 @@ class Runner(object):
         return PreProcessor(self)
 
     @property_cached
-    def default_sit(self):
-        return DefaultSIT(self)
+    def default_sit(self): return DefaultSIT(self)
+    @property_cached
+    def append_sit(self):  return AppendSIT(self)
 
     @property_cached
     def middle_processor(self):
