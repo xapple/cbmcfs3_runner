@@ -39,7 +39,7 @@ class MiddleProcessor(object):
 
     def __call__(self):
         #self.extend_simulation(100)
-        self.finish_append()
+        if self.parent.sit_calling == 'dual': self.finish_append()
 
     @property_cached
     def project_database(self):
@@ -71,7 +71,7 @@ class MiddleProcessor(object):
         See ticket on JIRA at https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-178
         """
         # Log message #
-        self.parent.log.info("Executing final appending queries")
+        self.parent.log.info("Executing final appending queries.")
         # Screen-shot 1 of page 4 of <roberto_proj_creation.pdf> #
         query = "DELETE FROM tblSimulation WHERE tblSimulation.SimulationID=2;"
         self.project_database.cursor.execute(query)

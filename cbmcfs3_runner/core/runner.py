@@ -43,6 +43,8 @@ class Runner(object):
     /report/report.pdf
     """
 
+    sit_calling = 'dual' or 'single'
+
     def __repr__(self):
         return '%s object on "%s"' % (self.__class__, self.data_dir)
 
@@ -91,14 +93,14 @@ class Runner(object):
         self.pre_processor()
         self.country.aidb.switch()
         self.default_sit()
-        self.append_sit()
-        #self.middle_processor()
+        if self.sit_calling == 'dual': self.append_sit()
+        self.middle_processor()
         self.launch_cbm()
         self.post_processor()
         # Reporting #
-        self.log.info("Creating runner report.")
-        for graph in self.graphs: graph()
-        self.report()
+        #self.log.info("Creating runner report.")
+        #for graph in self.graphs: graph()
+        #self.report()
         # Messages #
         self.log.info("Done.")
 

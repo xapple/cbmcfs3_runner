@@ -136,6 +136,7 @@ class LaunchSIT(object):
 class DefaultSIT(LaunchSIT):
     """
     To be run first to create the project.
+    This affects the "historical_period" and "simulation_period".
     """
     append = False
     short_name = "default_mode"
@@ -156,6 +157,7 @@ class AppendSIT(LaunchSIT):
     """
     To be run in second to append the yield curve as new CBM assumptions in
     the project.
+    This affects the "initialization_period".
     """
     append = True
     short_name = "append_mode"

@@ -77,8 +77,8 @@ from cbmcfs3_runner.core.continent import continent
 
 
 ################################################################################
-for c in tqdm(list(continent.countries.values())[:], ncols=60):
+for c in list(continent.countries.values())[:]:
     if c.iso2_code not in ('LU',): continue
-    scenarios = ['static_demand', 'fake_yields_cur', 'fake_yields_hist']
+    scenarios = ['static_demand', 'fake_yields_cur', 'fake_yields_hist', 'single_sit']
     runners = [c.scenarios[s][-1] for s in scenarios]
-    for r in runners: r.run(verbose=True)
+    for r in tqdm([runners[-1]]): r.run(verbose=True)

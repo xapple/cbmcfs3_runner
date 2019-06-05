@@ -38,16 +38,26 @@ class MerchStock(Graph):
         return df
 
     @property
-    def data(self):
-        """Extract the total merchantable stock for all scenarios 
-           and filter data for the plot.
-           By default data is returned for all scenarios. 
+    def data_raw(self):
+        """Extract the total merchantable stock for all scenarios
+           By default data is returned for all scenarios.
            User can specify a list of scenarios as a property."""
+        # Compare all scenarios or only a subset of them #
         if not hasattr(self, 'scenario_names'):
             self.scenario_names = self.parent.scenarios.keys()
+        # A list of dataframes that we concatenate together #
         merch = [self.get_sum_merch_stock(scen) for scen in self.scenario_names]
         df = pandas.concat(merch)
+        # Convert to millions of tons #
         df['mass_1e6'] = df['mass']/1e6
+        # Return #
+        return df
+
+    @property
+    def data_filtered(self):
+        """Filter data for the plot."""
+        # Get data #
+        df = self.data_raw.copy()
         # Filter for year #
         self.year_to_plot = self.year_selection(df['year'].unique())
         selector          = df['year'] == self.year_to_plot
@@ -63,7 +73,7 @@ class MerchStock(Graph):
     def plot(self, **kwargs):
         # Plot #
         g = seaborn.barplot(x="forest_type", y="mass_1e6", hue="scenario",
-                            palette='dark', data=self.data)
+                            palette='colorblind', data=self.data_filtered)
         # Lines #
         pyplot.gca().yaxis.grid(True, linestyle=':')
         # Save #
