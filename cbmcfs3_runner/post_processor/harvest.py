@@ -248,11 +248,11 @@ class Harvest(object):
                  'management_strategy',]
         # Set the same index on both data frames #
         check = self.provided_volume.set_index(index)
-        dists = self.disturbances.set_index(index)
+        dist = self.disturbances.set_index(index)
         # Filter #
-        #dists = dists.query("Measurement_type == 'M'")
+        dist = dist.query("Measurement_type == 'M'")
         # Do the join #
-        df = (check.join(dists)).reset_index()
+        df = (check.join(dist)).reset_index()
         # Sum two columns #
         df = (df
               .groupby(index + ['Measurement_type'])
@@ -305,9 +305,9 @@ class Harvest(object):
                  'management_strategy',]
         # Set the same index on both data frames #
         df    = self.summary_check.set_index(index)
-        dists = self.disturbances.set_index(index)
+        dist= self.disturbances.set_index(index)
         # Do the join #
-        df = (df.join(dists, how='outer')).reset_index()
+        df = (df.join(dist, how='outer')).reset_index()
         # Sum two columns #
         df = (df
               .groupby(index + ['Measurement_type'])
