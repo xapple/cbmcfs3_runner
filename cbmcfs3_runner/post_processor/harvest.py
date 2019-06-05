@@ -101,7 +101,7 @@ class Harvest(object):
         df['Vol_SubMerch']        = (df.CO2Production * 2) / df.db
         df['Vol_Snags']           = (df.DOMProduction * 2) / df.db
         df['Forest_residues_Vol'] = ((df.MerchLitterInput + df.OthLitterInput) * 2) / df.db
-        # Return #
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -168,7 +168,7 @@ class Harvest(object):
     @property_cached
     def provided_area(self):
         """
-        Load data from the table 'TblDistIndicators'
+        Load area disturbed from the table 'TblDistIndicators'
 
         Columns are:    ['DistIndID', 'SPUID', 'DistTypeID', 'TimeStep', 'UserDefdClassSetID',
                          'LandClassID', 'kf2', 'kf3', 'kf4', 'kf5', 'kf6', 'DistArea',
@@ -247,7 +247,7 @@ class Harvest(object):
                  'management_type',
                  'management_strategy',]
         # Set the same index on both data frames #
-        check = self.summary_check.set_index(index)
+        check = self.provided_volume.set_index(index)
         dists = self.disturbances.set_index(index)
         # Filter #
         #dists = dists.query("Measurement_type == 'M'")
