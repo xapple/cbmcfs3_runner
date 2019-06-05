@@ -68,9 +68,17 @@ from cbmcfs3_runner.core.continent import continent
 #    c.report.copy_to_outbox()
 
 ################################################################################
+#for c in tqdm(list(continent.countries.values())[:], ncols=60):
+#    if c.iso2_code not in ('LU',): continue
+#    c.graphs.merch_stock_at_start(rerun=True)
+#    c.graphs.merch_stock_at_end(rerun=True)
+#    c.report()
+#    c.report.copy_to_outbox()
+
+
+################################################################################
 for c in tqdm(list(continent.countries.values())[:], ncols=60):
     if c.iso2_code not in ('LU',): continue
-    c.graphs.merch_stock_at_start(rerun=True)
-    c.graphs.merch_stock_at_end(rerun=True)
-    c.report()
-    c.report.copy_to_outbox()
+    scenarios = ['static_demand', 'fake_yields_cur', 'fake_yields_hist']
+    runners = [c.scenarios[s][-1] for s in scenarios]
+    for r in runners: r.run(verbose=True)

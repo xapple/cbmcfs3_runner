@@ -3,7 +3,7 @@
 
 """
 This scenarios represents a demand that is pre-calculated and is not a function of the
-maximum wood supply.
+maximum wood supply (no interaction yet with the GFTM model).
 """
 
 # Built-in modules #

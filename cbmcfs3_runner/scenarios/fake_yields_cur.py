@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-Run CBM without any disturbances even for the historical period.
-This can then be used as a benchmark to start reproducing results
-with the silvette model.
+This scenario is the same as `static_demand` except that we use the
+CURRENT yield tables for the historical period simulation.
+
+Calling SIT both times with the same current yield table.
+
+We are normally not supposed to do this. But, for comparison purposes,
+we are going to do so anyway to see what effect this change has on results.
 """
 
 # Built-in modules #
@@ -17,14 +21,8 @@ from cbmcfs3_runner.scenarios.base_scen import Scenario
 from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
-def filter_df(df, base_year, inv_start_year):
-    """Takes the old event dataframe and returns only disturbances for 2020."""
-    only_this_year = base_year - inv_start_year + 5
-    return df.query("Step == %s" % only_this_year)
-
-###############################################################################
-class GrowthOnly(Scenario):
-    short_name = 'growth_only'
+class FakeYieldsCur(Scenario):
+    short_name = 'fake_yields_cur'
 
     @property_cached
     def runners(self):
@@ -35,7 +33,6 @@ class GrowthOnly(Scenario):
         for c in self.continent:
             # Get the runner of the last step #
             runner = result[c.iso2_code][-1]
-            # Monkey patch the pre-processor filter method #
-            runner.pre_processor.filter_df = filter_df
+            runner.append_sit.create_xls.yield_table_name = "yields"
         # Return #
         return result

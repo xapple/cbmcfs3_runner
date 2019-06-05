@@ -149,6 +149,8 @@ class DefaultSIT(LaunchSIT):
     /logs/sit_default.log
     """
 
+    yield_table_name = "yields.csv"
+
 ###############################################################################
 class AppendSIT(LaunchSIT):
     """
@@ -166,3 +168,5 @@ class AppendSIT(LaunchSIT):
     /output/sit/SITLog_append.txt
     /logs/sit_append.log
     """
+
+    yield_table_name = "historical_yields.csv"

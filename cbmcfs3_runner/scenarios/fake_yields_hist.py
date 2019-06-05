@@ -3,11 +3,12 @@
 
 """
 This scenario is the same as `static_demand` except that we use the
-current yield tables for the historical period simulation.
-We are normally not supposed to do this. But, for comparison purposes,
-we are going to do so anyway to see what effect this change has on results.
+HISTORICAL yield tables for the current period simulation.
 
-#TODO change scenario as the key 'historical_yields' doesn't exist anymore.
+Calling SIT both times with the same historical yield table.
+
+We are normally not supposed to do this. But, for comparison purposes,
+we are going to do so anyway to see what effect this change has on results..
 """
 
 # Built-in modules #
@@ -20,8 +21,8 @@ from cbmcfs3_runner.scenarios.base_scen import Scenario
 from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
-class FakeYields(Scenario):
-    short_name = 'fake_yields'
+class FakeYieldsHist(Scenario):
+    short_name = 'fake_yields_hist'
 
     @property_cached
     def runners(self):
@@ -32,11 +33,6 @@ class FakeYields(Scenario):
         for c in self.continent:
             # Get the runner of the last step #
             runner = result[c.iso2_code][-1]
-            # Copy the class attribute into the instance of the class #
-            xls = runner.default_sit.create_xls
-            xls.file_name_to_sheet_name = xls.file_name_to_sheet_name.copy()
-            # Switch the relevant key #
-            growth = xls.file_name_to_sheet_name.pop('historical_yields')
-            xls.file_name_to_sheet_name['yields'] = growth
+            runner.default_sit.create_xls.yield_table_name = "historical_yields"
         # Return #
         return result

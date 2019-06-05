@@ -43,7 +43,6 @@ class CreateXLS(object):
         'disturbance_events_filtered':   'DistEvents',
         'disturbance_types':             'DistType',
         'inventory':                     'Inventory',
-        'yields':                        'Growth',
         'transition_rules':              'Transitions',
     }
 
@@ -63,11 +62,12 @@ class CreateXLS(object):
         writer = pandas.ExcelWriter(self.paths.tables_xlsx, engine='xlsxwriter')
         # Add each DataFrame to a different sheet #
         for file_name, sheet_name in self.file_name_to_sheet_name.items():
-            # If we are in the append mode, then use the 'historical' yield table #
-            if self.parent.append and file_name == 'yields': file_name = 'historical_yields'
             # Read the CSV and put it in the excel file #
             self.df = pandas.read_csv(self.paths[file_name])
             self.df.to_excel(writer, sheet_name=sheet_name, index=False)
+        # Special case for the yield table that can vary between current and hist #
+        self.df = pandas.read_csv(self.paths[self.parent.yield_table_name.replace('.','_')])
+        self.df.to_excel(writer, sheet_name='Growth', index=False)
         # Save changes #
         writer.save()
         # Convert from XLSX to XLS #

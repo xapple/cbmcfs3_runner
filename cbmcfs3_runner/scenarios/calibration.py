@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-#TODO write scenario description
+This scenario corresponds to the results that were generated manually
+using the GUI and saved to databases stored in JRCbox.
 """
 
 # Built-in modules #
