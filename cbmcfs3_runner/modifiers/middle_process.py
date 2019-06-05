@@ -6,6 +6,7 @@ Written by Lucas Sinclair and Paul Rougieux.
 
 JRC biomass Project.
 Unit D1 Bioeconomy.
+
 """
 
 # Built-in modules #
@@ -25,6 +26,14 @@ class MiddleProcessor(object):
     """
     Will modify the access database after its creation by SIT but before its
     usage by CBM.
+    
+    The middle processor makes it possible to call SIT twice, 
+    first in default mode, then in append mode.
+    Beware the order of these calls is reversed compared to the chronological period:
+    1. SIT default mode adds the current yield table 
+       (used for the historical period and the simulation period), 
+    2. SIT append mode adds the historical yield table 
+       (used for the pool initialisation period)
     """
 
     all_paths = """
