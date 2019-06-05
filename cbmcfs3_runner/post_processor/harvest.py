@@ -500,9 +500,9 @@ class Harvest(object):
         Matching the product description available in the economic model
         and in the FAOSTAT historical data.
 
-        Join "Vol_Merch" columns from irw_b and irw_c
-        to the total columns from fw_b_total and fw_c_total,
-        using time step as an index.
+        Join "Vol_Merch" columns from "irw_b" and "irw_c"
+        to the total columns from "fw_b_total" and "fw_c_total",
+        using the time step as an index.
         """
         df = (self.irw_c
               .set_index('TimeStep')[['Vol_Merch_IRW_C']]

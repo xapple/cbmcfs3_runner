@@ -76,7 +76,7 @@ class MiddleProcessor(object):
         query = "DELETE FROM tblSimulation WHERE tblSimulation.SimulationID=2;"
         self.project_database.cursor.execute(query)
         # Screen-shot 2 of page 4 of <roberto_proj_creation.pdf> optional #
-        #query = 'UPDATE tblSimulation SET Name="new name" WHERE tblSimulation.SimulationID=1;'
+        #query = 'UPDATE tblSimulation SET Name="default" WHERE tblSimulation.SimulationID=1;'
         #self.project_database.cursor.execute(query)
         # Screen-shot 1 of page 5 of <roberto_proj_creation.pdf> #
         query = 'DELETE FROM tblRunTable WHERE tblRunTable.RunID=2;'
@@ -90,3 +90,5 @@ class MiddleProcessor(object):
                         StandInitNonForestAssumptionID = 2
                     WHERE tblStandInitialization.StandInitID = 1;"""
         self.project_database.cursor.execute(query)
+        # Save changes #
+        self.project_database.cursor.commit()

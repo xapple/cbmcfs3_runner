@@ -77,6 +77,8 @@ class Faostat(object):
 
         Futhermore, we are only interested in these products mentioned
         in self.products
+
+        Columns in the output are: ???
         """
         # Import internal modules #
         from cbmcfs3_runner.core.country import all_codes, ref_years
