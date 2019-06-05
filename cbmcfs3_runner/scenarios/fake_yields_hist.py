@@ -33,6 +33,6 @@ class FakeYieldsHist(Scenario):
         for c in self.continent:
             # Get the runner of the last step #
             runner = result[c.iso2_code][-1]
-            runner.default_sit.create_xls.yield_table_name = "historical_yields"
+            runner.default_sit.yield_table_name = "historical_yields.csv"
         # Return #
         return result
