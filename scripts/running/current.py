@@ -21,16 +21,14 @@ from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
 ## Run each country and send errors to the log #
-#scenario = continent.scenarios['calibration']
-#runners  = [r[0] for k,r in scenario.runners.items()]
+scenario = continent.scenarios['static_demand']
+runners  = [r[-1] for k,r in scenario.runners.items()]
 
 ## Filter #
 #runners  = [r for r in runners if r.country.iso2_code in ('GB', 'GR', 'HR', 'LT', 'LV')]
 
 ## Do it #
-#for r in tqdm(runners[1:2], ncols=60):
-#    r.graphs(rerun=True)
-#    r.report()
+for r in tqdm(runners): r()
 
 ###############################################################################
 ## Get one country #
@@ -76,8 +74,8 @@ from cbmcfs3_runner.core.continent import continent
 #    c.report.copy_to_outbox()
 
 ################################################################################
-for c in list(continent.countries.values())[:]:
-    if c.iso2_code not in ('AT',): continue
-    scenarios = ['static_demand']
-    runners = [c.scenarios[s][-1] for s in scenarios]
-    for r in tqdm(runners): r.run(verbose=True)
+#for c in list(continent.countries.values())[:]:
+#    if c.iso2_code not in ('AT',): continue
+#    scenarios = ['static_demand']
+#    runners = [c.scenarios[s][-1] for s in scenarios]
+#    for r in tqdm(runners): r.run(verbose=True)

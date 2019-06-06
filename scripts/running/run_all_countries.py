@@ -22,8 +22,8 @@ The last time the script was run it took this much time to run:
 from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
-#scenario = continent.scenarios['static_demand']
-#scenario()
+scenario = continent.scenarios['static_demand']
+scenario()
 
 ###############################################################################
-continent()
+#continent()

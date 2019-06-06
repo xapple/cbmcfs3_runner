@@ -90,6 +90,19 @@ class InputData(object):
         return df
 
     @property_cached
+    def yields(self):
+        """
+        Columns are:
+
+        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'Sp', 'Vol0', 'Vol1', 'Vol2',
+       'Vol3', 'Vol4', 'Vol5', 'Vol6', 'Vol7', 'Vol8', 'Vol9', 'Vol10',
+       'Vol11', 'Vol12', 'Vol13', 'Vol14', 'Vol15', 'Vol16', 'Vol17', 'Vol18',
+       'Vol19', 'Vol20', 'Vol21', 'Vol22', 'Vol23', 'Vol24', 'Vol25', 'Vol26',
+       'Vol27', 'Vol28', 'Vol29', 'Vol30']
+        """
+        return self.xls.parse("Growth")
+
+    @property_cached
     def ageclass(self):
         return self.xls.parse("AgeClasses")
 

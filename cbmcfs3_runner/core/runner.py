@@ -67,7 +67,8 @@ class Runner(object):
 
     @property_cached
     def log(self):
-        """Each runner will have its own logger."""
+        """Each runner will have its own logger.
+        By default we clear the log file when you start logging."""
         return create_file_logger(self.short_name, self.paths.log)
 
     def __call__(self, silent=False):
