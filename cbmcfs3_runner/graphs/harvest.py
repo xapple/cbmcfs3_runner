@@ -36,7 +36,7 @@ class HarvestExpectedProvided(Graph):
 
     def plot(self, **kwargs):
         # Data #
-        self.df = self.parent.post_processor.harvest.exp_prov_by_year_by_volume
+        self.df = self.parent.post_processor.harvest.exp_prov_by_volume
         self.df = self.df.groupby(self.grp_cols).agg(self.agg_cols).reset_index()
 
         # Colors #
@@ -142,7 +142,7 @@ class HarvestDiscrepancy(Graph):
         calibr = self.parent.scenarios['calibration'][0].post_processor.harvest
         calibr = calibr.exp_prov_by_year_by_volume
 
-        # Filter the years that we don't use from the calibration scenario #
+        # Filter the years that we don't use from the calibration scenario #
         max_year = static.year.max()
         selector = calibr['year'] <= max_year
         calibr   = calibr.loc[selector].copy()
