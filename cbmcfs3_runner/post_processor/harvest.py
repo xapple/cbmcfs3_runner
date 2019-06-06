@@ -245,17 +245,16 @@ class Harvest(object):
                  'DistTypeName',
                  'forest_type',
                  'management_type',
-                 'management_strategy',]
+                 'management_strategy',
+                 'Measurement_type']
         # Set the same index on both data frames #
         check = self.provided_volume.set_index(index)
         dist = self.disturbances.set_index(index)
-        # Filter #
-        dist = dist.query("Measurement_type == 'M'")
         # Do the join #
         df = (check.join(dist)).reset_index()
         # Sum two columns #
         df = (df
-              .groupby(index + ['Measurement_type'])
+              .groupby(index)
               .agg({'Amount': 'sum',
                     'TC':     'sum'})
               .rename(columns = {'Amount': 'expected',
