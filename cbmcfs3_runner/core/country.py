@@ -22,6 +22,7 @@ from plumbing.cache       import property_cached
 # Internal modules #
 from cbmcfs3_runner import module_dir
 from cbmcfs3_runner.graphs import country_graphs, load_graphs_from_module
+from cbmcfs3_runner.others.orig_data               import OrigData
 from cbmcfs3_runner.reports.country                import CountryReport
 from cbmcfs3_runner.stdrd_import_tool.associations import Associations
 from cbmcfs3_runner.others.aidb                    import AIDB
@@ -142,6 +143,11 @@ class Country(object):
         """Load the faostat forestry dataset of this country."""
         df = faostat.forestry.query('country == "%s"' % self.iso2_code)
         return df.drop(columns='country')
+
+    @property_cached
+    def orig_data(self):
+        """Access the original CSV files as exported from the DB."""
+        return OrigData(self)
 
     @property
     def map_value(self):
