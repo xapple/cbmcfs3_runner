@@ -8,8 +8,9 @@ Typically you would run this file from a command line like this:
 
      ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_all_countries.py
 
-The last time the script was run it took this much time to run:
+The last times the script was run it took this much time to run:
 100%|████████████████████| 26/26 [9:49:52<00:00, 998.86s/it]
+100%|██████████████████| 26/26 [10:36:00<00:00, 1329.48s/it]
 """
 
 # Built-in modules #
