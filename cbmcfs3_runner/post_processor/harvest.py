@@ -300,6 +300,12 @@ class Harvest(object):
                       'management_strategy', 'expected', 'provided', 'Measurement_type',
                       'DistDescription']
         """
+        # Load #
+        provided = self.provided_volume
+        expected = self.disturbances
+        # Filter for volume #
+        selector = expected['Measurement_type'] == 'M'
+        expected = expected.loc[selector].copy()
         # Index columns to join disturbances and harvest check #
         index = ['status',
                  'TimeStep',
@@ -309,10 +315,10 @@ class Harvest(object):
                  'management_strategy',
                  'Measurement_type']
         # Set the same index on both data frames #
-        provided = self.provided_volume.set_index(index)
-        expected = self.disturbances.set_index(index)
+        provided = provided.set_index(index)
+        expected = expected.set_index(index)
         # Do the join #
-        df = (provided.join(expected)).reset_index()
+        df = (provided.join(expected, how='outer')).reset_index()
         # Sum two columns #
         df = (df
               .groupby(index)
@@ -334,6 +340,12 @@ class Harvest(object):
                       'management_strategy', 'expected', 'provided', 'Measurement_type',
                       'DistDescription']
         """
+        # Load #
+        provided = self.provided_area
+        expected = self.disturbances
+        # Filter for volume #
+        selector = expected['Measurement_type'] == 'A'
+        expected = expected.loc[selector].copy()
         # Index columns to join disturbances and harvest check #
         index = ['status',
                  'TimeStep',
@@ -344,10 +356,10 @@ class Harvest(object):
                  'management_strategy',
                  'Measurement_type']
         # Set the same index on both data frames #
-        provided = self.provided_area.set_index(index)
-        expected = self.disturbances.set_index(index)
+        provided = provided.set_index(index)
+        expected = expected.set_index(index)
         # Do the join #
-        df = (provided.join(expected)).reset_index()
+        df = (provided.join(expected, how='right')).reset_index()
         # Sum two columns #
         df = (df
               .groupby(index)
@@ -361,7 +373,7 @@ class Harvest(object):
 
     #-------------------------------------------------------------------------#
     def check_exp_prov(self):
-        """CHeck that the total quantities of area and volume are conserved."""
+        """Check that the total quantities of area and volume are conserved."""
         # Load #
         area = self.exp_prov_by_area
         volu = self.exp_prov_by_volume
@@ -369,13 +381,14 @@ class Harvest(object):
         processed = volu['expected'].sum() + area['expected'].sum()
         raw       = self.parent.parent.input_data.disturbance_events['Amount'].sum()
         numpy.testing.assert_allclose(processed, raw)
+        # Check provided area #
+        processed = area['provided'].sum()
+        raw       = self.parent.database['TblDistIndicators']['DistArea'].sum()
+        numpy.testing.assert_allclose(processed, raw)
         # Check provided volume #
         processed = volu['provided'].sum()
-        raw       = self.parent.database['TblFluxIndicators'].sum()
-        numpy.testing.assert_allclose(processed, raw)
-        # Check provided area #
-        processed = volu['provided'].sum()
-        raw       = self.parent.database['TblDistIndicators'].sum()
+        raw       = self.parent.database['TblFluxIndicators']
+        raw       = raw['SoftProduction'].sum() + raw['HardProduction'].sum()
         numpy.testing.assert_allclose(processed, raw)
 
     #-------------------------------------------------------------------------#
