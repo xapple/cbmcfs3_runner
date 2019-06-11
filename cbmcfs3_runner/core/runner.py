@@ -93,8 +93,10 @@ class Runner(object):
         self.input_data.copy_from_country()
         self.pre_processor()
         self.country.aidb.switch()
+        # Standard import tool #
         self.default_sit()
         if self.sit_calling == 'dual': self.append_sit()
+        # Final steps #
         self.middle_processor()
         self.launch_cbm()
         self.post_processor()

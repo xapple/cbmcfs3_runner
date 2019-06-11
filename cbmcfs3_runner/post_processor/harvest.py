@@ -178,7 +178,33 @@ class Harvest(object):
         only areas ('A').
         """
         # Load #
-        df = self.parent.database['TblDistIndicators']
+        dist_indicators  = self.parent.database['TblDistIndicators']
+        disturbance_type = self.parent.database['tblDisturbanceType']
+        # First ungrouped #
+        ungrouped = (dist_indicators
+                     .set_index('DistTypeID')
+                     .join(disturbance_type.set_index('DistTypeID'))
+                     .reset_index()
+                     .set_index('UserDefdClassSetID')
+                     .join(self.parent.classifiers.set_index('UserDefdClassSetID'))
+                     .reset_index())
+        # The index we will use for grouping #
+        index = ['DistTypeID',
+                 'DistTypeName',
+                 'TimeStep',
+                 'status',
+                 'forest_type',
+                 'region',
+                 'management_type',
+                 'management_strategy',
+                 'conifers_bradleaves']
+        # Compute #
+        df = (ungrouped
+              .set_index('DistTypeID')
+              .groupby(index)
+              .agg({'DistArea':    'sum',
+                    'DistProduct': 'sum'})
+              .reset_index())
         # Add the Measurement_type #
         df['Measurement_type'] = 'A'
         # Return result #
@@ -197,7 +223,7 @@ class Harvest(object):
         Columns are: ['status', 'forest_type', 'region', 'management_type',
                       'management_strategy', 'climatic_unit', 'conifers/bradleaves',
                       'UsingID', 'SWStart', 'SWEnd', 'HWStart', 'HWEnd', 'Last_Dist_ID',
-                      'Efficency', 'Sort_Type', 'Measurement_type', 'Amount', 'DistTypeName',
+                      'Efficency', 'Sort_Type', 'Measurement_type', 'Amount', 'Dist_Type_ID',
                       'TimeStep'],
 
         This corresponds to the "expected" aspect of "expected_provided" harvest
@@ -209,19 +235,19 @@ class Harvest(object):
         df = df.rename(columns = self.parent.classifiers_mapping)
         # C.f the PL column problem #
         df = df.rename(columns = {'natural_forest_region': 'management_type'})
-        # These columns also need to be manually renamed #
-        df = df.rename(columns = {'Step':         'TimeStep',
-                                  'Dist_Type_ID': 'DistTypeName'})
-        # For joining with other data frames, DistTypeName has to be of dtype object not int64 #
-        df['DistTypeName'] = df['DistTypeName'].astype(str)
+        # This column also need to be manually renamed #
+        df = df.rename(columns = {'Step': 'TimeStep'})
+        # For joining with other data frames, DistType has to be of dtype object not int64 #
+        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
         # Remove columns that are not really used #
         df = df.drop(columns=[c for c in df.columns if c.startswith("Min") or c.startswith("Max")])
+        # Dist_Type_ID is actually DistTypeName #
+        df = df.rename(columns = {'Dist_Type_ID': 'DistTypeName'})
         # Return result #
         return df
 
     #-------------------------------------------------------------------------#
-    @property_cached
-    def compute_expected_provided(self, provided, expected):
+    def compute_expected_provided(self, df):
         """
         Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
         to the amount of harvest actually performed by the model (extracted from the flux indicator table).
@@ -239,27 +265,6 @@ class Harvest(object):
                       'management_strategy', 'expected', 'provided', 'Measurement_type',
                       'DistDescription']
         """
-        # Index columns to join disturbances and harvest check #
-        index = ['status',
-                 'TimeStep',
-                 'DistTypeName',
-                 'forest_type',
-                 'management_type',
-                 'management_strategy',
-                 'Measurement_type']
-        # Set the same index on both data frames #
-        provided = provided.set_index(index)
-        expected = expected.set_index(index)
-        # Do the join #
-        df = (provided.join(expected, how='outer')).reset_index()
-        # Sum two columns #
-        df = (df
-              .groupby(index)
-              .agg({'Amount': 'sum',
-                    'TC':     'sum'})
-              .rename(columns = {'Amount': 'expected',
-                                 'TC':     'provided'})
-              .reset_index())
         # Remove rows where both expected and provided are zero #
         selector = (df['expected'] == 0.0) & (df['provided'] == 0.0)
         df = df.loc[~selector].copy()
@@ -295,7 +300,29 @@ class Harvest(object):
                       'management_strategy', 'expected', 'provided', 'Measurement_type',
                       'DistDescription']
         """
-        return self.compute_expected_provided(self.provided_volume, self.disturbances)
+        # Index columns to join disturbances and harvest check #
+        index = ['status',
+                 'TimeStep',
+                 'DistTypeName',
+                 'forest_type',
+                 'management_type',
+                 'management_strategy',
+                 'Measurement_type']
+        # Set the same index on both data frames #
+        provided = self.provided_volume.set_index(index)
+        expected = self.disturbances.set_index(index)
+        # Do the join #
+        df = (provided.join(expected)).reset_index()
+        # Sum two columns #
+        df = (df
+              .groupby(index)
+              .agg({'Amount': 'sum',
+                    'TC':     'sum'})
+              .rename(columns = {'Amount': 'expected',
+                                 'TC':     'provided'})
+              .reset_index())
+        # Compute #
+        return self.compute_expected_provided(df)
 
     #-------------------------------------------------------------------------#
     @property_cached
@@ -307,7 +334,49 @@ class Harvest(object):
                       'management_strategy', 'expected', 'provided', 'Measurement_type',
                       'DistDescription']
         """
-        return self.compute_expected_provided(self.provided_area, self.disturbances)
+        # Index columns to join disturbances and harvest check #
+        index = ['status',
+                 'TimeStep',
+                 'DistTypeName',
+                 'forest_type',
+                 'region',
+                 'management_type',
+                 'management_strategy',
+                 'Measurement_type']
+        # Set the same index on both data frames #
+        provided = self.provided_area.set_index(index)
+        expected = self.disturbances.set_index(index)
+        # Do the join #
+        df = (provided.join(expected)).reset_index()
+        # Sum two columns #
+        df = (df
+              .groupby(index)
+              .agg({'Amount':    'sum',
+                    'DistArea':  'sum'})
+              .rename(columns = {'Amount':   'expected',
+                                 'DistArea': 'provided'})
+              .reset_index())
+        # Compute #
+        return self.compute_expected_provided(df)
+
+    #-------------------------------------------------------------------------#
+    def check_exp_prov(self):
+        """CHeck that the total quantities of area and volume are conserved."""
+        # Load #
+        area = self.exp_prov_by_area
+        volu = self.exp_prov_by_volume
+        # Check expected #
+        processed = volu['expected'].sum() + area['expected'].sum()
+        raw       = self.parent.parent.input_data.disturbance_events['Amount'].sum()
+        numpy.testing.assert_allclose(processed, raw)
+        # Check provided volume #
+        processed = volu['provided'].sum()
+        raw       = self.parent.database['TblFluxIndicators'].sum()
+        numpy.testing.assert_allclose(processed, raw)
+        # Check provided area #
+        processed = volu['provided'].sum()
+        raw       = self.parent.database['TblDistIndicators'].sum()
+        numpy.testing.assert_allclose(processed, raw)
 
     #-------------------------------------------------------------------------#
     @property_cached

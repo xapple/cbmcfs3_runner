@@ -39,7 +39,7 @@ class PostProcessor(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        pass
+        self.harvest.check_exp_prov()
 
     @property
     def database(self):
@@ -114,7 +114,7 @@ class PostProcessor(object):
         """
         Map classifiers columns to a better descriptive name
         This mapping table will enable us to rename
-        classifier columns [_1, _2, _3] to [forest_type, region, etc.]
+        classifier columns [_1, _2, _3] to ['forest_type', 'region', etc.]
         """
         # Load user_classes table from DB #
         df = self.database['tblUserDefdClasses']
