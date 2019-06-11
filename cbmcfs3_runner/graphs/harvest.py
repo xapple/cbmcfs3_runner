@@ -19,7 +19,7 @@ import seaborn, brewer2mpl, matplotlib
 from matplotlib import pyplot
 
 ###############################################################################
-class HarvestExpectedProvided(Graph):
+class HarvestExpProv(Graph):
 
     grp_cols = ['DistDescription',
                 'year']
@@ -31,7 +31,7 @@ class HarvestExpectedProvided(Graph):
 
     def plot(self, **kwargs):
         # Data #
-        self.df = self.parent.post_processor.harvest.exp_prov_by_volume
+        self.df = self.data.copy()
         self.df = self.df.groupby(self.grp_cols).agg(self.agg_cols).reset_index()
 
         # Colors #
@@ -103,13 +103,35 @@ class HarvestExpectedProvided(Graph):
             p.add_legend(handles=patches)
 
         # Change the labels #
-        p.set_axis_labels("Year (simulated)", "Volume in [m^3]") # TODO check units
+        p.set_axis_labels("Year (simulated)", self.y_axis_label) # TODO check units
 
         # Change the titles #
         p.set_titles("{col_name}")
 
         # Save #
         self.save_plot(**kwargs)
+
+###############################################################################
+class HarvestExpProvVol(HarvestExpProv):
+
+    caption = ("Comparision of expected against provided harvest in terms of",
+               " volume.")
+    y_axis_label = "Volume in [m^3]"
+
+    @property
+    def data(self):
+        return self.parent.post_processor.harvest.exp_prov_by_volume
+
+class HarvestExpProvArea(HarvestExpProv):
+
+    caption = ("Comparision of expected against provided harvest in terms of",
+               " area.")
+    y_axis_label = "Volume in [m^3]"
+
+    @property
+    def data(self):
+        return self.parent.post_processor.harvest.exp_prov_by_area
+
 
 ###############################################################################
 class HarvestDiscrepancy(Graph):

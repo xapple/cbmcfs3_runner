@@ -81,9 +81,13 @@ class RunnerTemplate(ReportTemplate):
     def harvested_wood_prodcuts(self):
         return 0
 
-    def harvest_expected_provided(self):
-        caption = "Comparision of expected against provided harvest"
-        graph   = self.graphs.harvest_expected_provided
+    def harvest_exp_prov_vol(self):
+        graph   = self.graphs.harvest_exp_prov_vol
         return str(ScaledFigure(graph=graph, caption=caption))
+
+    def harvest_exp_prov_area(self):
+        graph   = self.graphs.harvest_exp_prov_area
+        return str(ScaledFigure(graph=graph, caption=caption))
+
 
 
