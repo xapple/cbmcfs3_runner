@@ -56,14 +56,15 @@ for r in tqdm(runners): r()
 #    c.report.copy_to_outbox()
 
 ################################################################################
-#for c in tqdm(list(continent.countries.values())[:], ncols=60):
-#    if c.iso2_code not in ('LU',): continue
-#    #runners = [r for runners in c.scenarios.values() for r in runners]
-#    #for r in runners:
-#    #    r.graphs.harvest_expected_provided(rerun=True)
-#    #c.graphs.harvest_discrepancy(rerun=True)
-#    c.report()
-#    c.report.copy_to_outbox()
+for c in tqdm(continent.countries.values()):
+    if c.iso2_code not in ('LU',): continue
+    #runners = [r for runners in c.scenarios.values() for r in runners]
+    runners = [c.scenarios['static_demand'][-1], c.scenarios['calibration'][-1]]
+    for r in runners:
+        r.graphs.harvest_exp_prov_vol(rerun=True)
+        r.graphs.harvest_exp_prov_area(rerun=True)
+    c.report()
+    c.report.copy_to_outbox()
 
 ################################################################################
 #for c in tqdm(list(continent.countries.values())[:], ncols=60):

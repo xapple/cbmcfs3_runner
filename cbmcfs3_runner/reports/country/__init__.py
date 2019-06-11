@@ -102,21 +102,29 @@ class CountryTemplate(ReportTemplate):
         return str(ScaledFigure(graph=graph, caption=graph.caption))
 
     #------------------------------ Harvest ----------------------------------#
-    def harvest_exp_pro_static(self):
+    def harvest_exp_pro_vol_static(self):
         caption = ("Comparison of expected against provided harvest in the static demand scenario."
-                   " Values are grouped into one plot for each disturbance type.")
-        graph   = self.scenarios['static_demand'][0].graphs.harvest_expected_provided
+                   " Values are in volumes grouped into one plot for each disturbance type.")
+        graph   = self.scenarios['static_demand'][0].graphs.harvest_exp_prov_vol
         return str(ScaledFigure(graph=graph, caption=caption))
 
-    def harvest_exp_pro_calib(self):
+    def harvest_exp_pro_area_static(self):
+        caption = ("Comparison of expected against provided harvest in the static demand scenario."
+                   " Values are in area grouped into one plot for each disturbance type.")
+        graph   = self.scenarios['static_demand'][0].graphs.harvest_exp_prov_area
+        return str(ScaledFigure(graph=graph, caption=caption))
+
+    def harvest_exp_pro_vol_calib(self):
         caption = ("Comparison of expected against provided harvest in the calibration scenario."
-                   " Values are grouped into one plot for each disturbance type.")
-        graph   = self.scenarios['calibration'][0].graphs.harvest_expected_provided
+                   " Values are in volumes grouped into one plot for each disturbance type.")
+        graph   = self.scenarios['calibration'][0].graphs.harvest_exp_prov_vol
         return str(ScaledFigure(graph=graph, caption=caption))
 
-    def harvest_discrepancy(self):
-        graph   = self.country.graphs.harvest_discrepancy
-        return str(ScaledFigure(graph=graph, caption=graph.caption))
+    def harvest_exp_pro_area_calib(self):
+        caption = ("Comparison of expected against provided harvest in the calibration scenario."
+                   " Values are in area grouped into one plot for each disturbance type.")
+        graph   = self.scenarios['calibration'][0].graphs.harvest_exp_prov_area
+        return str(ScaledFigure(graph=graph, caption=caption))
 
     #------------------------------ Tables --------------------------------#
     def table_forest_type(self):

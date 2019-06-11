@@ -13,12 +13,11 @@ Unit D1 Bioeconomy.
 # First party modules #
 
 # Internal modules #
-from cbmcfs3_runner.graphs.harvest     import HarvestDiscrepancy
 from cbmcfs3_runner.graphs.inventory   import InventoryDiscrepancy
 from cbmcfs3_runner.graphs.merch_stock import MerchStockAtStart, MerchStockAtEnd
 
 # Constants #
 __all__ = [
-    'HarvestDiscrepancy', 'InventoryDiscrepancy',
+    'InventoryDiscrepancy',
     'MerchStockAtStart', 'MerchStockAtEnd',
 ]

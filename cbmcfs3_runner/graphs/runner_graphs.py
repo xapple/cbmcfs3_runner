@@ -14,10 +14,10 @@ Unit D1 Bioeconomy.
 
 # Internal modules #
 from cbmcfs3_runner.graphs.inventory   import InventoryAtStart, InventoryAtEnd
-from cbmcfs3_runner.graphs.harvest     import HarvestExpectedProvided
+from cbmcfs3_runner.graphs.harvest     import HarvestExpProvVol, HarvestExpProvArea
 
 # Constants #
 __all__ = [
     'InventoryAtStart', 'InventoryAtEnd',
-    'HarvestExpectedProvided',
+    'HarvestExpProvVol', 'HarvestExpProvArea'
 ]
