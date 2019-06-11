@@ -359,7 +359,7 @@ class Harvest(object):
         provided = provided.set_index(index)
         expected = expected.set_index(index)
         # Do the join #
-        df = (provided.join(expected, how='right')).reset_index()
+        df = (provided.join(expected, how='outer')).reset_index()
         # Sum two columns #
         df = (df
               .groupby(index)
