@@ -15,6 +15,3 @@
 # Distribution #
 /build/
 /dist/
-
-# Temporary data files #
-cbmcfs3_runner/extra_data/faostat_forestry.csv
