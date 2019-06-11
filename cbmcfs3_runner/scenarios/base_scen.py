@@ -31,6 +31,9 @@ class Scenario(object):
     /logs_summary.md
     """
 
+    def __iter__(self): return iter(self.runners.values())
+    def __len__(self):  return len(self.runners.values())
+
     def __init__(self, continent):
         # Save parent #
         self.continent = continent
