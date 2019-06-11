@@ -111,7 +111,10 @@ class InputData(object):
          'management_strategy', 'climatic_unit', 'conifers/bradleaves', 'Sp',
          'age_class', 'volume']
          """
-        df= self.yields.melt(id_vars=['status', 'forest_type', 'region', 
+        # Rename classifier _1, _2, _3 to forest_type, region, etc. #
+        classifiers_mapping = self.parent.post_processor.classifiers_mapping
+        yields_wide = self.yields.rename(columns = classifiers_mapping)
+        df = yields_wide.melt(id_vars=['status', 'forest_type', 'region', 
                                       'management_type', 'management_strategy', 
                                       'climatic_unit', 'conifers/bradleaves', 
                                       'Sp'],
