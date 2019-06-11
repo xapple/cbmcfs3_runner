@@ -118,7 +118,6 @@ class InventoryAtStart(InventoryFacet):
 
 class InventoryAtEnd(InventoryFacet):
     caption = "Inventory at the end of the simulation."
-    pass
 
 ###############################################################################
 class InventoryDiscrepancy(InventoryFacet):

@@ -19,11 +19,6 @@ import seaborn, brewer2mpl, matplotlib
 from matplotlib import pyplot
 
 ###############################################################################
-class HarvestedWoodProducts(Graph):
-    def plot(self, **kwargs):
-        pass
-
-###############################################################################
 class HarvestExpectedProvided(Graph):
 
     grp_cols = ['DistDescription',

@@ -20,8 +20,8 @@ import pandas
 
 ###############################################################################
 class MerchStock(Graph):
-    sep = ('y',)
-    y_grid = True
+    sep     = ('y',)
+    y_grid  = True
     y_label = "Merchantable mass [million tons of carbon]"
 
     @property
@@ -30,7 +30,7 @@ class MerchStock(Graph):
                 '\n at year %i' % self.year_to_plot)
 
     def get_sum_merch_stock(self, scenario):
-        """ Extract the total merchantable stock for a given scenario"""
+        """Extract the total merchantable stock for a given scenario."""
         # Here self.parent is a country
         p = self.parent.scenarios[scenario][-1].post_processor
         df = p.inventory.sum_merch_stock.copy()
@@ -49,7 +49,7 @@ class MerchStock(Graph):
         merch = [self.get_sum_merch_stock(scen) for scen in self.scenario_names]
         df = pandas.concat(merch)
         # Convert to millions of tons #
-        df['mass_1e6'] = df['mass']/1e6
+        df['mass_1e6'] = df['mass'] / 1e6
         # Return #
         return df
 
@@ -84,10 +84,10 @@ class MerchStock(Graph):
 ###############################################################################
 class MerchStockAtStart(MerchStock):
     scenario_names = ['static_demand', 'calibration']
-    caption = "Total merchantable stock at the beginning of the simulation."
+    caption        = "Total merchantable stock at the beginning of the simulation."
     year_selection = lambda self, years: min(years)
 
 class MerchStockAtEnd(MerchStock):
     scenario_names = ['static_demand', 'calibration']
-    caption = "Total merchantable stock at the end of the simulation."
+    caption        = "Total merchantable stock at the end of the simulation."
     year_selection = lambda self, years: max(years)

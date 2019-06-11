@@ -221,7 +221,7 @@ class Harvest(object):
 
     #-------------------------------------------------------------------------#
     @property_cached
-    def exp_prov_by_volume(self):
+    def compute_expected_provided(self, provided, expected):
         """
         Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
         to the amount of harvest actually performed by the model (extracted from the flux indicator table).
@@ -248,10 +248,10 @@ class Harvest(object):
                  'management_strategy',
                  'Measurement_type']
         # Set the same index on both data frames #
-        check = self.provided_volume.set_index(index)
-        dist = self.disturbances.set_index(index)
+        provided = provided.set_index(index)
+        expected = expected.set_index(index)
         # Do the join #
-        df = (check.join(dist)).reset_index()
+        df = (provided.join(expected, how='outer')).reset_index()
         # Sum two columns #
         df = (df
               .groupby(index)
@@ -287,6 +287,18 @@ class Harvest(object):
 
     #-------------------------------------------------------------------------#
     @property_cached
+    def exp_prov_by_volume(self):
+        """
+        Same as above but for "Measurement_type == 'M'"
+
+        Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
+                      'management_strategy', 'expected', 'provided', 'Measurement_type',
+                      'DistDescription']
+        """
+        return self.compute_expected_provided(self.provided_volume, self.disturbances)
+
+    #-------------------------------------------------------------------------#
+    @property_cached
     def exp_prov_by_area(self):
         """
         Same as above but for "Measurement_type == 'A'"
@@ -295,50 +307,7 @@ class Harvest(object):
                       'management_strategy', 'expected', 'provided', 'Measurement_type',
                       'DistDescription']
         """
-        # Index columns to join disturbances and harvest check #
-        index = ['status',
-                 'TimeStep',
-                 'DistTypeName',
-                 'forest_type',
-                 'management_type',
-                 'management_strategy',]
-        # Set the same index on both data frames #
-        df    = self.summary_check.set_index(index)
-        dist= self.disturbances.set_index(index)
-        # Do the join #
-        df = (df.join(dist, how='outer')).reset_index()
-        # Sum two columns #
-        df = (df
-              .groupby(index + ['Measurement_type'])
-              .agg({'Amount': 'sum',
-                    'TC':     'sum'})
-              .rename(columns = {'Amount': 'expected',
-                                 'TC':     'provided'})
-              .reset_index())
-        # Remove rows where both expected and provided are zero #
-        selector = (df['expected'] == 0.0) & (df['provided'] == 0.0)
-        df = df.loc[~selector].copy()
-        # Add the delta column #
-        df['delta'] = (df.expected - df.provided)
-        # Add year and remove TimeStep #
-        df['year'] = self.parent.timestep_to_years(df['TimeStep'])
-        df = df.drop('TimeStep', axis=1)
-        # Get the disturbances full name from their number #
-        dist_type = (self.parent.parent.input_data.disturbance_types
-                     .rename(columns={'DisturbanceTypeID': 'DistTypeName',
-                                                   'Name': 'DistDescription'})
-                     .set_index('DistTypeName'))
-        # Add a column named 'DistDescription' #
-        df = (df.set_index('DistTypeName')
-                .join(dist_type)
-                .reset_index())
-        # Only if we are in the calibration scenario #
-        if self.parent.parent.scenario.short_name == 'calibration':
-            # Patch the harvest data frame to stop at the simulation year #
-            selector = df['year'] <= self.parent.parent.country.base_year
-            df = df.loc[selector].copy()
-        # Return result #
-        return df
+        return self.compute_expected_provided(self.provided_area, self.disturbances)
 
     #-------------------------------------------------------------------------#
     @property_cached

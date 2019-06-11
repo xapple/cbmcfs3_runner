@@ -33,7 +33,7 @@ cbm_data_repos = Path("~/repos/cbmcfs3_data/")
 
 ###############################################################################
 class Continent(object):
-    """Aggregates countries together. Enables access to a dataframe containing
+    """Aggregates countries together. Enables access to a data frame containing
     concatenates data from all countries."""
 
     all_paths = """

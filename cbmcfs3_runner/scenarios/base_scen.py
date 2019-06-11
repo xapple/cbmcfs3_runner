@@ -25,7 +25,7 @@ from cbmcfs3_runner.reports.scenario import ScenarioReport
 
 ###############################################################################
 class Scenario(object):
-    """This object represents a harvest and economic scenario"""
+    """This object represents a harvest and economic scenario."""
 
     all_paths = """
     /logs_summary.md
