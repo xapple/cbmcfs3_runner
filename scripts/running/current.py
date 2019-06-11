@@ -28,7 +28,7 @@ runners  = [r[-1] for k,r in scenario.runners.items()]
 #runners  = [r for r in runners if r.country.iso2_code in ('GB', 'GR', 'HR', 'LT', 'LV')]
 
 ## Do it #
-for r in tqdm(runners): r()
+#for r in tqdm(runners): r()
 
 ###############################################################################
 ## Get one country #
@@ -56,15 +56,14 @@ for r in tqdm(runners): r()
 #    c.report.copy_to_outbox()
 
 ################################################################################
-for c in tqdm(continent.countries.values()):
-    if c.iso2_code not in ('LU',): continue
-    #runners = [r for runners in c.scenarios.values() for r in runners]
-    runners = [c.scenarios['static_demand'][-1], c.scenarios['calibration'][-1]]
-    for r in runners:
-        r.graphs.harvest_exp_prov_vol(rerun=True)
-        r.graphs.harvest_exp_prov_area(rerun=True)
-    c.report()
-    c.report.copy_to_outbox()
+#for c in tqdm(continent.countries.values()):
+#    if c.iso2_code not in ('LU',): continue
+#    runners = [r for runners in c.scenarios.values() for r in runners]
+#    for r in runners:
+#        r.graphs.harvest_exp_prov_vol(rerun=True)
+#        r.graphs.harvest_exp_prov_area(rerun=True)
+#    c.report()
+#    c.report.copy_to_outbox()
 
 ################################################################################
 #for c in tqdm(list(continent.countries.values())[:], ncols=60):
@@ -80,3 +79,14 @@ for c in tqdm(continent.countries.values()):
 #    scenarios = ['static_demand']
 #    runners = [c.scenarios[s][-1] for s in scenarios]
 #    for r in tqdm(runners): r.run(verbose=True)
+
+################################################################################
+for c in tqdm(continent.countries.values()):
+    if c.iso2_code not in ('LU',): continue
+    statc = c.scenarios['static_demand'][-1]
+    calib = c.scenarios['calibration'][-1]
+    statc.graphs.harvest_exp_prov_vol(rerun=True)
+    calib.graphs.harvest_exp_prov_vol(rerun=True)
+    statc.graphs.harvest_exp_prov_area(rerun=True)
+    c.report()
+    c.report.copy_to_outbox()

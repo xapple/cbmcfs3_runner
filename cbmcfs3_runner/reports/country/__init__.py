@@ -120,12 +120,6 @@ class CountryTemplate(ReportTemplate):
         graph   = self.scenarios['calibration'][0].graphs.harvest_exp_prov_vol
         return str(ScaledFigure(graph=graph, caption=caption))
 
-    def harvest_exp_pro_area_calib(self):
-        caption = ("Comparison of expected against provided harvest in the calibration scenario."
-                   " Values are in area grouped into one plot for each disturbance type.")
-        graph   = self.scenarios['calibration'][0].graphs.harvest_exp_prov_area
-        return str(ScaledFigure(graph=graph, caption=caption))
-
     #------------------------------ Tables --------------------------------#
     def table_forest_type(self):
         return 0

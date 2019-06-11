@@ -86,6 +86,7 @@ class RunnerTemplate(ReportTemplate):
         return str(ScaledFigure(graph=graph, caption=caption))
 
     def harvest_exp_prov_area(self):
+        if self.scenario.short_name == 'calibration': return None
         graph   = self.graphs.harvest_exp_prov_area
         return str(ScaledFigure(graph=graph, caption=caption))
 
