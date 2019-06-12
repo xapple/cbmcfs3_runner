@@ -32,6 +32,8 @@ class HarvestExpProv(Graph):
     def plot(self, **kwargs):
         # Data #
         self.df = self.data.copy()
+
+        # Group #
         self.df = self.df.groupby(self.grp_cols).agg(self.agg_cols).reset_index()
 
         # Colors #

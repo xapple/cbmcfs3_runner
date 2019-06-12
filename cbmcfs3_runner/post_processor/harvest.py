@@ -226,7 +226,7 @@ class Harvest(object):
         and others have DistTypeName as object.
 
         Columns are: ['status', 'forest_type', 'region', 'management_type',
-                      'management_strategy', 'climatic_unit', 'conifers/bradleaves',
+                      'management_strategy', 'climatic_unit', 'conifers_bradleaves',
                       'UsingID', 'SWStart', 'SWEnd', 'HWStart', 'HWEnd', 'Last_Dist_ID',
                       'Efficency', 'Sort_Type', 'Measurement_type', 'Amount', 'Dist_Type_ID',
                       'TimeStep'],
@@ -243,14 +243,21 @@ class Harvest(object):
         df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
         # Remove columns that are not really used #
         df = df.drop(columns=[c for c in df.columns if c.startswith("Min") or c.startswith("Max")])
+        # Remove slashes #
+        df = df.rename(columns=lambda n:n.replace('/','_'))
         # Dist_Type_ID is actually DistTypeName #
         df = df.rename(columns = {'Dist_Type_ID': 'DistTypeName'})
         # Return result #
         return df
 
     #-------------------------------------------------------------------------#
-    def compute_expected_provided(self, df):
+    def compute_expected_provided(self, provided, meas_type, prov_col_name):
         """
+        Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
+        to the amount of harvest actually performed by the model (extracted from the flux indicator table).
+
+        Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
+
         In this method we transform *df*, by adding:
 
          - Years instead of TimeSteps
@@ -258,6 +265,41 @@ class Harvest(object):
          - An extra column indicating the delta between expected and provided
          - An extra column indicating the disturbance description sentence.
         """
+        # Columns we will keep #
+        index = ['TimeStep',
+                 'DistTypeName',
+                 'forest_type',
+                 'Measurement_type',
+                 #'region',
+                 #'management_type',
+                 #'management_strategy',
+                 #'conifers_bradleaves'
+                 #'status'
+                ]
+        # Load #
+        expected = self.disturbances
+        # Filter for measurement type #
+        selector = expected['Measurement_type'] == meas_type
+        expected = expected.loc[selector].copy()
+        # Aggregate expected #
+        expected = (expected
+                    .groupby(index)
+                    .agg({'Amount': 'sum'})
+                    .reset_index())
+        # Aggregate provided #
+        provided = (provided
+                    .groupby(index)
+                    .agg({prov_col_name: 'sum'})
+                    .reset_index())
+        # Index columns to join disturbances and harvest check #
+        # Set the same index on both data frames #
+        provided = provided.set_index(index)
+        expected = expected.set_index(index)
+        # Do the join #
+        df = (provided.join(expected, how='outer')).reset_index()
+        # Sum two columns #
+        df = df.rename(columns = {'Amount':      'expected',
+                                  prov_col_name: 'provided'})
         # Remove rows where both expected and provided are zero #
         selector = (df['expected'] == 0.0) & (df['provided'] == 0.0)
         df = df.loc[~selector].copy()
@@ -287,46 +329,15 @@ class Harvest(object):
     @property_cached
     def exp_prov_by_volume(self):
         """
-        Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
-        to the amount of harvest actually performed by the model (extracted from the flux indicator table).
-
-        Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
-
         "Measurement_type == 'M'"
 
         Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
                       'management_strategy', 'expected', 'provided', 'Measurement_type',
                       'DistDescription']
         """
-        # Load #
-        provided = self.provided_volume
-        expected = self.disturbances
-        # Filter for volume #
-        selector = expected['Measurement_type'] == 'M'
-        expected = expected.loc[selector].copy()
-        # Index columns to join disturbances and harvest check #
-        index = ['status',
-                 'TimeStep',
-                 'DistTypeName',
-                 'forest_type',
-                 'management_type',
-                 'management_strategy',
-                 'Measurement_type']
-        # Set the same index on both data frames #
-        provided = provided.set_index(index)
-        expected = expected.set_index(index)
-        # Do the join #
-        df = (provided.join(expected, how='outer')).reset_index()
-        # Sum two columns #
-        df = (df
-              .groupby(index)
-              .agg({'Amount': 'sum',
-                    'TC':     'sum'})
-              .rename(columns = {'Amount': 'expected',
-                                 'TC':     'provided'})
-              .reset_index())
         # Compute #
-        return self.compute_expected_provided(df)
+        df = self.provided_volume
+        return self.compute_expected_provided(df, 'M', 'TC')
 
     #-------------------------------------------------------------------------#
     @property_cached
@@ -338,36 +349,9 @@ class Harvest(object):
                       'management_strategy', 'expected', 'provided', 'Measurement_type',
                       'DistDescription']
         """
-        # Load #
-        provided = self.provided_area
-        expected = self.disturbances
-        # Filter for volume #
-        selector = expected['Measurement_type'] == 'A'
-        expected = expected.loc[selector].copy()
-        # Index columns to join disturbances and harvest check #
-        index = ['status',
-                 'TimeStep',
-                 'DistTypeName',
-                 'forest_type',
-                 'region',
-                 'management_type',
-                 'management_strategy',
-                 'Measurement_type']
-        # Set the same index on both data frames #
-        provided = provided.set_index(index)
-        expected = expected.set_index(index)
-        # Do the join #
-        df = (provided.join(expected, how='outer')).reset_index()
-        # Sum two columns #
-        df = (df
-              .groupby(index)
-              .agg({'Amount':    'sum',
-                    'DistArea':  'sum'})
-              .rename(columns = {'Amount':   'expected',
-                                 'DistArea': 'provided'})
-              .reset_index())
         # Compute #
-        return self.compute_expected_provided(df)
+        df = self.provided_area
+        return self.compute_expected_provided(df, 'A', 'DistArea')
 
     #-------------------------------------------------------------------------#
     def check_exp_prov(self):

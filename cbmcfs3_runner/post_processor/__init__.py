@@ -78,7 +78,7 @@ class PostProcessor(object):
         classifiers.columns = classifiers.columns.get_level_values(1)
         # Remove the confusing name #
         del classifiers.columns.name
-        # Lower case everything #
+        # Remove slashes #
         classifiers = classifiers.rename(columns=lambda n:n.replace('/','_'))
         # In the calibration scenario we can't change names and there is a conflict #
         # This should not impact other scenarios hopefully #
