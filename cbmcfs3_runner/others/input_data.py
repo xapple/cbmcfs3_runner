@@ -109,6 +109,10 @@ class InputData(object):
         return self.xls.parse("Growth")
 
     @property_cached
+    def historical_yields(self):
+        return self.xls_append.parse("Growth")
+
+    @property_cached
     def yields_long(self):
         """
         Columns are:
@@ -126,7 +130,9 @@ class InputData(object):
                                       'Sp'],
                               var_name="age_class",
                               value_name="volume")
-
+        df['age_class'] = (df['age_class']
+                           .replace("Vol", "", regex=True)
+                           .astype('int'))
         return df
 
     @property_cached
