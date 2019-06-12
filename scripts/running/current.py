@@ -82,7 +82,7 @@ runners  = [r[-1] for k,r in scenario.runners.items()]
 
 ################################################################################
 for c in tqdm(continent.countries.values()):
-    if c.iso2_code not in ('LU',): continue
+    if c.iso2_code not in ('FR',): continue
     statc = c.scenarios['static_demand'][-1]
     calib = c.scenarios['calibration'][-1]
     statc.graphs.harvest_exp_prov_vol(rerun=True)
