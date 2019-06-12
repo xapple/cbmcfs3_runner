@@ -44,7 +44,8 @@ class Harvest(object):
 
         Based on Roberto's query `Harvest analysis check` visible in the original calibration database.
 
-        What are the units?
+        What are the units? TC is in terms of tons of carbon. Vol_Merch are in terms of cubic
+        meters of wood.
 
         Columns are: ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
                       'management_type', 'management_strategy', 'conifers_bradleaves',
@@ -214,9 +215,13 @@ class Harvest(object):
     @property_cached
     def disturbances(self):
         """
-        Measurement_type can be 'M' for mass or 'A' for area.
+        This corresponds to the "expected" aspect of "expected_provided" harvest
+        and will contain both Area ('A') and Mass ('M'). The units for 'M' are
+        tons of carbon and hectares for 'A'.
 
-        Prepare the disturbance table for join operations with harvest tables.
+        This method Prepares the disturbance table for joining operations with
+        harvest tables.
+
         It could be a good idea to check why some countries have DistTypeName as int64
         and others have DistTypeName as object.
 
@@ -225,9 +230,6 @@ class Harvest(object):
                       'UsingID', 'SWStart', 'SWEnd', 'HWStart', 'HWEnd', 'Last_Dist_ID',
                       'Efficency', 'Sort_Type', 'Measurement_type', 'Amount', 'Dist_Type_ID',
                       'TimeStep'],
-
-        This corresponds to the "expected" aspect of "expected_provided" harvest
-        and will contain both Area ('A') and Volumes ('M').
         """
         # Load disturbances table from excel file #
         df = self.parent.parent.input_data.disturbance_events
@@ -249,21 +251,12 @@ class Harvest(object):
     #-------------------------------------------------------------------------#
     def compute_expected_provided(self, df):
         """
-        Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
-        to the amount of harvest actually performed by the model (extracted from the flux indicator table).
-
-        Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
-
-        Then we add:
+        In this method we transform *df*, by adding:
 
          - Years instead of TimeSteps
          - Rows where expected and provided are both zero removed
          - An extra column indicating the delta between expected and provided
          - An extra column indicating the disturbance description sentence.
-
-        Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
-                      'management_strategy', 'expected', 'provided', 'Measurement_type',
-                      'DistDescription']
         """
         # Remove rows where both expected and provided are zero #
         selector = (df['expected'] == 0.0) & (df['provided'] == 0.0)
@@ -294,7 +287,12 @@ class Harvest(object):
     @property_cached
     def exp_prov_by_volume(self):
         """
-        Same as above but for "Measurement_type == 'M'"
+        Compares the amount of harvest requested in the disturbance tables (an input to the simulation)
+        to the amount of harvest actually performed by the model (extracted from the flux indicator table).
+
+        Based on Roberto's query `Harvest_expected_provided` visible in the original calibration database.
+
+        "Measurement_type == 'M'"
 
         Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
                       'management_strategy', 'expected', 'provided', 'Measurement_type',

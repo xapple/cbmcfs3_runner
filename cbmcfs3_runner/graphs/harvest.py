@@ -116,17 +116,20 @@ class HarvestExpProvVol(HarvestExpProv):
 
     caption = ("Comparision of expected against provided harvest in terms of",
                " volume.")
-    y_axis_label = "Volume in [m^3]"
+
+    y_axis_label = "Mass in tons of carbon [1e3 kg C]"
 
     @property
     def data(self):
         return self.parent.post_processor.harvest.exp_prov_by_volume
 
+###############################################################################
 class HarvestExpProvArea(HarvestExpProv):
 
     caption = ("Comparision of expected against provided harvest in terms of",
                " area.")
-    y_axis_label = "Volume in [m^3]"
+
+    y_axis_label = "Area in hectares [1e5 m^2]"
 
     @property
     def data(self):

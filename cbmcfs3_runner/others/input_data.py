@@ -28,6 +28,7 @@ class InputData(object):
 
     all_paths = """
     /input/xls/default_tables.xls
+    /input/xls/append_tables.xls
     """
 
     def __init__(self, parent):
@@ -43,8 +44,13 @@ class InputData(object):
 
     @property_cached
     def xls(self):
-        """The excel file"""
-        return pandas.ExcelFile(str(self.paths.xls))
+        """The first excel file"""
+        return pandas.ExcelFile(str(self.paths.default))
+
+    @property_cached
+    def xls_append(self):
+        """The second excel file"""
+        return pandas.ExcelFile(str(self.paths.append))
 
     #-------------------------- Specific sheets ------------------------------#
     @property_cached
@@ -105,8 +111,8 @@ class InputData(object):
     @property_cached
     def yields_long(self):
         """
-        Columns are: 
-        
+        Columns are:
+
         ['status', 'forest_type', 'region', 'management_type',
          'management_strategy', 'climatic_unit', 'conifers/bradleaves', 'Sp',
          'age_class', 'volume']
@@ -114,13 +120,13 @@ class InputData(object):
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
         classifiers_mapping = self.parent.post_processor.classifiers_mapping
         yields_wide = self.yields.rename(columns = classifiers_mapping)
-        df = yields_wide.melt(id_vars=['status', 'forest_type', 'region', 
-                                      'management_type', 'management_strategy', 
-                                      'climatic_unit', 'conifers/bradleaves', 
+        df = yields_wide.melt(id_vars=['status', 'forest_type', 'region',
+                                      'management_type', 'management_strategy',
+                                      'climatic_unit', 'conifers/bradleaves',
                                       'Sp'],
                               var_name="age_class",
                               value_name="volume")
-                              
+
         return df
 
     @property_cached
@@ -132,6 +138,5 @@ class InputData(object):
         df = self.xls.parse("Classifiers")
         sort_by = ['ClassifierNumber', 'ClassifierValueID']
         return df.sort_values(by=sort_by, ascending=[True, False])
-        
-        
-        
+
+
