@@ -4,7 +4,7 @@
 """
 Run CBM without any disturbances even for the historical period.
 This can then be used as a benchmark to start reproducing results
-with the silvette model.
+with separate models.
 """
 
 # Built-in modules #
@@ -18,7 +18,7 @@ from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
 def filter_df(df, base_year, inv_start_year):
-    """Takes the old event dataframe and returns only disturbances for 2020."""
+    """Takes the old event data frame and returns only disturbances for 2020."""
     only_this_year = base_year - inv_start_year + 5
     return df.query("Step == %s" % only_this_year)
 
