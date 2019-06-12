@@ -114,6 +114,13 @@ class InputData(object):
 
     @property_cached
     def yields_long(self):
+        return self.reshape_yields_long(self.yields)
+
+    @property_cached
+    def historical_yields_long(self):
+        return self.reshape_yields_long(self.historical_yields)
+
+    def reshape_yields_long(self, yields_wide):
         """
         Columns are:
 
@@ -123,17 +130,19 @@ class InputData(object):
          """
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
         classifiers_mapping = self.parent.post_processor.classifiers_mapping
-        yields_wide = self.yields.rename(columns = classifiers_mapping)
-        df = yields_wide.melt(id_vars=['status', 'forest_type', 'region',
-                                      'management_type', 'management_strategy',
-                                      'climatic_unit', 'conifers/bradleaves',
-                                      'Sp'],
-                              var_name="age_class",
-                              value_name="volume")
+        df = yields_wide.rename(columns = classifiers_mapping)
+        df = df.melt(id_vars=['status', 'forest_type', 'region',
+                              'management_type', 'management_strategy',
+                              'climatic_unit', 'conifers/bradleaves',
+                              'Sp'],
+                      var_name="age_class",
+                      value_name="volume")
         df['age_class'] = (df['age_class']
                            .replace("Vol", "", regex=True)
                            .astype('int'))
         return df
+
+
 
     @property_cached
     def ageclass(self):
