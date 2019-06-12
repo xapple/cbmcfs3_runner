@@ -120,7 +120,9 @@ class InputData(object):
                                       'Sp'],
                               var_name="age_class",
                               value_name="volume")
-                              
+        df['age_class'] = (df['age_class']
+                           .replace("Vol", "", regex=True)
+                           .astype('int'))
         return df
 
     @property_cached
