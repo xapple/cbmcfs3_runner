@@ -22,6 +22,7 @@ from plumbing.cache       import property_cached
 # Internal modules #
 from cbmcfs3_runner import module_dir
 from cbmcfs3_runner.graphs import country_graphs, load_graphs_from_module
+from cbmcfs3_runner.others.demand                  import Demand
 from cbmcfs3_runner.others.orig_data               import OrigData
 from cbmcfs3_runner.reports.country                import CountryReport
 from cbmcfs3_runner.stdrd_import_tool.associations import Associations
@@ -124,6 +125,11 @@ class Country(object):
     def aidb(self):
         """Archive Index Database."""
         return AIDB(self)
+
+    @property_cached
+    def demand(self):
+        """Parses the GFTM demands."""
+        return Demand(self)
 
     @property_cached
     def silviculture(self):

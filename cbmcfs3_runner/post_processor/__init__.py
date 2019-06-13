@@ -20,6 +20,7 @@ from autopaths.auto_paths import AutoPaths
 # Internal modules #
 from cbmcfs3_runner.post_processor.harvest   import Harvest
 from cbmcfs3_runner.post_processor.inventory import Inventory
+from cbmcfs3_runner.post_processor.products  import Products
 
 ###############################################################################
 class PostProcessor(object):
@@ -135,6 +136,10 @@ class PostProcessor(object):
     @property_cached
     def harvest(self):
         return Harvest(self)
+
+    @property_cached
+    def products(self):
+        return Products(self)
 
     #-------------------------------------------------------------------------#
     def timestep_to_years(self, timestep):
