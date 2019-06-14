@@ -35,8 +35,8 @@ country_code_path = module_dir + 'extra_data/country_codes.csv'
 ref_years_path    = module_dir + 'extra_data/reference_years.csv'
 
 # Load extra data #
-all_codes = pandas.read_csv(str(country_code_path))
-ref_years = pandas.read_csv(str(ref_years_path))
+all_codes   = pandas.read_csv(str(country_code_path))
+ref_years   = pandas.read_csv(str(ref_years_path))
 
 ###############################################################################
 class Country(object):

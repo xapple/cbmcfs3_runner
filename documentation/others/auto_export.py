@@ -10,7 +10,6 @@ Install this module:
 """
 
 # Built-in modules #
-import os
 
 # First party modules #
 from autopaths import Path
