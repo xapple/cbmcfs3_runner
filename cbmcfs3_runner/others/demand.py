@@ -27,9 +27,6 @@ gftm_demand  = pandas.read_csv(str(gftm_demand_path), header=None)
 gftm_header  = gftm_demand[0:3]
 gftm_content = gftm_demand[3:]
 
-# Fill #
-gftm_header  = gftm_header.fillna(method='ffill', axis=1)
-gftm_content = gftm_content.fillna(0.0)
 
 ###############################################################################
 class Demand(object):
@@ -49,7 +46,9 @@ class Demand(object):
         * Annual harvest 2046 to 2050
         * Annual production (m3ub) - from GFTM 2046 to 2050
 
-    and have been deleted from the original file.
+    but have not been deleted from the original file because
+    they are used in as reference in Excel formulas for some
+    unknown reason.
     """
 
     def __init__(self, parent):
@@ -65,14 +64,23 @@ class Demand(object):
     @property_cached
     def df(self):
         """Create the data frame in long format."""
+        # Fill values #
+        header = gftm_header.fillna(method='ffill', axis=1)
         # Get the headers #
-        df = pandas.concat([gftm_header, self.row])
+        df = pandas.concat([header, self.row])
+        # Transpose #
+        df = df.transpose()
+        # Drop country code and country name #
+        df = df.drop([0,1])
+        # New index #
+        df = df.set_index([0,1,2])
+        # New column name #
+        df = df.rename(columns={19: 'value'})
+        # Drop special characters #
+        df['value'] = df['value'].str.strip('%')
+        df['value'] = df['value'].str.replace("'", '')
+        # Switch to number #
+        df['value'] = pandas.to_numeric(df['value'])
+        df['value'] = df['value'].fillna(0.0)
+        # Return #
         return df
-        # Melt #
-        args = {
-            'id_vars':    ['a'],
-            'value_vars': ['a'],
-            'var_name':   ['year'],
-            'value_name': ['a'],
-        }
-        return self.row.melt(*args)
