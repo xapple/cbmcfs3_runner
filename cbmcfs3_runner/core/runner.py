@@ -18,6 +18,7 @@ from plumbing.logger      import create_file_logger
 # Internal modules #
 import cbmcfs3_runner
 from cbmcfs3_runner.graphs import runner_graphs, load_graphs_from_module
+from cbmcfs3_runner.modifiers.disturbance_maker   import DisturbanceMaker
 from cbmcfs3_runner.modifiers.pre_process         import PreProcessor
 from cbmcfs3_runner.modifiers.middle_process      import MiddleProcessor
 from cbmcfs3_runner.post_processor                import PostProcessor
@@ -91,9 +92,11 @@ class Runner(object):
         # Main steps #
         self.remove_directory()
         self.input_data.copy_from_country()
+        # Modify input data #
+        self.disturbance_maker()
         self.pre_processor()
-        self.country.aidb.switch()
         # Standard import tool #
+        self.country.aidb.switch()
         self.default_sit()
         if self.sit_calling == 'dual': self.append_sit()
         # Final steps #
@@ -124,6 +127,10 @@ class Runner(object):
     def input_data(self):
         """Use the country object to copy the original input data."""
         return InputData(self)
+
+    @property_cached
+    def disturbance_maker(self):
+        return DisturbanceMaker(self)
 
     @property_cached
     def pre_processor(self):
