@@ -39,8 +39,7 @@ class HarvestExpProv(Graph):
         # Colors #
         colors = brewer2mpl.get_map('Pastel1', 'qualitative', 3).mpl_colors
         name_to_color = {'Expected':   colors[1],
-                         'Provided':   colors[0],
-                         'Difference': 'blue'}
+                         'Provided':   colors[0]}
 
         # Facet grid #
         col_wrap = math.ceil(len(self.df[self.facet_col].unique()) / 8.0) + 1
@@ -60,6 +59,7 @@ class HarvestExpProv(Graph):
             axes = pyplot.gca()
             df = kwargs.pop("data")
             delta = (df.expected - df.provided)
+            kwargs['color'] = '#BEE3EE' if all(df.expected == 0) else "blue"
             pyplot.bar(x=df['year'], height=delta, bottom=df.provided, **kwargs)
 
         # Make the two skinny lines #
@@ -67,7 +67,7 @@ class HarvestExpProv(Graph):
         p.map_dataframe(line_plot, 'year', 'expected', color=name_to_color['Expected'])
 
         # Make the fat bars #
-        p.map_dataframe(bar_plot, color=name_to_color['Difference'])
+        p.map_dataframe(bar_plot)
 
         # Add a thousands separator #
         def formatter(**kw):
