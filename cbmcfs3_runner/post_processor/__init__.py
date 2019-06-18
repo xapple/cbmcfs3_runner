@@ -43,6 +43,11 @@ class PostProcessor(object):
         self.harvest.check_exp_prov()
         
     def sanitize_names(self, names):
+        """ Example:
+        runner = continent[('static_demand', 'ZZ', 0)]
+        df = pandas.DataFrame({'A/_b': ['A/_0', 'A/1', 'A_2', 'A3']})
+        print(df['A/_b'])
+        df['A/_b'].apply(runner.post_processor.sanitize_names)"""
         return names.lower().replace(' ', '_').replace('/','_')
 
     @property
