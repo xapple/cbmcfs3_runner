@@ -67,6 +67,11 @@ class InputData(object):
          'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist']
         """
         df = self.xls.parse("Inventory")
+        # Create the age_class column 
+        # so it can be used as a join variable with a yields table
+        df['age_class'] = (df['Age']
+                           .replace('AGEID', '', regex=True)
+                           .astype('int'))
         return df.rename(columns = self.classifiers_mapping)
 
     @property_cached
