@@ -138,12 +138,12 @@ class InputData(object):
         Columns are:
 
         ['status', 'forest_type', 'region', 'management_type',
-         'management_strategy', 'climatic_unit', 'conifers/bradleaves', 'Sp',
+         'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'Sp',
          'age_class', 'volume']
          """
         df = yields_wide.melt(id_vars=['status', 'forest_type', 'region',
                                        'management_type', 'management_strategy',
-                                       'climatic_unit', 'conifers/bradleaves',
+                                       'climatic_unit', 'conifers_bradleaves',
                                        'Sp'],
                               var_name="age_class",
                               value_name="volume")
