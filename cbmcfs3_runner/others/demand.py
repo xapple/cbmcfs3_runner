@@ -63,7 +63,8 @@ class Demand(object):
 
     @property_cached
     def df(self):
-        """Create the data frame in long format."""
+        """Create the data frame in long format.
+        Columns: ['values']"""
         # Fill values #
         header = gftm_header.fillna(method='ffill', axis=1)
         # Get the headers #
@@ -75,7 +76,7 @@ class Demand(object):
         # New index #
         df = df.set_index([0,1,2])
         # New column name #
-        df = df.rename(columns={19: 'value'})
+        df = df.rename(columns={df.columns[0]: 'value'})
         # Drop special characters #
         df['value'] = df['value'].str.strip('%')
         df['value'] = df['value'].str.replace("'", '')
