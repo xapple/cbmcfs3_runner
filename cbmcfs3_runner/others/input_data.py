@@ -63,7 +63,7 @@ class InputData(object):
         Columns are:
 
         ['status', 'forest_type', 'region', 'management_type',
-         'management_strategy', 'climatic_unit', 'conifers/bradleaves',
+         'management_strategy', 'climatic_unit', 'conifers_bradleaves',
          'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist']
         """
         df = self.xls.parse("Inventory")
