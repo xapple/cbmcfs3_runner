@@ -42,7 +42,7 @@ class PostProcessor(object):
     def __call__(self):
         self.harvest.check_exp_prov()
         
-    def sanitize_column_names(self, names):
+    def sanitize_names(self, names):
         return names.lower().replace(' ', '_').replace('/','_')
 
     @property
@@ -76,7 +76,7 @@ class PostProcessor(object):
         # Rename
         # This object will link: 1->species, 2->forest_type, etc.
         mapping = user_classes.set_index('UserDefdClassID')['ClassDesc']
-        mapping = mapping.apply(self.sanitize_column_names)
+        mapping = mapping.apply(self.sanitize_names)
         classifiers = classifiers.rename(mapping, axis=1)
         # Remove multilevel column index, replace by level(1) (second level)
         classifiers.columns = classifiers.columns.get_level_values(1)
@@ -125,7 +125,7 @@ class PostProcessor(object):
         # This makes df a pandas.Series #
         df = df.set_index('id')['ClassDesc']
         # Lower case names everywhere #
-        df = df.apply(self.sanitize_column_names)
+        df = df.apply(self.sanitize_names)
         # Return #
         return df
 
