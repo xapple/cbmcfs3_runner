@@ -23,10 +23,7 @@ from cbmcfs3_runner import module_dir
 gftm_demand_path = module_dir + 'extra_data/gftm_forest_model.csv'
 
 # Parse #
-gftm_demand  = pandas.read_csv(str(gftm_demand_path), header=None)
-gftm_header  = gftm_demand[0:3]
-gftm_content = gftm_demand[3:]
-
+gftm_demand = pandas.read_csv(str(gftm_demand_path), header=None)
 
 ###############################################################################
 class Demand(object):
@@ -55,18 +52,26 @@ class Demand(object):
         # Default attributes #
         self.parent = parent
 
+    @property
+    def gftm_header(self):
+       return gftm_demand[0:3]
+
+    @property
+    def gftm_content(self):
+        return gftm_demand[3:]
+
     @property_cached
     def row(self):
         """Get the row corresponding to this country."""
-        selector = gftm_content[0] == self.parent.iso2_code
-        return gftm_content.loc[selector]
+        selector = self.gftm_content[0] == self.parent.iso2_code
+        return self.gftm_content.loc[selector]
 
     @property_cached
     def df(self):
         """Create the data frame in long format.
         Columns: ['values']"""
         # Fill values #
-        header = gftm_header.fillna(method='ffill', axis=1)
+        header = self.gftm_header.fillna(method='ffill', axis=1)
         # Get the headers #
         df = pandas.concat([header, self.row])
         # Transpose #

@@ -22,17 +22,18 @@ from plumbing.cache import property_cached
 ###############################################################################
 class Silviculture(object):
     """
-    This class takes the file "silviculture.sas" as input and generate a CSV
-    from it.
+    This class gives access to information contained in the file
+    "silviculture.sas".
     This information will be used to allocate the harvest across the spatial
-    units and species.
-    Thanks to this table, using the demand from an economic model,
+    units and species when creating disturbances.
+    Thanks to these tables, using the demand from an economic model,
     one can create a list of specific disturbances that include where
-    to harvest and what species to harvest.
+    to harvest and what species to harvest at which year.
     """
 
     all_paths = """
-    /orig/silviculture.csv
+    /orig/silv_treatments.csv
+    /orig/harvest_corr_fact.csv
     """
 
     def __init__(self, parent):
@@ -41,10 +42,12 @@ class Silviculture(object):
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
-    def __call__(self):
-        pass
+    @property_cached
+    def treatments(self):
+        """Load the CSV that is 'silv_treatments.csv'."""
+        return pandas.read_csv(str(self.paths.treatments))
 
     @property_cached
-    def df(self):
-        """Load the CSV that is 'silviculture.csv'."""
-        return pandas.read_csv(str(self.paths.csv))
+    def corr_fact(self):
+        """Load the CSV that is 'harvest_corr_fact.csv'."""
+        return pandas.read_csv(str(self.paths.corr_fact))

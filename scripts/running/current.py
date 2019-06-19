@@ -93,6 +93,7 @@ from cbmcfs3_runner.core.continent import continent
 
 ################################################################################
 for c in tqdm(continent.countries.values()):
+    if c.iso2_code not in ('LU',): continue
     statc = c.scenarios['static_demand'][-1]
     calib = c.scenarios['calibration'][-1]
     # Purge #

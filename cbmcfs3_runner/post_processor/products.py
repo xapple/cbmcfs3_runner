@@ -38,9 +38,10 @@ class Products(object):
     #-------------------------------------------------------------------------#
     @property_cached
     def silviculture(self):
-        """Prepare the silviculture table for joining operations with harvest tables."""
+        """Prepare the silviculture treatments data frame
+        for joining operations with harvest tables."""
         # Load file #
-        df = self.parent.parent.country.silviculture.df
+        df = self.parent.parent.country.silviculture.treatments
         # Rename classifiers from _1 to forest etc. #
         df = df.rename(columns = self.parent.classifiers_mapping)
         # Rename a column #
