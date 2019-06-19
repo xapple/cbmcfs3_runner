@@ -61,6 +61,23 @@ class ExportSilvicultureCSV(object):
         # Write back into a CSV #
         df.to_csv(str(self.paths.csv), index=False)
 
+
+    def harvest_proportion_coefficients(self):
+        """ Search the SAS file for a list of coefficients.
+        The matching string usually contains '_2='.
+        
+        Coefficients are different in the different countries. 
+            For example:
+            AT coefficients
+              if _2='FS' then CF=1.2;
+              if _2='QR' then CF=0.9;
+        
+            LU coefficients
+              if _2='FS'  then CF=1.0;
+              if _2='QR'  then CF=1.0;"""
+
+
+
 ###############################################################################
 if __name__ == '__main__':
     exporters = [ExportSilvicultureCSV(c) for c in continent]
