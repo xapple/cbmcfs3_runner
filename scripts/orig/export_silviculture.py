@@ -84,20 +84,13 @@ class ExportFromSilviculture(object):
               if _2='QR' then CF=0.9;
               ...
         """
-        # Our regular expression #
-        query = "\n(if _2='.*?)\n.*?run;\n"
         # Search in the file #
-        found = re.findall(query, self.paths.sas.contents, re.DOTALL)
-        if not found: return
-        blob = found[0]
-        # See if we can parse lines inside of it #
-        query = "if _2='([A-Z][A-Z])' then CF=([0-9].[0-9]+);"
-        found = re.findall(query, blob)
-        if not found: return
+        lines = [line for line in self.paths.sas if "if _2='" in str(line)]
         # Do each line #
-        extract = lambda line: re.findall(query, line)[0]
-        lines   = [line for line in blob.split('\n') if line]
+        query   = "if _2='([A-Z][A-Z])' then CF=([0-9].[0-9]+);"
+        extract = lambda line: re.findall(query, str(line))
         result  = list(map(extract,lines))
+        result  = [found[0] for found in result if found]
         # Make a data frame #
         df = pandas.DataFrame(result, columns=['forest_type', 'corr_fact'])
         # Write back into a CSV #
