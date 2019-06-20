@@ -37,6 +37,7 @@ class ExportFromSilviculture(object):
     /orig/silviculture.sas
     /orig/silv_treatments.csv
     /orig/harvest_corr_fact.csv
+    /orig/harvest_prop_fact.csv
     """
 
     def __init__(self, country):
@@ -48,6 +49,7 @@ class ExportFromSilviculture(object):
     def __call__(self):
         self.treatments()
         self.harvest_corr_fact()
+        self.harvest_prop_fact()
 
     def treatments(self):
         """Search the SAS file for the CSV that is hidden inside and return a
@@ -97,6 +99,25 @@ class ExportFromSilviculture(object):
         df = pandas.DataFrame(result, columns=['forest_type', 'corr_fact'])
         # Write back into a CSV #
         df.to_csv(str(self.paths.corr_fact), index=False)
+
+    def harvest_prop_fact(self):
+        """This time we want the harvest proportion factors.
+
+              if _2='FS' then CF=1.2;
+              if _2='QR' then CF=0.9;
+              ...
+        """
+        # Search in the file #
+        lines = [line for line in self.paths.sas if "if _2='" in str(line)]
+        # Do each line #
+        query   = "if _2='([A-Z][A-Z])' then CF=([0-9].[0-9]+);"
+        extract = lambda line: re.findall(query, str(line))
+        result  = list(map(extract,lines))
+        result  = [found[0] for found in result if found]
+        # Make a data frame #
+        df = pandas.DataFrame(result, columns=['forest_type', 'corr_fact'])
+        # Write back into a CSV #
+        df.to_csv(str(self.paths.prop_fact), index=False)
 
 ###############################################################################
 if __name__ == '__main__':

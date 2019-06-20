@@ -34,6 +34,7 @@ class Silviculture(object):
     all_paths = """
     /orig/silv_treatments.csv
     /orig/harvest_corr_fact.csv
+    /orig/harvest_prop_fact.csv
     """
 
     def __init__(self, parent):
@@ -51,3 +52,9 @@ class Silviculture(object):
     def corr_fact(self):
         """Load the CSV that is 'harvest_corr_fact.csv'."""
         return pandas.read_csv(str(self.paths.corr_fact))
+
+    @property_cached
+    def harvest_prop_fact(self):
+        """Load the CSV that is 'harvest_prop_fact.csv'."""
+        return pandas.read_csv(str(self.paths.prop_fact))
+

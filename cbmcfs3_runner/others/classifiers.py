@@ -24,9 +24,19 @@ class Classifiers(object):
 
     You can test this class like this:
 
-        from cbmcfs3_runner.core.continent import continent
-        r = continent[('static_demand', 'ZZ', -1)]
-        print(r.country.classifiers.mapping)
+        >>> from cbmcfs3_runner.core.continent import continent
+        >>> r = continent[('static_demand', 'ZZ', -1)]
+        >>> print(r.country.classifiers.mapping)
+
+        id
+        _7    conifers_bradleaves
+        _1                 status
+        _2            forest_type
+        _3                 region
+        _4        management_type
+        _5    management_strategy
+        _6          climatic_unit
+        Name: ClassDesc, dtype: object
     """
 
     def __init__(self, parent):

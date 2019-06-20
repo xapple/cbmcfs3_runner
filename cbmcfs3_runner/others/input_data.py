@@ -146,7 +146,7 @@ class InputData(object):
          """
         # Index #
         index = ['status', 'forest_type', 'region', 'management_type',
-                 'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'Sp'],
+                 'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'Sp']
         # Melt #
         df = yields_wide.melt(id_vars    = index,
                               var_name   = "age_class",
