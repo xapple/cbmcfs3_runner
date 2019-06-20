@@ -22,6 +22,7 @@ from plumbing.cache       import property_cached
 # Internal modules #
 from cbmcfs3_runner import module_dir
 from cbmcfs3_runner.graphs import country_graphs, load_graphs_from_module
+from cbmcfs3_runner.others.classifiers import Classifiers
 from cbmcfs3_runner.others.demand                  import Demand
 from cbmcfs3_runner.others.orig_data               import OrigData
 from cbmcfs3_runner.reports.country                import CountryReport
@@ -127,14 +128,24 @@ class Country(object):
         return AIDB(self)
 
     @property_cached
-    def demand(self):
-        """Parses the GFTM demands."""
-        return Demand(self)
-
-    @property_cached
     def silviculture(self):
         """Load the allocation rules for harvests."""
         return Silviculture(self)
+
+    @property_cached
+    def orig_data(self):
+        """Access the original CSV files as exported from the DB."""
+        return OrigData(self)
+
+    @property_cached
+    def classifiers(self):
+        """Load the classifiers and their names."""
+        return Classifiers(self)
+
+    @property_cached
+    def demand(self):
+        """Parses the GFTM demands."""
+        return Demand(self)
 
     @property_cached
     def coefficients(self):
@@ -149,11 +160,6 @@ class Country(object):
         """Load the faostat forestry dataset of this country."""
         df = faostat.forestry.query('country == "%s"' % self.iso2_code)
         return df.drop(columns='country')
-
-    @property_cached
-    def orig_data(self):
-        """Access the original CSV files as exported from the DB."""
-        return OrigData(self)
 
     @property
     def map_value(self):

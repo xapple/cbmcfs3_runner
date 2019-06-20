@@ -83,6 +83,8 @@ class ExportFromSilviculture(object):
               if _2='FS' then CF=1.2;
               if _2='QR' then CF=0.9;
               ...
+
+        This fails for DK, GR, HR, IE, LU, PT, ZZ
         """
         # Search in the file #
         lines = [line for line in self.paths.sas if "if _2='" in str(line)]

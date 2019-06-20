@@ -41,14 +41,10 @@ class PostProcessor(object):
 
     def __call__(self):
         self.harvest.check_exp_prov()
-        
-    def sanitize_names(self, names):
-        """ Example:
-        runner = continent[('static_demand', 'ZZ', 0)]
-        df = pandas.DataFrame({'A/_b': ['A/_0', 'A/1', 'A_2', 'A3']})
-        print(df['A/_b'])
-        df['A/_b'].apply(runner.post_processor.sanitize_names)"""
-        return names.lower().replace(' ', '_').replace('/','_')
+
+    def sanitize_names(self, name):
+        """Remove spaces and slashes from column names."""
+        return name.lower().replace(' ', '_').replace('/','_')
 
     @property
     def database(self):
@@ -118,21 +114,7 @@ class PostProcessor(object):
     #-------------------------------------------------------------------------#
     @property_cached
     def classifiers_mapping(self):
-        """
-        Map classifiers columns to a better descriptive name
-        This mapping table will enable us to rename
-        classifier columns [_1, _2, _3] to ['forest_type', 'region', etc.]
-        """
-        # Load user_classes table from DB #
-        df = self.database['tblUserDefdClasses']
-        # Add an underscore to the classifier number so it can be used for renaming #
-        df['id'] = '_' + df['UserDefdClassID'].astype(str)
-        # This makes df a pandas.Series #
-        df = df.set_index('id')['ClassDesc']
-        # Lower case names everywhere #
-        df = df.apply(self.sanitize_names)
-        # Return #
-        return df
+        return self.parent.country.classifiers.mapping
 
     #-------------------------------------------------------------------------#
     @property_cached
@@ -155,6 +137,6 @@ class PostProcessor(object):
         to actual corresponding simulation years such as:
            [1996, 1997, 1998, 1999, 2000]
 
-        #TODO check that there is not an off by one error here
+        #TODO check that there is not an off by one error here.
         """
         return timestep + self.parent.country.inventory_start_year - 1

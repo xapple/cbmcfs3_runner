@@ -23,15 +23,13 @@ from plumbing.cache import property_cached
 class InputData(object):
     """
     This class will provide access to the input data of a Runner
-    as a pandas dataframe.
+    as a pandas data frame.
     """
 
     all_paths = """
     /input/xls/default_tables.xls
     /input/xls/append_tables.xls
     """
- 
-
 
     def __init__(self, parent):
         # Default attributes #
@@ -39,7 +37,7 @@ class InputData(object):
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
         # Classifiers names
-        self.classifiers_mapping = self.parent.post_processor.classifiers_mapping
+        self.classifiers_mapping = self.parent.country.classifiers.mapping
 
     def copy_from_country(self):
         destination_dir = self.parent.paths.csv_dir
@@ -67,7 +65,7 @@ class InputData(object):
          'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist']
         """
         df = self.xls.parse("Inventory")
-        # Create the age_class column 
+        # Create the age_class column
         # so it can be used as a join variable with a yields table
         df['age_class'] = (df['Age']
                            .replace('AGEID', '', regex=True)
@@ -122,9 +120,9 @@ class InputData(object):
 
     @property_cached
     def historical_yields(self):
-        """ Historical yield taken from the xls_append object. 
-            The object used to append historical yield 
-            to the Standard Import Tool 
+        """ Historical yield taken from the xls_append object.
+            The object used to append historical yield
+            to the Standard Import Tool
             for the carbon pool initialisation period"""
         df = self.xls_append.parse("Growth")
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
@@ -146,18 +144,19 @@ class InputData(object):
          'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'Sp',
          'age_class', 'volume']
          """
-        df = yields_wide.melt(id_vars=['status', 'forest_type', 'region',
-                                       'management_type', 'management_strategy',
-                                       'climatic_unit', 'conifers_bradleaves',
-                                       'Sp'],
-                              var_name="age_class",
-                              value_name="volume")
-        df['age_class'] = (df['age_class']
-                           .replace("Vol", "", regex=True)
-                           .astype('int'))
+        # Index #
+        index = ['status', 'forest_type', 'region', 'management_type',
+                 'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'Sp'],
+        # Melt #
+        df = yields_wide.melt(id_vars    = index,
+                              var_name   = "age_class",
+                              value_name = "volume")
+        # Remove suffixes #
+        df['age_class'] = df['age_class'].replace("Vol", "", regex=True)
+        # Convert to integers #
+        df['age_class'] = df['age_class'].astype('int')
+        # Return #
         return df
-
-
 
     @property_cached
     def ageclass(self):
