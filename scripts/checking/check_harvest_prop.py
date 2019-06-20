@@ -20,6 +20,7 @@ from __future__ import print_function
 import re
 
 # Third party modules #
+import numpy
 
 # First party modules #
 
@@ -29,7 +30,13 @@ from cbmcfs3_runner.core.continent import continent
 ###############################################################################
 for c in continent:
     # Message #
-    print('--- Country %s ---' % c.iso2_code)
+    print('\n--- Country %s ---' % c.iso2_code)
+
+    # Condition #
+    if c.iso2_code == 'HU':
+        print('Broken data frame')
+        continue
+
     # Runner #
     r = continent[('static_demand', c.iso2_code, -1)]
 
@@ -38,9 +45,9 @@ for c in continent:
     # Check it is coherent within itself #
     disturbance_ids = first.index.unique()
     for dist_id in disturbance_ids:
-        if not hasattr(first[dist_id], 'len'): continue
+        if isinstance(first[dist_id], numpy.float64): continue
         if len(set(first[dist_id])) != 1:
-            msg = "Mismatch on %s: not unique"
+            msg = "Mismatch on %s: not unique within treatments"
             print(msg % dist_id)
     # Remove redundancy #
     first = first.drop_duplicates()
