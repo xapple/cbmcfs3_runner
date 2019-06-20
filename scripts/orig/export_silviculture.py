@@ -47,8 +47,8 @@ class ExportFromSilviculture(object):
         self.paths = AutoPaths(self.country.data_dir, self.all_paths)
 
     def __call__(self):
-        self.treatments()
-        self.harvest_corr_fact()
+        #self.treatments()
+        #self.harvest_corr_fact()
         self.harvest_prop_fact()
 
     def treatments(self):
@@ -86,14 +86,14 @@ class ExportFromSilviculture(object):
               if _2='QR' then CF=0.9;
               ...
 
-        This fails for DK, GR, HR, IE, LU, PT, ZZ
+        This fails for DK, GR, HR, IE, LU, PT, ZZ.
         """
         # Search in the file #
         lines = [line for line in self.paths.sas if "if _2='" in str(line)]
         # Do each line #
         query   = "if _2='([A-Z][A-Z])' then CF=([0-9].[0-9]+);"
         extract = lambda line: re.findall(query, str(line))
-        result  = list(map(extract,lines))
+        result  = list(map(extract, lines))
         result  = [found[0] for found in result if found]
         # Make a data frame #
         df = pandas.DataFrame(result, columns=['forest_type', 'corr_fact'])
@@ -103,19 +103,20 @@ class ExportFromSilviculture(object):
     def harvest_prop_fact(self):
         """This time we want the harvest proportion factors.
 
-              if _2='FS' then CF=1.2;
-              if _2='QR' then CF=0.9;
+              if Dist_Type_ID=11 then Stock_available=Stock*0.10*CF;
+              if Dist_Type_ID=13 then Stock_available=Stock*0.20*CF;
               ...
         """
         # Search in the file #
-        lines = [line for line in self.paths.sas if "if _2='" in str(line)]
+        condition = lambda l: "Stock_available" in l and "if Dist_Type_ID=" in l
+        lines = [line for line in self.paths.sas if condition(str(line))]
         # Do each line #
-        query   = "if _2='([A-Z][A-Z])' then CF=([0-9].[0-9]+);"
+        query   = "if Dist_Type_ID=(.*?) then Stock_available=Stock\\*CF\\*(.*?);"
         extract = lambda line: re.findall(query, str(line))
-        result  = list(map(extract,lines))
+        result  = list(map(extract, lines))
         result  = [found[0] for found in result if found]
         # Make a data frame #
-        df = pandas.DataFrame(result, columns=['forest_type', 'corr_fact'])
+        df = pandas.DataFrame(result, columns=['Dist_Type_ID', 'prop_fact'])
         # Write back into a CSV #
         df.to_csv(str(self.paths.prop_fact), index=False)
 
