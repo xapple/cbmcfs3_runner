@@ -47,6 +47,9 @@ class Silviculture(object):
     def treatments(self):
         """Load the CSV that is 'silv_treatments.csv'."""
         df = pandas.read_csv(str(self.paths.treatments))
+        # Dist_Type_ID can be given as either a numeric or a character variable 
+        # convert to string to prevent issues when merging and filtering
+        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
         return df.rename(columns = self.parent.classifiers.mapping)
 
     @property_cached
