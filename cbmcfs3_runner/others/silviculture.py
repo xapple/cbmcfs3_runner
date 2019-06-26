@@ -46,7 +46,8 @@ class Silviculture(object):
     @property_cached
     def treatments(self):
         """Load the CSV that is 'silv_treatments.csv'."""
-        return pandas.read_csv(str(self.paths.treatments))
+        df = pandas.read_csv(str(self.paths.treatments))
+        return df.rename(columns = self.parent.classifiers.mapping)
 
     @property_cached
     def corr_fact(self):
