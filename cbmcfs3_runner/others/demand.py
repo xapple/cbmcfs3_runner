@@ -97,4 +97,4 @@ class Demand(object):
     def historical(self):
         """Historical harvest corrected from original FAOSTAT data 
            for the purpose of CBM calibration"""
-        return self.historical_demand
+        return historical_demand
