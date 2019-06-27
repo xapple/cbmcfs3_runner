@@ -20,10 +20,12 @@ import pandas
 from cbmcfs3_runner import module_dir
 
 # Constants #
-gftm_demand_path = module_dir + 'extra_data/gftm_forest_model.csv'
+gftm_demand_path        = module_dir + 'extra_data/gftm_forest_model.csv'
+historical_demand_path = module_dir + 'historical_harvest_corrected.csv'
 
 # Parse #
-gftm_demand = pandas.read_csv(str(gftm_demand_path), header=None)
+gftm_demand       = pandas.read_csv(str(gftm_demand_path), header=None)
+historical_demand = pandas.read_csv(str(historical_demand_path))
 
 ###############################################################################
 class Demand(object):
@@ -90,3 +92,9 @@ class Demand(object):
         df['value'] = df['value'].fillna(0.0)
         # Return #
         return df
+
+    @property_cached
+    def historical(self):
+        """Historical harvest corrected from original FAOSTAT data 
+           for the purpose of CBM calibration"""
+        return self.historical_demand
