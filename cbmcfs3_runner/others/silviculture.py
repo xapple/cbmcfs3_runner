@@ -68,6 +68,11 @@ class Silviculture(object):
         Allocation of harvested pools to different
         co-products, based on the main harvested wood product
     
+        The merchantable volume 'Tot_V_Merch' allways goes 
+        to the product that is harvested.
+        The sub merchantable and snag volume 'Tot_V_SubMerch' and 'Tot_V_Snags' 
+        go to the corresponding fuelwood pool, either coniferous or broadleave.
+
         Columns are ['pool', 'hwp', 'co_product']
         """
         d = {'pool'      : ['Tot_V_Merch', 'Tot_V_SubMerch','Tot_V_Snags'] * 4,
