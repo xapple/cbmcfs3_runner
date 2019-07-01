@@ -10,7 +10,7 @@
 
 # IDE files #
 /.idea
-.spyderproject
+/.spyproject
 
 # Distribution #
 /build/
