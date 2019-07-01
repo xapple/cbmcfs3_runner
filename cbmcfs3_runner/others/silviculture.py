@@ -71,7 +71,7 @@ class Silviculture(object):
         Columns are ['pool', 'hwp', 'co_product']
         """
         d = {'pool'      : ['Tot_V_Merch', 'Tot_V_SubMerch','Tot_V_Snags'] * 4,
-             'hwp'       : ['FW_C'] * 3 + ['IRW_C'] * 3 + ['FW_B'] * 3 + ['IRW_B'] * 3,
+             'HWP'       : ['FW_C'] * 3 + ['IRW_C'] * 3 + ['FW_B'] * 3 + ['IRW_B'] * 3,
              'co_product': ['FW_C',  'FW_C', 'FW_C', 
                             'IRW_C', 'FW_C', 'FW_C', 
                             'FW_B',  'FW_B', 'FW_B',
