@@ -15,6 +15,7 @@ from plumbing.cache import property_cached
 
 # Third party modules #
 import pandas
+import math
 
 # Internal modules #
 from cbmcfs3_runner import module_dir
@@ -97,11 +98,27 @@ class Demand(object):
         return df
 
     @property_cached
-    def historical(self):
+    def historical_wide(self):
         """Historical harvest corrected from original FAOSTAT data
            for the purpose of CBM calibration."""
         # Get the rows corresponding to the current country #
         selector = historical_demand['country'] == self.parent.iso2_code
         df = historical_demand.loc[selector].copy()
         # Return #
+        return df
+
+    @property_cached
+    def historical(self):
+        """ Reshape historical_wide demand to long format
+        """
+        df= self.historical_wide.melt(id_vars = ['countryiso2', 'step', 'year'],
+                                      var_name = 'HWP',
+                                      value_name = 'volume')
+        # Make HWP uppercase to match the silviculture table
+        df['HWP'] = df['HWP'].str.upper()
+        # Check if the total column matches with the sum of the other columns
+        assert math.isclose(df.query("HWP=='TOTAL'")['volume'].sum(),
+                            df.query("HWP!='TOTAL'")['volume'].sum())
+        # Remove the total column from the table
+        df = df.query("HWP!='TOTAL'").copy()
         return df
