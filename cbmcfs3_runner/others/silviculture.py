@@ -47,10 +47,13 @@ class Silviculture(object):
     def treatments(self):
         """Load the CSV that is 'silv_treatments.csv'."""
         df = pandas.read_csv(str(self.paths.treatments))
-        # Dist_Type_ID can be given as either a numeric or a character variable 
+        # Dist_Type_ID can be given as either a numeric or a character variable
         # convert to string to prevent issues when merging and filtering
         df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
-        return df.rename(columns = self.parent.classifiers.mapping)
+        # Rename the classifier columns to full names #
+        df = df.rename(columns = self.parent.classifiers.mapping)
+        # Return #
+        return df
 
     @property_cached
     def corr_fact(self):
@@ -66,21 +69,21 @@ class Silviculture(object):
     def pool_allocation(self):
         """
         Allocation of harvested pools to different
-        co-products, based on the main harvested wood product
-    
-        The merchantable volume 'Tot_V_Merch' allways goes 
-        to the product that is harvested.
-        The sub merchantable and snag volume 'Tot_V_SubMerch' and 'Tot_V_Snags' 
-        go to the corresponding fuelwood pool, either coniferous or broadleave.
+        co-products, based on the main harvested wood product.
 
-        Columns are ['pool', 'hwp', 'co_product']
+        The merchantable volume 'Tot_V_Merch' always goes
+        to the product that is harvested.
+        The sub merchantable and snag volume 'Tot_V_SubMerch' and 'Tot_V_Snags'
+        go to the corresponding fuel wood pool, either coniferous or broadleaved.
+
+        Columns are: ['pool', 'hwp', 'co_product']
         """
         d = {'pool'      : ['Tot_V_Merch', 'Tot_V_SubMerch','Tot_V_Snags'] * 4,
              'HWP'       : ['FW_C'] * 3 + ['IRW_C'] * 3 + ['FW_B'] * 3 + ['IRW_B'] * 3,
-             'co_product': ['FW_C',  'FW_C', 'FW_C', 
-                            'IRW_C', 'FW_C', 'FW_C', 
+             'co_product': ['FW_C',  'FW_C', 'FW_C',
+                            'IRW_C', 'FW_C', 'FW_C',
                             'FW_B',  'FW_B', 'FW_B',
                             'IRW_B', 'FW_B', 'FW_B']}
+        # Convert dictionary to data frame #
         return pandas.DataFrame(d)
 
- 

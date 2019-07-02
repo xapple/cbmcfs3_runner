@@ -21,7 +21,7 @@ from cbmcfs3_runner import module_dir
 
 # Constants #
 gftm_demand_path       = module_dir + 'extra_data/gftm_forest_model.csv'
-historical_demand_path = module_dir + 'extra_data/historical_harvest_corrected.csv'
+historical_demand_path = module_dir + 'extra_data/hist_harvest_corrected.csv'
 
 # Parse #
 gftm_demand       = pandas.read_csv(str(gftm_demand_path), header=None)
@@ -64,14 +64,17 @@ class Demand(object):
 
     @property_cached
     def row(self):
-        """Get the row corresponding to this country."""
+        """Get the row corresponding to the current country."""
         selector = self.gftm_content[0] == self.parent.iso2_code
-        return self.gftm_content.loc[selector]
+        return self.gftm_content.loc[selector].copy()
 
     @property_cached
-    def df(self):
-        """Create the data frame in long format.
-        Columns: ['values']"""
+    def future(self):
+        """
+        Future demands as predicted by GFTM.
+        Create the data frame in long format.
+        Columns are: ['values']
+        """
         # Fill values #
         header = self.gftm_header.fillna(method='ffill', axis=1)
         # Get the headers #
@@ -95,6 +98,10 @@ class Demand(object):
 
     @property_cached
     def historical(self):
-        """Historical harvest corrected from original FAOSTAT data 
-           for the purpose of CBM calibration"""
-        return historical_demand
+        """Historical harvest corrected from original FAOSTAT data
+           for the purpose of CBM calibration."""
+        # Get the rows corresponding to the current country #
+        selector = historical_demand['country'] == self.parent.iso2_code
+        df = historical_demand.loc[selector].copy()
+        # Return #
+        return df
