@@ -15,6 +15,7 @@ import pandas
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
+from plumbing.cache import property_cached
 
 # Internal modules #
 
@@ -44,3 +45,14 @@ class OrigData(object):
 
     def __getitem__(self, item):
         return pandas.read_csv(str(self.paths[item]))
+
+    @property_cached
+    def historical_yields(self):
+        """ Historical yield table"""
+        df = self['historical_yields']
+        # Rename classifier _1, _2, _3 to forest_type, region, etc. #
+        return df.rename(columns = self.classifiers_mapping)
+
+    @property_cached
+    def yields_long(self):
+        return self.reshape_yields_long(self.yields)

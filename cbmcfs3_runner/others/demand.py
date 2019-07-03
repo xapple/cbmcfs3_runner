@@ -111,7 +111,7 @@ class Demand(object):
     def historical(self):
         """ Reshape historical_wide demand to long format
         """
-        df= self.historical_wide.melt(id_vars = ['countryiso2', 'step', 'year'],
+        df= self.historical_wide.melt(id_vars = ['country', 'step', 'year'],
                                       var_name = 'HWP',
                                       value_name = 'volume')
         # Make HWP uppercase to match the silviculture table

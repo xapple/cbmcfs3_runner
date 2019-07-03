@@ -18,6 +18,7 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
 
 # Internal modules #
+from cbmcfs3_runner.others.common import reshape_yields_long
 
 ###############################################################################
 class InputData(object):
@@ -130,33 +131,11 @@ class InputData(object):
 
     @property_cached
     def yields_long(self):
-        return self.reshape_yields_long(self.yields)
+        return reshape_yields_long(self.yields)
 
     @property_cached
     def historical_yields_long(self):
-        return self.reshape_yields_long(self.historical_yields)
-
-    def reshape_yields_long(self, yields_wide):
-        """
-        Columns are:
-
-        ['status', 'forest_type', 'region', 'management_type',
-         'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'Sp',
-         'age_class', 'volume']
-         """
-        # Index #
-        index = ['status', 'forest_type', 'region', 'management_type',
-                 'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'Sp']
-        # Melt #
-        df = yields_wide.melt(id_vars    = index,
-                              var_name   = "age_class",
-                              value_name = "volume")
-        # Remove suffixes #
-        df['age_class'] = df['age_class'].replace("Vol", "", regex=True)
-        # Convert to integers #
-        df['age_class'] = df['age_class'].astype('int')
-        # Return #
-        return df
+        return reshape_yields_long(self.historical_yields)
 
     @property_cached
     def ageclass(self):
