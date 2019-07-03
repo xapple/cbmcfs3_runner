@@ -63,7 +63,7 @@ class OrigData(object):
         df['age_class'] = (df['Age']
                            .replace('AGEID', '', regex=True)
                            .astype('int'))
-        return df.rename(columns = self.classifiers_mapping)
+        return df.rename(columns = self.parent.country.classifiers.mapping)
 
     @property_cached
     def yields(self):
@@ -77,7 +77,7 @@ class OrigData(object):
          'Vol27', 'Vol28', 'Vol29', 'Vol30']
         """
         df = self['yields']
-        return df.rename(columns = self.classifiers_mapping)
+        return df.rename(columns = self.parent.country.classifiers.mapping)
 
     @property_cached
     def historical_yields(self):
@@ -87,7 +87,7 @@ class OrigData(object):
             for the carbon pool initialisation period"""
         df = self['historical_yields']
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
-        return df.rename(columns = self.classifiers_mapping)
+        return df.rename(columns = self.parent.country.classifiers.mapping)
 
     @property_cached
     def yields_long(self):
