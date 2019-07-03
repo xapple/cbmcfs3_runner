@@ -42,8 +42,6 @@ class OrigData(object):
         self.parent = parent
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
-        # Classifiers names
-        self.classifiers_mapping = self.parent.classifiers.mapping
 
 
     def __getitem__(self, item):
@@ -54,7 +52,7 @@ class OrigData(object):
         """ Historical yield table"""
         df = self['historical_yields']
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
-        return df.rename(columns = self.classifiers_mapping)
+        return df.rename(columns = self.parent.classifiers.mapping)
 
     @property_cached
     def yields_long(self):
