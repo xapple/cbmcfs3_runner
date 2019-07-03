@@ -107,7 +107,7 @@ class ExportFromSilviculture(object):
               if Dist_Type_ID=13 then Stock_available=Stock*0.20*CF;
               ...
 
-        This fails for AT, DK, FR, IE, PL, RO
+        This fails for AT, DK, FR, IE, PL, RO.
         """
         # Search in the file #
         condition = lambda l: "Stock_available" in l and "if Dist_Type_ID=" in l

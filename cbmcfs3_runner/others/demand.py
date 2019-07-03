@@ -99,8 +99,10 @@ class Demand(object):
 
     @property_cached
     def historical_wide(self):
-        """Historical harvest corrected from original FAOSTAT data
-           for the purpose of CBM calibration."""
+        """Historical harvest corrected manually by RP from the original
+        FAOSTAT data for the purpose of CBM calibration.
+        Expert estimates and knowledge is used to change the values as
+        some values are clearly erroneous in the FAOSTAT."""
         # Get the rows corresponding to the current country #
         selector = historical_demand['country'] == self.parent.iso2_code
         df = historical_demand.loc[selector].copy()
@@ -109,11 +111,10 @@ class Demand(object):
 
     @property_cached
     def historical(self):
-        """ Reshape historical_wide demand to long format
-        """
-        df= self.historical_wide.melt(id_vars = ['country', 'step', 'year'],
-                                      var_name = 'HWP',
-                                      value_name = 'volume')
+        """Reshape historical_wide demand to long format."""
+        df = self.historical_wide.melt(id_vars    = ['country', 'step', 'year'],
+                                       var_name   = 'HWP',
+                                       value_name = 'volume')
         # Make HWP uppercase to match the silviculture table
         df['HWP'] = df['HWP'].str.upper()
         # Check if the total column matches with the sum of the other columns
@@ -121,4 +122,5 @@ class Demand(object):
                             df.query("HWP!='TOTAL'")['volume'].sum())
         # Remove the total column from the table
         df = df.query("HWP!='TOTAL'").copy()
+        # Return #
         return df
