@@ -42,6 +42,9 @@ class OrigData(object):
         self.parent = parent
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
+        # Classifiers names
+        self.classifiers_mapping = self.parent.classifiers.mapping
+
 
     def __getitem__(self, item):
         return pandas.read_csv(str(self.paths[item]))
