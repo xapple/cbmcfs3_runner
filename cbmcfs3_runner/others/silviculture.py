@@ -108,10 +108,8 @@ class Silviculture(object):
         by age class multiplied by the corresponding volume-per-hectare for
         each age class producing "stock" in terms of m^3.
         """
-        # Load tables #
-        inventory     = self.parent.input_data.inventory
-        h_yields_long = self.parent.input_data.historical_yields_long
-        # Index we want to keep #
+        inventory = self.parent.orig_data.inventory
+        h_yields_long = self.parent.orig_data.historical_yields_long
         index = ['status', 'forest_type', 'region', 'management_type',
                  'management_strategy', 'climatic_unit', 'conifers_bradleaves',
                  'age_class']
