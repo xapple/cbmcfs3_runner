@@ -121,10 +121,12 @@ class InputData(object):
 
     @property_cached
     def historical_yields(self):
-        """ Historical yield taken from the xls_append object.
-            The object used to append historical yield
-            to the Standard Import Tool
-            for the carbon pool initialisation period"""
+        """
+        Historical yield taken from the xls_append object.
+        The object used to append historical yield
+        to the Standard Import Tool
+        for the carbon pool initialization period
+        """
         df = self.xls_append.parse("Growth")
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
         return df.rename(columns = self.classifiers_mapping)

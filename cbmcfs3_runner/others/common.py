@@ -24,9 +24,7 @@ def reshape_yields_long(yields_wide):
     df = yields_wide.melt(id_vars    = index,
                           var_name   = "age_class",
                           value_name = "volume")
-    # Remove suffixes #
-    df['age_class'] = df['age_class'].replace("Vol", "", regex=True)
-    # Convert to integers #
-    df['age_class'] = df['age_class'].astype('int')
+    # Remove suffixes and keep just the number #
+    df['age_class'] = df['age_class'].str.lstrip("Vol").astype('int')
     # Return #
     return df
