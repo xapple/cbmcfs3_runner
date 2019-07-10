@@ -47,9 +47,12 @@ class OrigData(object):
     def __getitem__(self, item):
         return pandas.read_csv(str(self.paths[item]))
 
+
+    #-------------------------- Specific sheets ------------------------------#
     @property_cached
     def inventory(self):
         """
+        Inventory data loaded from the original calibration db through a csv file. 
         Columns are:
 
         ['status', 'forest_type', 'region', 'management_type',
@@ -80,10 +83,7 @@ class OrigData(object):
 
     @property_cached
     def historical_yields(self):
-        """ Historical yield taken from the xls_append object.
-            The object used to append historical yield
-            to the Standard Import Tool
-            for the carbon pool initialisation period"""
+        """Historical yield taken from the original csv file"""
         df = self['historical_yields']
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
         return df.rename(columns = self.parent.classifiers.mapping)
@@ -95,4 +95,3 @@ class OrigData(object):
     @property_cached
     def historical_yields_long(self):
         return reshape_yields_long(self.historical_yields)
-
