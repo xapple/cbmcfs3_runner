@@ -93,7 +93,7 @@ class Runner(object):
         self.remove_directory()
         self.input_data.copy_from_country()
         # Modify input data #
-        self.disturbance_maker()
+        #self.disturbance_maker()
         self.pre_processor()
         # Standard import tool #
         self.country.aidb.switch()
@@ -113,11 +113,11 @@ class Runner(object):
     def remove_directory(self):
         """Removes the directory that will be recreated by running this runner.
         Note: we need to keep the log we are writing to currently."""
-        # Message
+        # Message #
         self.log.info("Removing directory '%s'." % self.data_dir)
         # The output directory #
-        self.paths.input_dir.remove()
-        self.paths.output_dir.remove()
+        self.paths.input_dir.remove(safe=False)
+        self.paths.output_dir.remove(safe=False)
         # Empty all the other logs #
         for element in self.paths.logs_dir.flat_contents:
             if element != self.paths.log:

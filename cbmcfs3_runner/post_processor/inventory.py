@@ -44,11 +44,8 @@ class Inventory(object):
         This is translated from an SQL query authored by RP.
         It calculates merchantable biomass.
         """
-        # Load tables #
-        pool  = self.parent.database["tblPoolIndicators"].set_index('UserDefdClassSetID')
-        clifr = self.parent.classifiers.set_index("UserDefdClassSetID")
         # Join #
-        df = pool.join(clifr, on="UserDefdClassSetID")
+        df = self.parent.pool_indicators
         # Sum for everyone #
         cols_sum = {'SW_Merch'  : 'sum',
                     'SW_Foliage': 'sum',

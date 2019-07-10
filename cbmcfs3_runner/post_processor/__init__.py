@@ -116,6 +116,33 @@ class PostProcessor(object):
     def classifiers_mapping(self):
         return self.parent.country.classifiers.mapping
 
+    @property_cached
+    def flux_indicators(self):
+        # Load tables #
+        flux_indicators  = self.database['tblFluxIndicators']
+        disturbance_type = self.database['tblDisturbanceType']
+        coefficients     = self.classifiers_coefs
+        # Ungrouped #
+        return (flux_indicators
+                .set_index('DistTypeID')
+                .join(disturbance_type
+                    .set_index('DistTypeID'))
+                .reset_index()
+                .set_index('UserDefdClassSetID')
+                .join(coefficients
+                     .set_index('UserDefdClassSetID')))
+
+    @property_cached
+    def pool_indicators(self):
+        # Load tables #
+        pool  = self.database["tblPoolIndicators"]
+        clifr = self.classifiers
+        # Set indexes #
+        pool  = pool.set_index('UserDefdClassSetID')
+        clifr = clifr.set_index("UserDefdClassSetID")
+        # Join #
+        return pool.join(clifr)
+
     #-------------------------------------------------------------------------#
     @property_cached
     def inventory(self):
@@ -132,10 +159,13 @@ class PostProcessor(object):
     #-------------------------------------------------------------------------#
     def timestep_to_years(self, timestep):
         """
+        TimeStep 0 is the output of the makelist (so called "spin-up") procedure.
+        It represents the initial state.
+
         Will convert a Series containing simulation time-steps such as:
            [1, 2, 3, 4, 5]
         to actual corresponding simulation years such as:
-           [1996, 1997, 1998, 1999, 2000]
+           [1990, 1991, 1992, 1993, 1994]
 
         #TODO check that there is not an off by one error here.
         """

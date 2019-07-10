@@ -53,17 +53,8 @@ class Harvest(object):
                       'db', 'SoftProduction', 'HardProduction', 'TC', 'Vol_Merch',
                       'Vol_SubMerch', 'Vol_Snags', 'Forest_residues_Vol']
         """
-        # Load tables #
-        flux_indicators  = self.parent.database['tblFluxIndicators']
-        disturbance_type = self.parent.database['tblDisturbanceType']
-        coefficients     = self.parent.classifiers_coefs.reset_index()
         # First ungrouped #
-        ungrouped = (flux_indicators
-                     .set_index('DistTypeID')
-                     .join(disturbance_type.set_index('DistTypeID'))
-                     .reset_index()
-                     .set_index('UserDefdClassSetID')
-                     .join(coefficients.set_index('UserDefdClassSetID')))
+        ungrouped = self.parent.flux_indicators
         # The index we will use for grouping #
         index = ['DistTypeID',
                  'DistTypeName',
@@ -93,9 +84,10 @@ class Harvest(object):
                     'HardProduction': 'sum'})
               .reset_index())
         # Check conservation of total mass #
+        flux_raw = self.parent.database['tblFluxIndicators']
         is_equal = numpy.testing.assert_allclose
-        is_equal(flux_indicators['SoftProduction'].sum(), df['SoftProduction'].sum())
-        is_equal(flux_indicators['HardProduction'].sum(), df['HardProduction'].sum())
+        is_equal(flux_raw['SoftProduction'].sum(), df['SoftProduction'].sum())
+        is_equal(flux_raw['HardProduction'].sum(), df['HardProduction'].sum())
         # Create new columns #
         df['TC']                  = df.SoftProduction + df.HardProduction
         df['Vol_Merch']           = (df.TC * 2) / df.db

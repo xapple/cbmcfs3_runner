@@ -10,7 +10,7 @@
 
 # IDE files #
 /.idea
-/.spyproject
+.spyproject
 
 # Distribution #
 /build/
