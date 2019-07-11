@@ -10,6 +10,9 @@ Unit D1 Bioeconomy.
 
 # Built-in modules #
 
+# Third party modules #
+import pandas
+
 # First party modules #
 from autopaths            import Path
 from autopaths.auto_paths import AutoPaths
@@ -47,32 +50,78 @@ class AIDB(object):
     def database(self):
         return AccessDatabase(self.paths.aidb)
 
-    @property_cached    
+    @property_cached
     def dist_matrix_long(self):
-        """Disturbnace matrix in long format"""
-        # To be continued based on 
+        """Disturbance matrix in long format
+           Recreate the disturbance matrix in long format.
+           Join lookup and the disturbance matrix table 'tblDM',
+           Then join source and sink
+           to add description of the origin and destination pools.
+        """
+        # To be continued based on
         # /notebooks/disturbance_matrix.ipynb
-        dmtabl = self.database['tblDM']
-        source = self.database['tblSourceName']
-        sink   = self.database['tblsinkname']
-        lookup = self.database['tblDMValuesLookup']
-        source = source.rename(columns={'Row':'DMRow', 'Description':'row_pool'})
+        dm_table = self.database['tblDM']
+        source   = self.database['tblSourceName']
+        sink     = self.database['tblsinkname']
+        lookup   = self.database['tblDMValuesLookup']
+        # Join lookup and dmtabl to add the description for each DMID.
+        dm_lookup = (lookup
+                     .set_index('DMID')
+                     .join(dm_table.set_index('DMID'))
+                     .reset_index())
+        source = source.rename(columns={'Row':'DMRow',
+                                        'Description':'row_pool'})
         index_source = ['DMRow', 'DMStructureID']
-        sink = sink.rename(columns={'Column':'DMColumn', 'Description':'column_pool'})
+        sink = sink.rename(columns={'Column':'DMColumn',
+                                    'Description':'column_pool'})
         index_sink = ['DMColumn', 'DMStructureID']
-        dist_matrix_long = (dm_lookup
-                        .set_index(index_source)
-                        .join(source.set_index(index_source))
-                        .reset_index()
-                        .set_index(index_sink)
-                        .join(sink.set_index(index_sink))
-                        .reset_index()
-                        .query('Name in @disturbance_names'))
-        dist_matrix_long.head()
-        
-        # Make pool description columns suitable as column names 
-        dist_matrix_long['row_pool'] = (dist_matrix_long['row_pool'].str.replace(' ', '_') + '_' + 
-                                    dist_matrix_long['DMRow'].astype(str))
-        dist_matrix_long['column_pool'] = (dist_matrix_long['column_pool'].str.replace(' ','_') + '_' + 
-                                       dist_matrix_long['DMColumn'].astype(str))
-        dist_matrix_long['Name'] = (dist_matrix_long['Name'].str.replace(' ','_'))
+        # Add source and sink descriptions
+        df = (dm_lookup
+                            .set_index(index_source)
+                            .join(source.set_index(index_source))
+                            .reset_index()
+                            .set_index(index_sink)
+                            .join(sink.set_index(index_sink))
+                            .reset_index())
+        # Make pool description columns suitable as column names
+        df['row_pool'] = (df['row_pool'].str.replace(' ', '_') + '_' +
+                          df['DMRow'].astype(str))
+        df['column_pool'] = (df['column_pool'].str.replace(' ','_') + '_' +
+                             df['DMColumn'].astype(str))
+        df['Name'] = (df['Name'].str.replace(' ','_'))
+        return df
+
+    def multiindex_pivot(self, df, columns=None, values=None):
+        """ Pivot a pandas data frame on multiple index variables.
+         Copied from
+         https://github.com/pandas-dev/pandas/issues/23955
+        """
+        names = list(df.index.names)
+        df = df.reset_index()
+        list_index = df[names].values
+        tuples_index = [tuple(i) for i in list_index] # hashable
+        df = df.assign(tuples_index=tuples_index)
+        df = df.pivot(index="tuples_index", columns=columns, values=values)
+        tuples_index = df.index  # reduced
+        index = pandas.MultiIndex.from_tuples(tuples_index, names=names)
+        df.index = index
+        # Remove confusing index column name
+        df.columns.name = None
+        df = df.reset_index()
+        return df
+
+
+    def dist_matrix(self):
+        """Disturbance Matrix reshaped in the form of a matrix
+           with source pools in rows and sink pools in columns
+        """
+        index = ['DMID', 'DMStructureID', 'DMRow', 'Name', 'row_pool']
+        df = self.dist_matrix_long.set_index(index)
+        df = self.multiindex_pivot(df, columns='column_pool', values='Proportion')
+        # Reorder columns by the last digit number
+        col_order = sorted(df.columns,
+                           key=lambda x: str(x).replace("_", "0")[-2:])
+        # Exclude index columns from the re-ordering of columns
+        df = df.set_index(index)[col_order[:-5]].reset_index()
+        return df
+
