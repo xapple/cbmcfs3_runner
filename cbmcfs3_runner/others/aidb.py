@@ -110,13 +110,15 @@ class AIDB(object):
         df = df.reset_index()
         return df
 
-
+    @property_cached
     def dist_matrix(self):
         """Disturbance Matrix reshaped in the form of a matrix
            with source pools in rows and sink pools in columns
         """
         index = ['DMID', 'DMStructureID', 'DMRow', 'Name', 'row_pool']
-        df = self.dist_matrix_long.set_index(index)
+        df = (self.dist_matrix_long
+              .set_index(index)
+              .query('Proportion>0'))
         df = self.multiindex_pivot(df, columns='column_pool', values='Proportion')
         # Reorder columns by the last digit number
         col_order = sorted(df.columns,
@@ -124,4 +126,3 @@ class AIDB(object):
         # Exclude index columns from the re-ordering of columns
         df = df.set_index(index)[col_order[:-5]].reset_index()
         return df
-
