@@ -44,14 +44,15 @@ class Harvest(object):
 
         Based on Roberto's query `Harvest analysis check` visible in the original calibration database.
 
-        What are the units? TC is in terms of tons of carbon. Vol_Merch are in terms of cubic
-        meters of wood.
+        What are the units?
+        * TC is in terms of tons of carbon.
+        * Vol_Merch are in terms of cubic meters of wood.
 
         Columns are: ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
                       'management_type', 'management_strategy', 'conifers_bradleaves',
                       'DOMProduction', 'CO2Production', 'MerchLitterInput', 'OthLitterInput',
                       'db', 'SoftProduction', 'HardProduction', 'TC', 'Vol_Merch',
-                      'Vol_SubMerch', 'Vol_Snags', 'Forest_residues_Vol']
+                      'Vol_SubMerch', 'Vol_Snags', 'Vol_forest_residues']
         """
         # First ungrouped #
         ungrouped = self.parent.flux_indicators
@@ -93,32 +94,8 @@ class Harvest(object):
         df['Vol_Merch']           = (df.TC * 2) / df.db
         df['Vol_SubMerch']        = (df.CO2Production * 2) / df.db
         df['Vol_Snags']           = (df.DOMProduction * 2) / df.db
-        df['Forest_residues_Vol'] = ((df.MerchLitterInput + df.OthLitterInput) * 2) / df.db
+        df['Vol_forest_residues'] = ((df.MerchLitterInput + df.OthLitterInput) * 2) / df.db
         # Return #
-        return df
-
-    #-------------------------------------------------------------------------#
-    @property_cached
-    def total(self):
-        """
-        Based on Roberto's query `TOT_Harvest` visible in the original calibration database.
-
-        Columns are: ['DistTypeName', 'TC', 'Vol_Merch', 'Vol_SubMerch', 'Vol_Snags',
-                      'Forest_residues_Vol', 'tot_vol']
-        """
-        # Compute #
-        df = (self.check
-              .set_index('DistTypeID')
-              .groupby(['DistTypeName'])
-              .agg({'TC':                  'sum',
-                    'Vol_Merch':           'sum',
-                    'Vol_SubMerch':        'sum',
-                    'Vol_Snags':           'sum',
-                    'Forest_residues_Vol': 'sum'})
-              .reset_index())
-        # Add the total volume column #
-        df['tot_vol'] = df.Vol_Merch + df.Vol_SubMerch + df.Vol_Snags
-        # Return result #
         return df
 
     #-------------------------------------------------------------------------#
@@ -129,7 +106,7 @@ class Harvest(object):
 
         Columns are:    ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
         (of the output)  'management_type', 'management_strategy', 'Vol_Merch', 'Vol_Snags',
-                         'Vol_SubMerch', 'Forest_residues_Vol', 'TC', 'tot_vol']
+                         'Vol_SubMerch', 'Vol_forest_residues', 'TC', 'tot_vol']
 
         This corresponds to the "provided" aspect of "expected_provided" harvest and contains
         only volumes ('M').
@@ -147,11 +124,11 @@ class Harvest(object):
               .agg({'Vol_Merch':           'sum',
                     'Vol_Snags':           'sum',
                     'Vol_SubMerch':        'sum',
-                    'Forest_residues_Vol': 'sum',
+                    'Vol_forest_residues': 'sum',
                     'TC':                  'sum'})
               .reset_index())
         # Add the total volume column #
-        df['tot_vol'] = df.Vol_Merch + df.Vol_Snags + df.Vol_SubMerch
+        df['tot_vol'] = df.Vol_Merch + df.Vol_SubMerch + df.Vol_Snags
         # Add the Measurement_type #
         df['Measurement_type'] = 'M'
         # Return result #
