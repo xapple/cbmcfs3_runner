@@ -31,7 +31,7 @@ class PostProcessor(object):
 
     all_paths = """
     /output/cbm/project.mdb
-    /output/cbm_tmp_dir/output/report.fil
+    /output/cbm_tmp_dir/CBMRun/output/report.fil
     """
 
     def __init__(self, parent):

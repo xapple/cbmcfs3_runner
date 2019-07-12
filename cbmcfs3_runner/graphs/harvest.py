@@ -28,8 +28,13 @@ class HarvestExpProv(Graph):
                 'provided': 'sum'}
 
     facet_col = 'DistDescription'
+    exclude_scenario = []
 
     def plot(self, **kwargs):
+        # Skip excluded scenarios #
+        if self.parent.scenario.short_name in self.exclude_scenario:
+            return
+
         # Data #
         self.df = self.data.copy()
 
@@ -132,6 +137,7 @@ class HarvestExpProvArea(HarvestExpProv):
                " area.")
 
     y_axis_label = "Area in hectares [1e5 m^2]"
+    exclude_scenario = ["calibration"]
 
     @property
     def data(self):
