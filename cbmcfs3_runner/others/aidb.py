@@ -88,7 +88,6 @@ class AIDB(object):
                           df['DMRow'].astype(str))
         df['column_pool'] = (df['column_pool'].str.replace(' ','_') + '_' +
                              df['DMColumn'].astype(str))
-        df['Name'] = (df['Name'].str.replace(' ','_'))
         return df
 
     def multiindex_pivot(self, df, columns=None, values=None):
