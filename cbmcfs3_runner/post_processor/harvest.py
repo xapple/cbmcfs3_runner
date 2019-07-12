@@ -91,6 +91,7 @@ class Harvest(object):
         is_equal(flux_raw['HardProduction'].sum(), df['HardProduction'].sum())
         # Create new columns #
         df['TC']                  = df.SoftProduction + df.HardProduction
+        df['Prov_Carbon']         = df.SoftProduction + df.HardProduction + df.DOMProduction
         df['Vol_Merch']           = (df.TC * 2) / df.db
         df['Vol_SubMerch']        = (df.CO2Production * 2) / df.db
         df['Vol_Snags']           = (df.DOMProduction * 2) / df.db
@@ -125,6 +126,7 @@ class Harvest(object):
                     'Vol_Snags':           'sum',
                     'Vol_SubMerch':        'sum',
                     'Vol_forest_residues': 'sum',
+                    'Prov_Carbon':         'sum',
                     'TC':                  'sum'})
               .reset_index())
         # Add the total volume column #
@@ -306,7 +308,7 @@ class Harvest(object):
         """
         # Compute #
         df = self.provided_volume
-        return self.compute_expected_provided(df, 'M', 'TC')
+        return self.compute_expected_provided(df, 'M', 'Prov_Carbon')
 
     #-------------------------------------------------------------------------#
     @property_cached

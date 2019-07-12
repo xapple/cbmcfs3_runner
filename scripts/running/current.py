@@ -56,14 +56,14 @@ from cbmcfs3_runner.core.continent import continent
 #    c.report.copy_to_outbox()
 
 ################################################################################
-#for c in tqdm(continent.countries.values()):
-#    if c.iso2_code not in ('LU',): continue
-#    runners = [r for runners in c.scenarios.values() for r in runners]
-#    for r in runners:
-#        r.graphs.harvest_exp_prov_vol(rerun=True)
-#        r.graphs.harvest_exp_prov_area(rerun=True)
-#    c.report()
-#    c.report.copy_to_outbox()
+for c in tqdm(continent.countries.values()):
+    if c.iso2_code not in ('AT',): continue
+    runners = [r for runners in c.scenarios.values() for r in runners]
+    for r in runners:
+        r.graphs.harvest_exp_prov_vol(rerun=True)
+        r.graphs.harvest_exp_prov_area(rerun=True)
+    c.report()
+    c.report.copy_to_outbox()
 
 ################################################################################
 #for c in tqdm(continent.countries.values()):
@@ -92,14 +92,14 @@ from cbmcfs3_runner.core.continent import continent
 #    c.report.copy_to_outbox()
 
 ################################################################################
-for c in tqdm(continent.countries.values()):
-    if c.iso2_code not in ('LU',): continue
-    statc = c.scenarios['static_demand'][-1]
-    calib = c.scenarios['calibration'][-1]
-    # Purge #
-    statc.paths.graphs_dir.remove()
-    calib.paths.graphs_dir.remove()
-    c.paths.graphs_dir.remove()
-    # Run #
-    c.report()
-    c.report.copy_to_outbox()
+#for c in tqdm(continent.countries.values()):
+#    if c.iso2_code not in ('AT',): continue
+#    statc = c.scenarios['static_demand'][-1]
+#    calib = c.scenarios['calibration'][-1]
+#    # Purge #
+#    statc.paths.graphs_dir.remove()
+#    calib.paths.graphs_dir.remove()
+#    c.paths.graphs_dir.remove()
+#    # Run #
+#    c.report()
+#    c.report.copy_to_outbox()
