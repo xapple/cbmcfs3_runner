@@ -16,6 +16,7 @@ import pandas
 
 # First party modules #
 from plumbing.cache import property_cached
+from plumbing.common import camel_to_snake
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
@@ -83,6 +84,10 @@ class DistSurplus(object):
         # Make a dataframe with all the series as rows #
         rows = (text_to_series(text) for text in all_infos)
         df = pandas.concat(rows, axis=1, sort=True).T
+        # Sanitize column names #
+        df.columns = [camel_to_snake(col) for col in df.columns]
+        # Drop 'year' that is redundant with 'timestep' and confusing #
+        df = df.drop(columns='year')
         # Save the dataframe #
         df.to_csv(str(self.paths.surplus_csv), index=False)
 
