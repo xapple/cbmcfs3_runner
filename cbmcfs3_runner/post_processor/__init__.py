@@ -18,9 +18,10 @@ from plumbing.cache       import property_cached
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
-from cbmcfs3_runner.post_processor.harvest   import Harvest
-from cbmcfs3_runner.post_processor.inventory import Inventory
-from cbmcfs3_runner.post_processor.products  import Products
+from cbmcfs3_runner.post_processor.dist_surplus import DistSurplus
+from cbmcfs3_runner.post_processor.harvest      import Harvest
+from cbmcfs3_runner.post_processor.inventory    import Inventory
+from cbmcfs3_runner.post_processor.products     import Products
 
 ###############################################################################
 class PostProcessor(object):
@@ -31,7 +32,6 @@ class PostProcessor(object):
 
     all_paths = """
     /output/cbm/project.mdb
-    /output/cbm_tmp_dir/CBMRun/output/report.fil
     """
 
     def __init__(self, parent):
@@ -156,6 +156,10 @@ class PostProcessor(object):
     @property_cached
     def products(self):
         return Products(self)
+
+    @property_cached
+    def dist_surplus(self):
+        return DistSurplus(self)
 
     #-------------------------------------------------------------------------#
     def timestep_to_years(self, timestep):

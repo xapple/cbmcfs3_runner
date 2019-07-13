@@ -58,7 +58,9 @@ from cbmcfs3_runner.core.continent import continent
 ################################################################################
 for c in tqdm(continent.countries.values()):
     if c.iso2_code not in ('AT',): continue
-    runners = [r for runners in c.scenarios.values() for r in runners]
+    runners = []
+    runners += c.scenarios['static_demand']
+    runners += c.scenarios['calibration']
     for r in runners:
         r.graphs.harvest_exp_prov_vol(rerun=True)
         r.graphs.harvest_exp_prov_area(rerun=True)
