@@ -41,8 +41,10 @@ class DistSurplus(object):
     #-------------------------------------------------------------------------#
     def generate_df(self):
         """
-        Parse the output file "report.fil" and produce a data frame
+        Parse the output file "report.fil" and produces a data frame
         saved to disk.
+        This data frame contains the CBM-CFS3 disturbance reconciliation
+        output, as produced when running the model.
 
         One `pass_num` is for instance " for Pass 19"
         One `info_text` is for instance:
@@ -81,21 +83,21 @@ class DistSurplus(object):
         def text_to_series(text):
             cols, vals = zip(*[line_to_pair(line) for line in text.split('\n')])
             return pandas.Series(data=vals, index=cols)
-        # Make a dataframe with all the series as rows #
+        # Make a data frame with all the series as rows #
         rows = (text_to_series(text) for text in all_infos)
         df = pandas.concat(rows, axis=1, sort=True).T
-        # Sanitize column names #
+        # Sanitize column names (some actually contain quotes) #
         df.columns = [camel_to_snake(col) for col in df.columns]
         # Drop 'year' that is redundant with 'timestep' and confusing #
         df = df.drop(columns='year')
+        # Add the actual year as per the country inventory start #
+        df['year'] = self.parent.timestep_to_years(df['time_step'])
         # Save the dataframe #
         df.to_csv(str(self.paths.surplus_csv), index=False)
 
     #-------------------------------------------------------------------------#
     @property_cached
     def df(self):
-        """
-        Load the saved CSV.
-        """
+        """Load the saved CSV. This df is memoized."""
         if not self.paths.surplus_csv.exists: self.generate_df()
         return pandas.read_csv(str(self.paths.surplus_csv))
