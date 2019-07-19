@@ -107,6 +107,11 @@ class Silviculture(object):
         Calculate the theoretical stock based on the inventory area
         by age class multiplied by the corresponding volume-per-hectare for
         each age class producing "stock" in terms of m^3.
+        
+        Columns are: ['status', 'forest_type', 'region', 'management_type',
+                      'management_strategy', 'climatic_unit', 
+                      'conifers_bradleaves', 'age_class', 'Area', 'volume', 
+                      'stock', 'age']
         """
         inventory = self.parent.orig_data.inventory
         h_yields_long = self.parent.orig_data.historical_yields_long
@@ -140,6 +145,15 @@ class Silviculture(object):
 
         The status classifier does not have the same value between the data frames
         silviculture and stock_based_on_yield.
+        
+        Columns are: ['forest_type', 'management_type', 'management_strategy',
+                      'conifers_bradleaves', 'status', 'region', 'climatic_unit', 
+                      'age_class', 'Area', 'volume', 'stock', 'age', 
+                      'Dist_Type_ID', 'Sort_Type', 'Efficency', 'Min_age', 
+                      'Max_age', 'Min_since_last', 'Max_since_last', 'HWP',
+                      'RegenDelay', 'ResetAge', 'Percent', 'WD', 'OWC_Perc',
+                      'Snag_Perc', 'Perc_Merch_Biom_rem', 'Man_Nat', 'corr_fact',
+                      'stock_available']
         """
         # Join with correction factor #
         silviculture = (self.treatments
@@ -176,6 +190,10 @@ class Silviculture(object):
         """
         Aggregate stock_available_by_age and sum the stock available over
         all age classes. Some natural disturbances are ignored.
+        
+        Columns are: ['forest_type', 'management_type', 'management_strategy',
+                      'conifers_bradleaves', 'Dist_Type_ID', 'stock_available',
+                      'HWP', 'status'],
         """
         index = ['forest_type', 'management_type', 'management_strategy',
                  'conifers_bradleaves', 'Dist_Type_ID']
@@ -205,6 +223,11 @@ class Silviculture(object):
     def harvest_proportion(self):
         """
         Allocation of harvest along different classifiers.
+        
+        Columns are: ['step', 'HWP', 'country', 'year', 'volume', 'forest_type',
+                      'management_type', 'management_strategy', 
+                      'conifers_bradleaves', 'Dist_Type_ID', 
+                      'stock_available', 'status', 'stock_tot', 'prop']
         """
         # Join silv_stock on the HWP field.
         # This expands the data frame for each possible combinations of HWP.
