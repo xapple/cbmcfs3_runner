@@ -221,8 +221,27 @@ class Silviculture(object):
 
     @property_cached
     def harvest_proportion(self):
+        """ Allocation of harvest along the classifiers used in 
+            self.stock_available_agg: 
+                ['forest_type', 'management_type', 'management_strategy',
+                 'conifers_bradleaves', 'Dist_Type_ID' ].
+            The proportion is based on the available stock by 
+            harvested wood products (HWP) category.
         """
-        Allocation of harvest along different classifiers.
+        df = self.stock_available_agg.copy()
+        df['stock_tot'] = df.groupby(['HWP'])['stock_available'].transform('sum')
+        df['prop'] = df['stock_available']/df['stock_tot']
+        df.drop(columns=['stock_tot'])
+        return df
+
+    @property_cached
+    def harvest_proportion_legacy(self):
+        """
+        Allocation of harvest along different classifiers 
+        with time step included and redundant proportions for each time step.
+        This table has a legacy structure based on Roberto's SAS code
+        between "data IRW_C_Const;set HWP_Const_IRW_FW;"
+        and     "data Stock_Prop_C_Const;*Proportion based on available Stock;"
         
         Columns are: ['step', 'HWP', 'country', 'year', 'volume', 'forest_type',
                       'management_type', 'management_strategy', 
