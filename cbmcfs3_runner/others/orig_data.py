@@ -95,3 +95,8 @@ class OrigData(object):
     @property_cached
     def historical_yields_long(self):
         return reshape_yields_long(self.historical_yields)
+
+    @property_cached
+    def disturbance_events(self):
+        df = self['disturbance_events']
+        return df.rename(columns = self.parent.classifiers.mapping)

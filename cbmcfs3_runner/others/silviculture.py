@@ -219,8 +219,29 @@ class Silviculture(object):
 
     @property_cached
     def harvest_proportion(self):
-        """ Allocation of harvest along the classifiers used in 
-        self.stock_available_agg: 
+        """To allocate the harvest across 
+        disturbance types (clear cut, thining) 
+        and additional classifiers (forest type, management type,
+        management strategy) we use a proportion based 
+        on the historical inventory and yield curve.
+
+        The harvest proportion is calculated from the stock available 
+        by combining two information sources:
+            The inventory provides an area by forest type and age class
+            The growth/yield curve provides a volume by forest type and age class
+        We multiply those two values to obtain a 
+        stock = area * volume for each particular classifiers 
+        and age class combination.
+        The stock available is then calculated based 
+        on the percentage moved in the disturbance matrix 
+        (also available in the silviculture table Perc_Merch_Biom_rem)
+        and on an empirical harvest correction factor, 
+        for each disturbance and combination of classifiers:
+        stock available = stock * percentage harvested 
+        by the disturbance * correction factor.
+        
+        The data frame below is the allocation of harvest 
+        along the classifiers used in self.stock_available_agg: 
             ['forest_type', 'management_type', 'management_strategy',
              'conifers_bradleaves', 'Dist_Type_ID' ].
         The proportion is based on the available stock by 
