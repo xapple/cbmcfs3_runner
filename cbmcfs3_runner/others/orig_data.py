@@ -99,4 +99,7 @@ class OrigData(object):
     @property_cached
     def disturbance_events(self):
         df = self['disturbance_events']
+        # Change Dist_Type_ID to a string to harmonise data type.
+        # some countries have a string while others have an int.
+        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype('str')
         return df.rename(columns = self.parent.classifiers.mapping)
