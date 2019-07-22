@@ -135,8 +135,7 @@ class Silviculture(object):
 
     @property_cached
     def stock_available_by_age(self):
-        """
-        Calculate the stock available based on the harvest proportion
+        """Calculate the stock available based on the harvest proportion
         in the silviculture_treatments table and multiply by a correction factor.
 
         Note: the harvest proportion in the silviculture_treatments table should be
@@ -187,8 +186,7 @@ class Silviculture(object):
 
     @property_cached
     def stock_available_agg(self):
-        """
-        Aggregate stock_available_by_age and sum the stock available over
+        """Aggregate stock_available_by_age and sum the stock available over
         all age classes. Some natural disturbances are ignored.
         
         Columns are: ['forest_type', 'management_type', 'management_strategy',
@@ -222,22 +220,25 @@ class Silviculture(object):
     @property_cached
     def harvest_proportion(self):
         """ Allocation of harvest along the classifiers used in 
-            self.stock_available_agg: 
-                ['forest_type', 'management_type', 'management_strategy',
-                 'conifers_bradleaves', 'Dist_Type_ID' ].
-            The proportion is based on the available stock by 
-            harvested wood products (HWP) category.
+        self.stock_available_agg: 
+            ['forest_type', 'management_type', 'management_strategy',
+             'conifers_bradleaves', 'Dist_Type_ID' ].
+        The proportion is based on the available stock by 
+        harvested wood products (HWP) category.
+        
+        Columns are: ['forest_type', 'management_type', 'management_strategy',
+                      'conifers_bradleaves', 'Dist_Type_ID', 'stock_available', 
+                      'HWP', 'status', 'stock_tot', 'prop']
         """
         df = self.stock_available_agg.copy()
         df['stock_tot'] = df.groupby(['HWP'])['stock_available'].transform('sum')
         df['prop'] = df['stock_available']/df['stock_tot']
         df.drop(columns=['stock_tot'])
-        return df
+        return df.sort_values(by=['HWP'], ascending=False)
 
     @property_cached
     def harvest_proportion_legacy(self):
-        """
-        Allocation of harvest along different classifiers 
+        """Allocation of harvest along different classifiers 
         with time step included and redundant proportions for each time step.
         This table has a legacy structure based on Roberto's SAS code
         between "data IRW_C_Const;set HWP_Const_IRW_FW;"
