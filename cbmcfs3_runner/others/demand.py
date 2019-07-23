@@ -99,7 +99,7 @@ class Demand(object):
 
     @property_cached
     def historical_wide(self):
-        """Historical harvest corrected manually by RP from the original
+        """Historical harvest corrected manually by R.P. from the original
         FAOSTAT data for the purpose of CBM calibration.
         Expert estimates and knowledge is used to change the values as
         some values are clearly erroneous in the FAOSTAT."""
@@ -122,5 +122,7 @@ class Demand(object):
                             df.query("HWP!='TOTAL'")['volume'].sum())
         # Remove the total column from the table
         df = df.query("HWP!='TOTAL'").copy()
+        # Sort #
+        df = df.sort_values(by=['year', 'HWP'], ascending=[True, False])
         # Return #
         return df
