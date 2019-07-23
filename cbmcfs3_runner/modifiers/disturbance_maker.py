@@ -40,7 +40,7 @@ class DisturbanceMaker(object):
 
     @property
     def new_events(self):
-        """Lorem ipsum.
+        """
         We have to proceed by steps, by first harvesting round-wood.
         Each cubic meter of round-wood harvest will produce some fuel-wood,
         which we later won't have to harvest.
@@ -63,31 +63,31 @@ class DisturbanceMaker(object):
         We will join with an allocation matrix
         that would look as follows:
 
-            prod   prop  _1  _2  _3    _7 Snag_Perc OWC_Perc
-            IRW    0.9  AA  MT  AR  Broad      0.02     0.14
-            IRW    0.1  BB  MT  AR  Broad      0.03     0.12
-            IRW    0.5  ZZ  MT  AR    Con      0.02     0.14
-            IRW    0.5  YY  MT  AR    Con      0.03     0.12
+            prod   prop  dist _1  _2  _3     _7 Snag_Perc OWC_Perc  Min_Age Max_Age
+            IRW    0.9      7 AA  MT  AR  Broad      0.02     0.14       20      80
+            IRW    0.1     12 BB  MT  AR  Broad      0.03     0.12       20      80
+            IRW    0.5     29 ZZ  MT  AR    Con      0.02     0.14       20      80
+            IRW    0.5      3 YY  MT  AR    Con      0.03     0.12       20      80
 
         We keep the two percentage columns because we want to be able to
         switch one or the other on or off.
 
         Result of the join:
 
-            prod   prop  _1  _2  _3    _7 Snag_Perc OWC_Perc     volume  year
-            IRW    0.9  AA  MT  AR  Broad      0.02     0.14   121400.0  1999
-            IRW    0.1  BB  MT  AR  Broad      0.03     0.12   121400.0  1999
-            IRW    0.5  ZZ  MT  AR    Con      0.02     0.14   120300.0  1999
-            IRW    0.5  YY  MT  AR    Con      0.03     0.12   120300.0  1999
+            prod   prop  dist   _1  _2  _3    _7 Snag_Perc OWC_Perc     volume  year
+            IRW    0.9      7  AA  MT  AR  Broad      0.02     0.14   121400.0  1999
+            IRW    0.1     12  BB  MT  AR  Broad      0.03     0.12   121400.0  1999
+            IRW    0.5     29  ZZ  MT  AR    Con      0.02     0.14   120300.0  1999
+            IRW    0.5      3  YY  MT  AR    Con      0.03     0.12   120300.0  1999
 
         Then we add the column: IRW_amount = prop * volume
         As well as the:          FW_amount = IRW_amount * (Snag_perc + OWC_Perc)
 
-            prod   prop  _1  _2  _3    _7 Snag_Perc OWC_Perc IRW_amount  FW_amount  year
-            IRW    0.9  AA  MT  AR  Broad      0.02     0.14     110000       5000  1999
-            IRW    0.1  BB  MT  AR  Broad      0.03     0.12       1000         90  1999
-            IRW    0.5  ZZ  MT  AR    Con      0.02     0.14      60000       4000  1999
-            IRW    0.5  YY  MT  AR    Con      0.03     0.12       6000        600  1999
+            prod   prop  dist  _1  _2  _3    _7 Snag_Perc OWC_Perc IRW_amount  FW_amount  year
+            IRW    0.9      7 AA  MT  AR  Broad      0.02     0.14     110000       5000  1999
+            IRW    0.1     12 BB  MT  AR  Broad      0.03     0.12       1000         90  1999
+            IRW    0.5     29 ZZ  MT  AR    Con      0.02     0.14      60000       4000  1999
+            IRW    0.5      3 YY  MT  AR    Con      0.03     0.12       6000        600  1999
 
         Here we can check that sum(IRW_amount) == sum(volume)
         By doing df.groupby('year', '_7').agg({'FW_amount': 'sum'}) we get:
@@ -108,37 +108,45 @@ class DisturbanceMaker(object):
         Check that volume has to always be positive. Otherwise set it to zero.
         Now we will join again with an allocation matrix but that has "FW" instead "IRW":
 
-            prod  prop  _1  _2  _3    _7 Snag_Perc OWC_Perc
-            FW    0.8  AA  MT  AR  Broad      0.01     0.14
-            FW    0.2  BB  MT  AR  Broad      0.03     0.12
-            FW    0.6  ZZ  MT  AR    Con      0.02     0.14
-            FW    0.4  YY  MT  AR    Con      0.03     0.12
+            prod  prop  dist  _1  _2  _3    _7 Snag_Perc OWC_Perc
+            FW    0.8      7  AA  MT  AR Broad      0.01     0.14
+            FW    0.2     12  BB  MT  AR Broad      0.03     0.12
+            FW    0.6     29  ZZ  MT  AR   Con      0.02     0.14
+            FW    0.4      3  YY  MT  AR   Con      0.03     0.12
 
         Result of the join:
 
-            prod   prop  _1  _2  _3    _7 Snag_Perc OWC_Perc     volume  year
-            FW    0.8  AA  MT  AR  Broad      0.01     0.14     11423.0  1999
-            FW    0.2  BB  MT  AR  Broad      0.03     0.12     11423.0  1999
-            FW    0.6  ZZ  MT  AR    Con      0.02     0.14         0.0  1999
-            FW    0.4  YY  MT  AR    Con      0.03     0.12         0.0  1999
+            prod  prop  dist  _1  _2  _3    _7 Snag_Perc OWC_Perc   volume  year
+            FW    0.8      7  AA  MT  AR Broad      0.01     0.14  11423.0  1999
+            FW    0.2     12  BB  MT  AR Broad      0.03     0.12  11423.0  1999
+            FW    0.6     29  ZZ  MT  AR   Con      0.02     0.14      0.0  1999
+            FW    0.4      3  YY  MT  AR   Con      0.03     0.12      0.0  1999
 
-        Then we add the column:  FW_amount = prop * volume * (1 + Snag_perc + OWC_Perc)
-        Then we add the column:  FW_amount = prop * volume * (1 + Snag_perc + OWC_Perc)
+        Then we add the column:  FW_amount = prop * volume / (1 + Snag_Perc + OWC_Perc)
+        We do this since the fuel wood harvest also generates extra fuel wood.
 
-            prod  prop  _1  _2  _3    _7 Snag_Perc OWC_Perc FW_amount  year
-            FW    0.8  AA  MT  AR  Broad      0.01     0.14      5000  1999
-            FW    0.2  BB  MT  AR  Broad      0.03     0.12        90  1999
-            FW    0.6  ZZ  MT  AR    Con      0.02     0.14      4000  1999
-            FW    0.4  YY  MT  AR    Con      0.03     0.12       600  1999
+            prod  prop dist  _1  _2  _3    _7 Snag_Perc OWC_Perc FW_amount  year
+            FW    0.8     7 AA  MT  AR  Broad      0.01     0.14      5000  1999
+            FW    0.2    12 BB  MT  AR  Broad      0.03     0.12        90  1999
+            FW    0.6    29 ZZ  MT  AR    Con      0.02     0.14      4000  1999
+            FW    0.4     3 YY  MT  AR    Con      0.03     0.12       600  1999
 
-        Result:
+        We can check that FW_amount is equal to the sum of demand / (1 + Snag_Perc + OWC_Perc)
+        Finally we combine the dataframe (4) and (7) with both columns becoming amount.
 
-            prod  prop  _1  _2  _3    _7 Snag_Perc OWC_Perc IRW_amount  FW_amount  year
-            FW    0.9  AA  MT  AR  Broad      0.02     0.14     110000       5000  1999
-            FW    0.1  BB  MT  AR  Broad      0.03     0.12       1000         90  1999
-            FW    0.5  ZZ  MT  AR    Con      0.02     0.14      60000       4000  1999
-            FW    0.5  YY  MT  AR    Con      0.03     0.12       6000        600  1999
+            prod dist  _1  _2  _3    _7 Snag_Perc OWC_Perc    amount  year
+            FW      7 AA  MT  AR  Broad      0.01     0.14      5000  1999
+            FW     12 BB  MT  AR  Broad      0.03     0.12        90  1999
+            FW     29 ZZ  MT  AR    Con      0.02     0.14      4000  1999
+            FW      3 YY  MT  AR    Con      0.03     0.12       600  1999
+            IRW     7 AA  MT  AR  Broad      0.02     0.14    110000  1999
+            IRW    12 BB  MT  AR  Broad      0.03     0.12      1000  1999
+            IRW    29 ZZ  MT  AR    Con      0.02     0.14     60000  1999
+            IRW     3 YY  MT  AR    Con      0.03     0.12      6000  1999
 
+        We have dropped 'prop'
+        To create disturbances we are still missing "SWStart", "SWEnd", "HWStart", "HWEnd".
+        In this case SW == Conifer and HW == Broad. Both values are always the same.
 
         """
         # Load data #
