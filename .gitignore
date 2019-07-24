@@ -10,8 +10,9 @@
 
 # IDE files #
 /.idea
-.spyproject    # on Spyder 3.1.3
-.spyderproject # on Spyder 2.3.8
+# Project file has different names on Spyder 2.3.8 and Spyder 3.1.3
+.spyderproject
+.spyproject
 
 # Distribution #
 /build/
