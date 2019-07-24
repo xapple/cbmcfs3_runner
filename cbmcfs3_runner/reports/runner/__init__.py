@@ -71,11 +71,11 @@ class RunnerTemplate(ReportTemplate):
     #------------------------------ Inventory --------------------------------#
     def inventory_at_start(self):
         graph   = self.graphs.inventory_at_start
-        return str(ScaledFigure(graph=graph, caption=graph.caption))
+        return str(ScaledFigure(graph=graph))
 
     def inventory_at_end(self):
         graph   = self.graphs.inventory_at_end
-        return str(ScaledFigure(graph=graph, caption=graph.caption))
+        return str(ScaledFigure(graph=graph))
 
     #------------------------------ Harvest ----------------------------------#
     def harvested_wood_prodcuts(self):
@@ -83,12 +83,12 @@ class RunnerTemplate(ReportTemplate):
 
     def harvest_exp_prov_vol(self):
         graph   = self.graphs.harvest_exp_prov_vol
-        return str(ScaledFigure(graph=graph, caption=caption))
+        return str(ScaledFigure(graph=graph))
 
     def harvest_exp_prov_area(self):
         if self.scenario.short_name == 'calibration': return None
         graph   = self.graphs.harvest_exp_prov_area
-        return str(ScaledFigure(graph=graph, caption=caption))
+        return str(ScaledFigure(graph=graph))
 
 
 
