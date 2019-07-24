@@ -24,7 +24,8 @@ from autopaths.auto_paths import AutoPaths
 ###############################################################################
 class DistSurplus(object):
     """
-    See notebook "disturbance_report.fil.ipynb" for more details about the methods below.
+    See notebook "disturbance_report.fil.ipynb" for more details
+    about the methods below.
     """
 
     all_paths = """
@@ -74,7 +75,7 @@ class DistSurplus(object):
         # Find all occurrences #
         matches = re.findall(string, contents, re.DOTALL|re.MULTILINE)
         # Split the pass numbers and the info chunks #
-        all_pass_nums, all_infos = zip(*matches)
+        all_pass_nums, all_infos_texts = zip(*matches)
         # Make one line into a tuple #
         def line_to_pair(line):
             """'Timestep:  2' becomes ('Timestep', '2')"""
@@ -84,7 +85,7 @@ class DistSurplus(object):
             cols, vals = zip(*[line_to_pair(line) for line in text.split('\n')])
             return pandas.Series(data=vals, index=cols)
         # Make a data frame with all the series as rows #
-        rows = (text_to_series(text) for text in all_infos)
+        rows = (text_to_series(text) for text in all_infos_texts)
         df = pandas.concat(rows, axis=1, sort=True).T
         # Sanitize column names (some actually contain quotes) #
         df.columns = [camel_to_snake(col) for col in df.columns]
@@ -92,7 +93,7 @@ class DistSurplus(object):
         df = df.drop(columns='year')
         # Add the actual year as per the country inventory start #
         df['year'] = self.parent.timestep_to_years(df['time_step'])
-        # Save the dataframe #
+        # Save the data frame #
         df.to_csv(str(self.paths.surplus_csv), index=False)
 
     #-------------------------------------------------------------------------#

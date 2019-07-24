@@ -28,6 +28,8 @@ class HarvestExpProv(Graph):
                 'provided': 'sum'}
 
     facet_col = 'DistDescription'
+
+    # This variable can be patched by scenarios #
     exclude_scenario = []
 
     def plot(self, **kwargs):
