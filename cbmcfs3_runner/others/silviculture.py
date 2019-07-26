@@ -162,7 +162,7 @@ class Silviculture(object):
         The status classifier does not have the same value between the data frames
         silviculture and stock_based_on_yield.
 
-        Columns are: ['forest_type', 'management_type', 'management_strategy',
+        Columns are: ['status', forest_type', 'management_type', 'management_strategy',
                       'conifers_bradleaves', 'status', 'region', 'climatic_unit',
                       'age_class', 'Area', 'volume', 'stock', 'age',
                       'Dist_Type_ID', 'Sort_Type', 'Efficency', 'Min_age',
@@ -180,15 +180,14 @@ class Silviculture(object):
                         .join(self.corr_fact
                               .set_index('forest_type'))
                         .reset_index())
-        # Check that status is unique #
-        if len(silviculture['status'].unique()) > 1:
-            msg  = "Silviculture status is not unique. %s"
-            msg += "Please check the merge with stock_based_on_yield"
-            raise Exception(msg % silviculture['status'].unique())
-        # As it's unique we can drop it, because there is also "status" in stock_based_on_yield #
-        silviculture = silviculture.drop(columns=['status'])
+        # 'For' and 'CC' receive the same silviculture treatment. 
+        # Duplicate 'CC' rows in the silviculture treatment table and mark them as 'For'
+        silv_for = silviculture.query("status == 'CC'").copy()
+        silv_for['status'] = 'For'
+        silviculture = silviculture.append(silv_for)
         # Join only on these classifiers #
-        index = ['forest_type', 'management_type', 'management_strategy', 'conifers_bradleaves']
+        index = ['status', 'forest_type', 'management_type', 
+                 'management_strategy', 'conifers_bradleaves']
         # Join #
         df = (self.stock_based_on_yield
               .set_index(index)
@@ -210,12 +209,12 @@ class Silviculture(object):
         """Aggregate stock_available_by_age and sum the stock available over
         all age classes. Some natural disturbances are ignored.
 
-        Columns are: ['forest_type', 'management_type', 'management_strategy',
+        Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
                       'conifers_bradleaves', 'Dist_Type_ID', 'stock_available',
                       'HWP', 'status']
         """
         # Index #
-        index = ['forest_type', 'management_type', 'management_strategy',
+        index = ['status', 'forest_type', 'management_type', 'management_strategy',
                  'conifers_bradleaves', 'Dist_Type_ID']
         # Aggregate #
         df = (self.stock_available_by_age
@@ -270,13 +269,13 @@ class Silviculture(object):
         The data frame below is the allocation of harvest
         along the classifiers used in self.stock_available_agg:
 
-            ['forest_type', 'management_type', 'management_strategy',
+            ['status', 'forest_type', 'management_type', 'management_strategy',
              'conifers_bradleaves', 'Dist_Type_ID' ].
 
         The proportion is based on the available stock by
         harvested wood products (HWP) category.
 
-        Columns are: ['forest_type', 'management_type', 'management_strategy',
+        Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
                       'conifers_bradleaves', 'Dist_Type_ID', 'stock_available',
                       'HWP', 'status', 'stock_tot', 'prop']
         """
