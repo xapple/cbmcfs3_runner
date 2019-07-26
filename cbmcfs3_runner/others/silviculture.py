@@ -214,27 +214,15 @@ class Silviculture(object):
                       'HWP', 'status']
         """
         # Index #
+        # Note the presence of 'HWP' now in the index
         index = ['status', 'forest_type', 'management_type', 'management_strategy',
-                 'conifers_bradleaves', 'Dist_Type_ID']
+                 'conifers_bradleaves', 'Dist_Type_ID', 'HWP']
         # Aggregate #
         df = (self.stock_available_by_age
               .query("Dist_Type_ID not in @self.dist_to_ignore")
               .groupby(index)
               .agg({'stock_available': 'sum'})
               .reset_index())
-        # Add the harvested wood products column #
-        silviculture = self.treatments[index + ['HWP']]
-        # Join #
-        df = (df
-              .set_index(index)
-              .join(silviculture.set_index(index))
-              .reset_index())
-        # Setting status to 'For' might not be necessary.
-        # Just here as a reminder that status is homogeneous at the moment.
-        # Harvest proportion calculation has to be changed once we deal with
-        # forests available for thinning only status='th'
-        # vs forests available for both thinning and clear cut status='CC'.
-        df['status'] = 'For'
         # Return #
         return df
 
