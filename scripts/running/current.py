@@ -96,7 +96,7 @@ from cbmcfs3_runner.core.continent import continent
 ################################################################################
 for c in tqdm(continent.countries.values()):
     # Filter countries #
-    if c.iso2_code not in ('LU',): continue
+    if c.iso2_code not in ('ZZ',): continue
     # Get two scenarios #
     statc = c.scenarios['static_demand'][-1]
     calib = c.scenarios['calibration'][-1]
