@@ -20,9 +20,9 @@ from plumbing.logger      import create_file_logger
 from plumbing.cache       import property_cached
 
 # Internal modules #
-from cbmcfs3_runner import module_dir
+from cbmcfs3_runner        import module_dir
 from cbmcfs3_runner.graphs import country_graphs, load_graphs_from_module
-from cbmcfs3_runner.others.classifiers import Classifiers
+from cbmcfs3_runner.others.classifiers             import Classifiers
 from cbmcfs3_runner.others.demand                  import Demand
 from cbmcfs3_runner.others.orig_data               import OrigData
 from cbmcfs3_runner.reports.country                import CountryReport

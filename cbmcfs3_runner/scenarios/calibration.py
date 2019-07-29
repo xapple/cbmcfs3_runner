@@ -3,7 +3,7 @@
 
 """
 This scenario corresponds to the results that were generated manually
-using the GUI and saved to databases stored in JRCbox.
+using the GUI by R.P. and saved to Access databases stored in JRCbox.
 """
 
 # Built-in modules #
