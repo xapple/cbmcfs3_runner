@@ -118,8 +118,13 @@ class Demand(object):
         # Make HWP uppercase to match the silviculture table
         df['HWP'] = df['HWP'].str.upper()
         # Check if the total column matches with the sum of the other columns
-        assert math.isclose(df.query("HWP=='TOTAL'")['volume'].sum(),
-                            df.query("HWP!='TOTAL'")['volume'].sum())
+        # Set abs_tol=1 to one to allow for rounding errors in the input data
+        sum_tot = df.query("HWP=='TOTAL'")['volume'].sum()
+        sum_other = df.query("HWP!='TOTAL'")['volume'].sum()
+        if not math.isclose(sum_tot, sum_other, abs_tol=1):
+            msg = "The sum of the total column: %s "
+            msg += "doesn't match the sum of the other columns: %s"
+            raise Exception(msg % (sum_tot, sum_other))
         # Remove the total column from the table
         df = df.query("HWP!='TOTAL'").copy()
         # Sort #
