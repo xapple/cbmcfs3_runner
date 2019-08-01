@@ -66,7 +66,7 @@ class Scenario(object):
 
     #-------------------------------------------------------------------------#
     def concat_as_dict(self, step=-1, func=None):
-        """A dictionary of data frames, with country iso 2 code as keys."""
+        """A dictionary of data frames, with country iso2 code as keys."""
         # Default option, function that takes a runner, returns a data frame #
         if func is None:
             func = lambda r: r.input_data.disturbance_events

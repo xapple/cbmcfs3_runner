@@ -62,32 +62,34 @@ class AIDB(object):
         # /notebooks/disturbance_matrix.ipynb
         dm_table = self.database['tblDM']
         source   = self.database['tblSourceName']
-        sink     = self.database['tblsinkname']
+        sink     = self.database['tblSinkName']
         lookup   = self.database['tblDMValuesLookup']
-        # Join lookup and dmtabl to add the description for each DMID.
+        # Join lookup and dmtabl to add the description for each DMID #
         dm_lookup = (lookup
                      .set_index('DMID')
                      .join(dm_table.set_index('DMID'))
                      .reset_index())
-        source = source.rename(columns={'Row':'DMRow',
-                                        'Description':'row_pool'})
-        index_source = ['DMRow', 'DMStructureID']
-        sink = sink.rename(columns={'Column':'DMColumn',
-                                    'Description':'column_pool'})
-        index_sink = ['DMColumn', 'DMStructureID']
+        # Rename #
+        source = source.rename(columns={'Row':         'DMRow',
+                                        'Description': 'row_pool'})
+        sink   = sink.rename(columns={'Column':      'DMColumn',
+                                      'Description': 'column_pool'})
+        # Indexes #
+        index_source = ['DMRow',    'DMStructureID']
+        index_sink   = ['DMColumn', 'DMStructureID']
         # Add source and sink descriptions
-        df = (dm_lookup
-                            .set_index(index_source)
-                            .join(source.set_index(index_source))
-                            .reset_index()
-                            .set_index(index_sink)
-                            .join(sink.set_index(index_sink))
-                            .reset_index())
+        df = (dm_lookup.set_index(index_source)
+                       .join(source.set_index(index_source))
+                       .reset_index()
+                       .set_index(index_sink)
+                       .join(sink.set_index(index_sink))
+                       .reset_index())
         # Make pool description columns suitable as column names
-        df['row_pool'] = (df['row_pool'].str.replace(' ', '_') + '_' +
-                          df['DMRow'].astype(str))
+        df['row_pool']    = (df['row_pool'].str.replace(' ', '_') + '_' +
+                             df['DMRow'].astype(str))
         df['column_pool'] = (df['column_pool'].str.replace(' ','_') + '_' +
                              df['DMColumn'].astype(str))
+        # Return #
         return df
 
     def multiindex_pivot(self, df, columns=None, values=None):
