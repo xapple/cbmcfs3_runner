@@ -37,6 +37,9 @@ class Classifiers(object):
         _5    management_strategy
         _6          climatic_unit
         Name: ClassDesc, dtype: object
+
+        Typically you use it like this:
+            df.rename(columns = r.country.classifiers.mapping)
     """
 
     def __init__(self, parent):

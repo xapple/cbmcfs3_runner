@@ -37,7 +37,7 @@ class InputData(object):
         self.parent = parent
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
-        # Classifiers names
+        # Classifiers names #
         self.classifiers_mapping = self.parent.country.classifiers.mapping
 
     def copy_from_country(self):
@@ -47,12 +47,12 @@ class InputData(object):
 
     @property_cached
     def xls(self):
-        """The first excel file"""
+        """The first excel file."""
         return pandas.ExcelFile(str(self.paths.default))
 
     @property_cached
     def xls_append(self):
-        """The second excel file"""
+        """The second excel file."""
         return pandas.ExcelFile(str(self.paths.append))
 
     #-------------------------- Specific sheets ------------------------------#
@@ -65,6 +65,7 @@ class InputData(object):
          'management_strategy', 'climatic_unit', 'conifers_bradleaves',
          'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist']
         """
+        # Get the right sheet #
         df = self.xls.parse("Inventory")
         # Create the age_class column
         # so it can be used as a join variable with a yields table
@@ -91,6 +92,7 @@ class InputData(object):
          'Max_tot_merch_hard_stem_snag_C', 'Efficency', 'Sort_Type',
          'Measurement_type', 'Amount', 'Dist_Type_ID', 'Step']
         """
+        # Get the right sheet #
         return self.xls.parse("DistEvents")
 
     @property_cached
@@ -98,7 +100,7 @@ class InputData(object):
         """
         Columns are: ['DisturbanceTypeID', 'Name']
         """
-        # Get the sheet #
+        # Get the right sheet #
         df = self.xls.parse("DistType")
         # DisturbanceTypeID has to be strings for joining purposes #
         df.DisturbanceTypeID = df.DisturbanceTypeID.astype(str)
@@ -116,6 +118,7 @@ class InputData(object):
          'Vol19', 'Vol20', 'Vol21', 'Vol22', 'Vol23', 'Vol24', 'Vol25', 'Vol26',
          'Vol27', 'Vol28', 'Vol29', 'Vol30']
         """
+        # Get the right sheet #
         df = self.xls.parse("Growth")
         return df.rename(columns = self.classifiers_mapping)
 
@@ -127,6 +130,7 @@ class InputData(object):
         to the Standard Import Tool
         for the carbon pool initialization period
         """
+        # Get the right sheet #
         df = self.xls_append.parse("Growth")
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
         return df.rename(columns = self.classifiers_mapping)
@@ -141,10 +145,12 @@ class InputData(object):
 
     @property_cached
     def ageclass(self):
+        # Get the right sheet #
         return self.xls.parse("AgeClasses")
 
     @property_cached
     def classifiers(self):
+        # Get the right sheet #
         df = self.xls.parse("Classifiers")
         sort_by = ['ClassifierNumber', 'ClassifierValueID']
         return df.sort_values(by=sort_by, ascending=[True, False])
