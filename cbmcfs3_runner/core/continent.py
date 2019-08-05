@@ -86,6 +86,11 @@ class Continent(object):
         """Return a runner based on scenario, country and step."""
         return self.scenarios[scenario].runners[country][step]
 
+    @property
+    def first(self):
+        key = next(iter(self.countries))
+        return self.countries[key]
+
 ###############################################################################
 # Create list of all countries #
 continent = Continent(cbm_data_repos)
