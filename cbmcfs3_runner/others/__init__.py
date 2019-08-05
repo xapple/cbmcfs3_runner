@@ -1,3 +1,16 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Written by Lucas Sinclair and Paul Rougieux.
+
+JRC biomass Project.
+Unit D1 Bioeconomy.
+"""
+
+# Third party modules #
+import pandas
+
 def count_unique_index(df, by=None):
     """Count the unique combinations of values
     taken by the variable (columns) in the data frame *df*.
@@ -16,3 +29,20 @@ def count_unique_index(df, by=None):
     """
     if by is None: by = df.columns
     return df.groupby(by).size().reset_index().rename(columns={0:'count'})
+
+def multi_index_pivot(df, columns=None, values=None):
+    """Pivot a pandas data frame on multiple index variables.
+    Copied from https://github.com/pandas-dev/pandas/issues/23955"""
+    names        = list(df.index.names)
+    df           = df.reset_index()
+    list_index   = df[names].values
+    tuples_index = [tuple(i) for i in list_index] # hashable
+    df           = df.assign(tuples_index=tuples_index)
+    df           = df.pivot(index="tuples_index", columns=columns, values=values)
+    tuples_index = df.index  # reduced
+    index        = pandas.MultiIndex.from_tuples(tuples_index, names=names)
+    df.index     = index
+    # Remove confusing index column name #
+    df.columns.name = None
+    df = df.reset_index()
+    return df

@@ -11,7 +11,6 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
-import pandas
 
 # First party modules #
 from autopaths            import Path
@@ -20,6 +19,7 @@ from plumbing.cache       import property_cached
 from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
+from cbmcfs3_runner.others import multi_index_pivot
 
 # Constants #
 default_path = "/Program Files (x86)/Operational-Scale CBM-CFS3/Admin/DBs/ArchiveIndex_Beta_Install.mdb"
@@ -98,7 +98,7 @@ class AIDB(object):
         df = (self.dist_matrix_long
               .set_index(index)
               .query('Proportion>0'))
-        df = self.multi_index_pivot(df, columns='column_pool', values='Proportion')
+        df = multi_index_pivot(df, columns='column_pool', values='Proportion')
         # Reorder columns by the last digit number
         col_order = sorted(df.columns,
                            key=lambda x: str(x).replace("_", "0")[-2:])
@@ -106,19 +106,3 @@ class AIDB(object):
         df = df.set_index(index)[col_order[:-5]].reset_index()
         return df
 
-    def multi_index_pivot(self, df, columns=None, values=None):
-        """Pivot a pandas data frame on multiple index variables.
-        Copied from https://github.com/pandas-dev/pandas/issues/23955"""
-        names        = list(df.index.names)
-        df           = df.reset_index()
-        list_index   = df[names].values
-        tuples_index = [tuple(i) for i in list_index] # hashable
-        df           = df.assign(tuples_index=tuples_index)
-        df           = df.pivot(index="tuples_index", columns=columns, values=values)
-        tuples_index = df.index  # reduced
-        index        = pandas.MultiIndex.from_tuples(tuples_index, names=names)
-        df.index     = index
-        # Remove confusing index column name #
-        df.columns.name = None
-        df = df.reset_index()
-        return df
