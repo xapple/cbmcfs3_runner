@@ -18,14 +18,14 @@ from plumbing.logger      import create_file_logger
 # Internal modules #
 import cbmcfs3_runner
 from cbmcfs3_runner.graphs import runner_graphs, load_graphs_from_module
-from cbmcfs3_runner.modifiers.disturbance_maker   import DisturbanceMaker
-from cbmcfs3_runner.modifiers.pre_process         import PreProcessor
-from cbmcfs3_runner.modifiers.middle_process      import MiddleProcessor
-from cbmcfs3_runner.post_processor                import PostProcessor
-from cbmcfs3_runner.others.input_data             import InputData
-from cbmcfs3_runner.reports.runner                import RunnerReport
-from cbmcfs3_runner.stdrd_import_tool.launch_sit  import DefaultSIT, AppendSIT
-from cbmcfs3_runner.external_tools.launch_cbm     import LaunchCBM
+from cbmcfs3_runner.disturbances.maker             import DisturbanceMaker
+from cbmcfs3_runner.modifiers.pre_process          import PreProcessor
+from cbmcfs3_runner.modifiers.middle_process       import MiddleProcessor
+from cbmcfs3_runner.post_processor                 import PostProcessor
+from cbmcfs3_runner.others.input_data              import InputData
+from cbmcfs3_runner.reports.runner                 import RunnerReport
+from cbmcfs3_runner.stdrd_import_tool.launch_sit   import DefaultSIT, AppendSIT
+from cbmcfs3_runner.external_tools.launch_cbm      import LaunchCBM
 
 ###############################################################################
 class Runner(object):
