@@ -47,12 +47,11 @@ class OrigData(object):
     def __getitem__(self, item):
         return pandas.read_csv(str(self.paths[item]))
 
-
     #-------------------------- Specific sheets ------------------------------#
     @property_cached
     def inventory(self):
         """
-        Inventory data loaded from the original calibration db through a csv file. 
+        Inventory data loaded from the original calibration db through a csv file.
         Columns are:
 
         ['status', 'forest_type', 'region', 'management_type',

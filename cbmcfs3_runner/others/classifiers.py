@@ -69,5 +69,13 @@ class Classifiers(object):
         self.df = self.df.set_index('id')['ClassDesc']
         # Remove spaces and slashes from column names #
         self.df = self.df.apply(lambda x: x.lower().replace(' ', '_').replace('/','_'))
-        # Return #
+        # Return a series #
         return self.df
+
+    @property_cached
+    def names(self):
+        """
+        The classifier names in a list. For instance:
+        ['forest_type', 'region', etc.]
+        """
+        return list(self.mapping)
