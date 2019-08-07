@@ -1,4 +1,5 @@
 # Temporary files #
+*.csv#
 .DS_Store
 *.pyc
 *.swp

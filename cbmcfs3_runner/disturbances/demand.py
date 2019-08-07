@@ -94,6 +94,10 @@ class Demand(object):
         # Switch to number #
         df['value'] = pandas.to_numeric(df['value'])
         df['value'] = df['value'].fillna(0.0)
+        df = (df.reset_index()
+              .rename(columns={0:'variable',
+                               1:'year',
+                               2:'product'}))
         # Return #
         return df
 
