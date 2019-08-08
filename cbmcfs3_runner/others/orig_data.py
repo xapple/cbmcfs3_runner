@@ -81,6 +81,19 @@ class OrigData(object):
         return df.rename(columns = self.parent.classifiers.mapping)
 
     @property_cached
+    def inventory(self):
+        """
+        Columns are:
+
+            ['status', 'forest_type', 'region', 'management_type',
+             'management_strategy', 'climatic_unit', 'conifers_bradleaves',
+             'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist',
+             'age_class'],
+        """
+        df = self['inventory']
+        return df.rename(columns = self.parent.classifiers.mapping)
+
+    @property_cached
     def historical_yields(self):
         """Historical yield taken from the original csv file"""
         df = self['historical_yields']
