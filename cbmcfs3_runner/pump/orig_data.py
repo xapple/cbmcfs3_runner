@@ -54,9 +54,10 @@ class OrigData(object):
         Inventory data loaded from the original calibration db through a csv file.
         Columns are:
 
-        ['status', 'forest_type', 'region', 'management_type',
-         'management_strategy', 'climatic_unit', 'conifers_bradleaves',
-         'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist']
+            ['status', 'forest_type', 'region', 'management_type',
+             'management_strategy', 'climatic_unit', 'conifers_bradleaves',
+             'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist',
+             'age_class'],
         """
         df = self['inventory']
         # Create the age_class column
@@ -78,19 +79,6 @@ class OrigData(object):
          'Vol27', 'Vol28', 'Vol29', 'Vol30']
         """
         df = self['yields']
-        return df.rename(columns = self.parent.classifiers.mapping)
-
-    @property_cached
-    def inventory(self):
-        """
-        Columns are:
-
-            ['status', 'forest_type', 'region', 'management_type',
-             'management_strategy', 'climatic_unit', 'conifers_bradleaves',
-             'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist',
-             'age_class'],
-        """
-        df = self['inventory']
         return df.rename(columns = self.parent.classifiers.mapping)
 
     @property_cached
