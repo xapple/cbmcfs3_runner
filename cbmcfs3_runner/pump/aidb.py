@@ -19,7 +19,7 @@ from plumbing.cache       import property_cached
 from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
-from cbmcfs3_runner.others import multi_index_pivot
+from cbmcfs3_runner.pump import multi_index_pivot
 
 # Constants #
 default_path = "/Program Files (x86)/Operational-Scale CBM-CFS3/Admin/DBs/ArchiveIndex_Beta_Install.mdb"

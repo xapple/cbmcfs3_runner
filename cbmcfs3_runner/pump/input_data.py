@@ -18,7 +18,7 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
 
 # Internal modules #
-from cbmcfs3_runner.others.common import reshape_yields_long
+from cbmcfs3_runner.pump.common import reshape_yields_long
 
 ###############################################################################
 class InputData(object):

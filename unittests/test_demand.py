@@ -12,7 +12,7 @@ import pandas
 from six import StringIO
 
 # Internal modules #
-from cbmcfs3_runner.others.demand import Demand
+from cbmcfs3_runner.disturbances.demand import Demand
 
 # Constants #
 
