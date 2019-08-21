@@ -102,4 +102,6 @@ class OrigData(object):
         # Change Dist_Type_ID to a string to harmonise data type.
         # some countries have a string while others have an int.
         df['Dist_Type_ID'] = df['Dist_Type_ID'].astype('str')
+        # Make step an integer
+        df['Step'] = df['Step'].astype(int)
         return df.rename(columns = self.parent.classifiers.mapping)

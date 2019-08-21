@@ -111,6 +111,20 @@ class Country(object):
         row = ref_years.loc[ref_years['country'] == self.iso2_code].iloc[0]
         self.inventory_start_year = row['ref_year']
 
+    def timestep_to_years(self, timestep):
+        """
+        TimeStep 0 is the output of the makelist (so called "spin-up") procedure.
+        It represents the initial state.
+
+        Will convert a Series containing simulation time-steps such as:
+           [1, 2, 3, 4, 5]
+        to actual corresponding simulation years such as:
+           [1990, 1991, 1992, 1993, 1994]
+
+        #TODO check that there is not an off by one error here.
+        """
+        return timestep + self.parent.country.inventory_start_year - 1
+
     @property_cached
     def log(self):
         """Each runner will have its own logger to create log files."""
