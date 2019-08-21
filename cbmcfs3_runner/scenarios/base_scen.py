@@ -79,14 +79,15 @@ class Scenario(object):
         """A data frame with many countries together."""
         # Get data #
         dict_of_df = self.concat_as_dict(*args, **kwargs)
-        # Add column '_8' for all countries except BG when classifiers are present #
+        # When classifiers are present
+        # add column '_8' for all countries except BG 
         if '_7' in dict_of_df['AT'].columns:
             for iso2, df in dict_of_df.items():
                 if iso2 == "BG": continue
                 loc = list(dict_of_df['BG'].columns).index('_8')
                 df.insert(loc, '_8', '')
         # DataFrame #
-        df = pandas.concat(dict_of_df)
+        df = pandas.concat(dict_of_df, sort=True)
         df = df.reset_index(level=0)
         df = df.rename(columns={'level_0': 'country_iso2'})
         # Return result #
