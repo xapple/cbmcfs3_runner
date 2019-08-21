@@ -123,7 +123,7 @@ class Country(object):
 
         #TODO check that there is not an off by one error here.
         """
-        return timestep + self.parent.country.inventory_start_year - 1
+        return timestep + self.inventory_start_year - 1
 
     @property_cached
     def log(self):
