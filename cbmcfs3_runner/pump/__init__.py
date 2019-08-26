@@ -32,7 +32,12 @@ def count_unique_index(df, by=None):
 
 def multi_index_pivot(df, columns=None, values=None):
     """Pivot a pandas data frame on multiple index variables.
-    Copied from https://github.com/pandas-dev/pandas/issues/23955"""
+    Copied from https://github.com/pandas-dev/pandas/issues/23955
+    
+    TODO: add warning when there is no index set.
+    Otherwise the error message is cryptic:
+    KeyError: "None of [Index([None], dtype='object')] are in the [columns]"    
+    """
     names        = list(df.index.names)
     df           = df.reset_index()
     list_index   = df[names].values
