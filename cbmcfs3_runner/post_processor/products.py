@@ -205,4 +205,6 @@ class Products(object):
               .join(self.fw_c_total.set_index('TimeStep')[['TOT_Vol_FW_C']])
               .join(self.fw_b_total.set_index('TimeStep')[['TOT_Vol_FW_B']])
               .reset_index())
+        # Add year
+        df['year'] = self.parent.parent.country.timestep_to_years(df['TimeStep'])
         return df
