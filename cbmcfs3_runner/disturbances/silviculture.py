@@ -75,6 +75,11 @@ class Silviculture(object):
         df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
         # Rename the classifier columns to full names #
         df = df.rename(columns = self.parent.classifiers.mapping)
+        # 'For' and 'CC' receive the same silviculture treatment.
+        # Duplicate 'CC' rows in the silviculture treatment table and mark them as 'For'
+        silv_for = df.query("status == 'CC'").copy()
+        silv_for['status'] = 'For'
+        df = df.append(silv_for)
         # Return #
         return df
 
@@ -180,11 +185,6 @@ class Silviculture(object):
                         .join(self.corr_fact
                               .set_index('forest_type'))
                         .reset_index())
-        # 'For' and 'CC' receive the same silviculture treatment. 
-        # Duplicate 'CC' rows in the silviculture treatment table and mark them as 'For'
-        silv_for = silviculture.query("status == 'CC'").copy()
-        silv_for['status'] = 'For'
-        silviculture = silviculture.append(silv_for)
         # Join only on these classifiers #
         index = ['status', 'forest_type', 'management_type', 
                  'management_strategy', 'conifers_bradleaves']
