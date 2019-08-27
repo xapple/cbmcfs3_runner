@@ -42,8 +42,8 @@ class DisturbanceMaker(object):
     def new_events(self):
         """
         We have to proceed by steps, by first harvesting round-wood.
-        Each cubic meter of round-wood harvest will produce some fuel-wood,
-        which we later won't have to harvest.
+        Each cubic meter of round-wood harvested will produce some fuel-wood,
+        which later we won't have to harvest.
         Confiers and Broadleaves are independent in their processing.
 
         The demands matrix is like this:
