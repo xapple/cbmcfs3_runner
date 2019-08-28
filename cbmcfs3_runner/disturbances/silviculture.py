@@ -220,7 +220,7 @@ class Silviculture(object):
         # These variables will be added to the groupby aggregate operation
         # Because we need them later to create disturbances
         vars_to_create_dists = ['Sort_Type', 'Efficency', 'Min_age', 'Max_age', 
-                                'Min_since_last', 'Max_since_last', 'HWP',
+                                'Min_since_last', 'Max_since_last',
                                 'RegenDelay', 'ResetAge', 'WD']
         # Aggregate #
         df = (self.stock_available_by_age
