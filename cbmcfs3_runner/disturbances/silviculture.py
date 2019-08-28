@@ -217,10 +217,15 @@ class Silviculture(object):
         # Note the presence of 'HWP' now in the index
         index = ['status', 'forest_type', 'management_type', 'management_strategy',
                  'conifers_bradleaves', 'Dist_Type_ID', 'HWP']
+        # These variables will be added to the groupby aggregate operation
+        # Because we need them later to create disturbances
+        vars_to_create_dists = ['Sort_Type', 'Efficency', 'Min_age', 'Max_age', 
+                                'Min_since_last', 'Max_since_last', 'HWP',
+                                'RegenDelay', 'ResetAge', 'WD']
         # Aggregate #
         df = (self.stock_available_by_age
               .query("Dist_Type_ID not in @self.dist_to_ignore")
-              .groupby(index)
+              .groupby(index + vars_to_create_dists)
               .agg({'stock_available': 'sum'})
               .reset_index())
         # Return #
