@@ -12,6 +12,7 @@ Unit D1 Bioeconomy.
 
 # Third party modules #
 import numpy
+import re
 
 # First party modules #
 from plumbing.cache import property_cached
@@ -207,4 +208,6 @@ class Products(object):
               .reset_index())
         # Add year
         df['year'] = self.parent.parent.country.timestep_to_years(df['TimeStep'])
+        # Rename columns to standard IRW and FW product names
+        df.rename(columns=lambda x: re.sub(r'Vol_Merch_|TOT_Vol_',r'', x))
         return df
