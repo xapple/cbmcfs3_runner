@@ -108,8 +108,18 @@ class MiddleProcessor(object):
         that are supposed to be random. But we want every run to be comparable.
         This method will set the seed to a numerical value that's always the same.
         See https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-213
-        Apparently it defaults to a time based seed, if we do not do this step."""
-        # First find the current seed #
+        They say it defaults to a time based seed, if we do not do this step."""
+        # Set a new one #
+        query = "INSERT INTO tblRandomSeed (CBMRunID, RandomSeed, OnOffSwitch) VALUES ({0},{1},{2})"
+        query = query.format(1, 1, True)
+        self.project_database.cursor.execute(query)
+        # Check it worked #
+        assert self.current_random_seed.RandomSeed == 1
+
+    @property
+    def current_random_seed(self):
+        """Retrieve the random seed from the project's Access database."""
+        # The query #
         query = """
         SELECT tblRandomSeed.CBMRunID, tblRandomSeed.RandomSeed, tblRandomSeed.OnOffSwitch
         FROM   tblRandomSeed
@@ -121,11 +131,7 @@ class MiddleProcessor(object):
         # Execute #
         self.project_database.cursor.execute(query)
         result = self.project_database.cursor.fetchone()
-        print(result)
         # Check result is found #
         if result is None or result[0] is None: raise Exception("No random seed found.")
-        # Remove the old random seeds #
-        query = "DELETE FROM tblRandomSeed"
-        # Insert new ones #
-        query = "INSERT INTO tblRandomSeed (CBMRunID, RandomSeed, OnOffSwitch) VALUES ({0},{1},{2})"
-        query = query.format(1, 1, True)
+        # Return #
+        return result
