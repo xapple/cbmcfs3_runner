@@ -102,6 +102,10 @@ class Runner(object):
         # Final steps #
         self.middle_processor()
         self.launch_cbm()
+        # Save hash #
+        db = self.post_processor.database
+        self.log.info("Database '%s' md5 hash '%s'." % (db, db.md5))
+        # Post-processing #
         self.post_processor()
         # Reporting #
         #self.log.info("Creating runner report.")

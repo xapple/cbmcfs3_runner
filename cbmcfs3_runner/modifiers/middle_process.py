@@ -26,13 +26,13 @@ class MiddleProcessor(object):
     """
     Will modify the access database after its creation by SIT but before its
     usage by CBM.
-    
-    The middle processor makes it possible to call SIT twice, 
+
+    The middle processor makes it possible to call SIT twice,
     first in default mode, then in append mode.
     Beware the order of these calls is reversed compared to the chronological period:
-    1. SIT default mode adds the current yield table 
-       (used for the historical period and the simulation period), 
-    2. SIT append mode adds the historical yield table 
+    1. SIT default mode adds the current yield table
+       (used for the historical period and the simulation period),
+    2. SIT append mode adds the historical yield table
        (used for the pool initialisation period)
     """
 
@@ -47,8 +47,9 @@ class MiddleProcessor(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        #self.extend_simulation(100)
+        self.set_random_seed()
         if self.parent.sit_calling == 'dual': self.finish_append()
+        #self.extend_simulation(100)
 
     @property_cached
     def project_database(self):
@@ -101,3 +102,30 @@ class MiddleProcessor(object):
         self.project_database.cursor.execute(query)
         # Save changes #
         self.project_database.cursor.commit()
+
+    def set_random_seed(self):
+        """CBM uses pseudo-randomness for instance when allocating disturbances
+        that are supposed to be random. But we want every run to be comparable.
+        This method will set the seed to a numerical value that's always the same.
+        See https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-213
+        Apparently it defaults to a time based seed, if we do not do this step."""
+        # First find the current seed #
+        query = """
+        SELECT tblRandomSeed.CBMRunID, tblRandomSeed.RandomSeed, tblRandomSeed.OnOffSwitch
+        FROM   tblRandomSeed
+        WHERE  tblRandomSeed.CBMRunID In (
+            SELECT DISTINCT Max(tblRandomSeed.CBMRunID) AS MaxOfRunID
+            FROM tblRandomSeed;
+        );
+        """
+        # Execute #
+        self.project_database.cursor.execute(query)
+        result = self.project_database.cursor.fetchone()
+        print(result)
+        # Check result is found #
+        if result is None or result[0] is None: raise Exception("No random seed found.")
+        # Remove the old random seeds #
+        query = "DELETE FROM tblRandomSeed"
+        # Insert new ones #
+        query = "INSERT INTO tblRandomSeed (CBMRunID, RandomSeed, OnOffSwitch) VALUES ({0},{1},{2})"
+        query = query.format(1, 1, True)
