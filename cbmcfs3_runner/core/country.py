@@ -125,6 +125,16 @@ class Country(object):
         """
         return timestep + self.inventory_start_year - 1
 
+    def years_to_timestep(self, year):
+        """
+        The reverse operation of `timestep_to_years`.
+        Will convert a Series containing years such as:
+           [1990, 1991, 1992, 1993, 1994]
+        to simulation time-steps such as:
+           [1, 2, 3, 4, 5]
+        """
+        return year - self.inventory_start_year + 1
+
     @property_cached
     def log(self):
         """Each runner will have its own logger to create log files."""
