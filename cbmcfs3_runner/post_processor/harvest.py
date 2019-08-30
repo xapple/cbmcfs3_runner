@@ -333,13 +333,13 @@ class Harvest(object):
         # Check expected #
         processed = volu['expected'].sum() + area['expected'].sum()
         raw       = self.parent.parent.input_data.disturbance_events['Amount'].sum()
-        numpy.testing.assert_allclose(processed, raw)
+        numpy.testing.assert_allclose(processed, raw, rtol=1e-03)
         # Check provided area #
         processed = area['provided'].sum()
         raw       = self.parent.database['TblDistIndicators']['DistArea'].sum()
-        numpy.testing.assert_allclose(processed, raw)
+        numpy.testing.assert_allclose(processed, raw, rtol=1e-03)
         # Check provided volume #
         processed = volu['provided'].sum()
         raw       = self.parent.database['TblFluxIndicators']
         raw       = raw['SoftProduction'].sum() + raw['HardProduction'].sum() + raw['DOMProduction'].sum()
-        numpy.testing.assert_allclose(processed, raw)
+        numpy.testing.assert_allclose(processed, raw, rtol=1e-03)

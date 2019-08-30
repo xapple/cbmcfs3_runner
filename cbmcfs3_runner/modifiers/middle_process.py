@@ -6,7 +6,6 @@ Written by Lucas Sinclair and Paul Rougieux.
 
 JRC biomass Project.
 Unit D1 Bioeconomy.
-
 """
 
 # Built-in modules #
@@ -39,6 +38,8 @@ class MiddleProcessor(object):
     all_paths = """
     /output/sit/project.mdb
     """
+
+    random_seed = 1
 
     def __init__(self, parent):
         # Default attributes #
@@ -111,10 +112,10 @@ class MiddleProcessor(object):
         They say it defaults to a time based seed, if we do not do this step."""
         # Set a new one #
         query = "INSERT INTO tblRandomSeed (CBMRunID, RandomSeed, OnOffSwitch) VALUES ({0},{1},{2})"
-        query = query.format(1, 1, True)
+        query = query.format(1, self.random_seed, True)
         self.project_database.cursor.execute(query)
         # Check it worked #
-        assert self.current_random_seed.RandomSeed == 1
+        assert self.current_random_seed.RandomSeed == self.random_seed
 
     @property
     def current_random_seed(self):
