@@ -277,7 +277,7 @@ class Harvest(object):
         # Add the delta column #
         df['delta'] = (df.expected - df.provided)
         # Add year and remove TimeStep #
-        df['year'] = self.parent.parent.country.timestep_to_years(df['TimeStep'])
+        df['year'] = self.parent.parent.country.timestep_to_year(df['TimeStep'])
         df = df.drop('TimeStep', axis=1)
         # Get the disturbances full name from their number #
         dist_type = (self.parent.parent.input_data.disturbance_types

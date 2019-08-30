@@ -211,7 +211,7 @@ class Inventory(object):
         # Load the vector version #
         df = self.grouped_bins.reset_index()
         # Add year and remove TimeStep #
-        df['year'] = self.parent.parent.country.timestep_to_years(df['TimeStep'])
+        df['year'] = self.parent.parent.country.timestep_to_year(df['TimeStep'])
         df = df.drop('TimeStep', axis=1)
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
@@ -247,7 +247,7 @@ class Inventory(object):
                     'SW_Merch': 'sum'})
               .reset_index())
         # Add year and remove TimeStep #
-        df['year'] = self.parent.parent.country.timestep_to_years(df['TimeStep'])
+        df['year'] = self.parent.parent.country.timestep_to_year(df['TimeStep'])
         df = df.drop('TimeStep', axis=1)
         # Check for mixed species that would produce both hard and soft #
         import warnings

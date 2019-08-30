@@ -92,7 +92,7 @@ class DistSurplus(object):
         # Drop 'year' that is redundant with 'timestep' and confusing #
         df = df.drop(columns='year')
         # Add the actual year as per the country inventory start #
-        df['year'] = self.parent.parent.country.timestep_to_years(df['time_step'])
+        df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
         # Save the data frame #
         df.to_csv(str(self.paths.surplus_csv), index=False)
 
