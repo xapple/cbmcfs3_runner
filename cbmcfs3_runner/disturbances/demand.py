@@ -16,6 +16,7 @@ from plumbing.cache import property_cached
 # Third party modules #
 import pandas
 import math
+import numpy
 
 # Internal modules #
 from cbmcfs3_runner import module_dir
@@ -54,6 +55,7 @@ class Demand(object):
     def __init__(self, parent):
         # Default attributes #
         self.parent = parent
+        self.bark_correction_factor = 0.88
 
     @property
     def gftm_header(self):
@@ -74,6 +76,12 @@ class Demand(object):
         """
         Future demands as predicted by GFTM.
         Create the data frame in long format.
+
+        GFTM gives a yearly demand over a 5 year interval.
+        Before we can generate disturbances, we create a year indentifier
+        for each year in the interval
+        and we duplicate the yearly demand volume 5 times.
+
         Columns are: ['values']
         """
         # Fill values #
@@ -98,6 +106,41 @@ class Demand(object):
               .rename(columns={0:'variable',
                                1:'year',
                                2:'product'}))
+        # Correct an inconsistency in the year range
+        df['year'] = df['year'].replace('2016to 2020', '2016 to 2020')
+        # Filter for years with data and select the variable of interest
+        years_to_keep = ['2016 to 2020', '2021 to 2025', '2026 to 2030']
+        variable = 'Annual  production (m3ub) - from GFTM'
+        df = df.query("variable==@variable & year in @years_to_keep").copy()
+        # Convert under bark demand volumes to over bark using a correction factor
+        df['value_ob'] = df['value'] / self.bark_correction_factor
+        # Sum log and pulpwood
+        # Create a little data frame to rename products to HWP
+        gftm_irw_names = pandas.DataFrame({'product':['C log', 'C pulpwood',
+                                                      'N log', 'N pulpwood'],
+                                           'HWP': ['IRW_C', 'IRW_C',
+                                                   'IRW_B', 'IRW_B']})
+        df= (df
+             # Rename products to HWP
+             .set_index('product')
+             .join(gftm_irw_names.set_index('product'))
+             # Aggregate the value by HWP
+             .groupby(['year', 'HWP'])
+             .agg({'value_ob':sum})
+             .reset_index())
+        # Create a little data frame with expanded years
+        year_min = numpy.concatenate([numpy.repeat(x,5) for x in range(2016,2030,5)])
+        year_expansion = pandas.DataFrame({'year_min': year_min,
+                                           'year':range(2016,2031,1)})
+        df['year_min'] = df['year'].str[:4].astype(int)
+        df['year_max'] = df['year'].str[-4:].astype(int)
+        # Repeat lines for each successive year within a range by joining the year_expansion data frame
+        df = (df
+              .drop(columns=['year', 'year_max'])
+              .set_index(['year_min'])
+              .join(year_expansion.set_index(['year_min'])))
+        # Convert year to time step
+        df['Step'] = self.parent.year_to_timestep(df['year'])
         # Return #
         return df
 
