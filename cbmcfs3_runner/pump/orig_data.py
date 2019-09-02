@@ -108,5 +108,5 @@ class OrigData(object):
         df['Dist_Type_ID'] = df['Dist_Type_ID'].astype('str')
         df['Step'] = df['Step'].astype(int)
         # Add year
-        df['year'] = self.parent.timestep_to_years(df['Step'])
+        df['year'] = self.parent.timestep_to_year(df['Step'])
         return df.rename(columns = self.parent.classifiers.mapping)

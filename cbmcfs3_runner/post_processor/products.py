@@ -207,7 +207,7 @@ class Products(object):
               .join(self.fw_b_total.set_index('TimeStep')[['TOT_Vol_FW_B']])
               .reset_index())
         # Add year
-        df['year'] = self.parent.parent.country.timestep_to_years(df['TimeStep'])
+        df['year'] = self.parent.parent.country.timestep_to_year(df['TimeStep'])
         # Rename columns to standard IRW and FW product names
         df = df.rename(columns=lambda x: re.sub(r'Vol_Merch_|TOT_Vol_',r'', x))
         return df
