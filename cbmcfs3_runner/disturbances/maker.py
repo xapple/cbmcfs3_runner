@@ -222,7 +222,7 @@ class DisturbanceMaker(object):
     def add_events(self):
         """Append the new disturbances to the disturbance file."""
         # Load data
-        dist_past = self.disturbance_events_filtered
+        dist_past = self.disturbance_events_raw
         dist_future = self.demand_to_dist
         # Concatenate
         df = pandas.concat([dist_past, dist_future])
