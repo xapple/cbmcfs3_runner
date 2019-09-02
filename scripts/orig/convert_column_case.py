@@ -25,7 +25,7 @@ from cbmcfs3_runner.core.continent import continent
 ###############################################################################
 class CaseConverter(object):
     """
-    This class takes many of the CSV files in export/ and orig/ and
+    This class takes many of the CSV files in "export/" and "orig/" and
     converts their title case.
     """
 
@@ -58,7 +58,7 @@ class CaseConverter(object):
             # Change #
             df = df.rename(columns = camel_to_snake)
             # Write #
-            df.to_csv(str(p), index=False)
+            df.to_csv(str(p), index=False, float_format='%g')
 
 ###############################################################################
 if __name__ == '__main__':
