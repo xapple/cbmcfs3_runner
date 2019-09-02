@@ -11,9 +11,11 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
+import pandas
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
+from plumbing.cache import property_cached
 
 # Internal modules #
 
@@ -38,8 +40,23 @@ class DisturbanceMaker(object):
     def __call__(self):
         self.add_events()
 
+
+    @property_cached
+    def disturbance_events_raw(self):
+        """ Note: self.country.orig_data.disturbance_events was modified
+        after we loaded it, we added additional variables.
+        To get the un-modified column order, we reload the original
+        "disturbance_events.csv" without extra columns.
+        We only rename the classifier columns"""
+        df = self.country.orig_data['disturbance_events']
+        df = df.rename(columns = self.country.classifiers.mapping)
+        # Change column types to match those of generated future disturbances
+        df['Step'] = df['Step'].astype(int)
+        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
+        return df
+
     @property
-    def convert_demand_to_harvest(self):
+    def convert_demand_to_disturbance_events(self):
         """
         We have to proceed by steps, by first harvesting round-wood.
         Each cubic meter of round-wood harvested will produce some fuel-wood,
@@ -198,20 +215,17 @@ class DisturbanceMaker(object):
         df['Max_tot_merch_hard_stem_snag_C'] = -1
 
         # Rearrange columns according to the raw "disturbance_events.csv" file
-        # Note: self.country.orig_data.disturbance_events was modified
-        # after we loaded it, we added additional variables.
-        # To get the un-modified column order, we reload the original
-        # "disturbance_events.csv" without extra columns.
-        dist_calib_raw = self.country.orig_data['disturbance_events']
-        dist_calib_raw = dist_calib_raw.rename(columns = self.country.classifiers.mapping)
-        dist_calib_columns = list(dist_calib_raw.columns)
+        dist_calib_columns = list(self.disturbance_events_raw.columns)
         # Return #
         return df[dist_calib_columns]
 
     def add_events(self):
         """Append the new disturbances to the disturbance file."""
-        # Load data #
-        df = self.convert_demand_to_harvest
-        # Write the result #
-        df.to_csv(str(self.paths.csv), mode='a', index=False)
+        # Load data
+        dist_past = self.disturbance_events_raw
+        dist_future = self.convert_demand_to_disturbance_events
+        # Concatenate
+        df = pandas.concat([dist_past, dist_future])
+        # Write the result
+        df.to_csv(str(self.paths.csv), index=False)
 
