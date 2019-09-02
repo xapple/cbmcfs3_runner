@@ -27,7 +27,7 @@ class DisturbanceMaker(object):
     """
 
     all_paths = """
-    /input/csv/disturbance_events.csv
+    /input/csv/disturbance_events_filtered.csv
     """
 
     def __init__(self, parent):
@@ -48,7 +48,7 @@ class DisturbanceMaker(object):
         To get the un-modified column order, we reload the original
         "disturbance_events.csv" without extra columns.
         We only rename the classifier columns"""
-        df = self.country.orig_data['disturbance_events']
+        df = pandas.read_csv(self.paths.disturbance_events_filtered)
         df = df.rename(columns = self.country.classifiers.mapping)
         # Change column types to match those of generated future disturbances
         df['Step'] = df['Step'].astype(int)
@@ -56,7 +56,7 @@ class DisturbanceMaker(object):
         return df
 
     @property
-    def convert_demand_to_disturbance_events(self):
+    def demand_to_dist(self):
         """
         We have to proceed by steps, by first harvesting round-wood.
         Each cubic meter of round-wood harvested will produce some fuel-wood,
@@ -222,8 +222,8 @@ class DisturbanceMaker(object):
     def add_events(self):
         """Append the new disturbances to the disturbance file."""
         # Load data
-        dist_past = self.disturbance_events_raw
-        dist_future = self.convert_demand_to_disturbance_events
+        dist_past = self.disturbance_events_filtered
+        dist_future = self.demand_to_dist
         # Concatenate
         df = pandas.concat([dist_past, dist_future])
         # Write the result

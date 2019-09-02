@@ -94,8 +94,8 @@ class Runner(object):
         self.remove_directory()
         self.input_data.copy_from_country()
         # Modify input data #
-        #self.disturbance_maker()
         self.pre_processor()
+        self.disturbance_maker()
         # Standard import tool #
         self.country.aidb.switch()
         self.default_sit()
