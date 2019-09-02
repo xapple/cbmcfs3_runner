@@ -1,4 +1,4 @@
-    #!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -147,13 +147,11 @@ class DisturbanceMaker(object):
         We have dropped 'prop'
         To create disturbances we are still missing "SWStart", "SWEnd", "HWStart", "HWEnd".
         In this case SW == Conifer and HW == Broad. Both values are always the same.
-
         """
-        # Allocation
+        # Allocation:
         # Join the GFTM demand and the allocation table
-        # This will generate a much longer table,
-        # containing different combinations of classifiers and disturbance ids
-        # for each HWP and year.
+        # This will generate a much longer table, containing different
+        # combinations of classifiers and disturbance ids for each HWP and year.
         df = (self.country.demand.future
              .set_index('HWP')
              .join(self.country.silviculture.harvest_proportion.set_index('HWP')))
@@ -161,47 +159,49 @@ class DisturbanceMaker(object):
         df['Amount'] = df['value_ob'] * df['prop']
 
         # Add and re-order columns
-        # # These classifiers are ignored when interacting with the economic model only
-        df['climatic_unit']  = '?'
-        df['region']  =  '?'
+        # These classifiers are ignored when interacting with the economic model only
+        df['climatic_unit'] = '?'
+        df['region']        = '?'
 
-        # Min age max age are distinquished by hardwood and soft wood
+        # Min age max age are distinguished by hardwood and soft wood
         df['SWStart'] = df['Min_age']
-        df['SWEnd'] = df['Max_age']
+        df['SWEnd']   = df['Max_age']
         df['HWStart'] = df['Min_age']
-        df['HWEnd'] = df['Max_age']
+        df['HWEnd']   = df['Max_age']
 
         # Rename
-        df  =  df.rename(columns = {'Min_since_last':'Min_since_last_Dist',
-                                              'Max_since_last':'Max_since_last_Dist'})
-        # Constant values expected by cbm_cfs3
-        # See silviculture.sas
-        df['UsingID'] = False
-        df['Last_Dist_ID'] = -1
-        df['Min_tot_biom_C'] = -1
-        df['Max_tot_biom_C'] = -1
-        df['Min_merch_soft_biom_C'] = -1
-        df['Max_merch_soft_biom_C'] = -1
-        df['Min_merch_hard_biom_C'] = -1
-        df['Max_merch_hard_biom_C'] = -1
-        df['Min_tot_stem_snag_C'] = -1
-        df['Max_tot_stem_snag_C'] = -1
-        df['Min_tot_soft_stem_snag_C'] = -1
-        df['Max_tot_soft_stem_snag_C'] = -1
-        df['Min_tot_hard_stem_snag_C'] = -1
-        df['Max_tot_hard_stem_snag_C'] = -1
-        df['Min_tot_merch_stem_snag_C'] = -1
-        df['Max_tot_merch_stem_snag_C'] = -1
+        df = df.rename(columns = {'Min_since_last': 'Min_since_last_Dist',
+                                  'Max_since_last': 'Max_since_last_Dist'})
+
+        # Constant values expected by CBM_CFS3
+        # See file "silviculture.sas"
+        df['UsingID']          = False
+        df['Measurement_type'] = 'M'
+        df['Last_Dist_ID']                   = -1
+        df['Min_tot_biom_C']                 = -1
+        df['Max_tot_biom_C']                 = -1
+        df['Min_merch_soft_biom_C']          = -1
+        df['Max_merch_soft_biom_C']          = -1
+        df['Min_merch_hard_biom_C']          = -1
+        df['Max_merch_hard_biom_C']          = -1
+        df['Min_tot_stem_snag_C']            = -1
+        df['Max_tot_stem_snag_C']            = -1
+        df['Min_tot_soft_stem_snag_C']       = -1
+        df['Max_tot_soft_stem_snag_C']       = -1
+        df['Min_tot_hard_stem_snag_C']       = -1
+        df['Max_tot_hard_stem_snag_C']       = -1
+        df['Min_tot_merch_stem_snag_C']      = -1
+        df['Max_tot_merch_stem_snag_C']      = -1
         df['Min_tot_merch_soft_stem_snag_C'] = -1
         df['Max_tot_merch_soft_stem_snag_C'] = -1
         df['Min_tot_merch_hard_stem_snag_C'] = -1
         df['Max_tot_merch_hard_stem_snag_C'] = -1
-        df['Measurement_type'] = 'M'
-        # Rearrange columns according to the raw disturbance_events.csv file
+
+        # Rearrange columns according to the raw "disturbance_events.csv" file
         # Note: self.country.orig_data.disturbance_events was modified
         # after we loaded it, we added additional variables.
         # To get the un-modified column order, we reload the original
-        # "disturbance_events.csv" without extra columns
+        # "disturbance_events.csv" without extra columns.
         dist_calib_raw = self.country.orig_data['disturbance_events']
         dist_calib_raw = dist_calib_raw.rename(columns = self.country.classifiers.mapping)
         dist_calib_columns = list(dist_calib_raw.columns)
@@ -211,7 +211,7 @@ class DisturbanceMaker(object):
     def add_events(self):
         """Append the new disturbances to the disturbance file."""
         # Load data #
-        df = self.new_events
+        df = self.convert_demand_to_harvest
         # Write the result #
         df.to_csv(str(self.paths.csv), mode='a', index=False)
 

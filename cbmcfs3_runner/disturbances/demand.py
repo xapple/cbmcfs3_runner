@@ -103,38 +103,39 @@ class Demand(object):
         df['value'] = pandas.to_numeric(df['value'])
         df['value'] = df['value'].fillna(0.0)
         df = (df.reset_index()
-              .rename(columns={0:'variable',
-                               1:'year',
-                               2:'product'}))
+              .rename(columns = {0: 'variable',
+                                 1: 'year',
+                                 2: 'product'}))
         # Correct an inconsistency in the year range
         df['year'] = df['year'].replace('2016to 2020', '2016 to 2020')
         # Filter for years with data and select the variable of interest
         years_to_keep = ['2016 to 2020', '2021 to 2025', '2026 to 2030']
-        variable = 'Annual  production (m3ub) - from GFTM'
+        variable      = 'Annual  production (m3ub) - from GFTM'
         df = df.query("variable==@variable & year in @years_to_keep").copy()
         # Convert under bark demand volumes to over bark using a correction factor
         df['value_ob'] = df['value'] / self.bark_correction_factor
         # Sum log and pulpwood
         # Create a little data frame to rename products to HWP
-        gftm_irw_names = pandas.DataFrame({'product':['C log', 'C pulpwood',
-                                                      'N log', 'N pulpwood'],
-                                           'HWP': ['IRW_C', 'IRW_C',
-                                                   'IRW_B', 'IRW_B']})
-        df= (df
-             # Rename products to HWP
-             .set_index('product')
-             .join(gftm_irw_names.set_index('product'))
-             # Aggregate the value by HWP
-             .groupby(['year', 'HWP'])
-             .agg({'value_ob':sum})
-             .reset_index())
+        gftm_irw_names = pandas.DataFrame({'product': ['C log', 'C pulpwood',
+                                                       'N log', 'N pulpwood'],
+                                           'HWP':     ['IRW_C', 'IRW_C',
+                                                       'IRW_B', 'IRW_B']})
+        df = (df
+              # Rename products to HWP
+              .set_index('product')
+              .join(gftm_irw_names.set_index('product'))
+              # Aggregate the value by HWP
+              .groupby(['year', 'HWP'])
+              .agg({'value_ob': sum})
+              .reset_index())
         # Create a little data frame with expanded years
-        year_min = numpy.concatenate([numpy.repeat(x,5) for x in range(2016,2030,5)])
+        year_min = numpy.concatenate([numpy.repeat(x,5) for x in range(2016, 2030, 5)])
         year_expansion = pandas.DataFrame({'year_min': year_min,
-                                           'year':range(2016,2031,1)})
+                                           'year':     range(2016, 2031, 1)})
         df['year_min'] = df['year'].str[:4].astype(int)
         df['year_max'] = df['year'].str[-4:].astype(int)
-        # Repeat lines for each successive year within a range by joining the year_expansion data frame
+        # Repeat lines for each successive year within a range by
+        # joining the year_expansion data frame
         df = (df
               .drop(columns=['year', 'year_max'])
               .set_index(['year_min'])
