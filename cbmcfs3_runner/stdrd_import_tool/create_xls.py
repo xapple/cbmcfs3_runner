@@ -40,7 +40,7 @@ class CreateXLS(object):
     file_name_to_sheet_name = {
         'ageclass':                      'AgeClasses',
         'classifiers':                   'Classifiers',
-        'disturbance_events_filtered':   'DistEvents',
+        'disturbance_events_combined':   'DistEvents',
         'disturbance_types':             'DistType',
         'inventory':                     'Inventory',
         'transition_rules':              'Transitions',

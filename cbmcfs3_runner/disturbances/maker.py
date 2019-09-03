@@ -28,6 +28,7 @@ class DisturbanceMaker(object):
 
     all_paths = """
     /input/csv/disturbance_events_filtered.csv
+    /input/csv/disturbance_events_combined.csv
     """
 
     def __init__(self, parent):
@@ -227,5 +228,5 @@ class DisturbanceMaker(object):
         # Concatenate
         df = pandas.concat([dist_past, dist_future])
         # Write the result
-        df.to_csv(str(self.paths.csv), index=False)
+        df.to_csv(str(self.paths.disturbance_events_combined), index=False)
 
