@@ -51,7 +51,9 @@ class Silviculture(object):
 
     # Ignore some disturbances that are of type "natural"
     # when calculating the harvest proportion.
-    # This is the same for all countries.
+    # Used in self.stock_available_agg
+    # These disturbance ids are the same for all countries.
+    # See also the information contained in the 'Man_Nat' column
     dist_to_ignore = ['5', '7', '21', 'DISTID1', 'DISTID5', 'DISTID7',
                       'DISTID9b_H', 'DISTID9c_H']
 
@@ -207,7 +209,7 @@ class Silviculture(object):
     @property_cached
     def stock_available_agg(self):
         """Aggregate stock_available_by_age and sum the stock available over
-        all age classes. Some natural disturbances are ignored.
+        all age classes. Natural disturbances are ignored.
 
         Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
                       'conifers_bradleaves', 'Dist_Type_ID', 'stock_available',
@@ -224,7 +226,7 @@ class Silviculture(object):
                                 'RegenDelay', 'ResetAge', 'WD', 'Man_Nat']
         # Aggregate #
         df = (self.stock_available_by_age
-              .query("Dist_Type_ID not in @self.dist_to_ignore")
+              .query("Dist_Type_ID not in @self.dist_to_ignore and Man_Nat=='Man'")
               .groupby(index + vars_to_create_dists)
               .agg({'stock_available': 'sum'})
               .reset_index())

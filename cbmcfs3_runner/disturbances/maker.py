@@ -214,6 +214,16 @@ class DisturbanceMaker(object):
         df['Max_tot_merch_soft_stem_snag_C'] = -1
         df['Min_tot_merch_hard_stem_snag_C'] = -1
         df['Max_tot_merch_hard_stem_snag_C'] = -1
+        
+        # Check consistency of Sort_Type with measurement type
+        dist_gftm_random = df.query('Sort_Type==6')
+        msg = "Random sort type: 6 not allowed with disturbances expressed in terms " 
+        msg += "of Measurement Type 'M' merchantable carbon. \n"
+        msg += "The issue is present for Dist_Type_ID: %s \n"
+        msg += "CBM error in this case is "
+        msg += "Error: 'Illegal target type for RANDOM sort in timestep...'"
+        if len(dist_gftm_random) > 0:
+            raise Exception(msg % (dist_gftm_random['Dist_Type_ID'].unique()))
 
         # Rearrange columns according to the raw "disturbance_events.csv" file
         dist_calib_columns = list(self.disturbance_events_raw.columns)
