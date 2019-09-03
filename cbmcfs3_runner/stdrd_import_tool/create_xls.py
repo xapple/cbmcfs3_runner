@@ -30,7 +30,7 @@ class CreateXLS(object):
     /input/csv/ageclass.csv
     /input/csv/inventory.csv
     /input/csv/classifiers.csv
-    /input/csv/disturbance_events_filtered.csv
+    /input/csv/disturbance_events_combined.csv
     /input/csv/disturbance_types.csv
     /input/csv/transition_rules.csv
     /input/csv/yields.csv
