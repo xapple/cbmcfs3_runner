@@ -76,7 +76,7 @@ class PostProcessor(object):
         # Unstack
         index = ['user_defd_class_id', 'user_defd_class_set_id']
         classifiers = classifiers.reset_index().dropna().set_index(index)
-        classifiers = classifiers[['UserDefdSubClassName']].unstack('user_defd_class_id')
+        classifiers = classifiers[['user_defd_sub_class_name']].unstack('user_defd_class_id')
         # Rename
         # This object will link: 1->species, 2->forest_type, etc.
         mapping = user_classes.set_index('user_defd_class_id')['ClassDesc']

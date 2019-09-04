@@ -70,12 +70,12 @@ class CaseConverter(object):
     def fix_spelling(self):
         """Some words were written wrongly but not in all countries."""
         # Read #
-        df = pandas.read_csv(str(self.paths.treatments))
+        df = pandas.read_csv(str(self.paths.disturbance_events))
         # Change #
         df = df.rename(columns = {'efficency': 'efficiency',
                                   'sor_type':  'sort_type'})
         # Write #
-        df.to_csv(str(self.paths.treatments), index=False, float_format='%g')
+        df.to_csv(str(self.paths.disturbance_events), index=False, float_format='%g')
 
 ###############################################################################
 class CaseRenamer(object):
@@ -108,7 +108,7 @@ class CaseRenamer(object):
                         'Max_since_last,HWP,RegenDelay,ResetAge,Percent,WD,OWC_Perc,Snag_Perc,'
                         'Perc_Merch_Biom_rem,Man_Nat',
         'database':     'TimeStep, UserDefdClassID, UserDefdClassSetID, UserDefdSubclassID,'
-                        'AveAge, Biomass, DistArea,'
+                        'UserDefdSubClassName, AveAge, Biomass, DistArea,'
                         'BEF_Tot, BG_Biomass, Tot_Merch, Tot_ABG, BG_Biomass,'
                         'Vol_Merch, Vol_SubMerch, Vol_Snags, TC, TC_FW_C,'
                         'Vol_Merch_FW_B, Vol_SubMerch_FW_B, Vol_Snags_FW_B,'
@@ -167,14 +167,14 @@ class CaseRenamer(object):
 ###############################################################################
 if __name__ == '__main__':
     # First part #
-    #converters = [CaseConverter(c) for c in continent]
+    converters = [CaseConverter(c) for c in continent]
     #for converter in tqdm(converters): converter()
     #for converter in tqdm(converters): converter.fix_spelling()
     # Second part #
     code_dir = home + "repos/sinclair/work/ispra_italy/repos/cbmcfs3_runner/cbmcfs3_runner/"
     renamer  = CaseRenamer(code_dir, '.py')
     renamer()
-    # Third part #
+    ## Third part #
     code_dir = home + "repos/sinclair/work/ispra_italy/repos/bioeconomy_notes/notebooks/"
     renamer  = CaseRenamer(code_dir, '.md')
     renamer()
