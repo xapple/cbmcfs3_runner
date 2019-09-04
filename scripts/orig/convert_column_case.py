@@ -72,7 +72,7 @@ class CaseConverter(object):
         # Read #
         df = pandas.read_csv(str(self.paths.treatments))
         # Change #
-        df = df.rename(columns = {'efficiency': 'efficiency',
+        df = df.rename(columns = {'efficency': 'efficiency',
                                   'sor_type':  'sort_type'})
         # Write #
         df.to_csv(str(self.paths.treatments), index=False, float_format='%g')
@@ -132,7 +132,7 @@ class CaseRenamer(object):
         return [f for f in self.base_dir.files if f.extension == self.extension]
 
     def __call__(self):
-        for file in self.code_files:
+        for file in tqdm(self.code_files):
             for old_name, new_name in zip(self.cols_before, self.cols_after):
                 # Only if it is found enclosed in quotes #
                 file.replace_word("'%s'" % old_name, "'%s'" % new_name)
