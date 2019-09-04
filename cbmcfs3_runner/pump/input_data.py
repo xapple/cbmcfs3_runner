@@ -96,7 +96,7 @@ class InputData(object):
         df = self.xls.parse("DistEvents")
         # Harmonise Dist_Type_ID data type amoung countries
         # some have int, others have str, make it str for all.
-        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
+        df['dist_type_id'] = df['dist_type_id'].astype(str)
         return df
 
     @property_cached

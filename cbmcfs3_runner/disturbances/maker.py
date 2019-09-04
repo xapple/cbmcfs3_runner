@@ -52,8 +52,8 @@ class DisturbanceMaker(object):
         df = pandas.read_csv(self.paths.disturbance_events_filtered)
         df = df.rename(columns = self.country.classifiers.mapping)
         # Change column types to match those of generated future disturbances
-        df['Step'] = df['Step'].astype(int)
-        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
+        df['step'] = df['step'].astype(int)
+        df['dist_type_id'] = df['dist_type_id'].astype(str)
         return df
 
     @property
@@ -216,7 +216,7 @@ class DisturbanceMaker(object):
         df['max_tot_merch_hard_stem_snag_c'] = -1
         # Check consistency of Sort_Type with measurement type
         # TODO move this to check any disturbances just before SIT is called
-        dist_gftm_random = df.query('Sort_Type==6')
+        dist_gftm_random = df.query('sort_type==6')
         msg = "Random sort type: 6 not allowed with disturbances expressed in terms "
         msg += "of Measurement Type 'M' merchantable carbon. \n"
         msg += "The issue is present for dist_type_id: %s \n"

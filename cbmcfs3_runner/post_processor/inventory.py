@@ -66,7 +66,7 @@ class Inventory(object):
                            df.HW_Other   + df.SW_Other
         df['bg_biomass'] = df.SW_Coarse  + df.SW_Fine    + \
                            df.HW_Coarse  + df.HW_Fine
-        df['BEF_Tot']    = (df.Tot_ABG   + df.BG_Biomass) / df.Tot_ABG
+        df['bef_tot']    = (df.Tot_ABG   + df.BG_Biomass) / df.Tot_ABG
         # Return result #
         return df
 
@@ -81,7 +81,7 @@ class Inventory(object):
 
             ['status', 'forest_type', 'region', 'management_type',
              'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'ave_age',
-             'time_step', 'area', 'biomass', 'BEF_Tot', 'db', 'Merch_C_ha',
+             'time_step', 'area', 'biomass', 'bef_tot', 'db', 'merch_c_ha',
              'Merch_Vol_ha']
         """
         # Load table #
@@ -98,11 +98,11 @@ class Inventory(object):
                .join(self.bef_ft.set_index('forest_type'))
                .reset_index())
         # Select only some columns #
-        columns_of_interest  = ['ave_age', 'time_step', 'area', 'biomass', 'BEF_Tot', 'db']
+        columns_of_interest  = ['ave_age', 'time_step', 'area', 'biomass', 'bef_tot', 'db']
         columns_of_interest += list(self.parent.classifiers.columns)
         df = df[columns_of_interest].copy()
         # Divide #
-        df['Merch_C_ha']   = df.Biomass    / df.BEF_Tot
+        df['merch_c_ha']   = df.Biomass    / df.BEF_Tot
         df['Merch_Vol_ha'] = df.Merch_C_ha / df.db
         # Return result #
         return df

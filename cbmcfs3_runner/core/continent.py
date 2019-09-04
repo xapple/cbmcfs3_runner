@@ -30,7 +30,6 @@ from cbmcfs3_runner.scenarios import scen_classes
 
 # Constants #
 cbm_data_repos = Path("~/repos/cbmcfs3_data/")
-cbm_data_repos = Path("~/deploy/cbmcfs3_data/")
 
 ###############################################################################
 class Continent(object):

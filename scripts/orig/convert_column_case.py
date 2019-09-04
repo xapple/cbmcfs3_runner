@@ -107,14 +107,15 @@ class CaseRenamer(object):
         'treatments':   'Dist_Type_ID,Sort_Type,Efficiency,Min_age,Max_age,Min_since_last,'
                         'Max_since_last,HWP,RegenDelay,ResetAge,Percent,WD,OWC_Perc,Snag_Perc,'
                         'Perc_Merch_Biom_rem,Man_Nat',
-        'database':     'TimeStep, UserDefdClassSetID, AveAge, Biomass, DistArea, BEF_Tot'
-                        'BG_Biomass, Tot_Merch, Tot_ABG, BG_Biomass,'
+        'database':     'TimeStep, UserDefdClassID, UserDefdClassSetID, UserDefdSubclassID,'
+                        'AveAge, Biomass, DistArea,'
+                        'BEF_Tot, BG_Biomass, Tot_Merch, Tot_ABG, BG_Biomass,'
                         'Vol_Merch, Vol_SubMerch, Vol_Snags, TC, TC_FW_C'
                         'Vol_Merch_FW_B, Vol_SubMerch_FW_B, Vol_Snags_FW_B'
                         'Vol_SubMerch_IRW_B, Vol_Snags_IRW_B,'
                         'TOT_Vol_FW_B, DMStructureID, DMColumn, DMRow, DMID',
         'products':     'SW_Merch, SW_Foliage, SW_Other, HW_Merch, HW_Foliage, HW_Other, SW_Coarse,'
-                        'SW_Fine, HW_Coarse, HW_Fine'
+                        'SW_Fine, HW_Coarse, HW_Fine, Merch_C_ha'
      }
 
     @property_cached

@@ -62,7 +62,7 @@ class PostProcessor(object):
          * status, forest_type, region, management_type, management_strategy, climatic_unit, conifers_bradleaves
          in the European dataset
 
-         Columns are: ['UserDefdClassID', 'status', 'forest_type', 'region', 'management_type',
+         Columns are: ['user_defd_class_id', 'status', 'forest_type', 'region', 'management_type',
                        'management_strategy', 'climatic_unit', 'conifers_bradleaves']
         """
         # Load the three tables we will need #
@@ -70,16 +70,16 @@ class PostProcessor(object):
         user_sub_classes       = self.database["tblUserDefdSubclasses"]
         user_class_sets_values = self.database["tblUserDefdClassSetValues"]
         # Join
-        index = ['UserDefdClassID', 'UserDefdSubclassID']
+        index = ['user_defd_class_id', 'user_defd_subclass_id']
         classifiers = user_sub_classes.set_index(index)
         classifiers = classifiers.join(user_class_sets_values.set_index(index))
         # Unstack
-        index = ['UserDefdClassID', 'user_defd_class_set_id']
+        index = ['user_defd_class_id', 'user_defd_class_set_id']
         classifiers = classifiers.reset_index().dropna().set_index(index)
-        classifiers = classifiers[['UserDefdSubClassName']].unstack('UserDefdClassID')
+        classifiers = classifiers[['UserDefdSubClassName']].unstack('user_defd_class_id')
         # Rename
         # This object will link: 1->species, 2->forest_type, etc.
-        mapping = user_classes.set_index('UserDefdClassID')['ClassDesc']
+        mapping = user_classes.set_index('user_defd_class_id')['ClassDesc']
         mapping = mapping.apply(self.sanitize_names)
         classifiers = classifiers.rename(mapping, axis=1)
         # Remove multilevel column index, replace by level(1) (second level)

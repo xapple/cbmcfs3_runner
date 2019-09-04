@@ -53,7 +53,7 @@ class Silviculture(object):
     # when calculating the harvest proportion.
     # Used in self.stock_available_agg
     # These disturbance ids are the same for all countries.
-    # See also the information contained in the 'Man_Nat' column
+    # See also the information contained in the 'man_nat' column
     dist_to_ignore = ['5', '7', '21', 'DISTID1', 'DISTID5', 'DISTID7',
                       'DISTID9b_H', 'DISTID9c_H']
 
@@ -92,8 +92,8 @@ class Silviculture(object):
         the disturbance ids and HWP columns."""
         return self.treatments[['status', 'forest_type',
                                 'management_type', 'management_strategy',
-                                'conifers_bradleaves', 'Dist_Type_ID',
-                                'HWP']]
+                                'conifers_bradleaves', 'dist_type_id',
+                                'hwp']]
 
     @property_cached
     def corr_fact(self):
