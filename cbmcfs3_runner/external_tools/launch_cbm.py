@@ -87,7 +87,9 @@ class LaunchCBM(object):
     @property_cached
     def generated_database(self):
         """Will be in a directory created by CBM."""
-        return AccessDatabase(self.paths.cbm_mdb)
+        database = AccessDatabase(self.paths.cbm_mdb)
+        database.convert_col_names_to_snake = True
+        return database
 
     @property
     def tail(self):

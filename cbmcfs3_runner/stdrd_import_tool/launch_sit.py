@@ -125,7 +125,9 @@ class LaunchSIT(object):
     @property_cached
     def project_mdb(self):
         self.paths.mdb.must_exist()
-        return AccessDatabase(self.paths.mdb)
+        database = AccessDatabase(self.paths.mdb)
+        database.convert_col_names_to_snake = True
+        return database
 
     @property
     def tail(self):

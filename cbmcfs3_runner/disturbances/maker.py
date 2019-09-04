@@ -153,10 +153,10 @@ class DisturbanceMaker(object):
         # This will generate a much longer table, containing different
         # combinations of classifiers and disturbance ids for each HWP and year.
         df = (self.country.demand.future
-             .set_index('HWP')
-             .join(self.country.silviculture.harvest_proportion.set_index('HWP')))
+             .set_index('hwp')
+             .join(self.country.silviculture.harvest_proportion.set_index('hwp')))
         # Calculate the disturbance amount based on the proportion
-        df['Amount'] = df['value_ob'] * df['prop']
+        df['amount'] = df['value_ob'] * df['prop']
 
         # Add and re-order columns
         # These classifiers are ignored when interacting with the economic model only
@@ -164,38 +164,38 @@ class DisturbanceMaker(object):
         df['region']        = '?'
 
         # Min age max age are distinguished by hardwood and soft wood
-        df['SWStart'] = df['Min_age']
-        df['SWEnd']   = df['Max_age']
-        df['HWStart'] = df['Min_age']
-        df['HWEnd']   = df['Max_age']
+        df['sw_start'] = df['min_age']
+        df['sw_end']   = df['max_age']
+        df['hw_start'] = df['min_age']
+        df['hw_end']   = df['max_age']
 
         # Rename
-        df = df.rename(columns = {'Min_since_last': 'Min_since_last_Dist',
-                                  'Max_since_last': 'Max_since_last_Dist'})
+        df = df.rename(columns = {'min_since_last': 'min_since_last_dist',
+                                  'max_since_last': 'max_since_last_dist'})
 
         # Constant values expected by CBM_CFS3
         # See file "silviculture.sas"
-        df['UsingID']          = False
-        df['Measurement_type'] = 'M'
-        df['Last_Dist_ID']                   = -1
-        df['Min_tot_biom_C']                 = -1
-        df['Max_tot_biom_C']                 = -1
-        df['Min_merch_soft_biom_C']          = -1
-        df['Max_merch_soft_biom_C']          = -1
-        df['Min_merch_hard_biom_C']          = -1
-        df['Max_merch_hard_biom_C']          = -1
-        df['Min_tot_stem_snag_C']            = -1
-        df['Max_tot_stem_snag_C']            = -1
-        df['Min_tot_soft_stem_snag_C']       = -1
-        df['Max_tot_soft_stem_snag_C']       = -1
-        df['Min_tot_hard_stem_snag_C']       = -1
-        df['Max_tot_hard_stem_snag_C']       = -1
-        df['Min_tot_merch_stem_snag_C']      = -1
-        df['Max_tot_merch_stem_snag_C']      = -1
-        df['Min_tot_merch_soft_stem_snag_C'] = -1
-        df['Max_tot_merch_soft_stem_snag_C'] = -1
-        df['Min_tot_merch_hard_stem_snag_C'] = -1
-        df['Max_tot_merch_hard_stem_snag_C'] = -1
+        df['using_id']          = False
+        df['measurement_type']  = 'M'
+        df['last_dist_id']                   = -1
+        df['min_tot_biom_c']                 = -1
+        df['max_tot_biom_c']                 = -1
+        df['min_merch_soft_biom_c']          = -1
+        df['max_merch_soft_biom_c']          = -1
+        df['min_merch_hard_biom_c']          = -1
+        df['max_merch_hard_biom_c']          = -1
+        df['min_tot_stem_snag_c']            = -1
+        df['max_tot_stem_snag_c']            = -1
+        df['min_tot_soft_stem_snag_c']       = -1
+        df['max_tot_soft_stem_snag_c']       = -1
+        df['min_tot_hard_stem_snag_c']       = -1
+        df['max_tot_hard_stem_snag_c']       = -1
+        df['min_tot_merch_stem_snag_c']      = -1
+        df['max_tot_merch_stem_snag_c']      = -1
+        df['min_tot_merch_soft_stem_snag_c'] = -1
+        df['max_tot_merch_soft_stem_snag_c'] = -1
+        df['min_tot_merch_hard_stem_snag_c'] = -1
+        df['max_tot_merch_hard_stem_snag_c'] = -1
 
         # Rearrange columns according to the raw "disturbance_events.csv" file
         # Note: self.country.orig_data.disturbance_events was modified

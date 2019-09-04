@@ -21,7 +21,7 @@ from matplotlib import pyplot
 ###############################################################################
 class InventoryFacet(Graph):
     facet_var = 'forest_type'
-    value_col = 'Area'
+    value_col = 'area'
     age_cols  = ['age_start', 'age_end']
 
     year_selection = lambda self, years: max(years)

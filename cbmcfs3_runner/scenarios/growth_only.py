@@ -20,7 +20,7 @@ from cbmcfs3_runner.core.runner import Runner
 def filter_df(df, base_year, inv_start_year):
     """Takes the old event data frame and returns only disturbances for 2020."""
     only_this_year = base_year - inv_start_year + 5
-    return df.query("Step == %s" % only_this_year)
+    return df.query("step == %s" % only_this_year)
 
 ###############################################################################
 class GrowthOnly(Scenario):

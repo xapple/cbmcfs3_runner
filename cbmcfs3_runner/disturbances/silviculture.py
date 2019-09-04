@@ -70,9 +70,9 @@ class Silviculture(object):
         the percent of thinning.
         """
         df = pandas.read_csv(str(self.paths.treatments))
-        # Dist_Type_ID can be given as either a numeric or a character variable
+        # dist_type_id can be given as either a numeric or a character variable
         # convert to string to prevent issues when merging and filtering
-        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
+        df['dist_type_id'] = df['dist_type_id'].astype(str)
         # Rename the classifier columns to full names #
         df = df.rename(columns = self.parent.classifiers.mapping)
         # 'For' and 'CC' receive the same silviculture treatment.
@@ -130,7 +130,7 @@ class Silviculture(object):
 
         Columns are: ['status', 'forest_type', 'region', 'management_type',
                       'management_strategy', 'climatic_unit',
-                      'conifers_bradleaves', 'age_class', 'Area', 'volume',
+                      'conifers_bradleaves', 'age_class', 'area', 'volume',
                       'stock', 'age']
         """
         # Load data frames #
@@ -146,9 +146,9 @@ class Silviculture(object):
               .join(h_yields_long.set_index(index))
               .reset_index())
         # Compute stock #
-        df['stock'] = df['Area'] * df['volume']
+        df['stock'] = df['area'] * df['volume']
         # We are not interested in these columns #
-        cols_to_drop = ['UsingID', 'Age', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist', 'Sp']
+        cols_to_drop = ['using_id', 'age', 'delay', 'unfcccl', 'hist_dist', 'last_dist', 'sp']
         df = df.drop(columns=cols_to_drop)
         # Compute the actual age #
         df['age'] = df['age_class'] * 10
@@ -169,11 +169,11 @@ class Silviculture(object):
 
         Columns are: ['status', forest_type', 'management_type', 'management_strategy',
                       'conifers_bradleaves', 'status', 'region', 'climatic_unit',
-                      'age_class', 'Area', 'volume', 'stock', 'age',
-                      'Dist_Type_ID', 'Sort_Type', 'Efficency', 'Min_age',
-                      'Max_age', 'Min_since_last', 'Max_since_last', 'HWP',
-                      'RegenDelay', 'ResetAge', 'Percent', 'WD', 'OWC_Perc',
-                      'Snag_Perc', 'Perc_Merch_Biom_rem', 'Man_Nat', 'corr_fact',
+                      'age_class', 'area', 'volume', 'stock', 'age',
+                      'dist_type_id', 'sort_type', 'efficency', 'min_age',
+                      'max_age', 'min_since_last', 'max_since_last', 'hwp',
+                      'regen_delay', 'reset_age', 'percent', 'wd', 'owc_perc',
+                      'snag_perc', 'perc_merch_biom_rem', 'man_nat', 'corr_fact',
                       'stock_available']
 
         Min_since_last represents the minimum age since the last disturbance for
@@ -186,21 +186,21 @@ class Silviculture(object):
                               .set_index('forest_type'))
                         .reset_index())
         # Join only on these classifiers #
-        index = ['status', 'forest_type', 'management_type', 
+        index = ['status', 'forest_type', 'management_type',
                  'management_strategy', 'conifers_bradleaves']
         # Join #
         df = (self.stock_based_on_yield
               .set_index(index)
               .join(silviculture.set_index(index))
               .reset_index()
-              .query('Min_age < age & age < Max_age')
+              .query('min_age < age & age < max_age')
               .query('stock > 0')
               .copy())
         # Compute the stock available #
         df['stock_available'] = (df['stock']
                                  * df['corr_fact']
-                                 * df['Perc_Merch_Biom_rem']
-                                 / df['Min_since_last'])
+                                 * df['perc_merch_biom_rem']
+                                 / df['min_since_last'])
         # Return #
         return df
 
@@ -210,21 +210,21 @@ class Silviculture(object):
         all age classes. Some natural disturbances are ignored.
 
         Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
-                      'conifers_bradleaves', 'Dist_Type_ID', 'stock_available',
-                      'HWP', 'status']
+                      'conifers_bradleaves', 'dist_type_id', 'stock_available',
+                      'hwp', 'status']
         """
         # Index #
-        # Note the presence of 'HWP' now in the index
+        # Note the presence of 'hwp' now in the index
         index = ['status', 'forest_type', 'management_type', 'management_strategy',
-                 'conifers_bradleaves', 'Dist_Type_ID', 'HWP']
+                 'conifers_bradleaves', 'dist_type_id', 'hwp']
         # These variables will be added to the groupby aggregate operation
         # Because we need them later to create disturbances
-        vars_to_create_dists = ['Sort_Type', 'Efficency', 'Min_age', 'Max_age', 
-                                'Min_since_last', 'Max_since_last',
-                                'RegenDelay', 'ResetAge', 'WD']
+        vars_to_create_dists = ['sort_type', 'efficency', 'min_age', 'max_age',
+                                'min_since_last', 'max_since_last',
+                                'regen_delay', 'reset_age', 'wd']
         # Aggregate #
         df = (self.stock_available_by_age
-              .query("Dist_Type_ID not in @self.dist_to_ignore")
+              .query("dist_type_id not in @self.dist_to_ignore")
               .groupby(index + vars_to_create_dists)
               .agg({'stock_available': 'sum'})
               .reset_index())
@@ -251,7 +251,7 @@ class Silviculture(object):
 
         The stock available is then calculated based
         on the percentage moved in the disturbance matrix
-        (also available in the silviculture table Perc_Merch_Biom_rem)
+        (also available in the silviculture table perc_merch_biom_rem)
         and on an empirical harvest correction factor,
         for each disturbance and combination of classifiers:
 
@@ -263,24 +263,24 @@ class Silviculture(object):
         along the classifiers used in self.stock_available_agg:
 
             ['status', 'forest_type', 'management_type', 'management_strategy',
-             'conifers_bradleaves', 'Dist_Type_ID' ].
+             'conifers_bradleaves', 'dist_type_id' ].
 
         The proportion is based on the available stock by
         harvested wood products (HWP) category.
 
         Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
-                      'conifers_bradleaves', 'Dist_Type_ID', 'stock_available',
-                      'HWP', 'status', 'stock_tot', 'prop']
+                      'conifers_bradleaves', 'dist_type_id', 'stock_available',
+                      'hwp', 'status', 'stock_tot', 'prop']
         """
         # Load dataframe #
         df = self.stock_available_agg.copy()
         # Add column stock_tot #
-        df['stock_tot'] = df.groupby(['HWP'])['stock_available'].transform('sum')
+        df['stock_tot'] = df.groupby(['hwp'])['stock_available'].transform('sum')
         # Add column prop #
         df['prop']      = df['stock_available'] / df['stock_tot']
         # Drop redundant total column #
         df.drop(columns=['stock_tot'])
         # Sort for readability #
-        df = df.sort_values(by=['HWP'], ascending=False)
+        df = df.sort_values(by=['hwp'], ascending=False)
         # Return
         return df

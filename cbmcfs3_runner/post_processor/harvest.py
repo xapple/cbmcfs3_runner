@@ -48,18 +48,18 @@ class Harvest(object):
         * TC is in terms of tons of carbon.
         * Vol_Merch are in terms of cubic meters of wood.
 
-        Columns are: ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
+        Columns are: ['dist_type_id', 'dist_type_name', 'time_step', 'status', 'forest_type',
                       'management_type', 'management_strategy', 'conifers_bradleaves',
                       'DOMProduction', 'CO2Production', 'MerchLitterInput', 'OthLitterInput',
-                      'db', 'SoftProduction', 'HardProduction', 'TC', 'Vol_Merch',
-                      'Vol_SubMerch', 'Vol_Snags', 'Vol_forest_residues']
+                      'db', 'SoftProduction', 'HardProduction', 'tc', 'vol_merch',
+                      'vol_sub_merch', 'vol_snags', 'Vol_forest_residues']
         """
         # First ungrouped #
         ungrouped = self.parent.flux_indicators
         # The index we will use for grouping #
-        index = ['DistTypeID',
-                 'DistTypeName',
-                 'TimeStep',
+        index = ['dist_type_id',
+                 'dist_type_name',
+                 'time_step',
                  'status',
                  'forest_type',
                  'management_type',
@@ -90,11 +90,11 @@ class Harvest(object):
         is_equal(flux_raw['SoftProduction'].sum(), df['SoftProduction'].sum())
         is_equal(flux_raw['HardProduction'].sum(), df['HardProduction'].sum())
         # Create new columns #
-        df['TC']                  = df.SoftProduction + df.HardProduction
+        df['tc']                  = df.SoftProduction + df.HardProduction
         df['Prov_Carbon']         = df.SoftProduction + df.HardProduction + df.DOMProduction
-        df['Vol_Merch']           = (df.TC * 2) / df.db
-        df['Vol_SubMerch']        = (df.CO2Production * 2) / df.db
-        df['Vol_Snags']           = (df.DOMProduction * 2) / df.db
+        df['vol_merch']           = (df.TC * 2) / df.db
+        df['vol_sub_merch']        = (df.CO2Production * 2) / df.db
+        df['vol_snags']           = (df.DOMProduction * 2) / df.db
         df['Vol_forest_residues'] = ((df.MerchLitterInput + df.OthLitterInput) * 2) / df.db
         # Return #
         return df
@@ -105,34 +105,34 @@ class Harvest(object):
         """
         Based on Roberto's query `Harvest summary check` visible in the original calibration database.
 
-        Columns are:    ['DistTypeID', 'DistTypeName', 'TimeStep', 'status', 'forest_type',
-        (of the output)  'management_type', 'management_strategy', 'Vol_Merch', 'Vol_Snags',
-                         'Vol_SubMerch', 'Vol_forest_residues', 'TC', 'tot_vol']
+        Columns are:    ['dist_type_id', 'dist_type_name', 'time_step', 'status', 'forest_type',
+        (of the output)  'management_type', 'management_strategy', 'vol_merch', 'vol_snags',
+                         'vol_sub_merch', 'Vol_forest_residues', 'tc', 'tot_vol']
 
         This corresponds to the "provided" aspect of "expected_provided" harvest and contains
         only volumes ('M').
         """
         # Compute #
         df = (self.check
-              .set_index('DistTypeID')
-              .groupby(['DistTypeID',
-                        'DistTypeName',
-                        'TimeStep',
+              .set_index('dist_type_id')
+              .groupby(['dist_type_id',
+                        'dist_type_name',
+                        'time_step',
                         'status',
                         'forest_type',
                         'management_type',
                         'management_strategy'])
-              .agg({'Vol_Merch':           'sum',
-                    'Vol_Snags':           'sum',
-                    'Vol_SubMerch':        'sum',
+              .agg({'vol_merch':           'sum',
+                    'vol_snags':           'sum',
+                    'vol_sub_merch':        'sum',
                     'Vol_forest_residues': 'sum',
                     'Prov_Carbon':         'sum',
-                    'TC':                  'sum'})
+                    'tc':                  'sum'})
               .reset_index())
         # Add the total volume column #
         df['tot_vol'] = df.Vol_Merch + df.Vol_SubMerch + df.Vol_Snags
         # Add the Measurement_type #
-        df['Measurement_type'] = 'M'
+        df['measurement_type'] = 'M'
         # Return result #
         return df
 
@@ -142,8 +142,8 @@ class Harvest(object):
         """
         Load area disturbed from the table 'TblDistIndicators'
 
-        Columns are:    ['DistIndID', 'SPUID', 'DistTypeID', 'TimeStep', 'UserDefdClassSetID',
-                         'LandClassID', 'kf2', 'kf3', 'kf4', 'kf5', 'kf6', 'DistArea',
+        Columns are:    ['DistIndID', 'SPUID', 'dist_type_id', 'time_step', 'user_defd_class_set_id',
+                         'LandClassID', 'kf2', 'kf3', 'kf4', 'kf5', 'kf6', 'dist_area',
                          'DistProduct']
 
         This corresponds to the "provided" aspect of "expected_provided" harvest and contains
@@ -154,16 +154,16 @@ class Harvest(object):
         disturbance_type = self.parent.database['tblDisturbanceType']
         # First ungrouped #
         ungrouped = (dist_indicators
-                     .set_index('DistTypeID')
-                     .join(disturbance_type.set_index('DistTypeID'))
+                     .set_index('dist_type_id')
+                     .join(disturbance_type.set_index('dist_type_id'))
                      .reset_index()
-                     .set_index('UserDefdClassSetID')
-                     .join(self.parent.classifiers.set_index('UserDefdClassSetID'))
+                     .set_index('user_defd_class_set_id')
+                     .join(self.parent.classifiers.set_index('user_defd_class_set_id'))
                      .reset_index())
         # The index we will use for grouping #
-        index = ['DistTypeID',
-                 'DistTypeName',
-                 'TimeStep',
+        index = ['dist_type_id',
+                 'dist_type_name',
+                 'time_step',
                  'status',
                  'forest_type',
                  'region',
@@ -172,13 +172,13 @@ class Harvest(object):
                  'conifers_bradleaves']
         # Compute #
         df = (ungrouped
-              .set_index('DistTypeID')
+              .set_index('dist_type_id')
               .groupby(index)
-              .agg({'DistArea':    'sum',
+              .agg({'dist_area':    'sum',
                     'DistProduct': 'sum'})
               .reset_index())
         # Add the Measurement_type #
-        df['Measurement_type'] = 'A'
+        df['measurement_type'] = 'A'
         # Return result #
         return df
 
@@ -193,14 +193,14 @@ class Harvest(object):
         This method Prepares the disturbance table for joining operations with
         harvest tables.
 
-        It could be a good idea to check why some countries have DistTypeName as int64
-        and others have DistTypeName as object.
+        It could be a good idea to check why some countries have dist_type_name as int64
+        and others have dist_type_name as object.
 
         Columns are: ['status', 'forest_type', 'region', 'management_type',
                       'management_strategy', 'climatic_unit', 'conifers_bradleaves',
-                      'UsingID', 'SWStart', 'SWEnd', 'HWStart', 'HWEnd', 'Last_Dist_ID',
-                      'Efficency', 'Sort_Type', 'Measurement_type', 'Amount', 'Dist_Type_ID',
-                      'TimeStep'],
+                      'using_id', 'sw_start', 'sw_end', 'hw_start', 'hw_end', 'last_dist_id',
+                      'efficency', 'sort_type', 'measurement_type', 'amount', 'dist_type_id',
+                      'time_step'],
         """
         # Load disturbances table from excel file #
         df = self.parent.parent.input_data.disturbance_events
@@ -209,15 +209,15 @@ class Harvest(object):
         # C.f the PL column problem #
         df = df.rename(columns = {'natural_forest_region': 'management_type'})
         # This column also need to be manually renamed #
-        df = df.rename(columns = {'Step': 'TimeStep'})
+        df = df.rename(columns = {'step': 'time_step'})
         # For joining with other data frames, DistType has to be of dtype object not int64 #
-        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
+        df['dist_type_id'] = df['dist_type_id'].astype(str)
         # Remove columns that are not really used #
         df = df.drop(columns=[c for c in df.columns if c.startswith("Min") or c.startswith("Max")])
         # Remove slashes #
         df = df.rename(columns=lambda n:n.replace('/','_'))
-        # Dist_Type_ID is actually DistTypeName #
-        df = df.rename(columns = {'Dist_Type_ID': 'DistTypeName'})
+        # dist_type_id is actually dist_type_name #
+        df = df.rename(columns = {'dist_type_id': 'dist_type_name'})
         # Return result #
         return df
 
@@ -237,10 +237,10 @@ class Harvest(object):
          - An extra column indicating the disturbance description sentence.
         """
         # Columns we will keep #
-        index = ['TimeStep',
-                 'DistTypeName',
+        index = ['time_step',
+                 'dist_type_name',
                  'forest_type',
-                 'Measurement_type',
+                 'measurement_type',
                  #'region',
                  #'management_type',
                  #'management_strategy',
@@ -250,12 +250,12 @@ class Harvest(object):
         # Load #
         expected = self.disturbances
         # Filter for measurement type #
-        selector = expected['Measurement_type'] == meas_type
+        selector = expected['measurement_type'] == meas_type
         expected = expected.loc[selector].copy()
         # Aggregate expected #
         expected = (expected
                     .groupby(index)
-                    .agg({'Amount': 'sum'})
+                    .agg({'amount': 'sum'})
                     .reset_index())
         # Aggregate provided #
         provided = (provided
@@ -269,7 +269,7 @@ class Harvest(object):
         # Do the join #
         df = (provided.join(expected, how='outer')).reset_index()
         # Sum two columns #
-        df = df.rename(columns = {'Amount':      'expected',
+        df = df.rename(columns = {'amount':      'expected',
                                   prov_col_name: 'provided'})
         # Remove rows where both expected and provided are zero #
         selector = (df['expected'] == 0.0) & (df['provided'] == 0.0)
@@ -277,15 +277,15 @@ class Harvest(object):
         # Add the delta column #
         df['delta'] = (df.expected - df.provided)
         # Add year and remove TimeStep #
-        df['year'] = self.parent.parent.country.timestep_to_year(df['TimeStep'])
-        df = df.drop('TimeStep', axis=1)
+        df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
+        df = df.drop('time_step', axis=1)
         # Get the disturbances full name from their number #
         dist_type = (self.parent.parent.input_data.disturbance_types
-                     .rename(columns={'DisturbanceTypeID': 'DistTypeName',
-                                                   'Name': 'DistDescription'})
-                     .set_index('DistTypeName'))
+                     .rename(columns={'disturbance_type_id': 'dist_type_name',
+                                                   'name': 'DistDescription'})
+                     .set_index('dist_type_name'))
         # Add a column named 'DistDescription' #
-        df = (df.set_index('DistTypeName')
+        df = (df.set_index('dist_type_name')
                 .join(dist_type)
                 .reset_index())
         # Only if we are in the calibration scenario #
@@ -302,8 +302,8 @@ class Harvest(object):
         """
         "Measurement_type == 'M'"
 
-        Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
-                      'management_strategy', 'expected', 'provided', 'Measurement_type',
+        Columns are: ['status', 'time_step', 'dist_type_name', 'forest_type', 'management_type',
+                      'management_strategy', 'expected', 'provided', 'measurement_type',
                       'DistDescription']
         """
         # Compute #
@@ -316,13 +316,13 @@ class Harvest(object):
         """
         Same as above but for "Measurement_type == 'A'"
 
-        Columns are: ['status', 'TimeStep', 'DistTypeName', 'forest_type', 'management_type',
-                      'management_strategy', 'expected', 'provided', 'Measurement_type',
+        Columns are: ['status', 'time_step', 'dist_type_name', 'forest_type', 'management_type',
+                      'management_strategy', 'expected', 'provided', 'measurement_type',
                       'DistDescription']
         """
         # Compute #
         df = self.provided_area
-        return self.compute_expected_provided(df, 'A', 'DistArea')
+        return self.compute_expected_provided(df, 'A', 'dist_area')
 
     #-------------------------------------------------------------------------#
     def check_exp_prov(self):
@@ -332,11 +332,11 @@ class Harvest(object):
         volu = self.exp_prov_by_volume
         # Check expected #
         processed = volu['expected'].sum() + area['expected'].sum()
-        raw       = self.parent.parent.input_data.disturbance_events['Amount'].sum()
+        raw       = self.parent.parent.input_data.disturbance_events['amount'].sum()
         numpy.testing.assert_allclose(processed, raw, rtol=1e-03)
         # Check provided area #
         processed = area['provided'].sum()
-        raw       = self.parent.database['TblDistIndicators']['DistArea'].sum()
+        raw       = self.parent.database['TblDistIndicators']['dist_area'].sum()
         numpy.testing.assert_allclose(processed, raw, rtol=1e-03)
         # Check provided volume #
         processed = volu['provided'].sum()

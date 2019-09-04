@@ -63,13 +63,13 @@ class InputData(object):
 
         ['status', 'forest_type', 'region', 'management_type',
          'management_strategy', 'climatic_unit', 'conifers_bradleaves',
-         'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist']
+         'using_id', 'age', 'area', 'delay', 'unfcccl', 'hist_dist', 'last_dist']
         """
         # Get the right sheet #
         df = self.xls.parse("Inventory")
         # Create the age_class column
         # so it can be used as a join variable with a yields table
-        df['age_class'] = (df['Age']
+        df['age_class'] = (df['age']
                            .replace('AGEID', '', regex=True)
                            .astype('int'))
         return df.rename(columns = self.classifiers_mapping)
@@ -79,18 +79,18 @@ class InputData(object):
         """
         Columns are:
 
-        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'UsingID', 'SWStart', 'SWEnd',
-         'HWStart', 'HWEnd', 'Min_since_last_Dist', 'Max_since_last_Dist',
-         'Last_Dist_ID', 'Min_tot_biom_C', 'Max_tot_biom_C',
-         'Min_merch_soft_biom_C', 'Max_merch_soft_biom_C',
-         'Min_merch_hard_biom_C', 'Max_merch_hard_biom_C', 'Min_tot_stem_snag_C',
-         'Max_tot_stem_snag_C', 'Min_tot_soft_stem_snag_C',
-         'Max_tot_soft_stem_snag_C', 'Min_tot_hard_stem_snag_C',
-         'Max_tot_hard_stem_snag_C', 'Min_tot_merch_stem_snag_C',
-         'Max_tot_merch_stem_snag_C', 'Min_tot_merch_soft_stem_snag_C',
-         'Max_tot_merch_soft_stem_snag_C', 'Min_tot_merch_hard_stem_snag_C',
-         'Max_tot_merch_hard_stem_snag_C', 'Efficency', 'Sort_Type',
-         'Measurement_type', 'Amount', 'Dist_Type_ID', 'Step']
+        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'using_id', 'sw_start', 'sw_end',
+         'hw_start', 'hw_end', 'min_since_last_dist', 'max_since_last_dist',
+         'last_dist_id', 'min_tot_biom_c', 'max_tot_biom_c',
+         'min_merch_soft_biom_c', 'max_merch_soft_biom_c',
+         'min_merch_hard_biom_c', 'max_merch_hard_biom_c', 'min_tot_stem_snag_c',
+         'max_tot_stem_snag_c', 'min_tot_soft_stem_snag_c',
+         'max_tot_soft_stem_snag_c', 'min_tot_hard_stem_snag_c',
+         'max_tot_hard_stem_snag_c', 'min_tot_merch_stem_snag_c',
+         'max_tot_merch_stem_snag_c', 'min_tot_merch_soft_stem_snag_c',
+         'max_tot_merch_soft_stem_snag_c', 'min_tot_merch_hard_stem_snag_c',
+         'max_tot_merch_hard_stem_snag_c', 'efficency', 'sort_type',
+         'measurement_type', 'amount', 'dist_type_id', 'step']
         """
         # Get the right sheet #
         return self.xls.parse("DistEvents")
@@ -98,12 +98,12 @@ class InputData(object):
     @property_cached
     def disturbance_types(self):
         """
-        Columns are: ['DisturbanceTypeID', 'Name']
+        Columns are: ['disturbance_type_id', 'name']
         """
         # Get the right sheet #
         df = self.xls.parse("DistType")
-        # DisturbanceTypeID has to be strings for joining purposes #
-        df.DisturbanceTypeID = df.DisturbanceTypeID.astype(str)
+        # disturbance_type_id has to be strings for joining purposes #
+        df['disturbance_type_id'] = df['disturbance_type_id'].astype(str)
         # Return #
         return df
 
@@ -112,7 +112,7 @@ class InputData(object):
         """
         Columns are:
 
-        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'Sp', 'Vol0', 'Vol1', 'Vol2',
+        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'sp', 'Vol0', 'Vol1', 'Vol2',
          'Vol3', 'Vol4', 'Vol5', 'Vol6', 'Vol7', 'Vol8', 'Vol9', 'Vol10',
          'Vol11', 'Vol12', 'Vol13', 'Vol14', 'Vol15', 'Vol16', 'Vol17', 'Vol18',
          'Vol19', 'Vol20', 'Vol21', 'Vol22', 'Vol23', 'Vol24', 'Vol25', 'Vol26',
@@ -152,7 +152,7 @@ class InputData(object):
     def classifiers(self):
         # Get the right sheet #
         df = self.xls.parse("Classifiers")
-        sort_by = ['ClassifierNumber', 'ClassifierValueID']
+        sort_by = ['classifier_number', 'classifier_value_id']
         return df.sort_values(by=sort_by, ascending=[True, False])
 
 

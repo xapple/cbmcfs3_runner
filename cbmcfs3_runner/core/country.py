@@ -93,15 +93,15 @@ class Country(object):
         # The reference ISO2 code #
         self.iso2_code = self.data_dir.name
         # Load name mappings #
-        row = all_codes.loc[all_codes['ISO2 Code'] == self.iso2_code].iloc[0]
+        row = all_codes.loc[all_codes['iso2_code'] == self.iso2_code].iloc[0]
         # Store all the country references codes #
-        self.country_num  = row['Country Code']
-        self.country_name = row['Country']
-        self.country_m49  = row['M49 Code']
-        self.country_iso3 = row['ISO3 Code']
+        self.country_num  = row['country_code']
+        self.country_name = row['country']
+        self.country_m49  = row['m49_code']
+        self.country_iso3 = row['iso3_code']
         # More crazy codes #
-        self.nuts_zero_2006 = row['Nuts Zero 2006']
-        self.nuts_zero_2016 = row['Nuts Zero 2010']
+        self.nuts_zero_2006 = row['nuts_zero_2006']
+        self.nuts_zero_2016 = row['nuts_zero_2010']
 
     def set_years(self):
         """Update all the reference years for this country."""

@@ -50,11 +50,13 @@ class PostProcessor(object):
     @property
     def database(self):
         """The CBM database, after the model is run."""
-        return AccessDatabase(self.paths.mdb)
+        database = AccessDatabase(self.paths.mdb)
+        database.convert_col_names_to_snake = True
+        return database
 
     @property_cached
     def classifiers(self):
-        """Creates a mapping between 'UserDefdClassSetID'
+        """Creates a mapping between 'user_defd_class_set_id'
         and the classifiers values:
          * species, site_quality and forest_type in tutorial six
          * status, forest_type, region, management_type, management_strategy, climatic_unit, conifers_bradleaves
@@ -72,7 +74,7 @@ class PostProcessor(object):
         classifiers = user_sub_classes.set_index(index)
         classifiers = classifiers.join(user_class_sets_values.set_index(index))
         # Unstack
-        index = ['UserDefdClassID', 'UserDefdClassSetID']
+        index = ['UserDefdClassID', 'user_defd_class_set_id']
         classifiers = classifiers.reset_index().dropna().set_index(index)
         classifiers = classifiers[['UserDefdSubClassName']].unstack('UserDefdClassID')
         # Rename
@@ -102,7 +104,7 @@ class PostProcessor(object):
     def classifiers_coefs(self):
         """A join between the coefficients and the classifiers table.
 
-        Columns are: ['index', 'forest_type', 'UserDefdClassSetID', 'status', 'region',
+        Columns are: ['index', 'forest_type', 'user_defd_class_set_id', 'status', 'region',
                       'management_type', 'management_strategy', 'climatic_unit',
                       'conifers_bradleaves', 'id', 'c', 'db', 'harvest_gr']
         """
@@ -125,13 +127,13 @@ class PostProcessor(object):
         coefficients     = self.classifiers_coefs
         # Ungrouped #
         return (flux_indicators
-                .set_index('DistTypeID')
+                .set_index('dist_type_id')
                 .join(disturbance_type
-                    .set_index('DistTypeID'))
+                    .set_index('dist_type_id'))
                 .reset_index()
-                .set_index('UserDefdClassSetID')
+                .set_index('user_defd_class_set_id')
                 .join(coefficients
-                     .set_index('UserDefdClassSetID')))
+                     .set_index('user_defd_class_set_id')))
 
     @property_cached
     def pool_indicators(self):
@@ -139,7 +141,7 @@ class PostProcessor(object):
         pool  = self.database["tblPoolIndicators"]
         clifr = self.classifiers
         # Set indexes #
-        pool  = pool.set_index('UserDefdClassSetID')
+        pool  = pool.set_index('user_defd_class_set_id')
         clifr = clifr.set_index("UserDefdClassSetID")
         # Join #
         return pool.join(clifr)

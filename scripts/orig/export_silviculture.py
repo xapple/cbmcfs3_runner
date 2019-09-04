@@ -103,24 +103,24 @@ class ExportFromSilviculture(object):
     def harvest_prop_fact(self):
         """This time we want the harvest proportion factors.
 
-              if Dist_Type_ID=11 then Stock_available=Stock*0.10*CF;
-              if Dist_Type_ID=13 then Stock_available=Stock*0.20*CF;
+              if dist_type_id=11 then Stock_available=Stock*0.10*CF;
+              if dist_type_id=13 then Stock_available=Stock*0.20*CF;
               ...
 
         This fails for AT, DK, FR, IE, PL, RO.
         """
         # Search in the file #
-        condition = lambda l: "Stock_available" in l and "if Dist_Type_ID=" in l
+        condition = lambda l: "Stock_available" in l and "if dist_type_id=" in l
         lines = [line for line in self.paths.sas if condition(str(line))]
         # Do each line #
-        query   = "if Dist_Type_ID=(.*?) then Stock_available=Stock\\*(.*?)\\*CF"
+        query   = "if dist_type_id=(.*?) then Stock_available=Stock\\*(.*?)\\*CF"
         extract = lambda line: re.findall(query, str(line))
         result  = list(map(extract, lines))
         result  = [found[0] for found in result if found]
         # Make a data frame #
-        df = pandas.DataFrame(result, columns=['Dist_Type_ID', 'prop_fact'])
+        df = pandas.DataFrame(result, columns=['dist_type_id', 'prop_fact'])
         # Clean #
-        df['Dist_Type_ID'] = df['Dist_Type_ID'].str.replace("'", '')
+        df['dist_type_id'] = df['dist_type_id'].str.replace("'", '')
         # Write back into a CSV #
         df.to_csv(str(self.paths.prop_fact), index=False)
 
