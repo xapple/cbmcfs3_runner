@@ -62,7 +62,7 @@ class InputData(object):
         Columns are:
 
         ['status', 'forest_type', 'region', 'management_type',
-         'management_strategy', 'climatic_unit', 'conifers_bradleaves',
+         'management_strategy', 'climatic_unit', 'conifers_broadleaves',
          'using_id', 'age', 'area', 'delay', 'unfcccl', 'hist_dist', 'last_dist']
         """
         # Get the right sheet #

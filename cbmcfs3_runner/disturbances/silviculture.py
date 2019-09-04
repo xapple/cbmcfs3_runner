@@ -92,7 +92,7 @@ class Silviculture(object):
         the disturbance ids and HWP columns."""
         return self.treatments[['status', 'forest_type',
                                 'management_type', 'management_strategy',
-                                'conifers_bradleaves', 'dist_type_id',
+                                'conifers_broadleaves', 'dist_type_id',
                                 'hwp']]
 
     @property_cached
@@ -142,7 +142,7 @@ class Silviculture(object):
 
         Columns are: ['status', 'forest_type', 'region', 'management_type',
                       'management_strategy', 'climatic_unit',
-                      'conifers_bradleaves', 'age_class', 'area', 'volume',
+                      'conifers_broadleaves', 'age_class', 'area', 'volume',
                       'stock', 'age']
         """
         # Load data frames #
@@ -150,7 +150,7 @@ class Silviculture(object):
         h_yields_long = self.parent.orig_data.historical_yields_long
         # Index #
         index = ['status', 'forest_type', 'region', 'management_type',
-                 'management_strategy', 'climatic_unit', 'conifers_bradleaves',
+                 'management_strategy', 'climatic_unit', 'conifers_broadleaves',
                  'age_class']
         # Join #
         df = (inventory
@@ -180,7 +180,7 @@ class Silviculture(object):
         silviculture and stock_based_on_yield.
 
         Columns are: ['status', forest_type', 'management_type', 'management_strategy',
-                      'conifers_bradleaves', 'status', 'region', 'climatic_unit',
+                      'conifers_broadleaves', 'status', 'region', 'climatic_unit',
                       'age_class', 'area', 'volume', 'stock', 'age',
                       'dist_type_id', 'sort_type', 'efficiency', 'min_age',
                       'max_age', 'min_since_last', 'max_since_last', 'hwp',
@@ -199,7 +199,7 @@ class Silviculture(object):
                         .reset_index())
         # Join only on these classifiers #
         index = ['status', 'forest_type', 'management_type',
-                 'management_strategy', 'conifers_bradleaves']
+                 'management_strategy', 'conifers_broadleaves']
         # Join #
         df = (self.stock_based_on_yield
               .set_index(index)
@@ -222,13 +222,13 @@ class Silviculture(object):
         all age classes. Natural disturbances are ignored.
 
         Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
-                      'conifers_bradleaves', 'dist_type_id', 'stock_available',
+                      'conifers_broadleaves', 'dist_type_id', 'stock_available',
                       'hwp', 'status']
         """
         # Index #
         # Note the presence of 'hwp' now in the index
         index = ['status', 'forest_type', 'management_type', 'management_strategy',
-                 'conifers_bradleaves', 'dist_type_id', 'hwp']
+                 'conifers_broadleaves', 'dist_type_id', 'hwp']
         # These variables will be added to the groupby aggregate operation
         # Because we need them later to create disturbances
         vars_to_create_dists = ['sort_type', 'efficiency', 'min_age', 'max_age',
@@ -275,13 +275,13 @@ class Silviculture(object):
         along the classifiers used in self.stock_available_agg:
 
             ['status', 'forest_type', 'management_type', 'management_strategy',
-             'conifers_bradleaves', 'dist_type_id' ].
+             'conifers_broadleaves', 'dist_type_id' ].
 
         The proportion is based on the available stock by
         harvested wood products (HWP) category.
 
         Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
-                      'conifers_bradleaves', 'dist_type_id', 'stock_available',
+                      'conifers_broadleaves', 'dist_type_id', 'stock_available',
                       'hwp', 'status', 'stock_tot', 'prop']
         """
         # Load dataframe #

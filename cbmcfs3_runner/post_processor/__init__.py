@@ -59,11 +59,11 @@ class PostProcessor(object):
         """Creates a mapping between 'user_defd_class_set_id'
         and the classifiers values:
          * species, site_quality and forest_type in tutorial six
-         * status, forest_type, region, management_type, management_strategy, climatic_unit, conifers_bradleaves
+         * status, forest_type, region, management_type, management_strategy, climatic_unit, conifers_broadleaves
          in the European dataset
 
          Columns are: ['user_defd_class_id', 'status', 'forest_type', 'region', 'management_type',
-                       'management_strategy', 'climatic_unit', 'conifers_bradleaves']
+                       'management_strategy', 'climatic_unit', 'conifers_broadleaves']
         """
         # Load the three tables we will need #
         user_classes           = self.database["tblUserDefdClasses"]
@@ -89,7 +89,7 @@ class PostProcessor(object):
         # In the calibration scenario we can't change names and there is a conflict #
         # This should not impact other scenarios hopefully #
         # C.f the "Broad/Conifers" to "Conifers/Bradleaves" problem in several countries #
-        classifiers = classifiers.rename(columns={'broad_conifers': 'conifers_bradleaves'})
+        classifiers = classifiers.rename(columns={'broad_conifers': 'conifers_broadleaves'})
         # C.f the PL column problem #
         classifiers = classifiers.rename(columns={'natural_forest_region': 'management_type'})
         # Return result #
@@ -106,7 +106,7 @@ class PostProcessor(object):
 
         Columns are: ['index', 'forest_type', 'user_defd_class_set_id', 'status', 'region',
                       'management_type', 'management_strategy', 'climatic_unit',
-                      'conifers_bradleaves', 'id', 'c', 'db', 'harvest_gr']
+                      'conifers_broadleaves', 'id', 'c', 'db', 'harvest_gr']
         """
 
         return (self.classifiers

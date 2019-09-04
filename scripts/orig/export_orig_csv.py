@@ -86,7 +86,7 @@ class ExportCalibrationCSV(object):
             # Load from database #
             df = self.database[table_name]
             # Special renaming - TODO check this works #
-            df = df.rename(columns = {'conifers_bradleaves': 'broad_conifers'})
+            df = df.rename(columns = {'conifers_broadleaves': 'broad_conifers'})
             df = df.rename(columns = {'forest_type':         'species'})
             # Export #
             df.to_csv(destination, index=False)

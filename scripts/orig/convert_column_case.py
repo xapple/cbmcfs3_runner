@@ -168,13 +168,13 @@ class CaseRenamer(object):
 if __name__ == '__main__':
     # First part #
     converters = [CaseConverter(c) for c in continent]
-    #for converter in tqdm(converters): converter()
-    #for converter in tqdm(converters): converter.fix_spelling()
+    for converter in tqdm(converters): converter()
+    for converter in tqdm(converters): converter.fix_spelling()
     # Second part #
     code_dir = home + "repos/sinclair/work/ispra_italy/repos/cbmcfs3_runner/cbmcfs3_runner/"
     renamer  = CaseRenamer(code_dir, '.py')
     renamer()
-    ## Third part #
+    # Third part #
     code_dir = home + "repos/sinclair/work/ispra_italy/repos/bioeconomy_notes/notebooks/"
     renamer  = CaseRenamer(code_dir, '.md')
     renamer()

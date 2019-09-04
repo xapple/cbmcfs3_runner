@@ -49,7 +49,7 @@ class Harvest(object):
         * Vol_Merch are in terms of cubic meters of wood.
 
         Columns are: ['dist_type_id', 'dist_type_name', 'time_step', 'status', 'forest_type',
-                      'management_type', 'management_strategy', 'conifers_bradleaves',
+                      'management_type', 'management_strategy', 'conifers_broadleaves',
                       'dom_production', 'co2_production', 'merch_litter_input', 'oth_litter_input',
                       'db', 'soft_production', 'hard_production', 'tc', 'vol_merch',
                       'vol_sub_merch', 'vol_snags', 'vol_forest_residues']
@@ -64,7 +64,7 @@ class Harvest(object):
                  'forest_type',
                  'management_type',
                  'management_strategy',
-                 'conifers_bradleaves']
+                 'conifers_broadleaves']
         # Not real grouping variables only here to keep them in the final table
         # Their values should be unique for the all combination of the other grouping vars
         # But in fact they are not! But we will group again later with other vars
@@ -169,7 +169,7 @@ class Harvest(object):
                  'region',
                  'management_type',
                  'management_strategy',
-                 'conifers_bradleaves']
+                 'conifers_broadleaves']
         # Compute #
         df = (ungrouped
               .set_index('dist_type_id')
@@ -197,7 +197,7 @@ class Harvest(object):
         and others have dist_type_name as object.
 
         Columns are: ['status', 'forest_type', 'region', 'management_type',
-                      'management_strategy', 'climatic_unit', 'conifers_bradleaves',
+                      'management_strategy', 'climatic_unit', 'conifers_broadleaves',
                       'using_id', 'sw_start', 'sw_end', 'hw_start', 'hw_end', 'last_dist_id',
                       'efficiency', 'sort_type', 'measurement_type', 'amount', 'dist_type_id',
                       'time_step'],
@@ -244,7 +244,7 @@ class Harvest(object):
                  #'region',
                  #'management_type',
                  #'management_strategy',
-                 #'conifers_bradleaves'
+                 #'conifers_broadleaves'
                  #'status'
                 ]
         # Load #

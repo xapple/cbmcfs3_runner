@@ -80,7 +80,7 @@ class Inventory(object):
         Columns of the output are:
 
             ['status', 'forest_type', 'region', 'management_type',
-             'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'ave_age',
+             'management_strategy', 'climatic_unit', 'conifers_broadleaves', 'ave_age',
              'time_step', 'area', 'biomass', 'bef_tot', 'db', 'merch_c_ha',
              'Merch_Vol_ha']
         """
@@ -231,7 +231,7 @@ class Inventory(object):
         intermediate queries which could be sources of errors.
         The mass is measured as tons of carbon.
 
-        Columns are: ['year', 'forest_type', 'conifers_bradleaves', 'mass']
+        Columns are: ['year', 'forest_type', 'conifers_broadleaves', 'mass']
         """
         # Load data #
         df    = self.parent.database['tblPoolIndicators']
@@ -257,7 +257,7 @@ class Inventory(object):
         # Convert from wide to long format #
         df = df.melt(id_vars    = ['year', 'forest_type'],
                      value_vars = ['hw_merch', 'sw_merch'],
-                     var_name   = 'conifers_bradleaves',
+                     var_name   = 'conifers_broadleaves',
                      value_name = 'mass')
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':

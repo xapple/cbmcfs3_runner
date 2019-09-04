@@ -14,12 +14,12 @@ def reshape_yields_long(yields_wide):
     Columns are:
 
     ['status', 'forest_type', 'region', 'management_type',
-     'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'sp',
+     'management_strategy', 'climatic_unit', 'conifers_broadleaves', 'sp',
      'age_class', 'volume']
      """
     # Index #
     index = ['status', 'forest_type', 'region', 'management_type',
-             'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'sp']
+             'management_strategy', 'climatic_unit', 'conifers_broadleaves', 'sp']
     # Melt #
     df = yields_wide.melt(id_vars    = index,
                           var_name   = "age_class",

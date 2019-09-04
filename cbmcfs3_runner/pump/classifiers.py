@@ -29,7 +29,7 @@ class Classifiers(object):
         >>> print(r.country.classifiers.mapping)
 
         id
-        _7    conifers_bradleaves
+        _7    conifers_broadleaves
         _1                 status
         _2            forest_type
         _3                 region
