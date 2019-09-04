@@ -185,8 +185,7 @@ class Country(object):
 
         #TODO: Ask Roberto what the columns 'c' and 'db' are.
         """
-        df = pandas.read_csv(str(self.paths.coefficients))
-        return df.rename(columns=lambda x: x.lower().replace(' ', '_'))
+        return pandas.read_csv(str(self.paths.coefficients))
 
     @property_cached
     def faostat(self):
