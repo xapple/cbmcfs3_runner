@@ -95,7 +95,7 @@ class Products(object):
         df = (self.hwp_intermediate
               .query('hwp == "IRW_B"')
               .rename(columns={'vol_merch':    'Vol_Merch_IRW_B',
-                               'vol_sub_merch': 'Vol_SubMerch_IRW_B',
+                               'vol_sub_merch': 'vol_sub_merch_irw_b',
                                'vol_snags':    'vol_snags_irw_b',
                                'tc':           'TC_IRW_B'}))
         # Drop HWP column
@@ -122,9 +122,9 @@ class Products(object):
         """Harvest volumes of Fuel Wood Broadleaves."""
         df = (self.hwp_intermediate
               .query('hwp == "FW_B"')
-              .rename(columns={'vol_merch':    'Vol_Merch_FW_B',
+              .rename(columns={'vol_merch':    'vol_merch_fw_b',
                                'vol_sub_merch': 'vol_sub_merch_fw_b',
-                               'vol_snags':    'Vol_Snags_FW_B',
+                               'vol_snags':    'vol_snags_fw_b',
                                'tc':           'TC_FW_B'}))
         return df
 
@@ -133,7 +133,7 @@ class Products(object):
     def fw_b_total(self):
         """
         Harvest volumes of Fuel Wood Broadleaves
-        Join Industrial Round Wood co-products: 'Vol_SubMerch_IRW_B' and 'vol_snags_irw_b'
+        Join Industrial Round Wood co-products: 'vol_sub_merch_irw_b' and 'vol_snags_irw_b'
         into the fuel wood total.
         """
         df = (self.fw_b
@@ -146,8 +146,8 @@ class Products(object):
                                   df.Vol_SubMerch_IRW_B,
                                   df.Vol_Snags_IRW_B])
         df = df[['time_step',
-                 'Vol_Merch_FW_B', 'vol_sub_merch_fw_b', 'Vol_Snags_FW_B',
-                 'Vol_SubMerch_IRW_B', 'vol_snags_irw_b',
+                 'vol_merch_fw_b', 'vol_sub_merch_fw_b', 'vol_snags_fw_b',
+                 'vol_sub_merch_irw_b', 'vol_snags_irw_b',
                  'tot_vol_fw_b']]
         return df
 
@@ -160,7 +160,7 @@ class Products(object):
               .rename(columns={'vol_merch':    'Vol_Merch_FW_C',
                                'vol_sub_merch': 'Vol_SubMerch_FW_C',
                                'vol_snags':    'Vol_Snags_FW_C',
-                               'tc':           'TC_FW_C'}))
+                               'tc':           'tc_fw_c'}))
         return df
 
     #-------------------------------------------------------------------------#

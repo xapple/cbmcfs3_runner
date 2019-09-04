@@ -108,7 +108,7 @@ class DisturbanceMaker(object):
             IRW    0.5      3 YY  MT  AR    Con      0.03     0.12       6000        600  1999
 
         Here we can check that sum(IRW_amount) == sum(volume)
-        By doing df.groupby('year', '_7').agg({'FW_amount': 'sum'}) we get:
+        By doing df.groupby('year', '_7').agg({'fw_amount': 'sum'}) we get:
 
                 _7 FW_amount  year
              Broad      5090  1999

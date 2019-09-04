@@ -50,9 +50,9 @@ class Harvest(object):
 
         Columns are: ['dist_type_id', 'dist_type_name', 'time_step', 'status', 'forest_type',
                       'management_type', 'management_strategy', 'conifers_bradleaves',
-                      'DOMProduction', 'CO2Production', 'MerchLitterInput', 'OthLitterInput',
-                      'db', 'SoftProduction', 'HardProduction', 'tc', 'vol_merch',
-                      'vol_sub_merch', 'vol_snags', 'Vol_forest_residues']
+                      'dom_production', 'co2_production', 'merch_litter_input', 'oth_litter_input',
+                      'db', 'soft_production', 'hard_production', 'tc', 'vol_merch',
+                      'vol_sub_merch', 'vol_snags', 'vol_forest_residues']
         """
         # First ungrouped #
         ungrouped = self.parent.flux_indicators
@@ -68,10 +68,10 @@ class Harvest(object):
         # Not real grouping variables only here to keep them in the final table
         # Their values should be unique for the all combination of the other grouping vars
         # But in fact they are not! But we will group again later with other vars
-        secondary_index = ['DOMProduction',
-                           'CO2Production',
-                           'MerchLitterInput',
-                           'OthLitterInput',
+        secondary_index = ['dom_production',
+                           'co2_production',
+                           'merch_litter_input',
+                           'oth_litter_input',
                            'db']
         # Check that we don't produce NaNs #
         # See ~/repos/examples/python_modules/pandas/join_and_produce_nan.py
@@ -81,21 +81,21 @@ class Harvest(object):
         # Then group #
         df = (ungrouped
               .groupby(index + secondary_index)
-              .agg({'SoftProduction': 'sum',
-                    'HardProduction': 'sum'})
+              .agg({'soft_production': 'sum',
+                    'hard_production': 'sum'})
               .reset_index())
         # Check conservation of total mass #
         flux_raw = self.parent.database['tblFluxIndicators']
         is_equal = numpy.testing.assert_allclose
-        is_equal(flux_raw['SoftProduction'].sum(), df['SoftProduction'].sum())
-        is_equal(flux_raw['HardProduction'].sum(), df['HardProduction'].sum())
+        is_equal(flux_raw['soft_production'].sum(), df['soft_production'].sum())
+        is_equal(flux_raw['hard_production'].sum(), df['hard_production'].sum())
         # Create new columns #
         df['tc']                  = df.SoftProduction + df.HardProduction
-        df['Prov_Carbon']         = df.SoftProduction + df.HardProduction + df.DOMProduction
+        df['prov_carbon']         = df.SoftProduction + df.HardProduction + df.DOMProduction
         df['vol_merch']           = (df.TC * 2) / df.db
         df['vol_sub_merch']        = (df.CO2Production * 2) / df.db
         df['vol_snags']           = (df.DOMProduction * 2) / df.db
-        df['Vol_forest_residues'] = ((df.MerchLitterInput + df.OthLitterInput) * 2) / df.db
+        df['vol_forest_residues'] = ((df.MerchLitterInput + df.OthLitterInput) * 2) / df.db
         # Return #
         return df
 
@@ -107,7 +107,7 @@ class Harvest(object):
 
         Columns are:    ['dist_type_id', 'dist_type_name', 'time_step', 'status', 'forest_type',
         (of the output)  'management_type', 'management_strategy', 'vol_merch', 'vol_snags',
-                         'vol_sub_merch', 'Vol_forest_residues', 'tc', 'tot_vol']
+                         'vol_sub_merch', 'vol_forest_residues', 'tc', 'tot_vol']
 
         This corresponds to the "provided" aspect of "expected_provided" harvest and contains
         only volumes ('M').
@@ -125,8 +125,8 @@ class Harvest(object):
               .agg({'vol_merch':           'sum',
                     'vol_snags':           'sum',
                     'vol_sub_merch':        'sum',
-                    'Vol_forest_residues': 'sum',
-                    'Prov_Carbon':         'sum',
+                    'vol_forest_residues': 'sum',
+                    'prov_carbon':         'sum',
                     'tc':                  'sum'})
               .reset_index())
         # Add the total volume column #
@@ -308,7 +308,7 @@ class Harvest(object):
         """
         # Compute #
         df = self.provided_volume
-        return self.compute_expected_provided(df, 'M', 'Prov_Carbon')
+        return self.compute_expected_provided(df, 'M', 'prov_carbon')
 
     #-------------------------------------------------------------------------#
     @property_cached
@@ -341,5 +341,5 @@ class Harvest(object):
         # Check provided volume #
         processed = volu['provided'].sum()
         raw       = self.parent.database['TblFluxIndicators']
-        raw       = raw['SoftProduction'].sum() + raw['HardProduction'].sum() + raw['DOMProduction'].sum()
+        raw       = raw['soft_production'].sum() + raw['hard_production'].sum() + raw['dom_production'].sum()
         numpy.testing.assert_allclose(processed, raw, rtol=1e-03)

@@ -110,12 +110,16 @@ class CaseRenamer(object):
         'database':     'TimeStep, UserDefdClassID, UserDefdClassSetID, UserDefdSubclassID,'
                         'AveAge, Biomass, DistArea,'
                         'BEF_Tot, BG_Biomass, Tot_Merch, Tot_ABG, BG_Biomass,'
-                        'Vol_Merch, Vol_SubMerch, Vol_Snags, TC, TC_FW_C'
-                        'Vol_Merch_FW_B, Vol_SubMerch_FW_B, Vol_Snags_FW_B'
+                        'Vol_Merch, Vol_SubMerch, Vol_Snags, TC, TC_FW_C,'
+                        'Vol_Merch_FW_B, Vol_SubMerch_FW_B, Vol_Snags_FW_B,'
                         'Vol_SubMerch_IRW_B, Vol_Snags_IRW_B,'
                         'TOT_Vol_FW_B, DMStructureID, DMColumn, DMRow, DMID',
         'products':     'SW_Merch, SW_Foliage, SW_Other, HW_Merch, HW_Foliage, HW_Other, SW_Coarse,'
-                        'SW_Fine, HW_Coarse, HW_Fine, Merch_C_ha'
+                        'SW_Fine, HW_Coarse, HW_Fine, Merch_C_ha,'
+                        'Snag_Perc, OWC_Perc, FW_amount, IRW_amount,'
+                        'SoftProduction, HardProduction, DOMProduction,'
+                        'CO2Production, MerchLitterInput, OthLitterInput,'
+                        'Prov_Carbon, Vol_forest_residues,'
      }
 
     @property_cached
@@ -163,9 +167,9 @@ class CaseRenamer(object):
 ###############################################################################
 if __name__ == '__main__':
     # First part #
-    converters = [CaseConverter(c) for c in continent]
-    for converter in tqdm(converters): converter()
-    for converter in tqdm(converters): converter.fix_spelling()
+    #converters = [CaseConverter(c) for c in continent]
+    #for converter in tqdm(converters): converter()
+    #for converter in tqdm(converters): converter.fix_spelling()
     # Second part #
     code_dir = home + "repos/sinclair/work/ispra_italy/repos/cbmcfs3_runner/cbmcfs3_runner/"
     renamer  = CaseRenamer(code_dir, '.py')
