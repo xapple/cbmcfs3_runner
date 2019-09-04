@@ -144,7 +144,7 @@ class Harvest(object):
 
         Columns are:    ['DistIndID', 'SPUID', 'dist_type_id', 'time_step', 'user_defd_class_set_id',
                          'LandClassID', 'kf2', 'kf3', 'kf4', 'kf5', 'kf6', 'dist_area',
-                         'DistProduct']
+                         'dist_product']
 
         This corresponds to the "provided" aspect of "expected_provided" harvest and contains
         only areas ('A').
@@ -175,7 +175,7 @@ class Harvest(object):
               .set_index('dist_type_id')
               .groupby(index)
               .agg({'dist_area':    'sum',
-                    'DistProduct': 'sum'})
+                    'dist_product': 'sum'})
               .reset_index())
         # Add the Measurement_type #
         df['measurement_type'] = 'A'
