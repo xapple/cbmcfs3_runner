@@ -25,6 +25,6 @@ def reshape_yields_long(yields_wide):
                           var_name   = "age_class",
                           value_name = "volume")
     # Remove suffixes and keep just the number #
-    df['age_class'] = df['age_class'].str.lstrip("Vol").astype('int')
+    df['age_class'] = df['age_class'].str.lstrip("vol").astype('int')
     # Return #
     return df
