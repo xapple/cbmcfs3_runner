@@ -90,12 +90,12 @@ class Harvest(object):
         is_equal(flux_raw['soft_production'].sum(), df['soft_production'].sum())
         is_equal(flux_raw['hard_production'].sum(), df['hard_production'].sum())
         # Create new columns #
-        df['tc']                  = df.SoftProduction + df.HardProduction
-        df['prov_carbon']         = df.SoftProduction + df.HardProduction + df.DOMProduction
-        df['vol_merch']           = (df.TC * 2) / df.db
-        df['vol_sub_merch']        = (df.CO2Production * 2) / df.db
-        df['vol_snags']           = (df.DOMProduction * 2) / df.db
-        df['vol_forest_residues'] = ((df.MerchLitterInput + df.OthLitterInput) * 2) / df.db
+        df['tc']                  = df['soft_production'] + df['hard_production']
+        df['prov_carbon']         = df['soft_production'] + df['hard_production'] + df['dom_production']
+        df['vol_merch']           = (df['tc'] * 2) / df['db']
+        df['vol_sub_merch']       = (df['co2_production'] * 2) / df['db']
+        df['vol_snags']           = (df['dom_production'] * 2) / df['db']
+        df['vol_forest_residues'] = ((df['merch_litter_input'] + df['oth_litter_input']) * 2) / df['db']
         # Return #
         return df
 
@@ -130,7 +130,7 @@ class Harvest(object):
                     'tc':                  'sum'})
               .reset_index())
         # Add the total volume column #
-        df['tot_vol'] = df.Vol_Merch + df.Vol_SubMerch + df.Vol_Snags
+        df['tot_vol'] = df['vol_merch'] + df['vol_sub_merch'] + df['vol_snags']
         # Add the Measurement_type #
         df['measurement_type'] = 'M'
         # Return result #
