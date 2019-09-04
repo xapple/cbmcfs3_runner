@@ -36,7 +36,7 @@ class Classifiers(object):
         _4        management_type
         _5    management_strategy
         _6          climatic_unit
-        Name: ClassDesc, dtype: object
+        Name: class_desc, dtype: object
 
         Typically you use it like this:
             df.rename(columns = r.country.classifiers.mapping)
@@ -62,11 +62,11 @@ class Classifiers(object):
         self.df  = self.df.drop('classifier_value_id', axis=1)
         # Rename #
         self.df  = self.df.rename(columns={'classifier_number': 'id'})
-        self.df  = self.df.rename(columns={'name': 'ClassDesc'})
+        self.df  = self.df.rename(columns={'name': 'class_desc'})
         # Add an underscore to the classifier number so it can be used for renaming #
         self.df['id'] = '_' + self.df['id'].astype(str)
         # This makes df a pandas.Series #
-        self.df = self.df.set_index('id')['ClassDesc']
+        self.df = self.df.set_index('id')['class_desc']
         # Remove spaces and slashes from column names #
         self.df = self.df.apply(lambda x: x.lower().replace(' ', '_').replace('/','_'))
         # Return a series #
