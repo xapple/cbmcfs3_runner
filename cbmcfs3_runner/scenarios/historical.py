@@ -16,16 +16,13 @@ from cbmcfs3_runner.scenarios.base_scen import Scenario
 from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
-class StaticDemand(Scenario):
-    short_name = 'static_demand'
+class Historical(Scenario):
+    short_name = 'historical'
 
     @property_cached
     def runners(self):
         """A dictionary of country codes as keys with a list of runners as values."""
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
-        # Modify these runners #
-        for country in self.continent:
-            # Get the runner of the last step #
-            runner = result[country.iso2_code][-1]
-            runner.disturbance_maker.name_of_dist_future = 'demand_to_dist'
         return result
+        
+        

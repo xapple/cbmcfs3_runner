@@ -30,6 +30,7 @@ class DisturbanceMaker(object):
     /input/csv/disturbance_events_filtered.csv
     /input/csv/disturbance_events_combined.csv
     """
+    name_of_dist_future = 'empty_dist'
 
     def __init__(self, parent):
         # Default attributes #
@@ -55,6 +56,13 @@ class DisturbanceMaker(object):
         df['step'] = df['step'].astype(int)
         df['dist_type_id'] = df['dist_type_id'].astype(str)
         return df
+
+    @property
+    def empty_dist(self):
+        """empty disturbance table used to add as a default 
+        for the historical scenario"""
+        return pandas.DataFrame()
+
 
     @property
     def demand_to_dist(self):
@@ -233,7 +241,7 @@ class DisturbanceMaker(object):
         """Append the new disturbances to the disturbance file."""
         # Load data
         dist_past = self.disturbance_events_raw
-        dist_future = self.demand_to_dist
+        dist_future = getattr(self, self.name_of_dist_future)
         # Concatenate
         df = pandas.concat([dist_past, dist_future])
         # Write the result
