@@ -89,7 +89,7 @@ class InputData(object):
          'max_tot_hard_stem_snag_c', 'min_tot_merch_stem_snag_c',
          'max_tot_merch_stem_snag_c', 'min_tot_merch_soft_stem_snag_c',
          'max_tot_merch_soft_stem_snag_c', 'min_tot_merch_hard_stem_snag_c',
-         'max_tot_merch_hard_stem_snag_c', 'efficency', 'sort_type',
+         'max_tot_merch_hard_stem_snag_c', 'efficiency', 'sort_type',
          'measurement_type', 'amount', 'dist_type_id', 'step']
         """
         # Get the right sheet #

@@ -72,7 +72,7 @@ class CaseConverter(object):
         # Read #
         df = pandas.read_csv(str(self.paths.treatments))
         # Change #
-        df = df.rename(columns = {'efficency': 'efficiency',
+        df = df.rename(columns = {'efficiency': 'efficiency',
                                   'sor_type':  'sort_type'})
         # Write #
         df.to_csv(str(self.paths.treatments), index=False, float_format='%g')

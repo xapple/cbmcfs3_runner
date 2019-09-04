@@ -182,7 +182,7 @@ class Silviculture(object):
         Columns are: ['status', forest_type', 'management_type', 'management_strategy',
                       'conifers_bradleaves', 'status', 'region', 'climatic_unit',
                       'age_class', 'area', 'volume', 'stock', 'age',
-                      'dist_type_id', 'sort_type', 'efficency', 'min_age',
+                      'dist_type_id', 'sort_type', 'efficiency', 'min_age',
                       'max_age', 'min_since_last', 'max_since_last', 'hwp',
                       'regen_delay', 'reset_age', 'percent', 'wd', 'owc_perc',
                       'snag_perc', 'perc_merch_biom_rem', 'man_nat', 'corr_fact',
@@ -231,7 +231,7 @@ class Silviculture(object):
                  'conifers_bradleaves', 'dist_type_id', 'hwp']
         # These variables will be added to the groupby aggregate operation
         # Because we need them later to create disturbances
-        vars_to_create_dists = ['sort_type', 'efficency', 'min_age', 'max_age',
+        vars_to_create_dists = ['sort_type', 'efficiency', 'min_age', 'max_age',
                                 'min_since_last', 'max_since_last',
                                 'regen_delay', 'reset_age', 'wd', 'man_nat']
         # Aggregate #

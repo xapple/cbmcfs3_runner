@@ -199,7 +199,7 @@ class Harvest(object):
         Columns are: ['status', 'forest_type', 'region', 'management_type',
                       'management_strategy', 'climatic_unit', 'conifers_bradleaves',
                       'using_id', 'sw_start', 'sw_end', 'hw_start', 'hw_end', 'last_dist_id',
-                      'efficency', 'sort_type', 'measurement_type', 'amount', 'dist_type_id',
+                      'efficiency', 'sort_type', 'measurement_type', 'amount', 'dist_type_id',
                       'time_step'],
         """
         # Load disturbances table from excel file #
