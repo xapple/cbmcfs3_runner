@@ -79,7 +79,7 @@ class PostProcessor(object):
         classifiers = classifiers[['user_defd_sub_class_name']].unstack('user_defd_class_id')
         # Rename
         # This object will link: 1->species, 2->forest_type, etc.
-        mapping = user_classes.set_index('user_defd_class_id')['ClassDesc']
+        mapping = user_classes.set_index('user_defd_class_id')['class_desc']
         mapping = mapping.apply(self.sanitize_names)
         classifiers = classifiers.rename(mapping, axis=1)
         # Remove multilevel column index, replace by level(1) (second level)
