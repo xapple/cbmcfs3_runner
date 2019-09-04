@@ -216,6 +216,7 @@ class DisturbanceMaker(object):
         df['Max_tot_merch_hard_stem_snag_C'] = -1
         
         # Check consistency of Sort_Type with measurement type
+        # TODO move this to check any disturbances just before SIT is called
         dist_gftm_random = df.query('Sort_Type==6')
         msg = "Random sort type: 6 not allowed with disturbances expressed in terms " 
         msg += "of Measurement Type 'M' merchantable carbon. \n"

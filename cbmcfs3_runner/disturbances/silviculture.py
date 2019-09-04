@@ -86,6 +86,16 @@ class Silviculture(object):
         return df
 
     @property_cached
+    def hwp_map(self):
+        """Mapping to add HWP information to a disturbance table
+        This table contains the classifiers columns, 
+        the disturbance ids and HWP columns."""
+        return self.treatments[['status', 'forest_type', 
+                                'management_type', 'management_strategy',
+                                'conifers_bradleaves', 'Dist_Type_ID',
+                                'HWP']]
+
+    @property_cached
     def corr_fact(self):
         """Load the CSV that is 'harvest_corr_fact.csv'."""
         return pandas.read_csv(str(self.paths.corr_fact))
