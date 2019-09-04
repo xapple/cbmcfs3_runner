@@ -46,12 +46,16 @@ class AssociationsGenerator(object):
     @property_cached
     def aidb(self):
         """Shortcut to the AIDB."""
-        return AccessDatabase(self.paths.aidb_eu_mdb)
+        database = AccessDatabase(self.paths.aidb_eu_mdb)
+        database.convert_col_names_to_snake = True
+        return database
 
     @property_cached
     def calib(self):
         """Shortcut to the Calibration DB."""
-        return AccessDatabase(self.paths.calibration_mdb)
+        database = AccessDatabase(self.paths.calibration_mdb)
+        database.convert_col_names_to_snake = True
+        return database
 
     #---------------------------- Methods ------------------------------------#
     def select_classifier_rows(self, classifier_name):
@@ -60,16 +64,16 @@ class AssociationsGenerator(object):
         Here is an example call:
 
         >>> self.select_classifier_rows('Climatic unit')
-            ClassifierNumber ClassifierValueID   Name
-        19                 6                25  CLU25
-        20                 6                34  CLU34
-        21                 6                35  CLU35
-        22                 6                44  CLU44
-        23                 6                45  CLU45
+            classifier_number classifier_value_id   name
+        19                  6                  25   CLU25
+        20                  6                  34   CLU34
+        21                  6                  35   CLU35
+        22                  6                  44   CLU44
+        23                  6                  45   CLU45
         """
-        query  = "ClassifierValueID == '_CLASSIFIER' and Name == '%s'" % classifier_name
-        number = self.calib['Classifiers'].query(query)['ClassifierNumber'].iloc[0]
-        query  = "ClassifierValueID != '_CLASSIFIER' and ClassifierNumber == %i" % number
+        query  = "classifier_value_id == '_CLASSIFIER' and Name == '%s'" % classifier_name
+        number = self.calib['Classifiers'].query(query)['classifier_number'].iloc[0]
+        query  = "classifier_value_id != '_CLASSIFIER' and classifier_number == %i" % number
         rows   = self.calib['Classifiers'].query(query)
         return rows
 
@@ -87,10 +91,10 @@ class AssociationsGenerator(object):
         # Species #
         self.species = [(k,k) for k in self.select_classifier_rows('Forest type')['Name']]
         # Disturbances #
-        left      = self.aidb['tblDisturbanceTypeDefault'].set_index('DistTypeID')
-        right     = self.calib['tblDisturbanceType'].set_index('DefaultDistTypeID')
+        left      = self.aidb['tblDisturbanceTypeDefault'].set_index('dist_type_id')
+        right     = self.calib['tblDisturbanceType'].set_index('default_dist_type_id')
         self.dist = left.join(right, how='inner', lsuffix='_archive', rsuffix='_calib')
-        self.dist = zip(self.dist['Description_calib'], self.dist['DistTypeName_archive'])
+        self.dist = zip(self.dist['description_calib'], self.dist['dist_type_name_archive'])
         # Filter empty disturbances #
         self.dist = [(calib, archive) for calib, archive in self.dist if calib]
         # Combine the four DataFrames #

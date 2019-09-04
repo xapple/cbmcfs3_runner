@@ -56,13 +56,13 @@ class OrigData(object):
 
             ['status', 'forest_type', 'region', 'management_type',
              'management_strategy', 'climatic_unit', 'conifers_bradleaves',
-             'UsingID', 'Age', 'Area', 'Delay', 'UNFCCCL', 'HistDist', 'LastDist',
+             'using_id', 'age', 'area', 'delay', 'unfcccl', 'hist_dist', 'last_dist',
              'age_class'],
         """
         df = self['inventory']
         # Create the age_class column
         # so it can be used as a join variable with a yields table
-        df['age_class'] = (df['Age']
+        df['age_class'] = (df['age']
                            .replace('AGEID', '', regex=True)
                            .astype('int'))
         return df.rename(columns = self.parent.classifiers.mapping)
@@ -72,7 +72,7 @@ class OrigData(object):
         """
         Columns are:
 
-        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'Sp', 'Vol0', 'Vol1', 'Vol2',
+        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'sp', 'Vol0', 'Vol1', 'Vol2',
          'Vol3', 'Vol4', 'Vol5', 'Vol6', 'Vol7', 'Vol8', 'Vol9', 'Vol10',
          'Vol11', 'Vol12', 'Vol13', 'Vol14', 'Vol15', 'Vol16', 'Vol17', 'Vol18',
          'Vol19', 'Vol20', 'Vol21', 'Vol22', 'Vol23', 'Vol24', 'Vol25', 'Vol26',
@@ -99,14 +99,14 @@ class OrigData(object):
     @property_cached
     def disturbance_events(self):
         """Load disturbance_events from the calibration database.
-        Change Dist_Type_ID to a string and Step to an integer.
+        Change dist_type_id to a string and Step to an integer.
         Add year
         """
         df = self['disturbance_events']
-        # Change Dist_Type_ID to a string to harmonise data type.
+        # Change dist_type_id to a string to harmonise data type.
         # some countries have a string while others have an int.
-        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype('str')
-        df['Step'] = df['Step'].astype(int)
+        df['dist_type_id'] = df['dist_type_id'].astype('str')
+        df['step'] = df['step'].astype(int)
         # Add year
-        df['year'] = self.parent.timestep_to_year(df['Step'])
+        df['year'] = self.parent.timestep_to_year(df['step'])
         return df.rename(columns = self.parent.classifiers.mapping)

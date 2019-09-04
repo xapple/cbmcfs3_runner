@@ -56,13 +56,13 @@ class Classifiers(object):
         # Load the CSV #
         self.df  = self.parent.orig_data['classifiers']
         # Get only classifier names #
-        selector = self.df['ClassifierValueID'] == "_CLASSIFIER"
+        selector = self.df['classifier_value_id'] == "_CLASSIFIER"
         self.df  = self.df.loc[selector].copy()
         # Drop the extra column #
-        self.df  = self.df.drop('ClassifierValueID', axis=1)
+        self.df  = self.df.drop('classifier_value_id', axis=1)
         # Rename #
-        self.df  = self.df.rename(columns={'ClassifierNumber': 'id'})
-        self.df  = self.df.rename(columns={'Name': 'ClassDesc'})
+        self.df  = self.df.rename(columns={'classifier_number': 'id'})
+        self.df  = self.df.rename(columns={'name': 'ClassDesc'})
         # Add an underscore to the classifier number so it can be used for renaming #
         self.df['id'] = '_' + self.df['id'].astype(str)
         # This makes df a pandas.Series #

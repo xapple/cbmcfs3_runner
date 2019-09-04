@@ -47,24 +47,24 @@ class Inventory(object):
         # Join #
         df = self.parent.pool_indicators
         # Sum for everyone #
-        cols_sum = {'SW_Merch'  : 'sum',
-                    'SW_Foliage': 'sum',
-                    'SW_Other'  : 'sum',
-                    'HW_Merch'  : 'sum',
-                    'HW_Foliage': 'sum',
-                    'HW_Other'  : 'sum',
-                    'SW_Coarse' : 'sum',
-                    'SW_Fine'   : 'sum',
-                    'HW_Coarse' : 'sum',
-                    'HW_Fine'   : 'sum'}
+        cols_sum = {'sw_merch'  : 'sum',
+                    'sw_foliage': 'sum',
+                    'sw_other'  : 'sum',
+                    'hw_merch'  : 'sum',
+                    'hw_foliage': 'sum',
+                    'hw_other'  : 'sum',
+                    'sw_coarse' : 'sum',
+                    'sw_fine'   : 'sum',
+                    'hw_coarse' : 'sum',
+                    'hw_fine'   : 'sum'}
         # Group and aggregate #
         df = df.groupby("forest_type").agg(cols_sum).reset_index()
         # Make new columns #
-        df['Tot_Merch']  = df.SW_Merch   + df.HW_Merch
-        df['Tot_ABG']    = df.SW_Merch   + df.HW_Merch   + \
+        df['tot_merch']  = df.SW_Merch   + df.HW_Merch
+        df['tot_abg']    = df.SW_Merch   + df.HW_Merch   + \
                            df.SW_Foliage + df.HW_Foliage + \
                            df.HW_Other   + df.SW_Other
-        df['BG_Biomass'] = df.SW_Coarse  + df.SW_Fine    + \
+        df['bg_biomass'] = df.SW_Coarse  + df.SW_Fine    + \
                            df.HW_Coarse  + df.HW_Fine
         df['BEF_Tot']    = (df.Tot_ABG   + df.BG_Biomass) / df.Tot_ABG
         # Return result #
@@ -80,16 +80,16 @@ class Inventory(object):
         Columns of the output are:
 
             ['status', 'forest_type', 'region', 'management_type',
-             'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'AveAge',
-             'TimeStep', 'Area', 'Biomass', 'BEF_Tot', 'db', 'Merch_C_ha',
+             'management_strategy', 'climatic_unit', 'conifers_bradleaves', 'ave_age',
+             'time_step', 'area', 'biomass', 'BEF_Tot', 'db', 'Merch_C_ha',
              'Merch_Vol_ha']
         """
         # Load table #
         age_indicators = self.parent.database["tblAgeIndicators"]
         classifr_coefs = self.parent.classifiers_coefs
         # Set the same index #
-        age_indicators = age_indicators.set_index('UserDefdClassSetID')
-        classifr_coefs = classifr_coefs.set_index('UserDefdClassSetID')
+        age_indicators = age_indicators.set_index('user_defd_class_set_id')
+        classifr_coefs = classifr_coefs.set_index('user_defd_class_set_id')
         # Double join #
         df = (age_indicators
                .join(classifr_coefs)
@@ -98,7 +98,7 @@ class Inventory(object):
                .join(self.bef_ft.set_index('forest_type'))
                .reset_index())
         # Select only some columns #
-        columns_of_interest  = ['AveAge', 'TimeStep', 'Area', 'Biomass', 'BEF_Tot', 'db']
+        columns_of_interest  = ['ave_age', 'time_step', 'area', 'biomass', 'BEF_Tot', 'db']
         columns_of_interest += list(self.parent.classifiers.columns)
         df = df[columns_of_interest].copy()
         # Divide #
@@ -109,11 +109,11 @@ class Inventory(object):
 
     #-------------------------------------------------------------------------#
     # Columns we will keep and group on #
-    group_cols = ['TimeStep', 'forest_type']
+    group_cols = ['time_step', 'forest_type']
     # Column we will keep and sum on #
-    sum_col = 'Area'
+    sum_col = 'area'
     # Column we will use for the summing, this will never change #
-    bin_col = 'AveAge'
+    bin_col = 'ave_age'
     # The bin width we will use when recreating bins #
     bin_width = 20.0
 
@@ -211,8 +211,8 @@ class Inventory(object):
         # Load the vector version #
         df = self.grouped_bins.reset_index()
         # Add year and remove TimeStep #
-        df['year'] = self.parent.parent.country.timestep_to_year(df['TimeStep'])
-        df = df.drop('TimeStep', axis=1)
+        df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
+        df = df.drop('time_step', axis=1)
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
             # Patch the harvest data frame to stop at the simulation year #
@@ -237,26 +237,26 @@ class Inventory(object):
         df    = self.parent.database['tblPoolIndicators']
         clifr = self.parent.classifiers.set_index("UserDefdClassSetID")
         # Our index #
-        index = ['TimeStep', 'forest_type']
+        index = ['time_step', 'forest_type']
         # Join #
         df = (df
-              .set_index('UserDefdClassSetID')
+              .set_index('user_defd_class_set_id')
               .join(clifr)
               .groupby(index)
-              .agg({'HW_Merch': 'sum',
-                    'SW_Merch': 'sum'})
+              .agg({'hw_merch': 'sum',
+                    'sw_merch': 'sum'})
               .reset_index())
         # Add year and remove TimeStep #
-        df['year'] = self.parent.parent.country.timestep_to_year(df['TimeStep'])
-        df = df.drop('TimeStep', axis=1)
+        df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
+        df = df.drop('time_step', axis=1)
         # Check for mixed species that would produce both hard and soft #
         import warnings
         for i, row in df.iterrows():
-            if row['HW_Merch'] > 0.0 and row['SW_Merch'] > 0.0:
+            if row['hw_merch'] > 0.0 and row['sw_merch'] > 0.0:
                 warnings.warn("There is a mixed species at row %i.\n%s" % (i,row))
         # Convert from wide to long format #
         df = df.melt(id_vars    = ['year', 'forest_type'],
-                     value_vars = ['HW_Merch', 'SW_Merch'],
+                     value_vars = ['hw_merch', 'sw_merch'],
                      var_name   = 'conifers_bradleaves',
                      value_name = 'mass')
         # Only if we are in the calibration scenario #

@@ -44,12 +44,16 @@ class AssociationsChecker(object):
     @property_cached
     def aidb(self):
         """Shortcut to the AIDB."""
-        return AccessDatabase(self.paths.aidb_eu_mdb)
+        database = AccessDatabase(self.paths.aidb_eu_mdb)
+        database.convert_col_names_to_snake = True
+        return database
 
     @property_cached
     def calib(self):
         """Shortcut to the Calibration DB."""
-        return AccessDatabase(self.paths.calibration_mdb)
+        database = AccessDatabase(self.paths.calibration_mdb)
+        database.convert_col_names_to_snake = True
+        return database
 
     @property_cached
     def df(self):
@@ -98,7 +102,7 @@ class AssociationsChecker(object):
         names   = self.key_to_rows(self.keys[2]).values()
         print_messages(default, names, self.keys[2])
         # Disturbances #
-        default = set(self.aidb['tblDisturbanceTypeDefault']['DistTypeName'])
+        default = set(self.aidb['tblDisturbanceTypeDefault']['dist_type_name'])
         names   = self.key_to_rows(self.keys[3]).values()
         print_messages(default, names, self.keys[3])
         # Disturbances also have to match with disturbance_types.csv #

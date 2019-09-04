@@ -118,14 +118,14 @@ class Demand(object):
         # Create a little data frame to rename products to HWP
         gftm_irw_names = pandas.DataFrame({'product': ['C log', 'C pulpwood',
                                                        'N log', 'N pulpwood'],
-                                           'HWP':     ['IRW_C', 'IRW_C',
+                                           'hwp':     ['IRW_C', 'IRW_C',
                                                        'IRW_B', 'IRW_B']})
         df = (df
               # Rename products to HWP
               .set_index('product')
               .join(gftm_irw_names.set_index('product'))
               # Aggregate the value by HWP
-              .groupby(['year', 'HWP'])
+              .groupby(['year', 'hwp'])
               .agg({'value_ob': sum})
               .reset_index())
         # Create a little data frame with expanded years
@@ -141,7 +141,7 @@ class Demand(object):
               .set_index(['year_min'])
               .join(year_expansion.set_index(['year_min'])))
         # Convert year to time step
-        df['Step'] = self.parent.year_to_timestep(df['year'])
+        df['step'] = self.parent.year_to_timestep(df['year'])
         # Return #
         return df
 
@@ -161,21 +161,21 @@ class Demand(object):
     def historical(self):
         """Reshape historical_wide demand to long format."""
         df = self.historical_wide.melt(id_vars    = ['country', 'step', 'year'],
-                                       var_name   = 'HWP',
+                                       var_name   = 'hwp',
                                        value_name = 'volume')
         # Make HWP uppercase to match the silviculture table
-        df['HWP'] = df['HWP'].str.upper()
+        df['hwp'] = df['hwp'].str.upper()
         # Check if the total column matches with the sum of the other columns
         # Set abs_tol=1 to one to allow for rounding errors in the input data
-        sum_tot = df.query("HWP=='TOTAL'")['volume'].sum()
-        sum_other = df.query("HWP!='TOTAL'")['volume'].sum()
+        sum_tot = df.query("hwp=='TOTAL'")['volume'].sum()
+        sum_other = df.query("hwp!='TOTAL'")['volume'].sum()
         if not math.isclose(sum_tot, sum_other, abs_tol=1):
             msg = "The sum of the total column: %s "
             msg += "doesn't match the sum of the other columns: %s"
             raise Exception(msg % (sum_tot, sum_other))
         # Remove the total column from the table
-        df = df.query("HWP!='TOTAL'").copy()
+        df = df.query("hwp!='TOTAL'").copy()
         # Sort #
-        df = df.sort_values(by=['year', 'HWP'], ascending=[True, False])
+        df = df.sort_values(by=['year', 'hwp'], ascending=[True, False])
         # Return #
         return df

@@ -54,7 +54,9 @@ class MiddleProcessor(object):
 
     @property_cached
     def project_database(self):
-        return AccessDatabase(self.paths.project_mdb)
+        database = AccessDatabase(self.paths.project_mdb)
+        database.convert_col_names_to_snake = True
+        return database
 
     @property
     def current_timestep(self):

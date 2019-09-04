@@ -58,8 +58,8 @@ class PreProcessor(object):
         # We make a copy because query() doesn't return a true new data frame #
         new_df = self.filter_df(old_df, self.country.base_year, self.country.inventory_start_year).copy()
         # Filtering M types #
-        row_indexer = (new_df['Sort_Type'] == 6) & (new_df['Measurement_type'] == 'M')
-        new_df.loc[row_indexer, 'Sort_Type'] = 2
+        row_indexer = (new_df['sort_type'] == 6) & (new_df['measurement_type'] == 'M')
+        new_df.loc[row_indexer, 'sort_type'] = 2
         # Write the result #
         new_df.to_csv(str(new_path), index=False)
 
@@ -67,4 +67,4 @@ class PreProcessor(object):
         """Takes the old event dataframe and returns the new filtered one."""
         # Filter rows based on years #
         period_max = base_year - inv_start_year + 1
-        return df.query("Step <= %s" % period_max)
+        return df.query("step <= %s" % period_max)

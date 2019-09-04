@@ -126,8 +126,8 @@ class CountryTemplate(ReportTemplate):
 
     def table_disturbance_type(self):
         # New column names #
-        names = {'DisturbanceTypeID': 'Disturbance ID',
-                 'Name':              'Description'}
+        names = {'disturbance_type_id': 'Disturbance ID',
+                 'name':              'Description'}
         # Get the disturbances full name from their number #
         df = self.static_runner.input_data.disturbance_types
         df = df.rename(columns=names)

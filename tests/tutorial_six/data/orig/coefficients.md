@@ -1,9 +1,0 @@
-ID,species,C,DB,Harvest_Gr
-76,AA,0.5,0.4,Con
-77,HP,0.5,0.4,Con
-79,PS,0.5,0.42,Con
-80,FS,0.5,0.58,Broad
-81,QR,0.5,0.58,Broad
-83,LD,0.5,0.46,Con
-86,OB,0.5,0.5,Broad
-87,OC,0.5,0.4,Con

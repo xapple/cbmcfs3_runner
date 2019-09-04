@@ -48,7 +48,9 @@ class AIDB(object):
 
     @property_cached
     def database(self):
-        return AccessDatabase(self.paths.aidb)
+        database = AccessDatabase(self.paths.aidb)
+        database.convert_col_names_to_snake = True
+        return database
 
     @property_cached
     def dist_matrix_long(self):
@@ -63,17 +65,17 @@ class AIDB(object):
         lookup   = self.database['tblDMValuesLookup']
         # Join lookup and dm_table to add the description for each DMID #
         dm_lookup = (lookup
-                     .set_index('DMID')
-                     .join(dm_table.set_index('DMID'))
+                     .set_index('dmid')
+                     .join(dm_table.set_index('dmid'))
                      .reset_index())
         # Rename #
-        source = source.rename(columns={'Row':         'DMRow',
+        source = source.rename(columns={'Row':         'dm_row',
                                         'Description': 'row_pool'})
-        sink   = sink.rename(columns={'Column':      'DMColumn',
-                                      'Description': 'column_pool'})
+        sink   = sink.rename(  columns={'Column':      'dm_column',
+                                        'Description': 'column_pool'})
         # Indexes #
-        index_source = ['DMRow',    'DMStructureID']
-        index_sink   = ['DMColumn', 'DMStructureID']
+        index_source = ['dm_row',    'dm_structure_id']
+        index_sink   = ['dm_column', 'dm_structure_id']
         # Add source and sink descriptions #
         df = (dm_lookup.set_index(index_source)
                        .join(source.set_index(index_source))
@@ -84,9 +86,9 @@ class AIDB(object):
         # Make pool description columns suitable as column names #
         # Adds a number at the end of the disturbance name #
         df['row_pool']    = (df['row_pool'].str.replace(' ', '_') + '_' +
-                             df['DMRow'].astype(str))
+                             df['dm_row'].astype(str))
         df['column_pool'] = (df['column_pool'].str.replace(' ','_') + '_' +
-                             df['DMColumn'].astype(str))
+                             df['dm_column'].astype(str))
         # Return #
         return df
 
@@ -94,7 +96,7 @@ class AIDB(object):
     def dist_matrix(self):
         """Disturbance Matrix reshaped in the form of a matrix
         with source pools in rows and sink pools in columns."""
-        index = ['DMID', 'DMStructureID', 'DMRow', 'Name', 'row_pool']
+        index = ['dmid', 'dm_structure_id', 'dm_row', 'Name', 'row_pool']
         df = (self.dist_matrix_long
               .set_index(index)
               .query('Proportion>0'))

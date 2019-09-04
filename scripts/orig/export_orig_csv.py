@@ -64,7 +64,10 @@ class ExportCalibrationCSV(object):
     }
 
     @property_cached
-    def database(self): return AccessDatabase(self.country.paths.calibration_mdb)
+    def database(self):
+        database = AccessDatabase(self.country.paths.calibration_mdb)
+        database.convert_col_names_to_snake = True
+        return database
 
     def check(self):
         """Check that each table exists."""
@@ -80,7 +83,13 @@ class ExportCalibrationCSV(object):
         # Make each file #
         for file_name, table_name in self.file_to_table_name.items():
             destination = str(self.paths[file_name])
-            self.database[table_name].to_csv(destination, index=False)
+            # Load from database #
+            df = self.database[table_name]
+            # Special renaming - TODO check this works #
+            df = df.rename(columns = {'conifers_bradleaves': 'broad_conifers'})
+            df = df.rename(columns = {'forest_type':         'species'})
+            # Export #
+            df.to_csv(destination, index=False)
 
     def rename_coefs(self):
         """The coefficients file is a bit special. We will change one line.
@@ -89,7 +98,7 @@ class ExportCalibrationCSV(object):
         coef_file = self.paths.coefficients
         # Rename column 'Species' to match classifier 2's name #
         coef_file.replace_line('ID,Species,C,DB,Harvest_Gr',
-                               'ID,Forest type,C,DB,Harvest_Gr')
+                               'ID,forest_type,c,db,harvest_gr')
 
 ###############################################################################
 if __name__ == '__main__':

@@ -46,10 +46,10 @@ class Products(object):
         # Rename classifiers from _1 to forest etc. #
         df = df.rename(columns = self.parent.classifiers_mapping)
         # Rename a column #
-        df = df.rename(columns = {'Dist_Type_ID': 'DistTypeName'})
-        # Change the type of DistTypeName to string so that it has the same type as
-        # the `harvest_check` DistTypeName column
-        df['DistTypeName'] = df['DistTypeName'].astype(str)
+        df = df.rename(columns = {'dist_type_id': 'dist_type_name'})
+        # Change the type of dist_type_name to string so that it has the same type as
+        # the `harvest_check` dist_type_name column
+        df['dist_type_name'] = df['dist_type_name'].astype(str)
         # Change the type of management_strategy to string (for SI)
         df['management_strategy'] = df['management_strategy'].astype(str)
         # Return #
@@ -63,12 +63,12 @@ class Products(object):
         Joins disturbance id from the silviculture table
         to allocate specific disturbances to specific wood products.
         """
-        join_index = ['DistTypeName',
+        join_index = ['dist_type_name',
                       'forest_type',
                       'management_type',
                       'management_strategy']
         # Take only a few columns #
-        silv = self.silviculture[join_index + ['HWP']]
+        silv = self.silviculture[join_index + ['hwp']]
         silv = silv.set_index(join_index)
         # Join #
         df = (self.parent.harvest.check
@@ -79,11 +79,11 @@ class Products(object):
         # Because they represent disturbances that do not produce any harvest
         # Otherwise we would do: assert not df[join_index].isna().any().any()
         # Group #
-        df = (df.groupby(['TimeStep', 'HWP'])
-                .agg({'Vol_Merch':    'sum',
-                      'Vol_SubMerch': 'sum',
-                      'Vol_Snags':    'sum',
-                      'TC':           'sum'})
+        df = (df.groupby(['time_step', 'hwp'])
+                .agg({'vol_merch':    'sum',
+                      'vol_sub_merch': 'sum',
+                      'vol_snags':    'sum',
+                      'tc':           'sum'})
                 .reset_index())
         # Return #
         return df
@@ -93,14 +93,14 @@ class Products(object):
     def irw_b(self):
         """Harvest volumes of Industrial Round Wood Broadleaves."""
         df = (self.hwp_intermediate
-              .query('HWP == "IRW_B"')
-              .rename(columns={'Vol_Merch':    'Vol_Merch_IRW_B',
-                               'Vol_SubMerch': 'Vol_SubMerch_IRW_B',
-                               'Vol_Snags':    'Vol_Snags_IRW_B',
-                               'TC':           'TC_IRW_B'}))
+              .query('hwp == "IRW_B"')
+              .rename(columns={'vol_merch':    'Vol_Merch_IRW_B',
+                               'vol_sub_merch': 'Vol_SubMerch_IRW_B',
+                               'vol_snags':    'vol_snags_irw_b',
+                               'tc':           'TC_IRW_B'}))
         # Drop HWP column
         # because it doesn't make sense anymore below when we join different products together
-        df = df.drop('HWP', axis = 1)
+        df = df.drop('hwp', axis = 1)
         return df
 
     #-------------------------------------------------------------------------#
@@ -108,12 +108,12 @@ class Products(object):
     def irw_c(self):
         """Harvest volumes of Industrial Round Wood Coniferous."""
         df = (self.hwp_intermediate
-              .query('HWP == "IRW_C"')
-              .rename(columns={'Vol_Merch':    'Vol_Merch_IRW_C',
-                               'Vol_SubMerch': 'Vol_SubMerch_IRW_C',
-                               'Vol_Snags':    'Vol_Snags_IRW_C',
-                               'TC':           'TC_IRW_C'}))
-        df = df.drop('HWP', axis = 1)
+              .query('hwp == "IRW_C"')
+              .rename(columns={'vol_merch':    'Vol_Merch_IRW_C',
+                               'vol_sub_merch': 'Vol_SubMerch_IRW_C',
+                               'vol_snags':    'Vol_Snags_IRW_C',
+                               'tc':           'TC_IRW_C'}))
+        df = df.drop('hwp', axis = 1)
         return df
 
     #-------------------------------------------------------------------------#
@@ -121,11 +121,11 @@ class Products(object):
     def fw_b(self):
         """Harvest volumes of Fuel Wood Broadleaves."""
         df = (self.hwp_intermediate
-              .query('HWP == "FW_B"')
-              .rename(columns={'Vol_Merch':    'Vol_Merch_FW_B',
-                               'Vol_SubMerch': 'Vol_SubMerch_FW_B',
-                               'Vol_Snags':    'Vol_Snags_FW_B',
-                               'TC':           'TC_FW_B'}))
+              .query('hwp == "FW_B"')
+              .rename(columns={'vol_merch':    'Vol_Merch_FW_B',
+                               'vol_sub_merch': 'vol_sub_merch_fw_b',
+                               'vol_snags':    'Vol_Snags_FW_B',
+                               'tc':           'TC_FW_B'}))
         return df
 
     #-------------------------------------------------------------------------#
@@ -133,22 +133,22 @@ class Products(object):
     def fw_b_total(self):
         """
         Harvest volumes of Fuel Wood Broadleaves
-        Join Industrial Round Wood co-products: 'Vol_SubMerch_IRW_B' and 'Vol_Snags_IRW_B'
+        Join Industrial Round Wood co-products: 'Vol_SubMerch_IRW_B' and 'vol_snags_irw_b'
         into the fuel wood total.
         """
         df = (self.fw_b
-              .set_index('TimeStep')
-              .join(self.irw_b.set_index(['TimeStep']))
+              .set_index('time_step')
+              .join(self.irw_b.set_index(['time_step']))
               .reset_index())
-        df['TOT_Vol_FW_B'] = sum([df.Vol_Merch_FW_B,
+        df['tot_vol_fw_b'] = sum([df.Vol_Merch_FW_B,
                                   df.Vol_SubMerch_FW_B,
                                   df.Vol_Snags_FW_B,
                                   df.Vol_SubMerch_IRW_B,
                                   df.Vol_Snags_IRW_B])
-        df = df[['TimeStep',
-                 'Vol_Merch_FW_B', 'Vol_SubMerch_FW_B', 'Vol_Snags_FW_B',
-                 'Vol_SubMerch_IRW_B', 'Vol_Snags_IRW_B',
-                 'TOT_Vol_FW_B']]
+        df = df[['time_step',
+                 'Vol_Merch_FW_B', 'vol_sub_merch_fw_b', 'Vol_Snags_FW_B',
+                 'Vol_SubMerch_IRW_B', 'vol_snags_irw_b',
+                 'tot_vol_fw_b']]
         return df
 
     #-------------------------------------------------------------------------#
@@ -156,11 +156,11 @@ class Products(object):
     def fw_c(self):
         """Harvest volumes of Fuel Wood Coniferous."""
         df = (self.hwp_intermediate
-              .query('HWP == "FW_C"')
-              .rename(columns={'Vol_Merch':    'Vol_Merch_FW_C',
-                               'Vol_SubMerch': 'Vol_SubMerch_FW_C',
-                               'Vol_Snags':    'Vol_Snags_FW_C',
-                               'TC':           'TC_FW_C'}))
+              .query('hwp == "FW_C"')
+              .rename(columns={'vol_merch':    'Vol_Merch_FW_C',
+                               'vol_sub_merch': 'Vol_SubMerch_FW_C',
+                               'vol_snags':    'Vol_Snags_FW_C',
+                               'tc':           'TC_FW_C'}))
         return df
 
     #-------------------------------------------------------------------------#
@@ -171,8 +171,8 @@ class Products(object):
         Join Industrial Round Wood co-products.
         """
         df = (self.fw_c
-                  .set_index('TimeStep')
-                  .join(self.irw_c.set_index(['TimeStep']))
+                  .set_index('time_step')
+                  .join(self.irw_c.set_index(['time_step']))
                   .reset_index())
         df['TOT_Vol_FW_C'] = numpy.where(df['Vol_Merch_FW_C'] >= 0,
                                       sum([df.Vol_Merch_FW_C,
@@ -182,7 +182,7 @@ class Products(object):
                                            df.Vol_Snags_IRW_C]),
                                       sum([df.Vol_SubMerch_IRW_C,
                                            df.Vol_Snags_IRW_C]))
-        df = df[['TimeStep',
+        df = df[['time_step',
                  'Vol_Merch_FW_C','Vol_SubMerch_FW_C','Vol_Snags_FW_C',
                  'Vol_SubMerch_IRW_C','Vol_Snags_IRW_C',
                  'TOT_Vol_FW_C']]
@@ -201,13 +201,13 @@ class Products(object):
         using the time step as an index.
         """
         df = (self.irw_c
-              .set_index('TimeStep')[['Vol_Merch_IRW_C']]
-              .join(self.irw_b.set_index('TimeStep')[['Vol_Merch_IRW_B']])
-              .join(self.fw_c_total.set_index('TimeStep')[['TOT_Vol_FW_C']])
-              .join(self.fw_b_total.set_index('TimeStep')[['TOT_Vol_FW_B']])
+              .set_index('time_step')[['Vol_Merch_IRW_C']]
+              .join(self.irw_b.set_index('time_step')[['Vol_Merch_IRW_B']])
+              .join(self.fw_c_total.set_index('time_step')[['TOT_Vol_FW_C']])
+              .join(self.fw_b_total.set_index('time_step')[['tot_vol_fw_b']])
               .reset_index())
         # Add year
-        df['year'] = self.parent.parent.country.timestep_to_year(df['TimeStep'])
+        df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
         # Rename columns to standard IRW and FW product names
-        df = df.rename(columns=lambda x: re.sub(r'Vol_Merch_|TOT_Vol_',r'', x))
+        df = df.rename(columns=lambda x: re.sub(r'vol_merch_|tot_vol_',r'', x))
         return df
