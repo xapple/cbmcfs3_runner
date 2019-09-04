@@ -93,7 +93,11 @@ class InputData(object):
          'Measurement_type', 'Amount', 'Dist_Type_ID', 'Step']
         """
         # Get the right sheet #
-        return self.xls.parse("DistEvents")
+        df = self.xls.parse("DistEvents")
+        # Harmonise Dist_Type_ID data type amoung countries
+        # some have int, others have str, make it str for all.
+        df['Dist_Type_ID'] = df['Dist_Type_ID'].astype(str)
+        return df
 
     @property_cached
     def disturbance_types(self):
