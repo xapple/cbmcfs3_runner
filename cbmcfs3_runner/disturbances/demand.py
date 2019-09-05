@@ -28,7 +28,7 @@ historical_demand_path = module_dir + 'extra_data/hist_harvest_corrected.csv'
 
 # Parse #
 gftm_irw_demand = pandas.read_csv(str(gftm_irw_demand_path), header=None)
-gftm_fw_demand = pandas.read_csv(str(gftm_fw_demand_path), header=None)
+gftm_fw_demand = pandas.read_csv(str(gftm_fw_demand_path))
 historical_demand = pandas.read_csv(str(historical_demand_path))
 
 ###############################################################################
