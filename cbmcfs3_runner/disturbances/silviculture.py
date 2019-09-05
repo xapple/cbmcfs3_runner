@@ -286,12 +286,18 @@ class Silviculture(object):
         """
         # Load dataframe #
         df = self.stock_available_agg.copy()
+        coefficients = self.parent.coefficients[['forest_type', 'db']]
         # Add column stock_tot #
         df['stock_tot'] = df.groupby(['hwp'])['stock_available'].transform('sum')
         # Add column prop #
         df['prop']      = df['stock_available'] / df['stock_tot']
         # Drop redundant total column #
         df.drop(columns=['stock_tot'])
+        # Add coefficient of convertion from m3 to tonnes of C
+        df = (df
+              .set_index('forest_type')
+              .join(coefficients.set_index('forest_type'))
+              .reset_index())
         # Sort for readability #
         df = df.sort_values(by=['hwp'], ascending=False)
         # Return
