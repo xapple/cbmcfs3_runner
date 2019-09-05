@@ -89,24 +89,28 @@ class DisturbanceMaker(object):
         We will join with an allocation matrix
         that would look as follows:
 
-            prod   prop  dist _1  _2  _3     _7 Snag_Perc OWC_Perc  Min_Age Max_Age
-            IRW    0.9      7 AA  MT  AR  Broad      0.02     0.14       20      80
-            IRW    0.1     12 BB  MT  AR  Broad      0.03     0.12       20      80
-            IRW    0.5     29 ZZ  MT  AR    Con      0.02     0.14       20      80
-            IRW    0.5      3 YY  MT  AR    Con      0.03     0.12       20      80
+            prod   prop  dist _1  _2  _3     _7 Snag_Perc OWC_Perc  Min_Age Max_Age    db
+            IRW    0.9      7 AA  MT  AR  Broad      0.02     0.14       20      80  0.40
+            IRW    0.1     12 BB  MT  AR  Broad      0.03     0.12       20      80  0.45
+            IRW    0.5     29 ZZ  MT  AR    Con      0.02     0.14       20      80  0.58
+            IRW    0.5      3 YY  MT  AR    Con      0.03     0.12       20      80  0.58
 
         We keep the two percentage columns because we want to be able to
         switch one or the other on or off.
 
         Result of the join:
 
-            prod   prop  dist   _1  _2  _3    _7 Snag_Perc OWC_Perc     volume  year
-            IRW    0.9      7  AA  MT  AR  Broad      0.02     0.14   121400.0  1999
-            IRW    0.1     12  BB  MT  AR  Broad      0.03     0.12   121400.0  1999
-            IRW    0.5     29  ZZ  MT  AR    Con      0.02     0.14   120300.0  1999
-            IRW    0.5      3  YY  MT  AR    Con      0.03     0.12   120300.0  1999
+            prod   prop  dist   _1  _2  _3    _7 Snag_Perc OWC_Perc     volume  year    db
+            IRW    0.9      7  AA  MT  AR  Broad      0.02     0.14   121400.0  1999  0.40
+            IRW    0.1     12  BB  MT  AR  Broad      0.03     0.12   121400.0  1999  0.45
+            IRW    0.5     29  ZZ  MT  AR    Con      0.02     0.14   120300.0  1999  0.58
+            IRW    0.5      3  YY  MT  AR    Con      0.03     0.12   120300.0  1999  0.58
 
-        Then we add the column: IRW_amount = prop * volume
+        We convert disturbance volumes from m3 over bark to tonnes of carbon.
+        
+            df['value_tc'] = df['value_ob'] * df['db'] / 2
+        
+        Then we add the column: IRW_amount = prop * value_tc
         As well as the:          FW_amount = IRW_amount * (Snag_perc + OWC_Perc)
 
             prod   prop  dist  _1  _2  _3    _7 Snag_Perc OWC_Perc IRW_amount  FW_amount  year
@@ -115,7 +119,7 @@ class DisturbanceMaker(object):
             IRW    0.5     29 ZZ  MT  AR    Con      0.02     0.14      60000       4000  1999
             IRW    0.5      3 YY  MT  AR    Con      0.03     0.12       6000        600  1999
 
-        Here we can check that sum(IRW_amount) == sum(volume)
+        Here we can check that sum(IRW_amount) == sum(value_tc)
         By doing df.groupby('year', '_7').agg({'fw_amount': 'sum'}) we get:
 
                 _7 FW_amount  year
@@ -181,12 +185,11 @@ class DisturbanceMaker(object):
         df = (self.country.demand.future
              .set_index('hwp')
              .join(self.country.silviculture.harvest_proportion.set_index('hwp')))
-        # TODO: Convert value_ob to carbon amount
-        # Using a procedure similar to the method check
-        # used in post_processor.harvest.py
-        #     df['vol_merch'] = (df['tc'] * 2) / df['db']
+        # Convert value_ob from m3 to tonnes of C
+        df['value_tc'] = df['value_ob'] * df['db'] / 2
         # Calculate the disturbance amount based on the proportion
-        df['amount'] = df['value_ob'] * df['prop']
+        # Each proportion is different for each combination of classifiers.
+        df['amount'] = df['value_tc'] * df['prop']
 
         # Add and re-order columns
         # These classifiers are ignored when interacting with the economic model only
@@ -228,14 +231,14 @@ class DisturbanceMaker(object):
         df['max_tot_merch_hard_stem_snag_c'] = -1
         # Check consistency of Sort_Type with measurement type
         # TODO move this to check any disturbances just before SIT is called
-        dist_gftm_random = df.query('sort_type==6')
+        df_random = df.query('sort_type==6')
         msg = "Random sort type: 6 not allowed with disturbances expressed in terms "
         msg += "of Measurement Type 'M' merchantable carbon. \n"
         msg += "The issue is present for dist_type_id: %s \n"
         msg += "CBM error in this case is "
         msg += "Error: 'Illegal target type for RANDOM sort in timestep...'"
-        if len(dist_gftm_random) > 0:
-            raise Exception(msg % (dist_gftm_random['dist_type_id'].unique()))
+        if len(df_random) > 0:
+            raise Exception(msg % (df_random['dist_type_id'].unique()))
         # Rearrange columns according to the raw "disturbance_events.csv" file
         dist_calib_columns = list(self.disturbance_events_raw.columns)
         # Return #
