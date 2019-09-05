@@ -22,11 +22,13 @@ import numpy
 from cbmcfs3_runner import module_dir
 
 # Constants #
-gftm_demand_path       = module_dir + 'extra_data/gftm_forest_model.csv'
+gftm_irw_demand_path = module_dir + 'extra_data/gftm_forest_model.csv'
+gftm_fw_demand_path = module_dir + 'extra_data/gftm_fuel_wood_bau.csv'
 historical_demand_path = module_dir + 'extra_data/hist_harvest_corrected.csv'
 
 # Parse #
-gftm_demand       = pandas.read_csv(str(gftm_demand_path), header=None)
+gftm_irw_demand = pandas.read_csv(str(gftm_irw_demand_path), header=None)
+gftm_fw_demand = pandas.read_csv(str(gftm_fw_demand_path), header=None)
 historical_demand = pandas.read_csv(str(historical_demand_path))
 
 ###############################################################################
@@ -59,35 +61,27 @@ class Demand(object):
 
     @property
     def gftm_header(self):
-       return gftm_demand[0:3]
+       return gftm_irw_demand[0:3]
 
     @property
     def gftm_content(self):
-        return gftm_demand[3:]
+        return gftm_irw_demand[3:]
 
     @property_cached
-    def row(self):
+    def gftm_row(self):
         """Get the row corresponding to the current country."""
         selector = self.gftm_content[0] == self.parent.iso2_code
         return self.gftm_content.loc[selector].copy()
 
     @property_cached
-    def future(self):
-        """
-        Future demands as predicted by GFTM.
-        Create the data frame in long format.
-
-        GFTM gives a yearly demand over a 5 year interval.
-        Before we can generate disturbances, we create a year indentifier
-        for each year in the interval
-        and we duplicate the yearly demand volume 5 times.
-
-        Columns are: ['values']
+    def gftm_irw(self):
+        """Future IRW demand as predicted by GFTM.
+        Load and reshape the data frame in long format.
         """
         # Fill values #
         header = self.gftm_header.fillna(method='ffill', axis=1)
         # Get the headers #
-        df = pandas.concat([header, self.row])
+        df = pandas.concat([header, self.gftm_row])
         # Transpose #
         df = df.transpose()
         # Drop country code and country name #
@@ -128,6 +122,30 @@ class Demand(object):
               .groupby(['year', 'hwp'])
               .agg({'value_ob': sum})
               .reset_index())
+        return df
+
+    @property_cached
+    def gftm_fw(self):
+        """Future FW demand as predicted by GFTM.
+        Load and reshape the data frame in long format.
+        """
+        # Get the row corresponding to the current country.
+        selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
+        df = gftm_fw_demand.loc[selector].copy()
+        return df
+
+    @property_cached
+    def future(self):
+        """
+        GFTM gives a yearly demand over a 5 year interval.
+        Before we can generate disturbances, we create a year indentifier
+        for each year in the interval
+        and we duplicate the yearly demand volume 5 times.
+
+        Columns are: ['values']
+        """
+        # TODO: add fuel wood to this data frame
+        df = self.gftm_irw
         # Create a little data frame with expanded years
         year_min = numpy.concatenate([numpy.repeat(x,5) for x in range(2016, 2030, 5)])
         year_expansion = pandas.DataFrame({'year_min': year_min,
