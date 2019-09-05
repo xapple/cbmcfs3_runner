@@ -140,11 +140,11 @@ class Products(object):
               .set_index('time_step')
               .join(self.irw_b.set_index(['time_step']))
               .reset_index())
-        df['tot_vol_fw_b'] = sum([df.vol_merch_fw_b,
-                                  df.vol_sub_merch_fw_b,
-                                  df.vol_snags_fw_b,
-                                  df.vol_sub_merch_irw_b,
-                                  df.vol_snags_irw_b])
+        df['tot_vol_fw_b'] = sum([df['vol_merch_fw_b'],
+                                  df['vol_sub_merch_fw_b'],
+                                  df['vol_snags_fw_b'],
+                                  df['vol_sub_merch_irw_b'],
+                                  df['vol_snags_irw_b']])
         df = df[['time_step',
                  'vol_merch_fw_b', 'vol_sub_merch_fw_b', 'vol_snags_fw_b',
                  'vol_sub_merch_irw_b', 'vol_snags_irw_b',
@@ -175,13 +175,13 @@ class Products(object):
                   .join(self.irw_c.set_index(['time_step']))
                   .reset_index())
         df['tot_vol_fw_c'] = numpy.where(df['vol_merch_fw_c'] >= 0,
-                                      sum([df.vol_merch_fw_c,
-                                           df.vol_sub_merch_fw_c,
-                                           df.vol_snags_fw_c,
-                                           df.vol_sub_merch_irw_c,
-                                           df.vol_snags_irw_c]),
-                                      sum([df.vol_sub_merch_irw_c,
-                                           df.vol_snags_irw_c]))
+                                         sum([df['vol_merch_fw_c'],
+                                              df['vol_sub_merch_fw_c'],
+                                              df['vol_snags_fw_c'],
+                                              df['vol_sub_merch_irw_c'],
+                                              df['vol_snags_irw_c']]),
+                                         sum([df['vol_sub_merch_irw_c'],
+                                              df['vol_snags_irw_c']]))
         df = df[['time_step',
                  'vol_merch_fw_c','vol_sub_merch_fw_c','vol_snags_fw_c',
                  'vol_sub_merch_irw_c','vol_snags_irw_c',
