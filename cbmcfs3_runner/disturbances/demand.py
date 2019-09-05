@@ -130,8 +130,9 @@ class Demand(object):
         Load and reshape the data frame in long format.
         """
         # Get the row corresponding to the current country.
-        selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
-        df = gftm_fw_demand.loc[selector].copy()
+        #selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
+        #df = gftm_fw_demand.loc[selector].copy()
+        df = gftm_fw_demand
         return df
 
     @property_cached
