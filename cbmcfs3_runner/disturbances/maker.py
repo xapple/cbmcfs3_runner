@@ -181,6 +181,10 @@ class DisturbanceMaker(object):
         df = (self.country.demand.future
              .set_index('hwp')
              .join(self.country.silviculture.harvest_proportion.set_index('hwp')))
+        # TODO: Convert value_ob to carbon amount
+        # Using a procedure similar to the method check
+        # used in post_processor.harvest.py
+        #     df['vol_merch'] = (df['tc'] * 2) / df['db']
         # Calculate the disturbance amount based on the proportion
         df['amount'] = df['value_ob'] * df['prop']
 
