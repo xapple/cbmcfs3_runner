@@ -125,6 +125,11 @@ class Demand(object):
               .groupby(['year', 'hwp'])
               .agg({'value_ob': sum})
               .reset_index())
+        df['year_min'] = df['year'].str[:4].astype(int)
+        df['year_max'] = df['year'].str[-4:].astype(int)
+        # Rename year column, because a new year column will be created later
+        # in the future() method.
+        df.rename(columns={'year':'year_text'})
         return df
 
     @property_cached
@@ -154,12 +159,9 @@ class Demand(object):
         year_min = numpy.concatenate([numpy.repeat(x,5) for x in range(2016, 2030, 5)])
         year_expansion = pandas.DataFrame({'year_min': year_min,
                                            'year':     range(2016, 2031, 1)})
-        df['year_min'] = df['year'].str[:4].astype(int)
-        df['year_max'] = df['year'].str[-4:].astype(int)
         # Repeat lines for each successive year within a range by
         # joining the year_expansion data frame
         df = (df
-              .drop(columns=['year', 'year_max'])
               .set_index(['year_min'])
               .join(year_expansion.set_index(['year_min'])))
         # Convert year to time step
