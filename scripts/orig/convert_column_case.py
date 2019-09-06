@@ -119,7 +119,8 @@ class CaseRenamer(object):
                         'Snag_Perc, OWC_Perc, FW_amount, IRW_amount,'
                         'SoftProduction, HardProduction, DOMProduction,'
                         'CO2Production, MerchLitterInput, OthLitterInput,'
-                        'Prov_Carbon, Vol_forest_residues,'
+                        'Prov_Carbon, Vol_forest_residues,',
+        'extras':       'IRW_C, FW_C, IRW_B, FW_B'
      }
 
     @property_cached
