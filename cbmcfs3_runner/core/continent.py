@@ -17,6 +17,7 @@ You can use this object like this:
 
 # Third party modules #
 from tqdm import tqdm
+import pandas 
 
 # First party modules #
 from autopaths            import Path
@@ -27,8 +28,6 @@ from plumbing.logger      import create_file_logger
 # Internal modules #
 from cbmcfs3_runner.core.country import Country
 from cbmcfs3_runner.scenarios import scen_classes
-from cbmcfs3_runner.extra_data.country_ref_years import Reference
-#from cbmcfs3_runner.pump.orig_data import OrigData
 
 # Constants #
 cbm_data_repos = Path("~/repos/cbmcfs3_data/")
@@ -89,9 +88,15 @@ class Continent(object):
         return self.scenarios[scenario].runners[country][step]
 
     @property_cached
-    def reference(self):
+    def country_ref_years(self):
         """Access the country codes and reference years."""
-        return Reference(self)
+        cisy = [(c.country_name, 
+                 c.iso2_code, 
+                 c.inventory_start_year) for c in self]
+        df = pandas.DataFrame(cisy, columns=['country_name', 
+                                             'iso2_code', 
+                                             'inventory_start_year'])
+        return df 
 
 
     @property
