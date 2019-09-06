@@ -50,10 +50,10 @@ class FusionData(object):
         Inventory data loaded from the fusion back_inventory_aws.csv file
         Columns are:
 
-            ['status', 'forest_type', 'region', 'management_type',
-             'management_strategy', 'climatic_unit', 'conifers_broadleaves',
-             'using_id', 'age', 'area', 'delay', 'unfcccl', 'hist_dist', 'last_dist',
-             'age_class'],
+        ['status', 'forest_type', 'region', 'management_type',
+               'management_strategy', 'climatic_unit', 'conifers_broadleaves',
+               'using_id', 'age', 'area', 'delay', 'unfcccl', 'hist_dist',
+               'last_dist']
         """
         df = self['back_inventory_aws']
         return df.rename(columns = self.parent.classifiers.mapping)
