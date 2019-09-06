@@ -138,9 +138,18 @@ class Demand(object):
         Load and reshape the data frame in long format.
         """
         # Get the row corresponding to the current country.
-        #selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
-        #df = gftm_fw_demand.loc[selector].copy()
-        df = gftm_fw_demand
+        selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
+        fw_wide = gftm_fw_demand.loc[selector].copy()
+        # Reshape to long format
+        df = fw_wide.melt(id_vars='country_iso2', var_name='product_year', 
+                          value_name='value')
+        # Separate the hwp and year_min columns 
+        df['hwp'], df['year_min'] = df['product_year'].str.split('_', 1).str
+        df['hwp'] = df['hwp'].replace(['Coniferous', 'Broadleaved'], 
+                                      ['fw_c', 'fw_b'])
+        df['year_min'] = df['year_min'].astype(int) + 1
+        # Convert demand value to over bark 
+        df['value_ob'] = df['value'] * self.parent.demand.bark_correction_factor
         return df
 
     @property_cached
