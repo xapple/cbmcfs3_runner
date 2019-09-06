@@ -22,14 +22,17 @@ import numpy
 from cbmcfs3_runner import module_dir
 
 # Constants #
+historical_demand_path = module_dir + 'extra_data/hist_harvest_corrected.csv'
 gftm_irw_demand_path = module_dir + 'extra_data/gftm_forest_model.csv'
 gftm_fw_demand_path = module_dir + 'extra_data/gftm_fuel_wood_bau.csv'
-historical_demand_path = module_dir + 'extra_data/hist_harvest_corrected.csv'
 
 # Parse #
+historical_demand = pandas.read_csv(str(historical_demand_path))
 gftm_irw_demand = pandas.read_csv(str(gftm_irw_demand_path), header=None)
 gftm_fw_demand = pandas.read_csv(str(gftm_fw_demand_path))
-historical_demand = pandas.read_csv(str(historical_demand_path))
+gftm_fw_demand['country_iso2'] = (gftm_fw_demand['country_iso2']
+                                  .replace(['LUX', 'SW', 'SL'], 
+                                           ['LU', 'SE', 'SI']))
 
 ###############################################################################
 class Demand(object):
