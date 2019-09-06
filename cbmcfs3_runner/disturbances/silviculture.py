@@ -117,18 +117,18 @@ class Silviculture(object):
         * B stands for broadleaved
         """
         s = """     pool  |   HWP  |  co_product
-             Tot_V_Merch  |  FW_C  |  FW_C
-          Tot_V_SubMerch  |  FW_C  |  FW_C
-             Tot_V_Snags  |  FW_C  |  FW_C
-             Tot_V_Merch  | IRW_C  | IRW_C
-          Tot_V_SubMerch  | IRW_C  |  FW_C
-             Tot_V_Snags  | IRW_C  |  FW_C
-             Tot_V_Merch  |  FW_B  |  FW_B
-          Tot_V_SubMerch  |  FW_B  |  FW_B
-             Tot_V_Snags  |  FW_B  |  FW_B
-             Tot_V_Merch  | IRW_B  | IRW_B
-          Tot_V_SubMerch  | IRW_B  |  FW_B
-             Tot_V_Snags  | IRW_B  |  FW_B
+             Tot_V_Merch  |  fw_c  |  fw_c
+          Tot_V_SubMerch  |  fw_c  |  fw_c
+             Tot_V_Snags  |  fw_c  |  fw_c
+             Tot_V_Merch  | irw_c  | irw_c
+          Tot_V_SubMerch  | irw_c  |  fw_c
+             Tot_V_Snags  | irw_c  |  fw_c
+             Tot_V_Merch  |  fw_b  |  fw_b
+          Tot_V_SubMerch  |  fw_b  |  fw_b
+             Tot_V_Snags  |  fw_b  |  fw_b
+             Tot_V_Merch  | irw_b  | irw_b
+          Tot_V_SubMerch  | irw_b  |  fw_b
+             Tot_V_Snags  | irw_b  |  fw_b
         """
         # Convert string to data frame #
         return string_to_df(s)

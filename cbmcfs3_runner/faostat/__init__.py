@@ -42,7 +42,7 @@ class Faostat(object):
                 'Wood fuel, coniferous',
                 'Wood fuel, non-coniferous']
 
-    short_names = ['IRW_C', 'IRW_B', 'FW_C', 'FW_B']
+    short_names = ['irw_c', 'irw_b', 'fw_c', 'fw_b']
 
     @classmethod
     def download(cls):

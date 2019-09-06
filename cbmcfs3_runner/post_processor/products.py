@@ -93,7 +93,7 @@ class Products(object):
     def irw_b(self):
         """Harvest volumes of Industrial Round Wood Broadleaves."""
         df = (self.hwp_intermediate
-              .query('hwp == "IRW_B"')
+              .query('hwp == "irw_b"')
               .rename(columns={'vol_merch':    'vol_merch_irw_b',
                                'vol_sub_merch': 'vol_sub_merch_irw_b',
                                'vol_snags':    'vol_snags_irw_b',
@@ -108,7 +108,7 @@ class Products(object):
     def irw_c(self):
         """Harvest volumes of Industrial Round Wood Coniferous."""
         df = (self.hwp_intermediate
-              .query('hwp == "IRW_C"')
+              .query('hwp == "irw_c"')
               .rename(columns={'vol_merch':    'vol_merch_irw_c',
                                'vol_sub_merch': 'vol_sub_merch_irw_c',
                                'vol_snags':    'vol_snags_irw_c',
@@ -121,11 +121,11 @@ class Products(object):
     def fw_b(self):
         """Harvest volumes of Fuel Wood Broadleaves."""
         df = (self.hwp_intermediate
-              .query('hwp == "FW_B"')
+              .query('hwp == "fw_b"')
               .rename(columns={'vol_merch':    'vol_merch_fw_b',
                                'vol_sub_merch': 'vol_sub_merch_fw_b',
                                'vol_snags':    'vol_snags_fw_b',
-                               'tc':           'TC_FW_B'}))
+                               'tc':           'TC_fw_b'}))
         return df
 
     #-------------------------------------------------------------------------#
@@ -156,7 +156,7 @@ class Products(object):
     def fw_c(self):
         """Harvest volumes of Fuel Wood Coniferous."""
         df = (self.hwp_intermediate
-              .query('hwp == "FW_C"')
+              .query('hwp == "fw_c"')
               .rename(columns={'vol_merch':    'vol_merch_fw_c',
                                'vol_sub_merch': 'vol_sub_merch_fw_c',
                                'vol_snags':    'vol_snags_fw_c',

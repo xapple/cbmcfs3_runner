@@ -115,8 +115,8 @@ class Demand(object):
         # Create a little data frame to rename products to HWP
         gftm_irw_names = pandas.DataFrame({'product': ['C log', 'C pulpwood',
                                                        'N log', 'N pulpwood'],
-                                           'hwp':     ['IRW_C', 'IRW_C',
-                                                       'IRW_B', 'IRW_B']})
+                                           'hwp':     ['irw_c', 'irw_c',
+                                                       'irw_b', 'irw_b']})
         df = (df
               # Rename products to HWP
               .set_index('product')
