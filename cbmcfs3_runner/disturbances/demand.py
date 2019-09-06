@@ -129,7 +129,7 @@ class Demand(object):
         df['year_max'] = df['year'].str[-4:].astype(int)
         # Rename year column, because a new year column will be created later
         # in the future() method.
-        df.rename(columns={'year':'year_text'})
+        df = df.rename(columns={'year':'year_text'})
         return df
 
     @property_cached
@@ -153,12 +153,19 @@ class Demand(object):
 
         Columns are: ['values']
         """
-        # TODO: add fuel wood to this data frame
-        df = self.gftm_irw
+        # Load data
+        columns_of_interest = ['hwp', 'year_min', 'value_ob']
+        gftm_irw = self.gftm_irw[columns_of_interest]
+        gftm_fw = self.gftm_fw[columns_of_interest]
+        # limit fw year to 2026 equal to the maximum of irw years
+        gftm_fw = gftm_fw.query('year_min<2030')
+        # Concatenate fuel wood and industrial round wood data
+        df = pandas.concat([gftm_fw , gftm_irw])
         # Create a little data frame with expanded years
         year_min = numpy.concatenate([numpy.repeat(x,5) for x in range(2016, 2030, 5)])
         year_expansion = pandas.DataFrame({'year_min': year_min,
                                            'year':     range(2016, 2031, 1)})
+        year_expansion['year'] = year_expansion['year'].astype(int)
         # Repeat lines for each successive year within a range by
         # joining the year_expansion data frame
         df = (df
@@ -166,8 +173,8 @@ class Demand(object):
               .join(year_expansion.set_index(['year_min'])))
         # Convert year to time step
         df['step'] = self.parent.year_to_timestep(df['year'])
-        # Return #
-        return df
+        return df        
+        
 
     @property_cached
     def historical_wide(self):
