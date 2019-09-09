@@ -91,7 +91,7 @@ class CaseRenamer(object):
 
     col_names = {
         'ageclass':     'AgeClassID,Size',
-        'classifiers':  'ClassifierNumber,ClassifierValueID', # Name was here but is too generic
+        'classifiers':  'ClassifierNumber,ClassifierValueID',
         'disturbances': 'UsingID,SWStart,SWEnd,HWStart,HWEnd,Min_since_last_Dist,'
                         'Max_since_last_Dist,Last_Dist_ID,Min_tot_biom_C,Max_tot_biom_C,'
                         'Min_merch_soft_biom_C,Max_merch_soft_biom_C,Min_merch_hard_biom_C,'
