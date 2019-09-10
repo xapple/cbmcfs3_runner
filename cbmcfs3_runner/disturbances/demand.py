@@ -63,6 +63,25 @@ class Demand(object):
         self.bark_correction_factor = 0.88
 
     @property
+    def year_expansion(self):
+        """Create a little data frame to expand years 
+        from a 5 year time frame to a yearly time frame.
+        
+        GFTM gives a yearly demand over a 5 year interval.
+        We will use this data frame to duplicate the yearly demand
+        volume 5 times. This will then be used to generate disturbances.
+        
+        Columns are : ['year_min', 'year']
+        """
+        year_min = numpy.concatenate([numpy.repeat(x,5) for x in range(2016, 2030, 5)])
+        df = pandas.DataFrame({'year_min': year_min,
+                                           'year':     range(2016, 2031, 1)})
+        df['year'] = df['year'].astype(int)
+        # Convert year to time step
+        df['step'] = self.parent.year_to_timestep(df['year'])
+        return df
+
+    @property
     def gftm_header(self):
        return gftm_irw_demand[0:3]
 
@@ -121,15 +140,22 @@ class Demand(object):
               # Rename products to HWP
               .set_index('product')
               .join(gftm_irw_names.set_index('product'))
-              # Aggregate the value by HWP
+              # Aggregate the log and pulpwood values by HWP
               .groupby(['year', 'hwp'])
               .agg({'value_ob': sum})
               .reset_index())
         df['year_min'] = df['year'].str[:4].astype(int)
         df['year_max'] = df['year'].str[-4:].astype(int)
         # Rename year column, because a new year column will be created later
-        # in the future() method.
+        # when expanding the years
         df = df.rename(columns={'year':'year_text'})
+        # Repeat lines for each successive year within a range by
+        # joining the year_expansion data frame
+        # columns_of_interest = ['hwp', 'year_min', 'value_ob']
+        # df = df[columns_of_interest]
+        df = (df
+              .set_index(['year_min'])
+              .join(self.year_expansion.set_index(['year_min'])))
         return df
 
     @property_cached
@@ -148,42 +174,16 @@ class Demand(object):
         df['hwp'] = df['hwp'].replace(['Coniferous', 'Broadleaved'], 
                                       ['fw_c', 'fw_b'])
         df['year_min'] = df['year_min'].astype(int) + 1
+        # limit fw year to 2026 equal to the maximum of irw years
+        df = df.query('year_min<2030').copy()
         # Convert demand value to over bark 
         df['value_ob'] = df['value'] * self.parent.demand.bark_correction_factor
-        return df
-
-    @property_cached
-    def future(self):
-        """
-        GFTM gives a yearly demand over a 5 year interval.
-        Before we can generate disturbances, we create a year indentifier
-        for each year in the interval
-        and we duplicate the yearly demand volume 5 times.
-
-        Columns are: ['values']
-        """
-        # Load data
-        columns_of_interest = ['hwp', 'year_min', 'value_ob']
-        gftm_irw = self.gftm_irw[columns_of_interest]
-        gftm_fw = self.gftm_fw[columns_of_interest]
-        # limit fw year to 2026 equal to the maximum of irw years
-        gftm_fw = gftm_fw.query('year_min<2030')
-        # Concatenate fuel wood and industrial round wood data
-        df = pandas.concat([gftm_fw , gftm_irw])
-        # Create a little data frame with expanded years
-        year_min = numpy.concatenate([numpy.repeat(x,5) for x in range(2016, 2030, 5)])
-        year_expansion = pandas.DataFrame({'year_min': year_min,
-                                           'year':     range(2016, 2031, 1)})
-        year_expansion['year'] = year_expansion['year'].astype(int)
         # Repeat lines for each successive year within a range by
         # joining the year_expansion data frame
         df = (df
               .set_index(['year_min'])
-              .join(year_expansion.set_index(['year_min'])))
-        # Convert year to time step
-        df['step'] = self.parent.year_to_timestep(df['year'])
-        return df        
-        
+              .join(self.year_expansion.set_index(['year_min'])))
+        return df
 
     @property_cached
     def historical_wide(self):
