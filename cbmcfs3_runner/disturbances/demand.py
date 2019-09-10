@@ -62,7 +62,7 @@ class Demand(object):
         self.parent = parent
         self.bark_correction_factor = 0.88
 
-    @property
+    @property_cached
     def year_expansion(self):
         """Create a little data frame to expand years 
         from a 5 year time frame to a yearly time frame.
