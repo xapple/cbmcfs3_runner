@@ -87,6 +87,8 @@ class Scenario(object):
                 loc = list(dict_of_df['BG'].columns).index('_8')
                 df.insert(loc, '_8', '')
         # DataFrame #
+        # option sort=True adds a column of NaN if the column is missing
+        # for a particular country
         df = pandas.concat(dict_of_df, sort=True)
         df = df.reset_index(level=0)
         df = df.rename(columns={'level_0': 'country_iso2'})

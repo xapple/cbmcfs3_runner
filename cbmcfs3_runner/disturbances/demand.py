@@ -166,7 +166,8 @@ class Demand(object):
         # Get the row corresponding to the current country.
         selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
         if not any(selector):
-            msg = f'No fuel wood data for {self.parent.iso2_code}.'
+            msg = f'No fuel wood data for {self.parent.iso2_code} in '
+            msg += f'"{gftm_fw_demand_path}".'
             raise pandas.errors.EmptyDataError(msg)
         fw_wide = gftm_fw_demand.loc[selector].copy()
         # Reshape to long format

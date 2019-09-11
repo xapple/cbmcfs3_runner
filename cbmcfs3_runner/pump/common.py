@@ -19,7 +19,11 @@ def reshape_yields_long(yields_wide):
      """
     # Index #
     index = ['status', 'forest_type', 'region', 'management_type',
-             'management_strategy', 'climatic_unit', 'conifers_broadleaves', 'sp']
+             'management_strategy', 'climatic_unit', 'conifers_broadleaves', 
+             'sp']
+    # Add classifier 8 for the specific case of Bulgaria
+    if ('yield_tables' in yields_wide.columns): 
+        index += ['yield_tables']  
     # Melt #
     df = yields_wide.melt(id_vars    = index,
                           var_name   = "age_class",
