@@ -165,6 +165,9 @@ class Demand(object):
         """
         # Get the row corresponding to the current country.
         selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
+        if not any(selector):
+            msg = f'No fuel wood data for {self.parent.iso2_code}.'
+            raise pandas.error.EmptyDataError(msg)
         fw_wide = gftm_fw_demand.loc[selector].copy()
         # Reshape to long format
         df = fw_wide.melt(id_vars='country_iso2', var_name='product_year', 
