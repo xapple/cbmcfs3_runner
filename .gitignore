@@ -15,6 +15,10 @@
 .spyderproject
 .spyproject
 
+# Jupyter notebooks #
+*.ipynb
+*.ipynb_checkpoints*
+
 # Distribution #
 /build/
 /dist/
