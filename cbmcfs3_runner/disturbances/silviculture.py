@@ -49,14 +49,6 @@ class Silviculture(object):
     /orig/harvest_corr_fact.csv
     """
 
-    # Ignore some disturbances that are of type "natural"
-    # when calculating the harvest proportion.
-    # Used in self.stock_available_agg
-    # These disturbance ids are the same for all countries.
-    # See also the information contained in the 'man_nat' column
-    dist_to_ignore = ['5', '7', '21', 'DISTID1', 'DISTID5', 'DISTID7',
-                      'DISTID9b_H', 'DISTID9c_H']
-
     def __init__(self, parent):
         # Default attributes #
         self.parent = parent
@@ -237,7 +229,7 @@ class Silviculture(object):
                                 'owc_perc', 'snag_perc', 'man_nat']
         # Aggregate #
         df = (self.stock_available_by_age
-              .query("dist_type_id not in @self.dist_to_ignore and man_nat=='Man'")
+              .query("man_nat=='Man'")
               .groupby(index + vars_to_create_dists)
               .agg({'stock_available': 'sum'})
               .reset_index())
