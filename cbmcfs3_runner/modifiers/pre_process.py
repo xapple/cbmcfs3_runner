@@ -18,7 +18,6 @@ from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
 
-
 ###############################################################################
 class PreProcessor(object):
     """
