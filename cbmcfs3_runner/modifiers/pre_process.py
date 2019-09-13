@@ -85,6 +85,7 @@ class PreProcessor(object):
         Saving the result under "disturbance_types_extended.csv".
         Why do we have to do this? Because of some arcane CBM-CFS3
         requirements.
+        See https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-228
         """
         # Convenience shortcut #
         col_name = 'disturbance_type_id'
