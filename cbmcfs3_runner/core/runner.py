@@ -24,6 +24,7 @@ from cbmcfs3_runner.modifiers.pre_process          import PreProcessor
 from cbmcfs3_runner.modifiers.middle_process       import MiddleProcessor
 from cbmcfs3_runner.post_processor                 import PostProcessor
 from cbmcfs3_runner.pump.input_data                import InputData
+from cbmcfs3_runner.pump.pre_flight                import PreFlight
 from cbmcfs3_runner.reports.runner                 import RunnerReport
 from cbmcfs3_runner.stdrd_import_tool.launch_sit   import DefaultSIT, AppendSIT
 from cbmcfs3_runner.external_tools.launch_cbm      import LaunchCBM
@@ -96,8 +97,11 @@ class Runner(object):
         # Modify input data #
         self.pre_processor()
         self.disturbance_maker()
-        # Standard import tool #
+        # Switch archive index #
         self.country.aidb.switch()
+        # Pre-flight check #
+        self.pre_flight()
+        # Standard import tool #
         self.default_sit()
         if self.sit_calling == 'dual': self.append_sit()
         # Final steps #
@@ -140,6 +144,10 @@ class Runner(object):
     @property_cached
     def pre_processor(self):
         return PreProcessor(self)
+
+    @property_cached
+    def pre_flight(self):
+        return PreFlight(self)
 
     @property_cached
     def default_sit(self): return DefaultSIT(self)

@@ -54,10 +54,6 @@ class CreateXLS(object):
         self.paths = AutoPaths(self.runner.data_dir, self.all_paths + self.parent.all_paths)
 
     def __call__(self):
-        # Check there are CSVs #
-        if self.paths.csv_dir.empty: raise Exception("No CSVs present to generate the XLS.")
-        # Check there are CSV files present #
-        for name in self.file_name_to_sheet_name: assert self.paths[name].exists
         # Create an Excel Writer #
         writer = pandas.ExcelWriter(self.paths.tables_xlsx, engine='xlsxwriter')
         # Add each DataFrame to a different sheet #
