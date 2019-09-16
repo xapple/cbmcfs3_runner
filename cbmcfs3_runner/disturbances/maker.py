@@ -11,6 +11,7 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
+import numpy
 import pandas
 
 # First party modules #
@@ -145,6 +146,65 @@ class DisturbanceMaker(object):
         df['amount'].unique()
         return df
 
+
+    def check_dist_irw(self):
+        """Chek that the industrial round wood disturbances
+        weight in tonnes of carbon correspond 
+        to the demand volume in m3 over bark for each year.
+        i.e. the requested demand from the economic model"""
+        df = self.dist_irw
+        # density different by species
+        df['amount_m3'] = df['amount'] / df['db'] * 2
+        index = ['step', 'conifers_broadleaves']
+        df = (df
+                        .groupby(index)
+                        .agg({'amount_m3':sum})
+                        .reset_index())
+        df['hwp'] = (df['conifers_broadleaves']
+                     .replace(['Con', 'Broad'], ['irw_c', 'irw_b']))
+        index = ['step', 'hwp']
+        df = (df
+              .set_index(index)
+              # outer join to capture all demand values, 
+              # even if step or con_broad is not present in dist anymore
+              .join(self.country.demand.gftm_irw.set_index(index), how='outer')
+              .reset_index())
+        # Assert that these values are close
+        numpy.testing.assert_allclose(df['amount_m3'], df['value_ob'],
+                                      rtol=1e-03)
+
+    def check_dist_fw(self):
+        """Chek that the fuel wood disturbance weight in tonnes of carbon 
+        correspond to the demand volume in m3 over bark for each year.
+        i.e. the requested demand from the economic model.
+        Note the diffence to irw, we incluse branches and snags 
+        in the calculation here. """
+        df = self.dist_fw
+        # density different by species
+        df['amount_total'] = (df['owc_amount_from_IRW'] 
+                                       + df['snag_amount_from_IRW']
+                                       + df['amount'] * (1 + df['snag_perc'] + df['owc_perc']))
+        df['amount_m3'] = df['amount_total'] / df['db'] * 2
+        df
+        
+        index = ['step', 'conifers_broadleaves']
+        df = (df
+                        .groupby(index)
+                        .agg({'amount_m3':sum})
+                        .reset_index())
+        df['hwp'] = df['conifers_broadleaves'].replace(['Con', 'Broad'], ['fw_c', 'fw_b'])
+        df
+        index = ['step', 'hwp']
+        df = (df
+                        .set_index(index)
+                        # outer join to capture all demand values, 
+                        # even if step or con_broad is not present in dist anymore
+                        .join(self.country.demand.gftm_fw.set_index(index),  how='outer')
+                        .reset_index())
+        # Assert that these values are close
+        numpy.testing.assert_allclose(df['amount_m3'], df['value_ob'],
+                                      rtol=0.02)
+
     @property
     def demand_to_dist(self):
         """
@@ -259,6 +319,11 @@ class DisturbanceMaker(object):
         To create disturbances we are still missing "SWStart", "SWEnd", "HWStart", "HWEnd".
         In this case SW == Conifer and HW == Broad. Both values are always the same.
         """
+        # Check the correspondance between 
+        # disturbance tables expressed in tonnnes of carbon 
+        # and the original demand volumes in cubic meters of wood over bark.
+        self.check_dist_irw()
+        self.check_dist_fw()
         # Allocation:
         # Concatenate IRW and FW disturbance tables
         # Keep only the columns of interest for distubances
