@@ -74,14 +74,14 @@ class Runner(object):
         By default we clear the log file when you start logging."""
         return create_file_logger(self.short_name, self.paths.log)
 
-    def __call__(self, silent=False):
+    def __call__(self, interrupt_on_error=True, verbose=False):
         try:
-            self.run()
+            self.run(verbose=verbose)
         except Exception:
             message = "Runner '%s' encountered an exception. See log file."
             self.log.error(message % self.short_name)
             self.log.exception("Exception", exc_info=1)
-            if not silent: raise
+            if interrupt_on_error: raise
 
     def run(self, verbose=False):
         """Run the full modelling pipeline for a given country,
