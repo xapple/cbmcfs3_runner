@@ -42,10 +42,10 @@ class Scenario(object):
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.base_dir, self.all_paths)
 
-    def __call__(self):
+    def __call__(self, verbose=False):
         for code, steps in tqdm(self.runners.items(), ncols=60):
-            for r in steps:
-                r(silent=True)
+            for runner in steps:
+                runner(interrupt_on_error=False, verbose=verbose)
         self.compile_log_tails()
 
     @property
