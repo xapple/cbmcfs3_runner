@@ -16,7 +16,6 @@ import pandas
 # First party modules #
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
-from plumbing.dataframes import string_to_df
 
 # Internal modules #
 
@@ -42,6 +41,16 @@ class Silviculture(object):
     In terms of volume, if a country has 90% of firs, we will harvest 90% there.
     Of course this is within the harvestable range, we will exclude trees that are
     too young.
+
+    The merchantable volume 'Tot_V_Merch' always goes
+    to the product that is harvested.
+    The sub merchantable and snag volume 'Tot_V_SubMerch' and 'Tot_V_Snags'
+    go to the corresponding fuel wood pool, either coniferous or broadleaved.
+
+    * IRW stands for Industrial Round Wood
+    * FW stands for Fuel Wood
+    * C stands for coniferous
+    * B stands for broadleaved
     """
 
     all_paths = """
@@ -91,39 +100,6 @@ class Silviculture(object):
     def corr_fact(self):
         """Load the CSV that is 'harvest_corr_fact.csv'."""
         return pandas.read_csv(str(self.paths.corr_fact))
-
-    @property_cached
-    def pool_allocation(self):
-        """
-        Allocation of harvested pools to different
-        co-products, based on the main harvested wood product.
-
-        The merchantable volume 'Tot_V_Merch' always goes
-        to the product that is harvested.
-        The sub merchantable and snag volume 'Tot_V_SubMerch' and 'Tot_V_Snags'
-        go to the corresponding fuel wood pool, either coniferous or broadleaved.
-
-        * IRW stands for Industrial Round Wood
-        * FW stands for Fuel Wood
-        * C stands for coniferous
-        * B stands for broadleaved
-        """
-        s = """     pool  |   HWP  |  co_product
-             Tot_V_Merch  |  fw_c  |  fw_c
-          Tot_V_SubMerch  |  fw_c  |  fw_c
-             Tot_V_Snags  |  fw_c  |  fw_c
-             Tot_V_Merch  | irw_c  | irw_c
-          Tot_V_SubMerch  | irw_c  |  fw_c
-             Tot_V_Snags  | irw_c  |  fw_c
-             Tot_V_Merch  |  fw_b  |  fw_b
-          Tot_V_SubMerch  |  fw_b  |  fw_b
-             Tot_V_Snags  |  fw_b  |  fw_b
-             Tot_V_Merch  | irw_b  | irw_b
-          Tot_V_SubMerch  | irw_b  |  fw_b
-             Tot_V_Snags  | irw_b  |  fw_b
-        """
-        # Convert string to data frame #
-        return string_to_df(s)
 
     @property_cached
     def stock_based_on_yield(self):
@@ -225,7 +201,7 @@ class Silviculture(object):
         # Because we need them later to create disturbances
         vars_to_create_dists = ['sort_type', 'efficiency', 'min_age', 'max_age',
                                 'min_since_last', 'max_since_last',
-                                'regen_delay', 'reset_age', 'wd', 
+                                'regen_delay', 'reset_age', 'wd',
                                 'owc_perc', 'snag_perc', 'man_nat']
         # Aggregate #
         df = (self.stock_available_by_age
@@ -286,7 +262,7 @@ class Silviculture(object):
         df['prop']      = df['stock_available'] / df['stock_tot']
         # Drop redundant total column #
         df.drop(columns=['stock_tot'])
-        # Add coefficient of convertion from m3 to tonnes of C
+        # Add coefficient of conversion from m^3 to tonnes of C
         df = (df
               .set_index('forest_type')
               .join(coefficients.set_index('forest_type'))
