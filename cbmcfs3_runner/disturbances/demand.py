@@ -181,7 +181,7 @@ class Demand(object):
         # limit fw year to 2026 equal to the maximum of irw years
         df = df.query('year_min<2030').copy()
         # Convert demand value to over bark 
-        df['value_ob'] = df['value'] * self.parent.demand.bark_correction_factor
+        df['value_ob'] = df['value'] / self.bark_correction_factor
         # Repeat lines for each successive year within a range by
         # joining the year_expansion data frame
         df = (df

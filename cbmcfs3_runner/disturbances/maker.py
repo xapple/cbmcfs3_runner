@@ -215,18 +215,15 @@ class DisturbanceMaker(object):
         df = self.dist_fw
         # density different by species
         df['amount_total'] = (df['owc_amount_from_IRW']
-                                       + df['snag_amount_from_IRW']
-                                       + df['amount'] * (1 + df['snag_perc'] + df['owc_perc']))
+                              + df['snag_amount_from_IRW']
+                              + df['amount'] * (1 + df['snag_perc'] + df['owc_perc']))
         df['amount_m3'] = df['amount_total'] / df['db'] * 2
-        df
-
         index = ['step', 'conifers_broadleaves']
         df = (df
-                        .groupby(index)
-                        .agg({'amount_m3':sum})
-                        .reset_index())
+              .groupby(index)
+              .agg({'amount_m3':sum})
+              .reset_index())
         df['hwp'] = df['conifers_broadleaves'].replace(['Con', 'Broad'], ['fw_c', 'fw_b'])
-        df
         index = ['step', 'hwp']
         df = (df
               .set_index(index)
