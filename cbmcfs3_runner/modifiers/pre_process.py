@@ -84,6 +84,11 @@ class PreProcessor(object):
         Saving the result under "disturbance_types_extended.csv".
         Why do we have to do this? Because of some arcane CBM-CFS3
         requirements.
+        CBM-CFS3 accepts only one measurement type per disturbance. 
+        We want to express historical disturbances in terms of area and
+        future disturabnces in terms of biomass. 
+        Future disturbances won't be applied by CBM if we don't 
+        change their id.
         See https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-228
         """
         # Convenience shortcut #
