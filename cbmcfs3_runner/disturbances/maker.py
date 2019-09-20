@@ -176,7 +176,7 @@ class DisturbanceMaker(object):
         return df
 
     def check_dist_irw(self):
-        """Chek that the industrial round wood disturbances
+        """Check that the industrial round wood disturbances
         weight in tonnes of carbon correspond
         to the demand volume in m3 over bark for each year.
         i.e. the requested demand from the economic model"""

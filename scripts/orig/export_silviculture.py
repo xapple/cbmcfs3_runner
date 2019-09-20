@@ -20,6 +20,7 @@ import pandas
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
+from plumbing.common      import camel_to_snake
 
 # Internal modules #
 from cbmcfs3_runner.core.continent import continent
@@ -55,23 +56,27 @@ class ExportFromSilviculture(object):
         """Search the SAS file for the CSV that is hidden inside and return a
         pandas DataFrame. Yes, you heard that correctly, the SAS file has
         a CSV hidden somewhere in the middle under plain text format.
-        This data frame will be used to generate disturbances from the economic demand.
-        """
+        This data frame will later be used to generate disturbances from the
+        economic demand."""
         # Our regular expression #
         query = '\n {3}input (.*?);\n {3}datalines;\n\n(.*?)\n;\nrun'
         # Search in the file #
         column_names, all_rows = re.findall(query, self.paths.sas.contents, re.DOTALL)[0]
         # Format the column_names #
         column_names = [name.strip('$') for name in column_names.split()]
+        # Follow the snake case standard #
+        column_names = [camel_to_snake(name) for name in column_names]
         # Place the rows (content) into a virtual file to be read #
         all_rows = StringIO(all_rows)
         # Parse into a data frame #
         df = pandas.read_csv(all_rows, names=column_names, delim_whitespace=True)
+        # Lower case a specific column #
+        df['hwp'] = df['hwp'].str.lower()
         # Write back into a CSV #
         df.to_csv(str(self.paths.treatments), index=False)
 
     def harvest_corr_fact(self):
-        """There is actually an other hard coded info inside the SAS file
+        """There is actually an other hard-coded info inside the SAS file
         that we need.
 
         This method will extract a list of "harvest correction factors"
