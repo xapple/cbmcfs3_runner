@@ -251,8 +251,11 @@ class DisturbanceMaker(object):
         On the same stand there are some branches and snags.
         These branches and snags are also harvested for fuel-wood products
         which generate a first amount of fuel wood harvest.
-        We later deduce this amount from the fuel wood demand.
-        Confiers and Broadleaves are independent in their processing.
+        We deduce this amount from the fuel wood demand.
+        Then we allocate the remaining amount of fuel wood demand. 
+        This time taking into account the full 
+        merchantable biomass + branches and snags.
+        Conifers and Broadleaves are independent in their processing.
 
         The demands matrix comes in this format:
 
