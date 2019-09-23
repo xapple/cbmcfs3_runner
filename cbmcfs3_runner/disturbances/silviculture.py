@@ -18,6 +18,7 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
 
 # Internal modules #
+from cbmcfs3_runner.pump.common import left_join
 
 ###############################################################################
 class Silviculture(object):
@@ -112,6 +113,9 @@ class Silviculture(object):
                       'management_strategy', 'climatic_unit',
                       'conifers_broadleaves', 'age_class', 'area', 'volume',
                       'stock', 'age']
+
+        #TODO use self.country.classifers to work with countires that have
+        #a variable number of classifiers (BG).
         """
         # Load data frames #
         inventory     = self.parent.orig_data.inventory
@@ -121,10 +125,7 @@ class Silviculture(object):
                  'management_strategy', 'climatic_unit', 'conifers_broadleaves',
                  'age_class']
         # Join #
-        df = (inventory
-              .set_index(index)
-              .join(h_yields_long.set_index(index))
-              .reset_index())
+        df = left_join(inventory, h_yields_long, on=index)
         # Compute stock #
         df['stock'] = df['area'] * df['volume']
         # We are not interested in these columns #
@@ -162,8 +163,7 @@ class Silviculture(object):
         # Join with correction factor #
         silviculture = (self.treatments
                         .set_index('forest_type')
-                        .join(self.corr_fact
-                              .set_index('forest_type'))
+                        .join(self.corr_fact.set_index('forest_type'))
                         .reset_index())
         # Join only on these classifiers #
         index = ['status', 'forest_type', 'management_type',
@@ -253,7 +253,7 @@ class Silviculture(object):
                       'conifers_broadleaves', 'dist_type_id', 'stock_available',
                       'hwp', 'status', 'stock_tot', 'prop']
         """
-        # Load dataframe #
+        # Load data frame #
         df = self.stock_available_agg.copy()
         coefficients = self.parent.coefficients[['forest_type', 'db']]
         # Add column stock_tot #
