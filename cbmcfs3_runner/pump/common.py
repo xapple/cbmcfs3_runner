@@ -34,9 +34,12 @@ def reshape_yields_long(yields_wide):
     return df
 
 ###############################################################################
-def left_join(first, other, index):
-    first  = first.set_index(index)
-    other  = other.set_index(index)
+def left_join(first, other, on):
+    """ Implement a common left join pattern with pandas set_index()
+    on both data frames followed by a reset_index()
+    """
+    first  = first.set_index(on)
+    other  = other.set_index(on)
     result = first.join(other)
     result = result.reset_index()
     return result
