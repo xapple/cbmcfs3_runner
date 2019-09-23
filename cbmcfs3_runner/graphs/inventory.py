@@ -113,10 +113,12 @@ class InventoryFacet(Graph):
 
 ###############################################################################
 class InventoryAtStart(InventoryFacet):
-    caption = "Inventory at the beginning of the simulation."
+    short_name = 'inventory_at_start'
+    caption    = "Inventory at the beginning of the simulation."
     year_selection = lambda self, years: min(years)
 
 class InventoryAtEnd(InventoryFacet):
+    short_name = 'inventory_at_end'
     caption = "Inventory at the end of the simulation."
 
 ###############################################################################

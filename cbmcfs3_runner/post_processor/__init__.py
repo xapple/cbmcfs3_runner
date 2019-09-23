@@ -141,8 +141,9 @@ class PostProcessor(object):
         pool  = self.database["tblPoolIndicators"]
         clifr = self.classifiers
         # Set indexes #
-        pool  = pool.set_index('user_defd_class_set_id')
-        clifr = clifr.set_index("UserDefdClassSetID")
+        index = 'user_defd_class_set_id'
+        pool  = pool.set_index(index)
+        clifr = clifr.set_index(index)
         # Join #
         return pool.join(clifr)
 

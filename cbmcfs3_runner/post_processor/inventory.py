@@ -60,13 +60,13 @@ class Inventory(object):
         # Group and aggregate #
         df = df.groupby("forest_type").agg(cols_sum).reset_index()
         # Make new columns #
-        df['tot_merch']  = df.SW_Merch   + df.HW_Merch
-        df['tot_abg']    = df.SW_Merch   + df.HW_Merch   + \
-                           df.SW_Foliage + df.HW_Foliage + \
-                           df.HW_Other   + df.SW_Other
-        df['bg_biomass'] = df.SW_Coarse  + df.SW_Fine    + \
-                           df.HW_Coarse  + df.HW_Fine
-        df['bef_tot']    = (df.Tot_ABG   + df.BG_Biomass) / df.Tot_ABG
+        df['tot_merch']  = df.sw_merch   + df.hw_merch
+        df['tot_abg']    = df.sw_merch   + df.hw_merch   + \
+                           df.sw_foliage + df.hw_foliage + \
+                           df.hw_other   + df.sw_other
+        df['bg_biomass'] = df.sw_coarse  + df.sw_fine    + \
+                           df.hw_coarse  + df.hw_fine
+        df['bef_tot']    = (df.tot_abg   + df.bg_biomass) / df.tot_abg
         # Return result #
         return df
 
@@ -102,8 +102,8 @@ class Inventory(object):
         columns_of_interest += list(self.parent.classifiers.columns)
         df = df[columns_of_interest].copy()
         # Divide #
-        df['merch_c_ha']   = df.Biomass    / df.BEF_Tot
-        df['Merch_Vol_ha'] = df.Merch_C_ha / df.db
+        df['merch_c_ha']   = df.biomass    / df.bef_tot
+        df['merch_vol_ha'] = df.merch_c_ha / df.db
         # Return result #
         return df
 
