@@ -16,6 +16,7 @@ import pandas
 # First party modules #
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
+from plumbing.common import camel_to_snake
 
 # Internal modules #
 from cbmcfs3_runner.pump.common import reshape_yields_long
@@ -45,6 +46,7 @@ class InputData(object):
         destination_dir.remove()
         self.parent.country.paths.export_dir.copy(destination_dir)
 
+    #--------------------- Access the spreadsheets ---------------------------#
     @property_cached
     def xls(self):
         """The first excel file."""
@@ -54,6 +56,13 @@ class InputData(object):
     def xls_append(self):
         """The second excel file."""
         return pandas.ExcelFile(str(self.paths.append))
+
+    #-------------------------- Other methods --------------------------------#
+    def get_sheet(self, name):
+        """Get a specific sheet in the first excel"""
+        df = self.xls.parse(name)
+        df = df.rename(columns=camel_to_snake)
+        return df
 
     #-------------------------- Specific sheets ------------------------------#
     @property_cached
@@ -66,7 +75,7 @@ class InputData(object):
          'using_id', 'age', 'area', 'delay', 'unfcccl', 'hist_dist', 'last_dist']
         """
         # Get the right sheet #
-        df = self.xls.parse("Inventory")
+        df = self.get_sheet("Inventory")
         # Create the age_class column
         # so it can be used as a join variable with a yields table
         df['age_class'] = (df['age']
@@ -93,7 +102,7 @@ class InputData(object):
          'measurement_type', 'amount', 'dist_type_id', 'step']
         """
         # Get the right sheet #
-        df = self.xls.parse("DistEvents")
+        df = self.get_sheet("DistEvents")
         # Harmonise Dist_Type_ID data type amoung countries
         # some have int, others have str, make it str for all.
         df['dist_type_id'] = df['dist_type_id'].astype(str)
@@ -105,7 +114,7 @@ class InputData(object):
         Columns are: ['disturbance_type_id', 'name']
         """
         # Get the right sheet #
-        df = self.xls.parse("DistType")
+        df = self.get_sheet("DistType")
         # disturbance_type_id has to be strings for joining purposes #
         df['disturbance_type_id'] = df['disturbance_type_id'].astype(str)
         # Return #
@@ -123,7 +132,7 @@ class InputData(object):
          'Vol27', 'Vol28', 'Vol29', 'Vol30']
         """
         # Get the right sheet #
-        df = self.xls.parse("Growth")
+        df = self.get_sheet("Growth")
         return df.rename(columns = self.classifiers_mapping)
 
     @property_cached
@@ -135,7 +144,7 @@ class InputData(object):
         for the carbon pool initialization period
         """
         # Get the right sheet #
-        df = self.xls_append.parse("Growth")
+        df = self.get_sheet("Growth")
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
         return df.rename(columns = self.classifiers_mapping)
 
@@ -150,12 +159,12 @@ class InputData(object):
     @property_cached
     def ageclass(self):
         # Get the right sheet #
-        return self.xls.parse("AgeClasses")
+        return self.get_sheet("AgeClasses")
 
     @property_cached
     def classifiers(self):
         # Get the right sheet #
-        df = self.xls.parse("Classifiers")
+        df = self.get_sheet("Classifiers")
         sort_by = ['classifier_number', 'classifier_value_id']
         return df.sort_values(by=sort_by, ascending=[True, False])
 

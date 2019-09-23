@@ -122,6 +122,7 @@ class HarvestExpProv(Graph):
 
 ###############################################################################
 class HarvestExpProvVol(HarvestExpProv):
+    short_name = 'harvest_exp_prov_vol'
 
     caption = ("Comparision of expected against provided harvest in terms of",
                " volume.")
@@ -134,6 +135,7 @@ class HarvestExpProvVol(HarvestExpProv):
 
 ###############################################################################
 class HarvestExpProvArea(HarvestExpProv):
+    short_name = 'harvest_exp_prov_area'
 
     caption = ("Comparision of expected against provided harvest in terms of",
                " area.")
