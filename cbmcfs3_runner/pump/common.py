@@ -43,3 +43,13 @@ def left_join(first, other, on):
     result = first.join(other)
     result = result.reset_index()
     return result
+
+def outer_join(first, other, on):
+    """ Implement a common outer join pattern with pandas set_index()
+    on both data frames followed by a reset_index()
+    """
+    first  = first.set_index(on)
+    other  = other.set_index(on)
+    result = first.join(other, how='outer')
+    result = result.reset_index()
+    return result
