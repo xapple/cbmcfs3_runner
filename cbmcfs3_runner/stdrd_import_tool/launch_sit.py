@@ -106,7 +106,7 @@ class LaunchSIT(object):
 
     def move_log(self):
         """Because the location and name of the logfile cannot be customized."""
-        self.log.info("Moving the log that SIT created")
+        self.log.info("Moving the log that SIT created.")
         self.paths.SITLog.move_to(self.paths.log)
 
     def check_for_errors(self):

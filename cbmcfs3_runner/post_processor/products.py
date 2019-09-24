@@ -137,7 +137,7 @@ class Products(object):
         Join Industrial Round Wood co-products: 'vol_sub_merch_irw_b' and 'vol_snags_irw_b'
         into the fuel wood total.
         """
-        df = outer_join(self.irw_b, self.fw_b, on='time_step')
+        df = outer_join(self.irw_b, self.fw_b, 'time_step')
         df['tot_vol_fw_b'] = sum([df['vol_merch_fw_b'],
                                   df['vol_sub_merch_fw_b'],
                                   df['vol_snags_fw_b'],
@@ -168,7 +168,7 @@ class Products(object):
         Harvest volumes of Fuel Wood Coniferous
         Join Industrial Round Wood co-products.
         """
-        df = outer_join(self.irw_c, self.fw_c, on='time_step')
+        df = outer_join(self.irw_c, self.fw_c, 'time_step')
         df['tot_vol_fw_c'] = numpy.where(df['vol_merch_fw_c'] >= 0,
                                          sum([df['vol_merch_fw_c'],
                                               df['vol_sub_merch_fw_c'],

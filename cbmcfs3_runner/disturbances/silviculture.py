@@ -125,7 +125,7 @@ class Silviculture(object):
                  'management_strategy', 'climatic_unit', 'conifers_broadleaves',
                  'age_class']
         # Join #
-        df = left_join(inventory, h_yields_long, on=index)
+        df = left_join(inventory, h_yields_long, index)
         # Compute stock #
         df['stock'] = df['area'] * df['volume']
         # We are not interested in these columns #
