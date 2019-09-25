@@ -9,9 +9,6 @@ Typically you would run this file from a command line like this:
      ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/checking/check_end_years.py
 """
 
-# Futures #
-from __future__ import print_function
-
 # Built-in modules #
 
 # Third party modules #

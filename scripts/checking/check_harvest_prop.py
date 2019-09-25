@@ -13,9 +13,6 @@ There are 3 sources for the same numbers and we want to check constancy.
 See https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-206
 """
 
-# Futures #
-from __future__ import print_function
-
 # Built-in modules #
 import re
 

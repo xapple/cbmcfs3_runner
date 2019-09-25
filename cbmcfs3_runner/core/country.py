@@ -53,7 +53,6 @@ class Country(object):
     /orig/associations.csv
     /orig/coefficients.csv
     /export/
-    /logs/country.log
     /graphs/
     /report/report.pdf
     """
@@ -198,15 +197,6 @@ class Country(object):
         """Load the faostat forestry dataset of this country."""
         df = faostat.forestry.query('country == "%s"' % self.iso2_code)
         return df.drop(columns='country')
-
-    @property
-    def map_value(self):
-        """Return a float that indicates how far this country is running
-        within the pipeline. This can be used to plot the country on a
-        color scale map."""
-        if   'run is completed' in self.paths.log.contents: return 1.0
-        elif 'SIT created'      in self.paths.log.contents: return 0.5
-        else:                                               return 0.0
 
     @property_cached
     def scenarios(self):
