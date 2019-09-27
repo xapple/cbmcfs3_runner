@@ -126,6 +126,47 @@ class PostProcessor(object):
         return df[columns_of_interest]
 
     @property_cached
+    def disturbances(self):
+        """
+        Load the disturbance table (input_data.disturbance_events)
+        that was sent as an input to CBM for the particular simulation 
+        we are now analysing in the post processing step.
+        
+        This corresponds to the "expected" aspect of "expected_provided" harvest
+        and will contain both Area ('A') and Mass ('M'). The units for 'M' are
+        tons of carbon and hectares for 'A'.
+
+        This method Prepares the disturbance table for joining operations with
+        harvest tables.
+
+        It could be a good idea to check why some countries have dist_type_name as int64
+        and others have dist_type_name as object.
+
+        Columns are: ['status', 'forest_type', 'region', 'management_type',
+                      'management_strategy', 'climatic_unit', 'conifers_broadleaves',
+                      'using_id', 'sw_start', 'sw_end', 'hw_start', 'hw_end', 'last_dist_id',
+                      'efficiency', 'sort_type', 'measurement_type', 'amount', 'dist_type_id',
+                      'time_step'],
+        """
+        df = self.parent.input_data.disturbance_events
+        # Rename classifier columns _1, _2, _3 to forest_type, region, etc. #
+        df = df.rename(columns = self.classifiers_mapping)
+        # C.f the PL column problem #
+        df = df.rename(columns = {'natural_forest_region': 'management_type'})
+        # This column also need to be manually renamed #
+        df = df.rename(columns = {'step': 'time_step'})
+        # For joining with other data frames, DistType has to be of dtype object not int64 #
+        df['dist_type_id'] = df['dist_type_id'].astype(str)
+        # Remove columns that are not really used #
+        df = df.drop(columns=[c for c in df.columns if c.startswith("Min") or c.startswith("Max")])
+        # Remove slashes #
+        df = df.rename(columns=lambda n:n.replace('/','_'))
+        # dist_type_id is actually dist_type_name #
+        df = df.rename(columns = {'dist_type_id': 'dist_type_name'})
+        # Return result #
+        return df
+
+    @property_cached
     def flux_indicators(self):
         # Load tables #
         flux_indicators  = self.database['tblFluxIndicators']
