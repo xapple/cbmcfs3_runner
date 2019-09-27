@@ -279,6 +279,9 @@ class Harvest(object):
         # Add year and remove TimeStep #
         df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
         df = df.drop('time_step', axis=1)
+        # TODO check runner.post_processor.database['tbldisturbancetype']
+        # to see if we are using dist_type_id where we should be using 
+        # dist_type_name
         # Get the disturbances full name from their number #
         dist_type = (self.parent.parent.input_data.disturbance_types
                      .rename(columns={'disturbance_type_id': 'dist_type_name',

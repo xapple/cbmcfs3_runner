@@ -161,6 +161,8 @@ class Silviculture(object):
         a new disturbance to be applied.
         """
         # Join with correction factor #
+        # TODO use left_join function
+        # TODO make flexible index depending on columns in self.corr_fact
         silviculture = (self.treatments
                         .set_index('forest_type')
                         .join(self.corr_fact.set_index('forest_type'))

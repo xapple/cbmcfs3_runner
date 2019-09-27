@@ -120,6 +120,12 @@ class PostProcessor(object):
         return self.parent.country.classifiers.mapping
 
     @property_cached
+    def disturbance_type(self):
+        columns_of_interest = ['dist_type_id', 'dist_type_name', 'description']
+        df = self.database['tbldisturbancetype']
+        return df[columns_of_interest]
+
+    @property_cached
     def flux_indicators(self):
         # Load tables #
         flux_indicators  = self.database['tblFluxIndicators']
