@@ -103,6 +103,8 @@ class PostProcessor(object):
     @property_cached
     def classifiers_coefs(self):
         """A join between the coefficients and the classifiers table.
+        can be joined on the flux indicators table using user_defd_class_set_id
+        as an index. 
 
         Columns are: ['index', 'forest_type', 'user_defd_class_set_id', 'status', 'region',
                       'management_type', 'management_strategy', 'climatic_unit',
@@ -114,7 +116,6 @@ class PostProcessor(object):
                 .join(self.coefficients.set_index('forest_type'))
                 .reset_index())
 
-    #-------------------------------------------------------------------------#
     @property_cached
     def classifiers_mapping(self):
         return self.parent.country.classifiers.mapping
@@ -168,6 +169,8 @@ class PostProcessor(object):
 
     @property_cached
     def flux_indicators(self):
+        """Load the flux indicators table add dist_type_name, classifiers and 
+        coefficients"""
         # Load tables #
         flux_indicators  = self.database['tblFluxIndicators']
         disturbance_type = self.database['tblDisturbanceType']
@@ -184,6 +187,7 @@ class PostProcessor(object):
 
     @property_cached
     def pool_indicators(self):
+        """Load the pool indicators table, add classifiers"""
         # Load tables #
         pool  = self.database["tblPoolIndicators"]
         clifr = self.classifiers
