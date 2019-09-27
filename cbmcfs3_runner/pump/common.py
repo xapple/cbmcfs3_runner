@@ -40,6 +40,10 @@ def left_join(first, other, on):
     """
     first  = first.set_index(on)
     other  = other.set_index(on)
+    # TODO check the data type of index variables before the merge
+    # See for example strange error message
+    # for example in the case of
+    # left_join(flux_indicators, hwp_map, hwp_map_index)
     result = first.join(other)
     result = result.reset_index()
     return result

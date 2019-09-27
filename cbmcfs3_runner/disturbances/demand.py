@@ -187,6 +187,14 @@ class Demand(object):
         df = left_join(df, self.year_expansion, 'year_min')
         return df
 
+    def gftm(self,
+             columns_of_interest = ['hwp', 'value_ob', 'year', 'step']):
+        """Concatenation of gftm_irw and gftm_fw, used only for
+        diagnostics and analysis.
+        Actual demand allocation is made from gftm_irw and gftm_fw."""
+        return pandas.concat([self.gftm_irw[columns_of_interest],
+                              self.gftm_fw[columns_of_interest]])
+
     @property_cached
     def historical_wide(self):
         """Historical harvest corrected manually by R.P. from the original

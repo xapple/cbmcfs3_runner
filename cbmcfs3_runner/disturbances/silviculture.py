@@ -95,7 +95,7 @@ class Silviculture(object):
         return self.treatments[['status', 'forest_type',
                                 'management_type', 'management_strategy',
                                 'conifers_broadleaves', 'dist_type_id',
-                                'hwp']]
+                                'hwp']].copy()
 
     @property_cached
     def corr_fact(self):
