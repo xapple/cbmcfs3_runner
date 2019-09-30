@@ -11,6 +11,7 @@ Unit D1 Bioeconomy.
 # Third party modules #
 import pandas
 
+###############################################################################
 def count_unique_index(df, by=None):
     """Count the unique combinations of values
     taken by the variable (columns) in the data frame *df*.
@@ -30,13 +31,14 @@ def count_unique_index(df, by=None):
     if by is None: by = df.columns
     return df.groupby(by).size().reset_index().rename(columns={0:'count'})
 
+###############################################################################
 def multi_index_pivot(df, columns=None, values=None):
     """Pivot a pandas data frame on multiple index variables.
     Copied from https://github.com/pandas-dev/pandas/issues/23955
-    
+
     TODO: add warning when there is no index set.
     Otherwise the error message is cryptic:
-    KeyError: "None of [Index([None], dtype='object')] are in the [columns]"    
+    KeyError: "None of [Index([None], dtype='object')] are in the [columns]"
     """
     names        = list(df.index.names)
     df           = df.reset_index()

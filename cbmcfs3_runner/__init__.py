@@ -34,4 +34,7 @@ git_repo = GitRepo(repos_dir, empty=True)
 
 # Change the pbs3 truncate cap for longer stderr #
 import pbs3
-pbs3.ErrorReturnCode.truncate_cap  = 2000
+pbs3.ErrorReturnCode.truncate_cap = 2000
+
+# Monkey patch external libraries #
+import cbmcfs3_runner.pump.patching

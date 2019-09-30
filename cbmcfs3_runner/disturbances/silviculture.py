@@ -18,7 +18,6 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
 
 # Internal modules #
-from cbmcfs3_runner.pump.common import left_join
 
 ###############################################################################
 class Silviculture(object):
@@ -125,7 +124,7 @@ class Silviculture(object):
                  'management_strategy', 'climatic_unit', 'conifers_broadleaves',
                  'age_class']
         # Join #
-        df = left_join(inventory, h_yields_long, index)
+        df = inventory.left_join(h_yields_long, index)
         # Compute stock #
         df['stock'] = df['area'] * df['volume']
         # We are not interested in these columns #

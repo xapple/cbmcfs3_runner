@@ -18,7 +18,6 @@ import pandas, math, numpy
 
 # Internal modules #
 from cbmcfs3_runner import module_dir
-from cbmcfs3_runner.pump.common import left_join
 
 # Constants #
 historical_demand_path = module_dir + 'extra_data/hist_harvest_corrected.csv'
@@ -74,7 +73,7 @@ class Demand(object):
         We will use this data frame to duplicate the yearly demand
         volume 5 times. This will then be used to generate disturbances.
 
-        Columns are : ['year_min', 'year']
+        Columns are: ['year_min', 'year']
         """
         year_min = numpy.concatenate([numpy.repeat(x,5) for x in range(2016, 2030, 5)])
         df = pandas.DataFrame({'year_min': year_min,
@@ -153,7 +152,7 @@ class Demand(object):
         df = df.rename(columns={'year':'year_text'})
         # Repeat lines for each successive year within a range by
         # joining the year_expansion data frame
-        df = left_join(df, self.year_expansion, 'year_min')
+        df = df.left_join(self.year_expansion, 'year_min')
         return df
 
     @property_cached
@@ -185,11 +184,12 @@ class Demand(object):
         df['value_ob'] = df['value'] / self.bark_correction_factor
         # Repeat lines for each successive year within a range by
         # joining the year_expansion data frame
-        df = left_join(df, self.year_expansion, 'year_min')
+        df = df.left_join(self.year_expansion, 'year_min')
+        # Return #
         return df
 
     def gftm(self,
-             columns_of_interest = ['hwp', 'value_ob', 'year', 'step']):
+             columns_of_interest = ('hwp', 'value_ob', 'year', 'step')):
         """Concatenation of gftm_irw and gftm_fw, used only for
         diagnostics and analysis.
         Actual demand allocation is made from gftm_irw and gftm_fw."""
