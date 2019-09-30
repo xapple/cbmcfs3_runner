@@ -158,7 +158,8 @@ class Demand(object):
 
     @property_cached
     def gftm_fw(self):
-        """Future FW demand as predicted by GFTM.
+        """Future FW demand as predicted by GFTM. Using the historical
+        proportion of fuel wood with respect to industrial round wood.
         Load and reshape the data frame in long format."""
         # Get the row corresponding to the current country #
         selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
