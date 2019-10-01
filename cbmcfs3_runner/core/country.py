@@ -142,11 +142,6 @@ class Country(object):
         return year - self.inventory_start_year + 1
 
     @property_cached
-    def log(self):
-        """Each runner will have its own logger to create log files."""
-        return create_file_logger(self.iso2_code, self.paths.log)
-
-    @property_cached
     def associations(self):
         """Associations of admin/eco/species/disturbances names between
         the input and the reference."""
