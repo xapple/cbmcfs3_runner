@@ -91,8 +91,9 @@ class Runner(object):
         # Messages #
         self.log.info("Using module at '%s'." % Path(cbmcfs3_runner))
         self.log.info("Runner '%s' starting." % self.short_name)
-        # Main steps #
+        # Clean everything from previous run #
         self.remove_directory()
+        # Copy the original input data #
         self.input_data.copy_from_country()
         # Modify input data #
         self.pre_processor()
