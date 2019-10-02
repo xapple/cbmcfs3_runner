@@ -9,7 +9,7 @@ Unit D1 Bioeconomy.
 
 When grouping rows from the simulated inventory we have to sum data
 this is categorical (AveAge along with Area). To do this we need to
-pass the data into discrete form for the addition then back to categorical.
+convert the data into discrete form for the addition then back to categorical.
 
 To test this file you can proceed like this for instance:
 
