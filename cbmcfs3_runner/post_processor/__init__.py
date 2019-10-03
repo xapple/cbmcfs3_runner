@@ -104,7 +104,7 @@ class PostProcessor(object):
     def classifiers_coefs(self):
         """A join between the coefficients and the classifiers table.
         can be joined on the flux indicators table using user_defd_class_set_id
-        as an index. 
+        as an index.
 
         Columns are: ['index', 'forest_type', 'user_defd_class_set_id', 'status', 'region',
                       'management_type', 'management_strategy', 'climatic_unit',
@@ -130,9 +130,9 @@ class PostProcessor(object):
     def disturbances(self):
         """
         Load the disturbance table (input_data.disturbance_events)
-        that was sent as an input to CBM for the particular simulation 
+        that was sent as an input to CBM for the particular simulation
         we are now analysing in the post processing step.
-        
+
         This corresponds to the "expected" aspect of "expected_provided" harvest
         and will contain both Area ('A') and Mass ('M'). The units for 'M' are
         tons of carbon and hectares for 'A'.
@@ -169,21 +169,17 @@ class PostProcessor(object):
 
     @property_cached
     def flux_indicators(self):
-        """Load the flux indicators table add dist_type_name, classifiers and 
+        """Load the flux indicators table add dist_type_name, classifiers and
         coefficients"""
         # Load tables #
         flux_indicators  = self.database['tblFluxIndicators']
         disturbance_type = self.database['tblDisturbanceType']
         coefficients     = self.classifiers_coefs
         # Ungrouped #
-        return (flux_indicators
-                .set_index('dist_type_id')
-                .join(disturbance_type
-                    .set_index('dist_type_id'))
-                .reset_index()
-                .set_index('user_defd_class_set_id')
-                .join(coefficients
-                     .set_index('user_defd_class_set_id')))
+        df = flux_indicators.left_join(disturbance_type, 'dist_type_id')
+        df = df.left_join(coefficients, 'user_defd_class_set_id')
+        # Return #
+        return df
 
     @property_cached
     def pool_indicators(self):

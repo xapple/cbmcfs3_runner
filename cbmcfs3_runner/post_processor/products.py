@@ -61,7 +61,7 @@ class Products(object):
     def hwp_intermediate(self):
         """
         Intermediate table based on `post_processor.harvest.check`.
-        Joins disturbance id from the silviculture table
+        Joins disturbance id from the silviculture table.
         to allocate specific disturbances to specific wood products.
         """
         join_index = ['dist_type_name',
@@ -81,10 +81,10 @@ class Products(object):
         # Otherwise we would do: assert not df[join_index].isna().any().any()
         # Group #
         df = (df.groupby(['time_step', 'hwp'])
-                .agg({'vol_merch':    'sum',
+                .agg({'vol_merch':     'sum',
                       'vol_sub_merch': 'sum',
-                      'vol_snags':    'sum',
-                      'tc':           'sum'})
+                      'vol_snags':     'sum',
+                      'tc':            'sum'})
                 .reset_index())
         # Return #
         return df
@@ -95,10 +95,10 @@ class Products(object):
         """Harvest volumes of Industrial Round Wood Broadleaves."""
         df = (self.hwp_intermediate
               .query('hwp == "irw_b"')
-              .rename(columns={'vol_merch':    'vol_merch_irw_b',
+              .rename(columns={'vol_merch':     'vol_merch_irw_b',
                                'vol_sub_merch': 'vol_sub_merch_irw_b',
-                               'vol_snags':    'vol_snags_irw_b',
-                               'tc':           'tc_irw_b'}))
+                               'vol_snags':     'vol_snags_irw_b',
+                               'tc':            'tc_irw_b'}))
         # Drop HWP column
         # because it doesn't make sense anymore below when we join different products together
         df = df.drop('hwp', axis = 1)
@@ -110,10 +110,10 @@ class Products(object):
         """Harvest volumes of Industrial Round Wood Coniferous."""
         df = (self.hwp_intermediate
               .query('hwp == "irw_c"')
-              .rename(columns={'vol_merch':    'vol_merch_irw_c',
+              .rename(columns={'vol_merch':     'vol_merch_irw_c',
                                'vol_sub_merch': 'vol_sub_merch_irw_c',
-                               'vol_snags':    'vol_snags_irw_c',
-                               'tc':           'tc_irw_c'}))
+                               'vol_snags':     'vol_snags_irw_c',
+                               'tc':            'tc_irw_c'}))
         df = df.drop('hwp', axis = 1)
         return df
 
@@ -123,10 +123,10 @@ class Products(object):
         """Harvest volumes of Fuel Wood Broadleaves."""
         df = (self.hwp_intermediate
               .query('hwp == "fw_b"')
-              .rename(columns={'vol_merch':    'vol_merch_fw_b',
+              .rename(columns={'vol_merch':     'vol_merch_fw_b',
                                'vol_sub_merch': 'vol_sub_merch_fw_b',
-                               'vol_snags':    'vol_snags_fw_b',
-                               'tc':           'TC_fw_b'}))
+                               'vol_snags':     'vol_snags_fw_b',
+                               'tc':            'tc_fw_b'}))
         return df
 
     #-------------------------------------------------------------------------#
@@ -155,10 +155,10 @@ class Products(object):
         """Harvest volumes of Fuel Wood Coniferous."""
         df = (self.hwp_intermediate
               .query('hwp == "fw_c"')
-              .rename(columns={'vol_merch':    'vol_merch_fw_c',
+              .rename(columns={'vol_merch':     'vol_merch_fw_c',
                                'vol_sub_merch': 'vol_sub_merch_fw_c',
-                               'vol_snags':    'vol_snags_fw_c',
-                               'tc':           'tc_fw_c'}))
+                               'vol_snags':     'vol_snags_fw_c',
+                               'tc':            'tc_fw_c'}))
         return df
 
     #-------------------------------------------------------------------------#

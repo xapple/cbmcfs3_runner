@@ -21,3 +21,4 @@ from cbmcfs3_runner.pump.common import left_join
 ###############################################################################
 # Add a nice method to DataFrame objects #
 pandas.DataFrame.left_join = left_join
+

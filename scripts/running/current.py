@@ -113,6 +113,6 @@ from cbmcfs3_runner.core.continent import continent
 
 ################################################################################
 scenario = continent.scenarios['static_demand']
-runners  = [rs[-1] for k,rs in scenario.runners.items() if k=='LU']
+runners  = [rs[-1] for k,rs in scenario.runners.items() if k=='ZZ']
 runner   = runners[0]
-runner.country.report()
+print(runner.post_processor.products.hwp)
