@@ -24,8 +24,21 @@ sys.path.insert(0, "/repos/cbmcfs3_runner/")
 from cbmcfs3_runner.core.continent import continent
 
 # Choose  a country
-country = 'LU'
-runner = continent[('static_demand', country, 0)]
+# Load a runner for one scenario, one country and one step #
+runner_AT = continent[('static_demand', 'AT', 0)]
+runner_CZ = continent[('static_demand', 'CZ', 0)]
+runner_LU = continent[('static_demand', 'LU', 0)]
+runner_IT = continent[('static_demand', 'IT', 0)]
+runner_BE = continent[('static_demand', 'BE', 0)]
+runner_SE = continent[('static_demand', 'SE', 0)]
+runner_FR = continent[('static_demand', 'FR', 0)]
+runner_ZZ = continent[('static_demand', 'ZZ', 0)]
+
+# Pick a country
+runner = runner_CZ
+
+# Create the database object
+db = runner.post_processor.database
 ```
 
 # Introduction
@@ -36,7 +49,6 @@ Plot the total biomass per forest type / species.
 # List all tables 
 
 ```python
-db = runner.post_processor.database
 db.tables
 ```
 
@@ -77,6 +89,12 @@ except Exception as e:
 
 # Display
 
+
+## tbldisturbancetype
+
+```python
+db['tbldisturbancetype']
+```
 
 ## tblsimulation
 
