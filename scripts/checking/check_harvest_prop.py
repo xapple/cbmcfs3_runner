@@ -38,7 +38,7 @@ for c in continent:
     r = continent[('static_demand', c.iso2_code, -1)]
 
     # First source #
-    first = r.country.silviculture.treatments.set_index('dist_type_id')['perc_merch_biom_rem']
+    first = r.country.silviculture.treatments.set_index('dist_type_name')['perc_merch_biom_rem']
     # Check it is coherent within itself #
     disturbance_ids = first.index.unique()
     for dist_id in disturbance_ids:
@@ -81,5 +81,5 @@ for c in continent:
     for dist_id, prop in first.items():
         if dist_id not in third.index: continue
         if third[dist_id] != prop:
-            msg = "Mismatch: dist_type_id %s, Treatments %s, Dist Input %s"
+            msg = "Mismatch: dist_type_name %s, Treatments %s, Dist Input %s"
             print(msg % (dist_id, third[dist_id], prop))

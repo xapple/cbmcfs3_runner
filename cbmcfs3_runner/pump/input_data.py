@@ -99,13 +99,13 @@ class InputData(object):
          'max_tot_merch_stem_snag_c', 'min_tot_merch_soft_stem_snag_c',
          'max_tot_merch_soft_stem_snag_c', 'min_tot_merch_hard_stem_snag_c',
          'max_tot_merch_hard_stem_snag_c', 'efficiency', 'sort_type',
-         'measurement_type', 'amount', 'dist_type_id', 'step']
+         'measurement_type', 'amount', 'dist_type_name', 'step']
         """
         # Get the right sheet #
         df = self.get_sheet("DistEvents")
         # Harmonise Dist_Type_ID data type amoung countries
         # some have int, others have str, make it str for all.
-        df['dist_type_id'] = df['dist_type_id'].astype(str)
+        df['dist_type_name'] = df['dist_type_name'].astype(str)
         return df
 
     @property_cached

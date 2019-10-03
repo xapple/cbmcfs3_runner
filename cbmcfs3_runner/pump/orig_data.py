@@ -99,13 +99,13 @@ class OrigData(object):
     @property_cached
     def disturbance_events(self):
         """Load disturbance_events from the calibration database.
-        Change dist_type_id to a string and Step to an integer.
+        Change dist_type_name to a string and Step to an integer.
         Add year
         """
         df = self['disturbance_events']
-        # Change dist_type_id to a string to harmonise data type.
+        # Change dist_type_name to a string to harmonise data type.
         # some countries have a string while others have an int.
-        df['dist_type_id'] = df['dist_type_id'].astype('str')
+        df['dist_type_name'] = df['dist_type_name'].astype('str')
         df['step'] = df['step'].astype(int)
         # Add year
         df['year'] = self.parent.timestep_to_year(df['step'])

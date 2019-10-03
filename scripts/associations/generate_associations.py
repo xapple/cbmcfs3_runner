@@ -102,7 +102,7 @@ class AssociationsGenerator(object):
                          pandas.DataFrame(self.eco),
                          pandas.DataFrame(self.species),
                          pandas.DataFrame(self.dist)]
-        # Concatenate the four DataFrames #
+        # Concatenate the four DataFrames #
         self.combined = pandas.concat(self.combined, keys=self.keys).reset_index(0)
         # Write the CSV #
         self.combined.to_csv(str(self.paths.associations), header = ['A', 'B', 'C'], index=False)

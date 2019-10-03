@@ -55,7 +55,7 @@ class DisturbanceMaker(object):
         df = df.rename(columns = self.country.classifiers.mapping)
         # Change column types to match those of generated future disturbances
         df['step'] = df['step'].astype(int)
-        df['dist_type_id'] = df['dist_type_id'].astype(str)
+        df['dist_type_name'] = df['dist_type_name'].astype(str)
         return df
 
     @property
@@ -76,7 +76,7 @@ class DisturbanceMaker(object):
         Columns are:
         ['hwp', 'year_text', 'value_ob', 'year_max', 'year', 'step',
          'forest_type', 'status', 'management_type', 'management_strategy',
-         'conifers_broadleaves', 'dist_type_id', 'sort_type', 'efficiency',
+         'conifers_broadleaves', 'dist_type_name', 'sort_type', 'efficiency',
          'min_age', 'max_age', 'min_since_last', 'max_since_last', 'regen_delay',
          'reset_age', 'wd', 'owc_perc', 'snag_perc', 'man_nat',
          'stock_available', 'stock_tot', 'prop', 'db', 'value_tc', 'amount',
@@ -375,7 +375,7 @@ class DisturbanceMaker(object):
         # Concatenate IRW and FW disturbance tables
         # Keep only the columns of interest for distubances
         columns_of_interest = ['status', 'forest_type', 'management_type', 'management_strategy',
-                               'conifers_broadleaves', 'dist_type_id',
+                               'conifers_broadleaves', 'dist_type_name',
                                'sort_type', 'efficiency',
                                'min_age', 'max_age', 'min_since_last', 'max_since_last', 'regen_delay',
                                'reset_age', 'man_nat', 'amount', 'step']
@@ -424,11 +424,11 @@ class DisturbanceMaker(object):
         df_random = df.query('sort_type==6')
         msg = "Random sort type: 6 not allowed with disturbances expressed in terms "
         msg += "of Measurement Type 'M' merchantable carbon. \n"
-        msg += "The issue is present for dist_type_id: %s \n"
+        msg += "The issue is present for dist_type_name: %s \n"
         msg += "CBM error in this case is "
         msg += "Error: 'Illegal target type for RANDOM sort in timestep...'"
         if len(df_random) > 0:
-            raise Exception(msg % (df_random['dist_type_id'].unique()))
+            raise Exception(msg % (df_random['dist_type_name'].unique()))
         # Rearrange columns according to the raw "disturbance_events.csv" file
         dist_calib_columns = list(self.disturbance_events_raw.columns)
         # Return #

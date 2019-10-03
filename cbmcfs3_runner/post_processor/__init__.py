@@ -146,7 +146,7 @@ class PostProcessor(object):
         Columns are: ['status', 'forest_type', 'region', 'management_type',
                       'management_strategy', 'climatic_unit', 'conifers_broadleaves',
                       'using_id', 'sw_start', 'sw_end', 'hw_start', 'hw_end', 'last_dist_id',
-                      'efficiency', 'sort_type', 'measurement_type', 'amount', 'dist_type_id',
+                      'efficiency', 'sort_type', 'measurement_type', 'amount', 'dist_type_name',
                       'time_step'],
         """
         df = self.parent.input_data.disturbance_events
@@ -157,13 +157,13 @@ class PostProcessor(object):
         # This column also need to be manually renamed #
         df = df.rename(columns = {'step': 'time_step'})
         # For joining with other data frames, DistType has to be of dtype object not int64 #
-        df['dist_type_id'] = df['dist_type_id'].astype(str)
+        df['dist_type_name'] = df['dist_type_name'].astype(str)
         # Remove columns that are not really used #
         df = df.drop(columns=[c for c in df.columns if c.startswith("Min") or c.startswith("Max")])
         # Remove slashes #
         df = df.rename(columns=lambda n:n.replace('/','_'))
-        # dist_type_id is actually dist_type_name #
-        df = df.rename(columns = {'dist_type_id': 'dist_type_name'})
+        # dist_type_name is actually dist_type_name #
+        df = df.rename(columns = {'dist_type_name': 'dist_type_name'})
         # Return result #
         return df
 

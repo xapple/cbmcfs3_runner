@@ -100,7 +100,7 @@ class PreProcessor(object):
         orig = orig.set_index(col_name)
         # Get disturbances to duplicate from silv #
         silv        = self.country.silviculture.treatments
-        dist_to_dup = silv.query("man_nat == 'Man'")['dist_type_id'].unique()
+        dist_to_dup = silv.query("man_nat == 'Man'")['dist_type_name'].unique()
         # Make a new data frame #
         dists = [orig.loc[dist][0] for dist in dist_to_dup]
         dup   = pandas.DataFrame(zip(dist_to_dup, dists), columns=[col_name, 'name'])

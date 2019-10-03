@@ -47,7 +47,7 @@ class Products(object):
         # Rename classifiers from _1 to forest etc. #
         df = df.rename(columns = self.parent.classifiers_mapping)
         # Rename a column #
-        df = df.rename(columns = {'dist_type_id': 'dist_type_name'})
+        df = df.rename(columns = {'dist_type_name': 'dist_type_name'})
         # Change the type of dist_type_name to string so that it has the same type as
         # the `harvest_check` dist_type_name column
         df['dist_type_name'] = df['dist_type_name'].astype(str)
