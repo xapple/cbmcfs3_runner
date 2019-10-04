@@ -235,7 +235,7 @@ class Inventory(object):
         """
         # Load data #
         df    = self.parent.database['tblPoolIndicators']
-        clifr = self.parent.classifiers.set_index("UserDefdClassSetID")
+        clifr = self.parent.classifiers.set_index("user_defd_class_set_id")
         # Our index #
         index = ['time_step', 'forest_type']
         # Join #
