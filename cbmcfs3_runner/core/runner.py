@@ -14,7 +14,11 @@ Unit D1 Bioeconomy.
 from autopaths            import Path
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
+from plumbing.git         import GitRepo
 from plumbing.logger      import create_file_logger
+
+# Third party modules #
+import cbm3_python
 
 # Internal modules #
 import cbmcfs3_runner
@@ -91,6 +95,9 @@ class Runner(object):
         # Messages #
         self.log.info("Using module at '%s'." % Path(cbmcfs3_runner))
         self.log.info("Runner '%s' starting." % self.short_name)
+        # Record the hash of the other library "cbm3_python" e.g. 4dc12af #
+        cbm3py_repos = GitRepo("/repos/cbm3_python/")
+        self.log.info("Using cbm3_python at '%s'." % cbm3py_repos.hash)
         # Clean everything from previous run #
         self.remove_directory()
         # Copy the original input data #

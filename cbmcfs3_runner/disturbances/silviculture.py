@@ -32,25 +32,25 @@ class Silviculture(object):
     The economic model provides future demand volumes distinguished only
     by the coniferous/broadleaves classifier.
 
-    To allocate the harvest across disturbance
-    types (clear cut, thinning) and additional classifiers (forest type,
-    management type, management strategy) we use a proportion method based
-    on the historical inventory and yield curve within a country.
+    To allocate the harvest across disturbance types (clear cut, thinning)
+    and additional classifiers (forest type, management type, management strategy)
+    we use a proportion method based on the historical inventory and yield curve
+    within a country.
 
     In essence we will harvest proportionally to what is found in a country.
     In terms of volume, if a country has 90% of firs, we will harvest 90% there.
     Of course this is within the harvestable range, we will exclude trees that are
     too young.
 
-    The merchantable volume 'Tot_V_Merch' always goes
-    to the product that is harvested.
-    The sub merchantable and snag volume 'Tot_V_SubMerch' and 'Tot_V_Snags'
+    The merchantable volume 'tot_v_merch' always goes to the product that
+    is harvested.
+    The sub merchantable and snag volume 'tot_v_submerch' and 'tot_v_snags'
     go to the corresponding fuel wood pool, either coniferous or broadleaved.
 
-    * IRW stands for Industrial Round Wood
-    * FW stands for Fuel Wood
-    * C stands for coniferous
-    * B stands for broadleaved
+    * "IRW" stands for Industrial Round Wood.
+    * "FW" stands for Fuel Wood.
+    * "C" stands for Coniferous.
+    * "B" stands for Broadleaved.
     """
 
     all_paths = """
