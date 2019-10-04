@@ -120,9 +120,7 @@ class Silviculture(object):
         inventory     = self.parent.orig_data.inventory
         h_yields_long = self.parent.orig_data.historical_yields_long
         # Index #
-        index = ['status', 'forest_type', 'region', 'management_type',
-                 'management_strategy', 'climatic_unit', 'conifers_broadleaves',
-                 'age_class']
+        index = self.parent.classifiers.names + ['age_class']
         # Join #
         df = inventory.left_join(h_yields_long, index)
         # Compute stock #
