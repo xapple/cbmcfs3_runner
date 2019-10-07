@@ -13,19 +13,19 @@ jupyter:
 ---
 
 ```python
-import sys, pandas 
+import sys, pandas
 # Catch database related errors
 from pyodbc import Error
 from pandas.io.sql import DatabaseError
 
 # Project modules
 # Load the cbm_runner package from 'repos/' (instead of 'deploy/') #
-sys.path.insert(0, "/repos/cbmcfs3_runner/") 
+sys.path.insert(0, "/repos/cbmcfs3_runner/")
 from cbmcfs3_runner.core.continent import continent
 
 # Choose  a country
 country = 'LU'
-country = 'BG'
+#country = 'BG'
 db = continent.countries[country].aidb.database
 
 list_all_column_names = True
@@ -50,7 +50,7 @@ if list_all_column_names:
     for table in db.tables:
         print("")
         print(table)
-        try: 
+        try:
             print(db[table].columns)
         except (Error, DatabaseError) as error:
             print(error)
@@ -58,6 +58,14 @@ if list_all_column_names:
 
 # Display
 
+
+
+## tbladminboundarydefault
+
+
+```python
+db['tbladminboundarydefault'].query("admin_boundary_name=='Luxembourg'")
+```
 
 
 ## tblsimulation
