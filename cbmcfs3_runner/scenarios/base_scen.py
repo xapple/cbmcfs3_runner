@@ -80,7 +80,7 @@ class Scenario(object):
         # Get data #
         dict_of_df = self.concat_as_dict(*args, **kwargs)
         # When classifiers are present
-        # add column '_8' for all countries except BG 
+        # add column '_8' for all countries except BG
         if '_7' in dict_of_df['AT'].columns:
             for iso2, df in dict_of_df.items():
                 if iso2 == "BG": continue
