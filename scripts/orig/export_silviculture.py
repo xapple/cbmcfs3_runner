@@ -48,9 +48,9 @@ class ExportFromSilviculture(object):
         self.paths = AutoPaths(self.country.data_dir, self.all_paths)
 
     def __call__(self):
-        #self.treatments()
+        self.treatments()
         #self.harvest_corr_fact()
-        self.harvest_prop_fact()
+        #self.harvest_prop_fact()
 
     def treatments(self):
         """Search the SAS file for the CSV that is hidden inside and return a
