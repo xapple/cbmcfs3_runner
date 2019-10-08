@@ -80,6 +80,10 @@ class Silviculture(object):
         df = df.rename(columns = self.parent.classifiers.mapping)
         # 'For' and 'CC' receive the same silviculture treatment.
         # Duplicate 'CC' rows in the silviculture treatment table and mark them as 'For'
+        # TODO change this duplication of silviculture treatments to a
+        # change from CC to For if For is present in the inventory
+        # Give an error if there is a mix of For and CC
+        # (check if mix of CC and For exists at all in the input data)
         silv_for = df.query("status == 'CC'").copy()
         silv_for['status'] = 'For'
         df = df.append(silv_for)
