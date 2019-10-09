@@ -87,6 +87,7 @@ class Silviculture(object):
         silv_for = df.query("status == 'CC'").copy()
         silv_for['status'] = 'For'
         df = df.append(silv_for)
+        # If FW_C missing, duplicate
         # Return #
         return df
 

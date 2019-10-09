@@ -166,9 +166,10 @@ class DisturbanceMaker(object):
         df = df.query("amount>0").copy()
         return df
 
-    def check_dist_irw(self):
-        """Check that the industrial round wood disturbances
-        weight in tonnes of carbon correspond
+    @property
+    def dist_irw_converted(self):
+        """convert industrial round wood disturbances
+        weight in tonnes and  of carbon to m3 over bark
         to the demand volume in m3 over bark for each year.
         i.e. the requested demand from the economic model"""
         df = self.dist_irw
@@ -188,11 +189,20 @@ class DisturbanceMaker(object):
               # even if step or con_broad is not present in dist anymore
               .join(self.country.demand.gftm_irw.set_index(index), how='outer')
               .reset_index())
+        return df
+
+    def check_dist_irw_converted(self):
+        """Check that the industrial round wood disturbances
+        weight in tonnes of carbon correspond
+        to the demand volume in m3 over bark for each year."""
+        df = self.dist_irw_converted
         # Assert that these values are close
         numpy.testing.assert_allclose(df['amount_m3'], df['value_ob'],
                                       rtol=1e-03)
 
-    def check_dist_fw(self):
+
+    @property
+    def dist_irw_fw_converted(self):
         """Chek that the fuel wood disturbance weight in tonnes of carbon
         correspond to the demand volume in m3 over bark for each year.
         i.e. the requested demand from the economic model.
@@ -239,12 +249,19 @@ class DisturbanceMaker(object):
         # Compare amount
         df['diff'] = df['dist_amount_m3'] - df['value_ob']
         df['diff_prop'] = df['diff'] / df['value_ob']
+        return df
+
+
+    def check_dist_irw_fw_converted(self):
         # Assert that the difference is strictly positive or close to zero
         # In other words, it is ok if there is a higher fuel wood volume generated
         # By industrial roundwood dissturbance diff>0
         # But it's not ok if there is a smaller fuel wood volume.
         # That would mean there is an issue with fuel wood disturbance generation
+        df = self.dist_irw_fw_converted
         assert (df['diff_prop']>-0.02).all()
+
+
 
     @property
     def demand_to_dist(self):

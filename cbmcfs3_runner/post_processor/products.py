@@ -63,6 +63,12 @@ class Products(object):
         Intermediate table based on `post_processor.harvest.check`.
         Joins disturbance id from the silviculture table.
         to allocate specific disturbances to specific wood products.
+        TODO: make this work for historical disturbances as well.
+        'hwp' rows that have a Na value represent either:
+          1. disturbances of type natural processes that do not produce
+             any harvest
+          2. historical disturbances that have a difference disturbance id
+             and are therefore not available in the silviculture table.
         """
         join_index = ['dist_type_name',
                       'forest_type',
@@ -76,9 +82,10 @@ class Products(object):
               .reset_index()
               .set_index(join_index)
               .join(silv))
-        # We want the columns with NaNs to be thrown away
-        # Because they represent disturbances that do not produce any harvest
-        # Otherwise we would do: assert not df[join_index].isna().any().any()
+        # 'hwp' rows with NaNs will be thrown away by the aggregation below
+        # Otherwise to prevent any rows to be NA,
+        # i.e. to force all rows to have a value,
+        # we would do: assert not df[join_index].isna().any().any()
         # Group #
         df = (df.groupby(['time_step', 'hwp'])
                 .agg({'vol_merch':     'sum',
