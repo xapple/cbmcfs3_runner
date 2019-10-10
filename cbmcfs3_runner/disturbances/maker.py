@@ -177,7 +177,7 @@ class DisturbanceMaker(object):
               .reset_index())
         return df
 
-    def check_dist_irw_converted(self):
+    def check_dist_irw(self):
         """Check that the industrial round wood disturbances
         weight in tonnes of carbon correspond
         to the demand volume in m3 over bark for each year."""
@@ -236,7 +236,7 @@ class DisturbanceMaker(object):
         return df
 
 
-    def check_dist_fw_converted(self):
+    def check_dist_fw(self):
         # Assert that the difference is strictly positive or close to zero
         # In other words, it is ok if there is a higher fuel wood volume generated
         # By industrial roundwood dissturbance diff>0
