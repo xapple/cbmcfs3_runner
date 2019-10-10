@@ -193,8 +193,8 @@ class Demand(object):
         """Concatenation of gftm_irw and gftm_fw, used only for
         diagnostics and analysis.
         Actual demand allocation is made from gftm_irw and gftm_fw."""
-        return pandas.concat([self.gftm_irw[columns_of_interest],
-                              self.gftm_fw[columns_of_interest]])
+        return pandas.concat([self.gftm_irw[list(columns_of_interest)],
+                              self.gftm_fw[list(columns_of_interest)]])
 
     @property_cached
     def historical_wide(self):

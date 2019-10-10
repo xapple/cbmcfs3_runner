@@ -202,7 +202,7 @@ class DisturbanceMaker(object):
 
 
     @property
-    def dist_irw_fw_converted(self):
+    def dist_fw_converted(self):
         """Chek that the fuel wood disturbance weight in tonnes of carbon
         correspond to the demand volume in m3 over bark for each year.
         i.e. the requested demand from the economic model.
@@ -252,13 +252,13 @@ class DisturbanceMaker(object):
         return df
 
 
-    def check_dist_irw_fw_converted(self):
+    def check_dist_fw_converted(self):
         # Assert that the difference is strictly positive or close to zero
         # In other words, it is ok if there is a higher fuel wood volume generated
         # By industrial roundwood dissturbance diff>0
         # But it's not ok if there is a smaller fuel wood volume.
         # That would mean there is an issue with fuel wood disturbance generation
-        df = self.dist_irw_fw_converted
+        df = self.dist_fw_converted
         assert (df['diff_prop']>-0.02).all()
 
 
