@@ -87,7 +87,10 @@ class Silviculture(object):
         silv_for = df.query("status == 'CC'").copy()
         silv_for['status'] = 'For'
         df = df.append(silv_for)
-        # If FW_C missing, duplicate
+        # These changes below might or might not be a good idea.
+        # These changes should probably be done in the input data, not here.
+        # If FW_C disturbances are missing, duplicate IRW_C disturbances
+        # If FW_B disturances are missing, duplicate IRW_B disturbances
         # Return #
         return df
 
@@ -181,6 +184,9 @@ class Silviculture(object):
               .query('stock > 0')
               .copy())
         # Compute the stock available #
+        # Note that it is divided by min_since_last so it might be smaller
+        # than the stock by a factor of 10 or more.
+        # stock_available is only used to calculate a proportion later.
         df['stock_available'] = (df['stock']
                                  * df['corr_fact']
                                  * df['perc_merch_biom_rem']
