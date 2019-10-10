@@ -159,7 +159,7 @@ class DisturbanceMaker(object):
 
         # Then remove negative amounts from the disturbance table
         # TODO: make this a threshold maybe equal to 200 or some higher value?
-        df = df.query("amount>0").copy()
+        df = df.query("amount_m3>0").copy()
         return df
 
     @property
