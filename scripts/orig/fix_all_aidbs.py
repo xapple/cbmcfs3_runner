@@ -15,7 +15,7 @@ Typically you would run this file from a command line like this:
 # Built-in modules #
 
 # Third party modules #
-import tqdm
+from tqdm import tqdm
 
 # First party modules #
 from plumbing.cache import property_cached
@@ -48,11 +48,14 @@ class FixerOfAIDB(object):
         database = AccessDatabase(self.country.paths.aidb_eu_mdb)
         return database
 
-    def __call__(self, country):
+    def __call__(self):
         # Query #
         query = """UPDATE tblBioTotalStemwoodGenusDefault
                    SET    default_genus_id = 14,
-                   WHERE  tblBioTotalStemwoodGenusDefault.default_genus_id = 171;"""
+                   WHERE  tblBioTotalStemwoodGenusDefault.DefaultGenusID = 171;"""
+        # Actually, let's just delete them #
+        query = """DELETE FROM tblBioTotalStemwoodGenusDefault
+                   WHERE tblBioTotalStemwoodGenusDefault.DefaultGenusID=171;"""
         self.database.cursor.execute(query)
         # Save changes #
         self.database.cursor.commit()
@@ -61,4 +64,5 @@ class FixerOfAIDB(object):
 if __name__ == '__main__':
     fixers = [FixerOfAIDB(c) for c in continent]
     for fixer in tqdm(fixers):
+        if fixer.country.iso2_code != 'ZZ': continue
         fixer()
