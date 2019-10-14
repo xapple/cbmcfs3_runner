@@ -49,6 +49,19 @@ class FixerOfAIDB(object):
         return database
 
     def __call__(self):
+        self.remove_171()
+
+    def remove_171(self):
+        """
+        In the EU AIDB, in the table "tblBioTotalStemwoodGenusDefault",
+        many entries are defined about 6'000.
+        Amongst those, 37 have the "default_genus_id" set to 171.
+        But, in the table "tblGenusTypeDefault", there is no genus 171 defined
+        At the same time, we see that in 'tblSpeciesTypeDefault' there is a species
+        with id 171, with a genus 14, so probably it's a mix up.
+        As a fix we delete all offending entries from tblBioTotalStemwoodGenusDefault.
+        These concern only Sweden
+        """
         # Query #
         query = """UPDATE tblBioTotalStemwoodGenusDefault
                    SET    default_genus_id = 14,
@@ -64,5 +77,4 @@ class FixerOfAIDB(object):
 if __name__ == '__main__':
     fixers = [FixerOfAIDB(c) for c in continent]
     for fixer in tqdm(fixers):
-        if fixer.country.iso2_code != 'ZZ': continue
         fixer()
