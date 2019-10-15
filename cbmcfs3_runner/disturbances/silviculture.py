@@ -266,7 +266,9 @@ class Silviculture(object):
         # Load data frame #
         df = self.stock_available_agg.copy()
         coefficients = self.parent.coefficients[['forest_type', 'db']]
-        # Add column stock_tot #
+        # Add aggregated column stock_tot
+        # Note: we want to keep unaggregated columns in the df,
+        # so we cannot use groupby().agg() below.
         df['stock_tot'] = df.groupby(['hwp'])['stock_available'].transform('sum')
         # Add column prop #
         df['prop']      = df['stock_available'] / df['stock_tot']
