@@ -23,8 +23,8 @@ from plumbing.databases.access_database import AccessDatabase
 ###############################################################################
 class MiddleProcessor(object):
     """
-    Will modify the access database after its creation by SIT but before its
-    usage by CBM.
+    Will modify the Microsoft Access database after its creation by
+    SIT but before its usage by CBM.
 
     The middle processor makes it possible to call SIT twice,
     first in default mode, then in append mode.

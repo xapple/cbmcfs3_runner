@@ -11,70 +11,32 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
+import numpy
 import pandas
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
+from plumbing.cache import property_cached
 
 # Internal modules #
 
 ###############################################################################
-class PreProcessor(object):
+class DisturbanceTypesMod(object):
     """
-    Will modify the input CSV files before handing them to SIT.
+    Lorem ipsum.
     """
 
     all_paths = """
-    /input/csv/disturbance_events.csv
-    /input/csv/disturbance_events_filtered.csv
     /input/csv/disturbance_types.csv
     /input/csv/disturbance_types_extended.csv
     """
 
-    def __init__(self, parent):
-        # Default attributes #
-        self.parent  = parent
-        self.country = parent.country
-        # Directories #
-        self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
-
     def __call__(self):
-        # Disturbance events #
-        source = self.paths.disturbance_events
-        destin = self.paths.disturbance_events_filtered
-        self.filter_dist_events(source, destin)
         # Disturbance types #
+        # Unsure this is actually needed. Related to renaming of dist ids.
         source = self.paths.disturbance_types
         destin = self.paths.disturbance_types_extended
         self.extend_dist_types(source, destin)
-
-    #------------------------- Disturbance events ----------------------------#
-    def filter_dist_events(self, old_path, new_path):
-        """The calibration database is configured to run over a period of
-         100 years. We would like to limit the simulation to the historical
-         period. Currently Year < 2015.
-
-         Filtering M types on Sort Type 6 is necessary to avoid the famous error:
-
-            Error:  Illegal target type for RANDOM sort in timestep 3, action number 190,
-                    in disturbance group 1, sort type 6, target type 2.
-            Error:  Invalid disturbances found in .\input\disturb.lst.  Aborting.
-         """
-        # Load the original data frame #
-        old_df = pandas.read_csv(str(old_path))
-        # We make a copy because query() doesn't return a true new data frame #
-        new_df = self.filter_df(old_df, self.country.base_year, self.country.inventory_start_year).copy()
-        # Filtering M types #
-        row_indexer = (new_df['sort_type'] == 6) & (new_df['measurement_type'] == 'M')
-        new_df.loc[row_indexer, 'sort_type'] = 2
-        # Write the result #
-        new_df.to_csv(str(new_path), index=False)
-
-    def filter_df(self, df, base_year, inv_start_year):
-        """Takes the old event data frame and returns the new filtered one."""
-        # Filter rows based on years #
-        period_max = base_year - inv_start_year + 1
-        return df.query("step <= %s" % period_max)
 
     #------------------------- Disturbance types -----------------------------#
     def extend_dist_types(self, old_path, new_path):
@@ -84,10 +46,10 @@ class PreProcessor(object):
         Saving the result under "disturbance_types_extended.csv".
         Why do we have to do this? Because of some arcane CBM-CFS3
         requirements.
-        CBM-CFS3 accepts only one measurement type per disturbance. 
+        CBM-CFS3 accepts only one measurement type per disturbance.
         We want to express historical disturbances in terms of area and
-        future disturabnces in terms of biomass. 
-        Future disturbances won't be applied by CBM if we don't 
+        future disturbances in terms of biomass.
+        Future disturbances won't be applied by CBM if we don't
         change their id.
         See https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-228
         """

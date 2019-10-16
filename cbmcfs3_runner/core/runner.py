@@ -23,9 +23,8 @@ import cbm3_python
 # Internal modules #
 import cbmcfs3_runner
 from cbmcfs3_runner.graphs import runner_graphs, load_graphs_from_module
-from cbmcfs3_runner.disturbances.maker             import DisturbanceMaker
-from cbmcfs3_runner.modifiers.pre_process          import PreProcessor
-from cbmcfs3_runner.modifiers.middle_process       import MiddleProcessor
+from cbmcfs3_runner.pre_processor                  import PreProcessor
+from cbmcfs3_runner.pump.middle_process            import MiddleProcessor
 from cbmcfs3_runner.post_processor                 import PostProcessor
 from cbmcfs3_runner.pump.input_data                import InputData
 from cbmcfs3_runner.pump.pre_flight                import PreFlight
@@ -100,11 +99,8 @@ class Runner(object):
         self.log.info("Using cbm3_python at '%s'." % cbm3py_repos.hash)
         # Clean everything from previous run #
         self.remove_directory()
-        # Copy the original input data #
-        self.input_data.copy_from_country()
-        # Modify input data #
+        # Modify input data before copying it #
         self.pre_processor()
-        self.disturbance_maker()
         # Switch archive index #
         self.country.aidb.switch()
         # Pre-flight check #
@@ -144,10 +140,6 @@ class Runner(object):
     def input_data(self):
         """Use the country object to copy the original input data."""
         return InputData(self)
-
-    @property_cached
-    def disturbance_maker(self):
-        return DisturbanceMaker(self)
 
     @property_cached
     def pre_processor(self):

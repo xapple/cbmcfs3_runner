@@ -41,11 +41,6 @@ class InputData(object):
         # Classifiers names #
         self.classifiers_mapping = self.parent.country.classifiers.mapping
 
-    def copy_from_country(self):
-        destination_dir = self.parent.paths.csv_dir
-        destination_dir.remove()
-        self.parent.country.paths.export_dir.copy(destination_dir)
-
     #--------------------- Access the spreadsheets ---------------------------#
     @property_cached
     def xls(self):

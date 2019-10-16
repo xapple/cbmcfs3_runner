@@ -24,7 +24,7 @@ from cbmcfs3_runner.pump.common import reshape_yields_long
 class OrigData(object):
     """
     This class will provide access to the original data of a Country
-    as a pandas dataframe. Not the input data of a Runner.
+    as a pandas data frame. Not the input data of a Runner.
     """
 
     all_paths = """
@@ -97,16 +97,25 @@ class OrigData(object):
         return reshape_yields_long(self.historical_yields)
 
     @property_cached
-    def disturbance_events(self):
+    def disturbance_events_raw(self):
         """Load disturbance_events from the calibration database.
-        Change dist_type_name to a string and Step to an integer.
-        Add year
-        """
+        Change dist_type_name to a string and Step to an integer."""
+        # Load #
         df = self['disturbance_events']
         # Change dist_type_name to a string to harmonise data type.
         # some countries have a string while others have an int.
         df['dist_type_name'] = df['dist_type_name'].astype('str')
         df['step'] = df['step'].astype(int)
-        # Add year
+        # Rename classifiers #
+        df = df.rename(columns = self.parent.classifiers.mapping)
+        # Return #
+        return df
+
+    @property_cached
+    def disturbance_events(self):
+        # Load #
+        df = self.disturbance_events_raw
+        # Add year #
         df['year'] = self.parent.timestep_to_year(df['step'])
-        return df.rename(columns = self.parent.classifiers.mapping)
+        # Return #
+        return df

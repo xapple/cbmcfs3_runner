@@ -23,6 +23,9 @@ class Historical(Scenario):
     def runners(self):
         """A dictionary of country codes as keys with a list of runners as values."""
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
+        # Modify these runners #
+        for country in self.continent:
+            # Deactivate the disturbance maker #
+            runner = result[country.iso2_code][-1]
+            runner.pre_processor.use_dist_maker = False
         return result
-        
-        

@@ -22,13 +22,13 @@ from plumbing.cache       import property_cached
 # Internal modules #
 from cbmcfs3_runner        import module_dir
 from cbmcfs3_runner.graphs import country_graphs, load_graphs_from_module
-from cbmcfs3_runner.disturbances.demand            import Demand
 from cbmcfs3_runner.pump.orig_data                 import OrigData
 from cbmcfs3_runner.pump.fusion_data               import FusionData
 from cbmcfs3_runner.pump.aidb                      import AIDB
 from cbmcfs3_runner.pump.classifiers               import Classifiers
 from cbmcfs3_runner.reports.country                import CountryReport
 from cbmcfs3_runner.stdrd_import_tool.associations import Associations
+from cbmcfs3_runner.disturbances.demand            import Demand
 from cbmcfs3_runner.disturbances.silviculture      import Silviculture
 from cbmcfs3_runner.faostat                        import faostat
 
