@@ -11,7 +11,6 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
-import pandas
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
@@ -19,7 +18,7 @@ from plumbing.cache       import property_cached
 
 # Internal modules #
 from cbmcfs3_runner.pre_processor.dist_filter import DisturbanceFilter
-from cbmcfs3_runner.disturbances.maker        import DisturbanceMaker
+from cbmcfs3_runner.pre_processor.dist_maker  import DisturbanceMaker
 
 ###############################################################################
 class PreProcessor(object):
