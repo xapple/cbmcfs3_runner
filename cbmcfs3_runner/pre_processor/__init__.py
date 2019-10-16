@@ -55,12 +55,8 @@ class PreProcessor(object):
     def __call__(self):
         """Write every CSV to the input directory after changing them."""
         # Some are changed #
-        if self.use_dist_maker:
-            self.disturbance_maker.df.to_csv(str(self.paths.events))
-        else:
-            self.disturbance_filter.df.to_csv(str(self.paths.events))
+        self.disturbances_events.to_csv(str(self.paths.events))
         # Other files don't change so take them straight from orig_data #
-        # Loop #
         for file in self.unchanged:
             self.parent.country.orig_data.paths[file].copy(self.paths[file])
 
@@ -73,3 +69,8 @@ class PreProcessor(object):
     def disturbance_maker(self):
         # Make new disturbance events #
         return DisturbanceMaker(self)
+
+    @property_cached
+    def disturbances_events(self):
+        if self.use_dist_maker:  return self.disturbance_maker.df
+        else:                    return self.disturbance_filter.df
