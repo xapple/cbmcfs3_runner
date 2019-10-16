@@ -194,7 +194,7 @@ class Products(object):
     @property_cached
     def hwp(self):
         """
-        Volumes of Harvested Wood Products (HWP)
+        Volumes of Harvested Wood Products (HWP, in cubic meters
         Matching the product description available in the economic model
         and in the FAOSTAT historical data.
 
