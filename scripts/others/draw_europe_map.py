@@ -15,7 +15,7 @@ Color brewer makes provides a range of color palettes:
 """
 
 # Built-in modules #
-import os, inspect, StringIO
+import os, inspect
 
 # Third party modules #
 import pandas, folium, brewer2mpl
@@ -34,12 +34,17 @@ this_dir  = DirectoryPath(os.path.dirname(os.path.abspath(file_name)))
 palette = brewer2mpl.get_map('YlGn', 'sequential', 3)
 
 ###############################################################################
+# Choose scenarios #
+static = continent.scenarios['static_demand']
+hstric = continent.scenarios['historical']
+
+###############################################################################
 map_data = pandas.DataFrame({
     'A3':    [c.country_iso3 for c in continent],
-    'value': [c.map_value for c in continent]
+    'value': [static[c.iso2_code][-1].map_value +
+              hstric[c.iso2_code][-1].map_value
+              for c in continent]
 })
-
-print map_data
 
 ###############################################################################
 m = folium.Map(
@@ -57,5 +62,10 @@ m.choropleth(
 )
 
 ###############################################################################
-m.save(str(this_dir + 'europe.html'))
-(this_dir + 'europe.png').write(m._to_png(), mode='wb')
+# Save the HTML #
+output_html_path = this_dir + 'europe.html'
+m.save(str(output_html_path))
+
+# Save the PNG #
+output_png_path = this_dir + 'europe.png'
+output_png_path.write(m._to_png(), mode='wb')

@@ -14,10 +14,11 @@ You can use this object like this:
 """
 
 # Built-in modules #
+import os
 
 # Third party modules #
 from tqdm import tqdm
-import pandas 
+import pandas
 
 # First party modules #
 from autopaths            import Path
@@ -29,8 +30,12 @@ from plumbing.logger      import create_file_logger
 from cbmcfs3_runner.core.country import Country
 from cbmcfs3_runner.scenarios import scen_classes
 
-# Constants #
+# Where is the data, default case #
 cbm_data_repos = Path("~/repos/cbmcfs3_data/")
+
+# But you can override that with an environment variable #
+if os.environ.get("CBMCFS3_DATA"):
+    cbm_data_repos = Path(os.environ['CBMCFS3_DATA'])
 
 ###############################################################################
 class Continent(object):
@@ -90,13 +95,13 @@ class Continent(object):
     @property_cached
     def country_ref_years(self):
         """Access the country codes and reference years."""
-        cisy = [(c.country_name, 
-                 c.iso2_code, 
+        cisy = [(c.country_name,
+                 c.iso2_code,
                  c.inventory_start_year) for c in self]
-        df = pandas.DataFrame(cisy, columns=['country_name', 
-                                             'iso2_code', 
+        df = pandas.DataFrame(cisy, columns=['country_name',
+                                             'iso2_code',
                                              'inventory_start_year'])
-        return df 
+        return df
 
 
     @property
