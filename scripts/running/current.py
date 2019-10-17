@@ -94,24 +94,6 @@ from cbmcfs3_runner.core.continent import continent
 #    c.report.copy_to_outbox()
 
 ################################################################################
-#for c in tqdm(continent.countries.values()):
-#    # Filter countries #
-#    if c.iso2_code not in ('ZZ',): continue
-#    # Get two scenarios #
-#    statc = c.scenarios['static_demand'][-1]
-#    calib = c.scenarios['calibration'][-1]
-#    # Purge runners #
-#    statc.paths.graphs_dir.remove()
-#    calib.paths.graphs_dir.remove()
-#    # Purge country #
-#    c.paths.graphs_dir.remove()
-#    # Runner report #
-#    statc.report()
-#    # Country report #
-#    c.report()
-#    c.report.copy_to_outbox()
-
-################################################################################
 #scenario = continent.scenarios['static_demand']
 #runners  = [rs[-1] for k,rs in scenario.runners.items() if k=='ZZ']
 #runner   = runners[0]
