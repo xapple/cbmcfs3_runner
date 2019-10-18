@@ -11,7 +11,6 @@ Typically you would run this file from a command line like this:
 Color brewer makes provides a range of color palettes:
 
     http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3
-
 """
 
 # Built-in modules #

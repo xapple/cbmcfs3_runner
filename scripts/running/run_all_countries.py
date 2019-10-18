@@ -16,9 +16,10 @@ The last times the script was run it took this much time to run:
 """
 
 # Built-in modules #
-import sys
-# Import from repos instead of deploy
-sys.path.insert(0, "/repos/cbmcfs3_runner/")
+
+# Optionally, import from repos instead of deploy
+#sys.path.insert(0, "/repos/cbmcfs3_runner/")
+
 # Third party modules #
 
 # First party modules #
@@ -29,6 +30,3 @@ from cbmcfs3_runner.core.continent import continent
 ###############################################################################
 scenario = continent.scenarios['static_demand']
 scenario(verbose=True)
-
-###############################################################################
-#continent()
