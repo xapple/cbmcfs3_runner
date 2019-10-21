@@ -95,7 +95,7 @@ from cbmcfs3_runner.core.continent import continent
 
 ################################################################################
 scenario = continent.scenarios['static_demand']
-runners  = [rs[-1] for k,rs in scenario.runners.items() if k == 'LU']
+runners  = [rs[-1] for k,rs in scenario.runners.items() if k == 'SI']
 runner   = runners[0]
 print(runner.run(verbose=True))
 

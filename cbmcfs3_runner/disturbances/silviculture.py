@@ -72,12 +72,15 @@ class Silviculture(object):
         'Perc_merch_biom_rem' is redundant with 'Dist_ID' and simply shows
         the percent of thinning.
         """
+        # Read CSV #
         df = pandas.read_csv(str(self.paths.treatments))
-        # dist_type_name can be given as either a numeric or a character variable
-        # convert to string to prevent issues when merging and filtering
-        df['dist_type_name'] = df['dist_type_name'].astype(str)
         # Rename the classifier columns to full names #
         df = df.rename(columns = self.parent.classifiers.mapping)
+        # dist_type_name can be given as either a numeric or a character variable
+        # convert to string to prevent issues when merging and filtering
+        df['dist_type_name']      = df['dist_type_name'].astype(str)
+        df['management_strategy'] = df['management_strategy'].astype(str)
+        df['management_type']     = df['management_type'].astype(str)
         # 'For' and 'CC' receive the same silviculture treatment.
         # Duplicate 'CC' rows in the silviculture treatment table and mark them as 'For'
         # TODO change this duplication of silviculture treatments to a
