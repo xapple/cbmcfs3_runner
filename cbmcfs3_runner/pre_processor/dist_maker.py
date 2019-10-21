@@ -209,31 +209,28 @@ class DisturbanceMaker(object):
         df = self.dist_fw_converted
         assert (df['diff_prop']>-0.02).all()
 
+    cols_always_minus_one = [
+        'last_dist_id', 'min_tot_biom_c', 'max_tot_biom_c', 'min_merch_soft_biom_c',
+        'max_merch_soft_biom_c', 'min_merch_hard_biom_c', 'max_merch_hard_biom_c',
+        'min_tot_stem_snag_c', 'max_tot_stem_snag_c', 'min_tot_soft_stem_snag_c',
+        'max_tot_soft_stem_snag_c', 'min_tot_hard_stem_snag_c',
+        'max_tot_hard_stem_snag_c', 'min_tot_merch_stem_snag_c',
+        'max_tot_merch_stem_snag_c', 'min_tot_merch_soft_stem_snag_c',
+        'max_tot_merch_soft_stem_snag_c', 'min_tot_merch_hard_stem_snag_c',
+        'max_tot_merch_hard_stem_snag_c'
+    ]
+
     def add_constants(self, df):
         """Add constant values expected by CBM_CFS3
         See file "silviculture.sas" """
+        # Copy #
         df = df.copy()
+        # Special cases #
         df['using_id']          = False
         df['measurement_type']  = 'M'
-        df['last_dist_id']                   = -1
-        df['min_tot_biom_c']                 = -1
-        df['max_tot_biom_c']                 = -1
-        df['min_merch_soft_biom_c']          = -1
-        df['max_merch_soft_biom_c']          = -1
-        df['min_merch_hard_biom_c']          = -1
-        df['max_merch_hard_biom_c']          = -1
-        df['min_tot_stem_snag_c']            = -1
-        df['max_tot_stem_snag_c']            = -1
-        df['min_tot_soft_stem_snag_c']       = -1
-        df['max_tot_soft_stem_snag_c']       = -1
-        df['min_tot_hard_stem_snag_c']       = -1
-        df['max_tot_hard_stem_snag_c']       = -1
-        df['min_tot_merch_stem_snag_c']      = -1
-        df['max_tot_merch_stem_snag_c']      = -1
-        df['min_tot_merch_soft_stem_snag_c'] = -1
-        df['max_tot_merch_soft_stem_snag_c'] = -1
-        df['min_tot_merch_hard_stem_snag_c'] = -1
-        df['max_tot_merch_hard_stem_snag_c'] = -1
+        # Set a lot of them to one #
+        for col in self.cols_always_minus_one: df[col] = -1
+        # Return #
         return df
 
     @property
@@ -402,17 +399,18 @@ class DisturbanceMaker(object):
         # Rename
         df = df.rename(columns = {'min_since_last': 'min_since_last_dist',
                                   'max_since_last': 'max_since_last_dist'})
+
         # Add constant values required by CBM
         df = self.add_constants(df)
 
         # Check consistency of Sort_Type with measurement type
         # TODO move this to check any disturbances just before SIT is called
         df_random = df.query('sort_type==6')
-        msg = "Random sort type: 6 not allowed with disturbances expressed in terms "
-        msg += "of Measurement Type 'M' merchantable carbon. \n"
-        msg += "The issue is present for dist_type_name: %s \n"
-        msg += "CBM error in this case is "
-        msg += "Error: 'Illegal target type for RANDOM sort in timestep...'"
+        msg = ("Random sort type: 6 not allowed with disturbances expressed in terms "
+               "of Measurement Type 'M' merchantable carbon. \n"
+               "The issue is present for dist_type_name: %s \n"
+               "CBM error in this case is "
+               "Error: 'Illegal target type for RANDOM sort in timestep...'")
         # Sanity check #
         if len(df_random) > 0:
             raise Exception(msg % (df_random['dist_type_name'].unique()))
@@ -436,18 +434,21 @@ class DisturbanceMaker(object):
     @property_cached
     def df_auto_allocation(self):
         """Aggregate disturbances on the species, management type and
-        management strategy classifiers for the auto allocation scenario"""
-        df = self.df.copy()
-        # Return #
+        management strategy classifiers for the `auto_allocation` scenario."""
+        # Take reference #
+        df = self.df
+        # Index #
         index = ['status', 'conifers_broadleaves', 'dist_type_name', 'step']
         columns_to_keep = ['efficiency']
+        # Group and aggregate #
         df = (df
               .groupby(index + columns_to_keep)
-              .agg({'amount':sum,
-                    'sw_start':min,
-                    'sw_end':max,
-                    'hw_start':min,
-                    'hw_end':max,
-                    'sort_type':lambda x: x.value_counts().index[0]})
+              .agg({'amount':    sum,
+                    'sw_start':  min,
+                    'sw_end':    max,
+                    'hw_start':  min,
+                    'hw_end':    max,
+                    'sort_type': lambda x: x.value_counts().index[0]})
               .reset_index())
+        # Return #
         return df
