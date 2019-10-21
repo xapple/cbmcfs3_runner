@@ -25,7 +25,9 @@ class Historical(Scenario):
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         # Modify these runners #
         for country in self.continent:
-            # Deactivate the disturbance maker #
             runner = result[country.iso2_code][-1]
-            runner.pre_processor.use_dist_maker = False
+            pre_pro = runner.pre_processor
+            # Deactivate the disturbance maker #
+            # i.e. use only historical disturbances #
+            pre_pro.disturbance_events = pre_pro.events_hist
         return result

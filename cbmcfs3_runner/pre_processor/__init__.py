@@ -50,6 +50,8 @@ class PreProcessor(object):
         self.country = parent.country
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
+        # Attributes might be overwritten by scenarios
+        self.disturbances_events = self.events_static_demand
 
     def __call__(self):
         """Write every CSV to the input directory after changing them."""
@@ -59,14 +61,23 @@ class PreProcessor(object):
         # Some are special and need changing #
         self.disturbances_events.to_csv(str(self.paths.events))
 
-    @property_cached
-    def disturbances_events(self):
-        """Determines what ends up in the 'disturbance_events.csv'
-        files that will be fed to CBM-CFS3."""
-        # This is the standard static demand #
-        if self.use_dist_maker:  return self.disturbance_maker.df
-        # Otherwise just use the filtered ones #
-        else:                    return self.disturbance_filter.df
+    @property
+    def events_hist(self):
+        """Only historical disturbances are written to 'disturbance_events.csv'.
+        """
+        return self.disturbance_filter.df
+
+    @property
+    def events_static_demand(self):
+        """Static demand disturbances are written to 'disturbance_events.csv'
+        """
+        return self.disturbance_maker.df
+
+    @property
+    def events_auto_allocation(self):
+        """Static demand disturbances are written to 'disturbance_events.csv'
+        """
+        return self.disturbance_maker.df_auto_allocation
 
     @property_cached
     def disturbance_maker(self):

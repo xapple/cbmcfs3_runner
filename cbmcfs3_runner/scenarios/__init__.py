@@ -14,8 +14,10 @@ current directory. See issue number 194.
 # Internal modules #
 from cbmcfs3_runner.scenarios.historical         import Historical
 from cbmcfs3_runner.scenarios.static_demand      import StaticDemand
+from cbmcfs3_runner.scenarios.auto_allocation    import AutoAllocation
 from cbmcfs3_runner.scenarios.calibration        import Calibration
 from cbmcfs3_runner.scenarios.growth_only        import GrowthOnly
 
 ###############################################################################
-scen_classes = [Historical, StaticDemand, Calibration, GrowthOnly]
+scen_classes = [Historical, StaticDemand, AutoAllocation,
+                Calibration, GrowthOnly]
