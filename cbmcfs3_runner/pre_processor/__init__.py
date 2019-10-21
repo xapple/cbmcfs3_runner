@@ -58,7 +58,7 @@ class PreProcessor(object):
         # Actually call the function #
         df = self.disturbances_events()
         # Some are special and need changing #
-        df.to_csv(str(self.paths.events))
+        df.to_csv(str(self.paths.events), index=False)
 
     def events_hist(self):
         """Only historical disturbances."""

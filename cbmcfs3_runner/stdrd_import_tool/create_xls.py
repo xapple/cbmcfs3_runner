@@ -30,7 +30,7 @@ class CreateXLS(object):
     /input/csv/ageclass.csv
     /input/csv/inventory.csv
     /input/csv/classifiers.csv
-    /input/csv/disturbance_events_combined.csv
+    /input/csv/disturbance_events.csv
     /input/csv/disturbance_types.csv
     /input/csv/transition_rules.csv
     /input/csv/yields.csv
@@ -38,12 +38,12 @@ class CreateXLS(object):
     """
 
     file_name_to_sheet_name = {
-        'ageclass':                      'AgeClasses',
-        'classifiers':                   'Classifiers',
-        'disturbance_events_combined':   'DistEvents',
-        'disturbance_types':             'DistType',
-        'inventory':                     'Inventory',
-        'transition_rules':              'Transitions',
+        'ageclass':             'AgeClasses',
+        'classifiers':          'Classifiers',
+        'disturbance_events':   'DistEvents',
+        'disturbance_types':    'DistType',
+        'inventory':            'Inventory',
+        'transition_rules':     'Transitions',
     }
 
     def __init__(self, parent):
