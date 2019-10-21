@@ -55,20 +55,19 @@ class PreProcessor(object):
         # Some files don't change so take them straight from orig_data #
         for file in self.unchanged:
             self.parent.country.orig_data.paths[file].copy(self.paths[file])
+        # Actually call the function #
+        df = self.disturbances_events()
         # Some are special and need changing #
-        self.disturbances_events.to_csv(str(self.paths.events))
+        df.to_csv(str(self.paths.events))
 
-    @property
     def events_hist(self):
         """Only historical disturbances."""
         return self.disturbance_filter.df
 
-    @property
     def events_static_demand(self):
         """Static demand disturbances."""
         return self.disturbance_maker.df
 
-    @property
     def events_auto_allocation(self):
         """Auto allocation disturbances."""
         return self.disturbance_maker.df_auto_allocation
