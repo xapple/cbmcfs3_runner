@@ -40,6 +40,13 @@ When you type `import cbmcfs3_runner` python will know where to look.
 
 Setting up the machine and installing the required programs is covered in the `cbmcfs3_notes` repository.
 
+
+# Interactive ipython session
+
+To start an interactive session with the model on the command line, run: 
+
+    ipython3.exe -i -c "from cbmcfs3_runner.core.continent import continent"
+
 ## Data Flowchart
 Below is drawn the flowchart describing the data processing along all the steps of `cbmcfs3_runner`:
 

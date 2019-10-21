@@ -47,7 +47,7 @@ class DisturbanceFilter(object):
         base_year      = self.country.base_year
         inv_start_year = self.country.inventory_start_year
         period_max     = base_year - inv_start_year + 1
-        df = df.query("step <= %s" % period_max)
+        df = df.query("step <= %s" % period_max).copy()
         # Filtering M types #
         row_indexer = (df['sort_type'] == 6) & (df['measurement_type'] == 'M')
         df.loc[row_indexer, 'sort_type'] = 2
