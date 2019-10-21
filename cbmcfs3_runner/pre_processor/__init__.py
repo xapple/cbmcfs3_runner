@@ -53,23 +53,29 @@ class PreProcessor(object):
 
     def __call__(self):
         """Write every CSV to the input directory after changing them."""
-        # Some are changed #
-        self.disturbances_events.to_csv(str(self.paths.events))
-        # Other files don't change so take them straight from orig_data #
+        # Some files don't change so take them straight from orig_data #
         for file in self.unchanged:
             self.parent.country.orig_data.paths[file].copy(self.paths[file])
-
-    @property_cached
-    def disturbance_filter(self):
-        # Filter existing disturbance events #
-        return DisturbanceFilter(self)
-
-    @property_cached
-    def disturbance_maker(self):
-        # Make new disturbance events #
-        return DisturbanceMaker(self)
+        # Some are special and need changing #
+        self.disturbances_events.to_csv(str(self.paths.events))
 
     @property_cached
     def disturbances_events(self):
+        """Determines what ends up in the 'disturbance_events.csv'
+        files that will be fed to CBM-CFS3."""
+        # This is the standard static demand #
         if self.use_dist_maker:  return self.disturbance_maker.df
+        # Otherwise just use the filtered ones #
         else:                    return self.disturbance_filter.df
+
+    @property_cached
+    def disturbance_maker(self):
+        """All information for making new disturbance events."""
+        return DisturbanceMaker(self)
+
+    @property_cached
+    def disturbance_filter(self):
+        """Filter existing disturbance events."""
+        return DisturbanceFilter(self)
+
+

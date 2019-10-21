@@ -23,8 +23,7 @@ from plumbing.cache import property_cached
 ###############################################################################
 class DisturbanceMaker(object):
     """
-    Will create new disturbances for the simulation period
-    and modify the file input file "disturbance_events.csv".
+    Will create new disturbances for the simulation period.
     """
 
     def __init__(self, parent):

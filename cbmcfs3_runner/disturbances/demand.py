@@ -69,7 +69,8 @@ class Demand(object):
         """Create a little data frame to expand years
         from a 5 year time frame to a yearly time frame.
 
-        GFTM gives a yearly demand over a 5 year interval.
+        GFTM gives a yearly demand over a 5 year interval in
+        cubic meters under bark.
         We will use this data frame to duplicate the yearly demand
         volume 5 times. This will then be used to generate disturbances.
 

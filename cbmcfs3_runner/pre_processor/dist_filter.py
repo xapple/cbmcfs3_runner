@@ -23,8 +23,7 @@ from plumbing.cache import property_cached
 ###############################################################################
 class DisturbanceFilter(object):
     """
-    Will remove some disturbances according to a condition
-    and modify the input file "disturbance_events.csv".
+    Will remove some disturbances according to a condition.
     """
 
     def __init__(self, parent):
