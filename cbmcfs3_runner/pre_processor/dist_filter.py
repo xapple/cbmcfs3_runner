@@ -54,6 +54,6 @@ class DisturbanceFilter(object):
         df = df.query("step <= %s" % period_max)
         # Filtering M types #
         row_indexer = (df['sort_type'] == 6) & (df['measurement_type'] == 'M')
-        df = df.loc[row_indexer, 'sort_type'] = 2
+        df = df.loc[row_indexer, 'sort_type']
         # Return #
         return df
