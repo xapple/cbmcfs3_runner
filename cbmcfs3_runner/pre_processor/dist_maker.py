@@ -200,13 +200,41 @@ class DisturbanceMaker(object):
         return df
 
     def check_dist_fw(self):
-        # Assert that the difference is strictly positive or close to zero
-        # In other words, it is ok if there is a higher fuel wood volume generated
-        # By industrial round wood disturbance diff>0
-        # But it's not ok if there is a smaller fuel wood volume.
-        # That would mean there is an issue with fuel wood disturbance generation
+        """ Assert that the difference is strictly positive or close to zero
+        In other words, it is ok if there is a higher fuel wood volume generated
+        By industrial round wood disturbance diff>0
+        But it's not ok if there is a smaller fuel wood volume.
+        That would mean there is an issue with fuel wood disturbance generation
+        """
         df = self.dist_fw_converted
         assert (df['diff_prop']>-0.02).all()
+
+    def add_constants(self, df):
+        """Add constant values expected by CBM_CFS3
+        See file "silviculture.sas" """
+        df = df.copy()
+        df['using_id']          = False
+        df['measurement_type']  = 'M'
+        df['last_dist_id']                   = -1
+        df['min_tot_biom_c']                 = -1
+        df['max_tot_biom_c']                 = -1
+        df['min_merch_soft_biom_c']          = -1
+        df['max_merch_soft_biom_c']          = -1
+        df['min_merch_hard_biom_c']          = -1
+        df['max_merch_hard_biom_c']          = -1
+        df['min_tot_stem_snag_c']            = -1
+        df['max_tot_stem_snag_c']            = -1
+        df['min_tot_soft_stem_snag_c']       = -1
+        df['max_tot_soft_stem_snag_c']       = -1
+        df['min_tot_hard_stem_snag_c']       = -1
+        df['max_tot_hard_stem_snag_c']       = -1
+        df['min_tot_merch_stem_snag_c']      = -1
+        df['max_tot_merch_stem_snag_c']      = -1
+        df['min_tot_merch_soft_stem_snag_c'] = -1
+        df['max_tot_merch_soft_stem_snag_c'] = -1
+        df['min_tot_merch_hard_stem_snag_c'] = -1
+        df['max_tot_merch_hard_stem_snag_c'] = -1
+        return df
 
     @property
     def demand_to_dist(self):
@@ -374,30 +402,9 @@ class DisturbanceMaker(object):
         # Rename
         df = df.rename(columns = {'min_since_last': 'min_since_last_dist',
                                   'max_since_last': 'max_since_last_dist'})
+        # Add constant values required by CBM
+        df = self.add_constants(df)
 
-        # Constant values expected by CBM_CFS3
-        # See file "silviculture.sas"
-        df['using_id']          = False
-        df['measurement_type']  = 'M'
-        df['last_dist_id']                   = -1
-        df['min_tot_biom_c']                 = -1
-        df['max_tot_biom_c']                 = -1
-        df['min_merch_soft_biom_c']          = -1
-        df['max_merch_soft_biom_c']          = -1
-        df['min_merch_hard_biom_c']          = -1
-        df['max_merch_hard_biom_c']          = -1
-        df['min_tot_stem_snag_c']            = -1
-        df['max_tot_stem_snag_c']            = -1
-        df['min_tot_soft_stem_snag_c']       = -1
-        df['max_tot_soft_stem_snag_c']       = -1
-        df['min_tot_hard_stem_snag_c']       = -1
-        df['max_tot_hard_stem_snag_c']       = -1
-        df['min_tot_merch_stem_snag_c']      = -1
-        df['max_tot_merch_stem_snag_c']      = -1
-        df['min_tot_merch_soft_stem_snag_c'] = -1
-        df['max_tot_merch_soft_stem_snag_c'] = -1
-        df['min_tot_merch_hard_stem_snag_c'] = -1
-        df['max_tot_merch_hard_stem_snag_c'] = -1
         # Check consistency of Sort_Type with measurement type
         # TODO move this to check any disturbances just before SIT is called
         df_random = df.query('sort_type==6')
@@ -430,5 +437,17 @@ class DisturbanceMaker(object):
     def df_auto_allocation(self):
         """Aggregate disturbances on the species, management type and
         management strategy classifiers for the auto allocation scenario"""
+        df = self.df.copy()
         # Return #
-        return self.parent.df
+        index = ['status', 'conifers_broadleaves', 'dist_type_name', 'step']
+        columns_to_keep = ['efficiency']
+        df = (df
+              .groupby(index + columns_to_keep)
+              .agg({'amount':sum,
+                    'sw_start':min,
+                    'sw_end':max,
+                    'hw_start':min,
+                    'hw_end':max,
+                    'sort_type':lambda x: x.value_counts().index[0]})
+              .reset_index())
+        return df
