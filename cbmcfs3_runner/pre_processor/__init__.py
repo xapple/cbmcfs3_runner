@@ -41,9 +41,6 @@ class PreProcessor(object):
     unchanged = ['ageclass', 'inventory', 'classifiers', 'types',
                  'transition_rules', 'yields', 'historical_yields']
 
-    # This can easily be changed by a scenario #
-    use_dist_maker = True
-
     def __init__(self, parent):
         # Default attributes #
         self.parent  = parent
@@ -63,20 +60,17 @@ class PreProcessor(object):
 
     @property
     def events_hist(self):
-        """Only historical disturbances are written to 'disturbance_events.csv'.
-        """
+        """Only historical disturbances."""
         return self.disturbance_filter.df
 
     @property
     def events_static_demand(self):
-        """Static demand disturbances are written to 'disturbance_events.csv'
-        """
+        """Static demand disturbances."""
         return self.disturbance_maker.df
 
     @property
     def events_auto_allocation(self):
-        """Static demand disturbances are written to 'disturbance_events.csv'
-        """
+        """Auto allocation disturbances."""
         return self.disturbance_maker.df_auto_allocation
 
     @property_cached
