@@ -9,6 +9,7 @@ Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
+import os
 
 # First party modules #
 from autopaths            import Path
@@ -18,7 +19,6 @@ from plumbing.git         import GitRepo
 from plumbing.logger      import create_file_logger
 
 # Third party modules #
-import cbm3_python
 
 # Internal modules #
 import cbmcfs3_runner
@@ -31,6 +31,9 @@ from cbmcfs3_runner.pump.pre_flight                import PreFlight
 from cbmcfs3_runner.reports.runner                 import RunnerReport
 from cbmcfs3_runner.stdrd_import_tool.launch_sit   import DefaultSIT, AppendSIT
 from cbmcfs3_runner.external_tools.launch_cbm      import LaunchCBM
+
+# Constants #
+home = os.environ.get('HOME', '~') + '/'
 
 ###############################################################################
 class Runner(object):
@@ -95,12 +98,15 @@ class Runner(object):
         self.log.info("Using module at '%s'." % Path(cbmcfs3_runner))
         self.log.info("Runner '%s' starting." % self.short_name)
         # Record the hash of the other library "cbm3_python" e.g. 4dc12af #
-        cbm3py_repos = GitRepo("/repos/cbm3_python/")
+        cbm3py_repos = GitRepo(home + "repos/cbm3_python/")
         self.log.info("Using cbm3_python at '%s'." % cbm3py_repos.hash)
         # Clean everything from previous run #
         self.remove_directory()
         # Modify input data before copying it #
         self.pre_processor()
+        # Just check we are on Windows #
+        if os.name == "posix":
+            raise Exception("Can't go any further (only on Windows).")
         # Switch archive index #
         self.country.aidb.switch()
         # Pre-flight check #

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-This scenarios is based on static_demand, 
+This scenarios is based on static_demand,
 but the species, manaement type and management strategy are
-not specified based on the silviculture table, 
+not specified based on the silviculture table,
 they are simply let for CBM to decide.
 
 Classifiers in the disturbance table of the static_demand sceanrio
@@ -44,11 +44,3 @@ class AutoAllocation(Scenario):
             # Replace disturbances by their aggregated version #
             pre_pro.disturbance_events = pre_pro.events_auto_allocation
         return result
-  
-    @property_cached    
-    def df_auto_allocation(self):
-        # TODO move this to a relevant place
-        """Aggregate disturbances on the species, management type and
-        management strategy classifiers for the auto allocation scenario"""
-        self.parent.df
-        

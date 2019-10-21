@@ -11,11 +11,8 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
-import numpy
-import pandas
 
 # First party modules #
-from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
 
 # Internal modules #
@@ -53,6 +50,6 @@ class DisturbanceFilter(object):
         df = df.query("step <= %s" % period_max)
         # Filtering M types #
         row_indexer = (df['sort_type'] == 6) & (df['measurement_type'] == 'M')
-        df = df.loc[row_indexer, 'sort_type'].copy()
+        df.loc[row_indexer, 'sort_type'] = 2
         # Return #
         return df

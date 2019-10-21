@@ -15,7 +15,6 @@ import numpy
 import pandas
 
 # First party modules #
-from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
 
 # Internal modules #
@@ -426,3 +425,10 @@ class DisturbanceMaker(object):
         df = pandas.concat([dist_past, dist_future])
         # Return #
         return df
+
+    @property_cached
+    def df_auto_allocation(self):
+        """Aggregate disturbances on the species, management type and
+        management strategy classifiers for the auto allocation scenario"""
+        # Return #
+        return self.parent.df
