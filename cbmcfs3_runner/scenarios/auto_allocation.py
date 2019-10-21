@@ -2,22 +2,22 @@
 # -*- coding: utf-8 -*-
 
 """
-This scenarios is based on static_demand,
-but the species, manaement type and management strategy are
-not specified based on the silviculture table,
-they are simply let for CBM to decide.
+This scenario is based on static_demand. Except that here the species,
+management type and management strategy are not specified based on
+the silviculture table, they are simply let for CBM to decide with
+question marks.
 
-Classifiers in the disturbance table of the static_demand sceanrio
+Classifiers in the disturbance table of the original static_demand scenario:
 
-| forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
-| For         | QR      | ?     | H         | E          | ?   | Broad     |
-| For         | PA      | ?     | H         | E          | ?   | Con       |
+    | forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
+    | For         | QR      | ?     | H         | E          | ?   | Broad     |
+    | For         | PA      | ?     | H         | E          | ?   | Con       |
 
-Classifiers in the disturbance table of the auto_allocation scenario
+Classifiers in the disturbance table of the new auto_allocation scenario:
 
-| forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
-| For         | ?       | ?     | ?         | ?          | ?   | Broad     |
-| For         | ?       | ?     | ?         | ?          | ?   | Con       |
+    | forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
+    | For         | ?       | ?     | ?         | ?          | ?   | Broad     |
+    | For         | ?       | ?     | ?         | ?          | ?   | Con       |
 """
 
 # Built-in modules #
