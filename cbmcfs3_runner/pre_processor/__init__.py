@@ -27,14 +27,14 @@ class PreProcessor(object):
     """
 
     all_paths = """
-    /csv/ageclass.csv
-    /csv/inventory.csv
-    /csv/classifiers.csv
-    /csv/disturbance_events.csv
-    /csv/disturbance_types.csv
-    /csv/transition_rules.csv
-    /csv/yields.csv
-    /csv/historical_yields.csv
+    /input/csv/ageclass.csv
+    /input/csv/inventory.csv
+    /input/csv/classifiers.csv
+    /input/csv/disturbance_events.csv
+    /input/csv/disturbance_types.csv
+    /input/csv/transition_rules.csv
+    /input/csv/yields.csv
+    /input/csv/historical_yields.csv
     """
 
     # Default case #

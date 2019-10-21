@@ -104,13 +104,13 @@ class Runner(object):
         self.remove_directory()
         # Modify input data before copying it #
         self.pre_processor()
+        # Pre-flight check #
+        self.pre_flight()
         # Just check we are on Windows #
         if os.name == "posix":
             raise Exception("Can't go any further (only on Windows).")
         # Switch archive index #
         self.country.aidb.switch()
-        # Pre-flight check #
-        self.pre_flight()
         # Standard import tool #
         self.default_sit()
         if self.sit_calling == 'dual': self.append_sit()
