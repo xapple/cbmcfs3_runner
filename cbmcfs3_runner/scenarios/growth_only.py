@@ -33,7 +33,9 @@ class GrowthOnly(Scenario):
             # i.e. use only historical disturbances #
             pre_pro.disturbance_events = pre_pro.events_hist
             # Prolong the simulation until 2030
-            step_2015 = runner.country.base_year - runner.country.inventory_start_year 
+            base_year = runner.country.base_year
+            inventory_start_year = runner.country.inventory_start_year 
+            step_2015 =  base_year - inventory_start_year + 1
             runner.middle_processor.years_to_extend = step_2015 + 15
         # Return #
         return result
