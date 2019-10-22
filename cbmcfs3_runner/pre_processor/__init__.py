@@ -48,7 +48,7 @@ class PreProcessor(object):
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
         # Attributes might be overwritten by scenarios
-        self.disturbances_events = self.events_static_demand
+        self.disturbance_events = self.events_static_demand
 
     def __call__(self):
         """Write every CSV to the input directory after changing them."""
@@ -56,7 +56,7 @@ class PreProcessor(object):
         for file in self.unchanged:
             self.parent.country.orig_data.paths[file].copy(self.paths[file])
         # Actually call the function #
-        df = self.disturbances_events()
+        df = self.disturbance_events()
         # Some are special and need changing #
         df.to_csv(str(self.paths.events), index=False)
 
