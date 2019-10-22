@@ -18,8 +18,9 @@ from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
 def filter_df(df, base_year, inv_start_year):
-    """Takes the old event data frame and returns only disturbances for 2020."""
-    only_this_year = base_year - inv_start_year + 5
+    """Takes the old event data frame 
+    and returns only disturbances for 2030."""
+    only_this_year = base_year - inv_start_year + 15
     return df.query("step == %s" % only_this_year)
 
 ###############################################################################
@@ -32,9 +33,9 @@ class GrowthOnly(Scenario):
         # Create all runners #
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         # Modify these runners #
-        for c in self.continent:
+        for country in self.continent:
             # Get the runner of the last step #
-            runner = result[c.iso2_code][-1]
+            runner = result[country.iso2_code][-1]
             # Monkey patch the pre-processor filter method #
             runner.pre_processor.filter_df = filter_df
         # Return #
