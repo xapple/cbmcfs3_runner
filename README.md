@@ -41,11 +41,26 @@ When you type `import cbmcfs3_runner` python will know where to look.
 Setting up the machine and installing the required programs is covered in the `cbmcfs3_notes` repository.
 
 
-# Interactive ipython session
+## Run the model
+
+### Interactive ipython session
 
 To start an interactive session with the model on the command line, run: 
 
     ipython3.exe -i -c "from cbmcfs3_runner.core.continent import continent"
+
+At the ipython prompt, create a runner for the 'growth_only' scenario, 
+the 'ZZ' country and the simulation period zero :
+
+    runner = continent[('growth_only','ZZ',0)]
+
+Then run the model:
+
+    runner.run(verbose=True)
+
+### Dedicated model run script
+
+
 
 ## Data Flowchart
 Below is drawn the flowchart describing the data processing along all the steps of `cbmcfs3_runner`:

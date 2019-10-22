@@ -38,8 +38,11 @@ class MiddleProcessor(object):
     all_paths = """
     /output/sit/project.mdb
     """
-
+    # 
     random_seed = 1
+    # Attribute to extend the simulation in the absence of disturbances
+    # For a growth only scenario for example
+    num_steps_to_extend = None
 
     def __init__(self, parent):
         # Default attributes #
@@ -49,8 +52,13 @@ class MiddleProcessor(object):
 
     def __call__(self):
         self.set_random_seed()
-        if self.parent.sit_calling == 'dual': self.finish_append()
-        #self.extend_simulation(100)
+        # Use both historical yields (for the pool initialisation) 
+        # and current yield if needed
+        if self.parent.sit_calling == 'dual': 
+            self.finish_append()
+        # Extend the simulation if needed
+        if self.num_steps_to_extend: 
+            self.extend_simulation(self.num_steps_to_extend )
 
     @property_cached
     def project_database(self):

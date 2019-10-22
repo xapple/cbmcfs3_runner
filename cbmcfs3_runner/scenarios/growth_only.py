@@ -17,13 +17,6 @@ from cbmcfs3_runner.scenarios.base_scen import Scenario
 from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
-def filter_df(df, base_year, inv_start_year):
-    """Takes the old event data frame 
-    and returns only disturbances for 2030."""
-    only_this_year = base_year - inv_start_year + 15
-    return df.query("step == %s" % only_this_year)
-
-###############################################################################
 class GrowthOnly(Scenario):
     short_name = 'growth_only'
 
@@ -34,9 +27,13 @@ class GrowthOnly(Scenario):
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         # Modify these runners #
         for country in self.continent:
-            # Get the runner of the last step #
             runner = result[country.iso2_code][-1]
-            # Monkey patch the pre-processor filter method #
-            runner.pre_processor.filter_df = filter_df
+            pre_pro = runner.pre_processor
+            # Deactivate the disturbance maker #
+            # i.e. use only historical disturbances #
+            pre_pro.disturbance_events = pre_pro.events_hist
+            # Prolong the simulation until 2030
+            step_2015 = runner.country.base_year - runner.country.inv_start_year 
+            runner.middle_processor.years_to_extend = step_2015 + 15
         # Return #
         return result
