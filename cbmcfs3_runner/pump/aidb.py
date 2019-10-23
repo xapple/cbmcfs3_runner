@@ -69,10 +69,10 @@ class AIDB(object):
                      .join(dm_table.set_index('dmid'))
                      .reset_index())
         # Rename #
-        source = source.rename(columns={'Row':         'dm_row',
-                                        'Description': 'row_pool'})
-        sink   = sink.rename(  columns={'Column':      'dm_column',
-                                        'Description': 'column_pool'})
+        source = source.rename(columns={'row':         'dm_row',
+                                        'description': 'row_pool'})
+        sink   = sink.rename(  columns={'column':      'dm_column',
+                                        'description': 'column_pool'})
         # Indexes #
         index_source = ['dm_row',    'dm_structure_id']
         index_sink   = ['dm_column', 'dm_structure_id']
@@ -96,11 +96,11 @@ class AIDB(object):
     def dist_matrix(self):
         """Disturbance Matrix reshaped in the form of a matrix
         with source pools in rows and sink pools in columns."""
-        index = ['dmid', 'dm_structure_id', 'dm_row', 'Name', 'row_pool']
+        index = ['dmid', 'dm_structure_id', 'dm_row', 'name', 'row_pool']
         df = (self.dist_matrix_long
               .set_index(index)
-              .query('Proportion>0'))
-        df = multi_index_pivot(df, columns='column_pool', values='Proportion')
+              .query('proportion>0'))
+        df = multi_index_pivot(df, columns='column_pool', values='proportion')
         # Reorder columns by the last digit number
         col_order = sorted(df.columns,
                            key=lambda x: str(x).replace("_", "0")[-2:])

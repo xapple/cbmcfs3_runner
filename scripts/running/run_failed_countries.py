@@ -23,10 +23,15 @@ from cbmcfs3_runner.core.continent import continent
 scenario       = continent.scenarios['static_demand']
 runners        = [r[-1] for k,r in scenario.runners.items()]
 failed_runners = [r for r in runners if r.map_value < 1.0]
-for r in tqdm(failed_runners): r(interrupt_on_error=False)
+for r in tqdm(failed_runners):
+    if r.country.iso2_code == "LU": continue
+    if r.country.iso2_code == "SI": continue
+    r(interrupt_on_error=False)
 
 ###############################################################################
 for r in failed_runners:
+    if r.country.iso2_code == "LU": continue
+    if r.country.iso2_code == "SI": continue
     print("---------------")
     print(r.country.iso2_code)
     print(r.tail)

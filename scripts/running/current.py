@@ -94,13 +94,19 @@ from cbmcfs3_runner.core.continent import continent
 #    c.report.copy_to_outbox()
 
 ################################################################################
-scenario = continent.scenarios['static_demand']
-runners  = [rs[-1] for k,rs in scenario.runners.items() if k == 'HU']
-runner   = runners[0]
-print(runner.run(verbose=True))
+#scenario = continent.scenarios['static_demand']
+#runners  = [rs[-1] for k,rs in scenario.runners.items() if k == 'HU']
+#runner   = runners[0]
+#print(runner.run(verbose=True))
 
 ################################################################################
 #for c in tqdm(continent.countries.values()):
 #    runner = continent.get_runner('static_demand', c.iso2_code, -1)
 #    runner.graphs.harvest_exp_prov_area(rerun=True)
 #    runner.graphs.harvest_exp_prov_vol(rerun=True)
+
+################################################################################
+country = 'BE'
+r = continent[('static_demand', country, -1)]
+dist_mat = r.country.aidb.dist_matrix_long
+
