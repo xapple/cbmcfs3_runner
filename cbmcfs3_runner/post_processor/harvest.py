@@ -244,13 +244,9 @@ class Harvest(object):
         # to see if we are using dist_type_id where we should be using
         # dist_type_name
         # Get the disturbances full name from their number #
-        dist_type = (self.parent.parent.input_data.disturbance_types
-                     .rename(columns={'disturbance_type_id': 'dist_type_name',
-                                                   'name': 'DistDescription'})
-                     .set_index('dist_type_name'))
-        # Add a column named 'DistDescription' #
+        # Add a column named 'dist_description' #
         df = (df.set_index('dist_type_name')
-                .join(dist_type)
+                .join(dist_type.set_index('dist_type_name'))
                 .reset_index())
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
@@ -268,7 +264,7 @@ class Harvest(object):
 
         Columns are: ['status', 'time_step', 'dist_type_name', 'forest_type', 'management_type',
                       'management_strategy', 'expected', 'provided', 'measurement_type',
-                      'DistDescription']
+                      'dist_description']
         """
         # Compute #
         df = self.provided_volume
@@ -282,7 +278,7 @@ class Harvest(object):
 
         Columns are: ['status', 'time_step', 'dist_type_name', 'forest_type', 'management_type',
                       'management_strategy', 'expected', 'provided', 'measurement_type',
-                      'DistDescription']
+                      'dist_description']
         """
         # Compute #
         df = self.provided_area

@@ -21,13 +21,13 @@ from matplotlib import pyplot
 ###############################################################################
 class HarvestExpProv(Graph):
 
-    grp_cols = ['DistDescription',
+    grp_cols = ['dist_description',
                 'year']
 
     agg_cols = {'expected': 'sum',
                 'provided': 'sum'}
 
-    facet_col = 'DistDescription'
+    facet_col = 'dist_description'
 
     # This variable can be patched by scenarios #
     exclude_scenario = []

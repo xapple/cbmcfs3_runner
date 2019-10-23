@@ -11,7 +11,6 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
-import numpy
 import pandas
 
 # First party modules #
@@ -23,7 +22,7 @@ from plumbing.cache import property_cached
 ###############################################################################
 class DisturbanceTypesMod(object):
     """
-    Lorem ipsum.
+    See https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-228.
     """
 
     all_paths = """
@@ -54,7 +53,7 @@ class DisturbanceTypesMod(object):
         See https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-228
         """
         # Convenience shortcut #
-        col_name = 'disturbance_type_id'
+        col_name = 'dist_type_name'
         # Parse #
         orig = pandas.read_csv(str(old_path))
         # Make into a string and index it #
@@ -65,7 +64,7 @@ class DisturbanceTypesMod(object):
         dist_to_dup = silv.query("man_nat == 'Man'")['dist_type_name'].unique()
         # Make a new data frame #
         dists = [orig.loc[dist][0] for dist in dist_to_dup]
-        dup   = pandas.DataFrame(zip(dist_to_dup, dists), columns=[col_name, 'name'])
+        dup   = pandas.DataFrame(zip(dist_to_dup, dists), columns=[col_name, 'dist_description'])
         # Add large numerical suffix #
         dup[col_name] = dup[col_name].apply(lambda x: '999' + x)
         # Add 'Future' #

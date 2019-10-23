@@ -58,7 +58,7 @@ for c in continent:
 
     # Third source #
     third    = r.input_data.disturbance_types
-    selector = third['Name'].str.contains('%')
+    selector = third['dist_description'].str.contains('%')
     third    = third.loc[selector].copy()
     # Extract #
     def extract(name):
@@ -66,9 +66,9 @@ for c in continent:
         found = re.findall(query, name)
         if not found: return None
         return int(found[0].replace(' ','').replace('%',''))
-    third['Name'] = third['Name'].apply(extract)
+    third['dist_description'] = third['dist_description'].apply(extract)
     # Make into series #
-    third = third.set_index('disturbance_type_id')['Name']
+    third = third.set_index('dist_type_name')['dist_description']
 
     # Compare IDs #
     msg = "Disturbances in input but not treatments:"

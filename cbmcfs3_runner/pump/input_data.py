@@ -106,12 +106,12 @@ class InputData(object):
     @property_cached
     def disturbance_types(self):
         """
-        Columns are: ['disturbance_type_id', 'name']
+        Columns are: ['dist_type_name', 'name']
         """
         # Get the right sheet #
         df = self.get_sheet("DistType")
-        # disturbance_type_id has to be strings for joining purposes #
-        df['disturbance_type_id'] = df['disturbance_type_id'].astype(str)
+        # dist_type_name has to be strings for joining purposes #
+        df['dist_type_name'] = df['dist_type_name'].astype(str)
         # Return #
         return df
 

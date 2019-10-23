@@ -67,9 +67,9 @@ class Silviculture(object):
     @property_cached
     def treatments(self):
         """Load the CSV that is 'silv_treatments.csv'.
-        The column "Man_Nat" represents either 'Man-made disturbance'
+        The column "man_nat" represents either 'Man-made disturbance'
         or a Natural disturbance.
-        'Perc_merch_biom_rem' is redundant with 'Dist_ID' and simply shows
+        'perc_merch_biom_rem' is redundant with 'dist_id' and simply shows
         the percent of thinning.
         """
         # Read CSV #

@@ -83,12 +83,6 @@ class AIDB(object):
                        .set_index(index_sink)
                        .join(sink.set_index(index_sink))
                        .reset_index())
-        # Make pool description columns suitable as column names #
-        # Adds a number at the end of the disturbance name #
-        df['row_pool']    = (df['row_pool'].str.replace(' ', '_') + '_' +
-                             df['dm_row'].astype(str))
-        df['column_pool'] = (df['column_pool'].str.replace(' ','_') + '_' +
-                             df['dm_column'].astype(str))
         # Return #
         return df
 
@@ -96,15 +90,26 @@ class AIDB(object):
     def dist_matrix(self):
         """Disturbance Matrix reshaped in the form of a matrix
         with source pools in rows and sink pools in columns."""
+        # Load #
+        df = self.dist_matrix_long
+        # Make pool description columns suitable as column names #
+        # Adds a number at the end of the disturbance name #
+        df['row_pool']    = (df['row_pool'].str.replace(' ', '_') + '_' +
+                             df['dm_row'].astype(str))
+        df['column_pool'] = (df['column_pool'].str.replace(' ','_') + '_' +
+                             df['dm_column'].astype(str))
+        # Filter proportions #
         index = ['dmid', 'dm_structure_id', 'dm_row', 'name', 'row_pool']
-        df = (self.dist_matrix_long
+        df = (df
               .set_index(index)
               .query('proportion>0'))
+        # Pivot #
         df = multi_index_pivot(df, columns='column_pool', values='proportion')
         # Reorder columns by the last digit number
         col_order = sorted(df.columns,
                            key=lambda x: str(x).replace("_", "0")[-2:])
         # Exclude index columns from the re-ordering of columns
         df = df.set_index(index)[col_order[:-5]].reset_index()
+        # Return #
         return df
 
