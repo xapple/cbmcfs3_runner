@@ -23,7 +23,7 @@ from cbmcfs3_runner.pump.common import reshape_yields_long
 ###############################################################################
 class OrigData(object):
     """
-    This class will provide access to the original data of a Country
+    This class will provide access to the original data of a `Country`
     as a pandas data frame. Not the input data of a Runner.
     """
 
@@ -47,7 +47,6 @@ class OrigData(object):
     def __getitem__(self, item):
         return pandas.read_csv(str(self.paths[item]))
 
-    #-------------------------- Specific sheets ------------------------------#
     @property_cached
     def inventory(self):
         """
@@ -83,7 +82,7 @@ class OrigData(object):
 
     @property_cached
     def historical_yields(self):
-        """Historical yield taken from the original csv file"""
+        """Historical yield taken from the original CSV file."""
         df = self['historical_yields']
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
         return df.rename(columns = self.parent.classifiers.mapping)
@@ -113,6 +112,8 @@ class OrigData(object):
 
     @property_cached
     def disturbance_events(self):
+        """Load disturbance events from the calibration database.
+        Add the year column."""
         # Load #
         df = self.disturbance_events_raw
         # Add year #
@@ -124,6 +125,9 @@ class OrigData(object):
     def disturbance_types(self):
         """Load disturbance types from the calibration database.
         Change dist_type_name to a string."""
+        # Load #
         df = self['disturbance_types']
+        # Cast to string #
         df['dist_type_name'] = df['dist_type_name'].astype('str')
+        # Return #
         return df

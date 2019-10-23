@@ -90,10 +90,11 @@ class Associations(object):
                                                 'default_nonforest_type'),
         }
 
+    #-------------------------------------------------------------------------#
     @property_cached
     def map_disturbance(self):
         """Filter the associations data frame for the
-        MapDisturbanceType part
+        MapDisturbanceType part.
 
         For example:
 
@@ -102,11 +103,13 @@ class Associations(object):
             Clearcut with slash bum H 	  Clearcut with slash-burn
             Clearcut with slash bum (...) Clearcut with slash-burn
         """
-        df= self.df.query("A=='MapDisturbanceType'").copy()
-        # 'dist_description' is the name in disturbance_types.csv
-        # 'name' is the name in the aidb
-        df = df.rename(columns={'B':'dist_description',
+        # Load only disturbances #
+        df = self.df.query("A=='MapDisturbanceType'").copy()
+        # Here 'dist_description' is the name in disturbance_types.csv
+        # Here 'name' is the name in the AIDB
+        df = df.rename(columns={'B': 'dist_description',
                                 'C': 'name'})
+        # This column is redundant #
         df = df.drop(columns = 'A')
-        # Return
+        # Return #
         return df

@@ -30,6 +30,7 @@ class AIDB(object):
     """
     This class enables us to switch the famous "ArchiveIndexDatabase", between
     the Canadian standard and the European standard.
+    It also provides access to the data within this database.
     """
 
     all_paths = """
@@ -54,7 +55,8 @@ class AIDB(object):
 
     @property_cached
     def dist_matrix_long(self):
-        """Recreates the disturbance matrix in long format.
+        """
+        Recreates the disturbance matrix in long format.
         Join lookup and the disturbance matrix table 'tblDM',
         Then join source and sink to add description of the origin and destination pools.
         To be continued based on /notebooks/disturbance_matrix.ipynb
@@ -83,11 +85,11 @@ class AIDB(object):
                        .set_index(index_sink)
                        .join(sink.set_index(index_sink))
                        .reset_index())
-        # Add dist_type_name corresponding to orig/disturbance_types.csv
+        # Add 'dist_type_name' corresponding to orig/disturbance_types.csv
         map_disturbance = self.parent.associations.map_disturbance
-        dist_types = self.parent.orig_data.disturbance_types
+        dist_types      = self.parent.orig_data.disturbance_types
         df = df.left_join(map_disturbance, 'name')
-        df = df.left_join(dist_types, 'dist_description')
+        df = df.left_join(dist_types,      'dist_description')
         # Return #
         return df
 
@@ -96,7 +98,7 @@ class AIDB(object):
         """Disturbance Matrix reshaped in the form of a matrix
         with source pools in rows and sink pools in columns."""
         # Load #
-        df = self.dist_matrix_long
+        df = self.dist_matrix_long.copy()
         # Make pool description columns suitable as column names #
         # Adds a number at the end of the disturbance name #
         df['row_pool']    = (df['row_pool'].str.replace(' ', '_') + '_' +
