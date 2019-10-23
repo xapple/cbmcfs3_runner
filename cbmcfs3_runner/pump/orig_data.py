@@ -119,3 +119,11 @@ class OrigData(object):
         df['year'] = self.parent.timestep_to_year(df['step'])
         # Return #
         return df
+
+    @property_cached
+    def disturbance_types(self):
+        """Load disturbance types from the calibration database.
+        Change dist_type_name to a string."""
+        df = self['disturbance_types']
+        df['dist_type_name'] = df['dist_type_name'].astype('str')
+        return df

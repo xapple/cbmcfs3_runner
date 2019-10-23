@@ -85,7 +85,7 @@ class AIDB(object):
                        .reset_index())
         # Add dist_type_name corresponding to orig/disturbance_types.csv
         map_disturbance = self.parent.associations.map_disturbance
-        dist_types = self.parent.orig_data['disturbance_types']
+        dist_types = self.parent.orig_data.disturbance_types
         df = df.left_join(map_disturbance, 'name')
         df = df.left_join(dist_types, 'dist_description')
         # Return #
