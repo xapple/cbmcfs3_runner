@@ -90,3 +90,23 @@ class Associations(object):
                                                 'default_nonforest_type'),
         }
 
+    @property_cached
+    def map_disturbance(self):
+        """Filter the associations data frame for the
+        MapDisturbanceType part
+
+        For example:
+
+            dist_description 	          name
+            Fire 	                      Wild Fire
+            Clearcut with slash bum H 	  Clearcut with slash-burn
+            Clearcut with slash bum (...) Clearcut with slash-burn
+        """
+        df= self.df.query("A=='MapDisturbanceType'").copy()
+        # 'dist_description' is the name in disturbance_types.csv
+        # 'name' is the name in the aidb
+        df = df.rename(columns={'B':'dist_description',
+                                'C': 'name'})
+        df = df.drop(columns = 'A')
+        # Return
+        return df
