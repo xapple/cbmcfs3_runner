@@ -53,6 +53,78 @@ class AIDB(object):
         database.convert_col_names_to_snake = True
         return database
 
+
+    @property_cached
+    def dm_table(self):
+        """Main disturbance matrix"""
+        df = self.database['tblDM']
+        df = df.rename(columns={"name":        "dist_desc_dm",
+                                "description": "dist_desc_long"})
+        return df
+
+    @property_cached
+    def source(self):
+        """ Name of source pools """
+        df = self.database['tblSourceName']
+        # Rename #
+        df = df.rename(columns={'row':         'dm_row',
+                                'description': 'row_pool'})
+        return df
+
+    @property_cached
+    def sink(self):
+        """Name of sink pools"""
+        df = self.database['tblSinkName']
+        # Rename #
+        df = df.rename(  columns={'column':      'dm_column',
+                                  'description': 'column_pool'})
+        return df
+
+    @property_cached
+    def lookup(self):
+        """Proportion by source and sink"""
+        df = self.database['tblDMValuesLookup']
+        return df
+
+    @property_cached
+    def dist_type_default(self):
+        """ Link betwen dist_type_id and dist_desc_aidb"""
+        df = self.database['tbldisturbancetypedefault']
+        # Rename
+        df = df.rename(columns = {'dist_type_name': 'dist_desc_aidb'})
+        return df
+
+    @property_cached
+    def dm_assoc_default(self):
+        """Link between default_dist_type_id, defatul_ec_id, and dmid
+
+        Pay attention to the tricky annual_order which might generate
+        errors in some cases (see also libcbm aidb import efforts)
+
+        Shape in the EU aidb: 110180 rows × 6 columns
+        """
+        df = self.database['tbldmassociationdefault']
+        # Rename
+        # TODO, check if dist_type_id is exactly the correct name
+        df = df.rename(columns = {'default_disturbance_type_id': 'dist_type_id',
+                                  'name': 'assoc_name',
+                                  'description': 'assoc_desc'})
+        return df
+
+    @property_cached
+    def dm_assoc_spu_default(self):
+        """Link between default_dist_type_id, spuid and dmid
+        Attention, it contains only wildfire distrances in the EU aidb.
+
+        Shape in the EU aidb 920 rows × 6 columns """
+        df = self.database['tbldmassociationspudefault']
+        # Rename
+        # TODO, check if dist_type_id is exactly the correct name
+        df = df.rename(columns = {'default_disturbance_type_id':'dist_type_id',
+                                  'name': 'spu_name',
+                                  'description':'spu_desc'})
+        return df
+
     @property_cached
     def dist_matrix_long(self):
         """
@@ -62,23 +134,22 @@ class AIDB(object):
         To be continued based on /notebooks/disturbance_matrix.ipynb
         """
         # Load tables #
-        dm_table = self.database['tblDM']
-        source   = self.database['tblSourceName']
-        sink     = self.database['tblSinkName']
-        lookup   = self.database['tblDMValuesLookup']
+        dm_table = self.dm_table
+        source   = self.source
+        sink     = self.sink
+        lookup   = self.lookup
+        # TODO add db['tbldisturbancetypedefault']
+        # and db['tbldmassociationdefault']
+        # for a correct mapping between dist_desc_aidb and the dist_type_name
+        # It's the cross of dist_type_name and eco_boundary classifier which
+        # constitutes a dmid
+        #
         # We have three types of description, they each need their provenance #
-        dm_table = dm_table.rename(columns={"name":        "dist_desc_aidb",
-                                            "description": "dist_desc_long"})
         # Join lookup and dm_table to add the description for each `dmid` #
         dm_lookup = (lookup
                      .set_index('dmid')
                      .join(dm_table.set_index('dmid'))
                      .reset_index())
-        # Rename #
-        source = source.rename(columns={'row':         'dm_row',
-                                        'description': 'row_pool'})
-        sink   = sink.rename(  columns={'column':      'dm_column',
-                                        'description': 'column_pool'})
         # Indexes #
         index_source = ['dm_row',    'dm_structure_id']
         index_sink   = ['dm_column', 'dm_structure_id']
@@ -93,6 +164,7 @@ class AIDB(object):
         map_disturbance = self.parent.associations.map_disturbance
         dist_types      = self.parent.orig_data.disturbance_types
         df = df.left_join(map_disturbance, 'dist_desc_aidb')
+
         df = df.left_join(dist_types,      'dist_desc_input')
         # Return #
         return df
