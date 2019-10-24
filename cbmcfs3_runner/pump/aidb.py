@@ -164,15 +164,20 @@ class AIDB(object):
         Join lookup and the disturbance matrix table 'tblDM',
         Then join source and sink to add description of the origin and destination pools.
         To be continued based on /notebooks/disturbance_matrix.ipynb
+
+        There is a many-to-one relationship between dist_type_name and dmid
+        (disturbance matrix id),
+        i.e for each dist_type_name there is one and only one dmid.
+        The opposite is not true, as there are more dist_type_name than dmid.
         """
-        # Load tables #
+        # Load tables from the aidb #
         dm_table    = self.dm_table
         source      = self.source
         sink        = self.sink
         lookup      = self.lookup
         assoc_short = self.dm_assoc_default_short
         dist_type   = self.dist_type_default
-        # Load more tables #
+        # Load tables from orig_data #
         map_disturbance = self.parent.associations.map_disturbance
         dist_types      = self.parent.orig_data.disturbance_types
         # Join lookup and dm_table to add the description for each `dmid` #
