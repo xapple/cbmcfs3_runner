@@ -64,7 +64,7 @@ class DisturbanceTypesMod(object):
         dist_to_dup = silv.query("man_nat == 'Man'")['dist_type_name'].unique()
         # Make a new data frame #
         dists = [orig.loc[dist][0] for dist in dist_to_dup]
-        dup   = pandas.DataFrame(zip(dist_to_dup, dists), columns=[col_name, 'dist_description'])
+        dup   = pandas.DataFrame(zip(dist_to_dup, dists), columns=[col_name, 'dist_desc_input'])
         # Add large numerical suffix #
         dup[col_name] = dup[col_name].apply(lambda x: '999' + x)
         # Add 'Future' #

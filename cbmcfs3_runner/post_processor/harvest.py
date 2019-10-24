@@ -244,7 +244,7 @@ class Harvest(object):
         # to see if we are using dist_type_id where we should be using
         # dist_type_name
         # Get the disturbances full name from their number #
-        # Add a column named 'dist_description' #
+        # Add a column named 'dist_desc_input' #
         df = (df.set_index('dist_type_name')
                 .join(dist_type.set_index('dist_type_name'))
                 .reset_index())
@@ -264,7 +264,7 @@ class Harvest(object):
 
         Columns are: ['status', 'time_step', 'dist_type_name', 'forest_type', 'management_type',
                       'management_strategy', 'expected', 'provided', 'measurement_type',
-                      'dist_description']
+                      'dist_desc_input']
         """
         # Compute #
         df = self.provided_volume
@@ -278,7 +278,7 @@ class Harvest(object):
 
         Columns are: ['status', 'time_step', 'dist_type_name', 'forest_type', 'management_type',
                       'management_strategy', 'expected', 'provided', 'measurement_type',
-                      'dist_description']
+                      'dist_desc_input']
         """
         # Compute #
         df = self.provided_area

@@ -106,7 +106,7 @@ class AssociationsChecker(object):
         names   = self.key_to_rows(self.keys[3]).values()
         print_messages(default, names, self.keys[3])
         # Disturbances also have to match with disturbance_types.csv #
-        types = set(self.country.parent.csv_to_xls.read_csv('disturbance_types')['dist_description'])
+        types = set(self.country.parent.csv_to_xls.read_csv('disturbance_types')['dist_desc_input'])
         names = set(self.key_to_rows(self.keys[3]).keys())
         unmatched = types ^ names
         if unmatched:

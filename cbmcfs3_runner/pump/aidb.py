@@ -61,11 +61,15 @@ class AIDB(object):
         Then join source and sink to add description of the origin and destination pools.
         To be continued based on /notebooks/disturbance_matrix.ipynb
         """
+        # Load tables #
         dm_table = self.database['tblDM']
         source   = self.database['tblSourceName']
         sink     = self.database['tblSinkName']
         lookup   = self.database['tblDMValuesLookup']
-        # Join lookup and dm_table to add the description for each DMID #
+        # We have three types of description, they each need their provenance #
+        dm_table = dm_table.rename(columns={"name":        "dist_desc_aidb",
+                                            "description": "dist_desc_long"})
+        # Join lookup and dm_table to add the description for each `dmid` #
         dm_lookup = (lookup
                      .set_index('dmid')
                      .join(dm_table.set_index('dmid'))
@@ -88,8 +92,8 @@ class AIDB(object):
         # Add 'dist_type_name' corresponding to orig/disturbance_types.csv
         map_disturbance = self.parent.associations.map_disturbance
         dist_types      = self.parent.orig_data.disturbance_types
-        df = df.left_join(map_disturbance, 'name')
-        df = df.left_join(dist_types,      'dist_description')
+        df = df.left_join(map_disturbance, 'dist_desc_aidb')
+        df = df.left_join(dist_types,      'dist_desc_input')
         # Return #
         return df
 

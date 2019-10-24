@@ -98,17 +98,17 @@ class Associations(object):
 
         For example:
 
-            dist_description 	          name
+            dist_desc_input 	          name
             Fire 	                      Wild Fire
             Clearcut with slash bum H 	  Clearcut with slash-burn
             Clearcut with slash bum (...) Clearcut with slash-burn
         """
         # Load only disturbances #
         df = self.df.query("A=='MapDisturbanceType'").copy()
-        # Here 'dist_description' is the name in disturbance_types.csv
+        # Here 'dist_desc_input' is the name in disturbance_types.csv
         # Here 'name' is the name in the AIDB
-        df = df.rename(columns={'B': 'dist_description',
-                                'C': 'name'})
+        df = df.rename(columns={'B': 'dist_desc_input',
+                                'C': 'dist_desc_aidb'})
         # This column is redundant #
         df = df.drop(columns = 'A')
         # Return #
