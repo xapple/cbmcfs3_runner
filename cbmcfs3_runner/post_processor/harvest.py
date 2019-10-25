@@ -240,14 +240,11 @@ class Harvest(object):
         # Add year and remove TimeStep #
         df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
         df = df.drop('time_step', axis=1)
-        # TODO check runner.post_processor.database['tbldisturbancetype']
-        # to see if we are using dist_type_id where we should be using
-        # dist_type_name
+        # Load dist_type_name and their description
+        dist_type = self.parent.parent.input_data.disturbance_types
         # Get the disturbances full name from their number #
         # Add a column named 'dist_desc_input' #
-        df = (df.set_index('dist_type_name')
-                .join(dist_type.set_index('dist_type_name'))
-                .reset_index())
+        df = df.left_join(dist_type, 'dist_type_name')
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
             # Patch the harvest data frame to stop at the simulation year #
