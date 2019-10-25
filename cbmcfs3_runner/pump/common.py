@@ -38,9 +38,12 @@ def left_join(first, other, on):
     """Implement a common left join pattern with pandas set_index()
     on both data frames followed by a reset_index()
     """
+    # Check if `on` is a set #
+    if isinstance(on, set): on = list(on)
+    # Set indexes #
     first  = first.set_index(on)
     other  = other.set_index(on)
-    # TODO check the data type of index variables before the merge
+    # TODO check the data type (dtypes) of index variables before the merge
     # See for example strange error message
     # for example in the case of
     # left_join(flux_indicators, hwp_map, hwp_map_index)
