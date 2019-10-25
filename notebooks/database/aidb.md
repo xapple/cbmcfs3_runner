@@ -83,10 +83,16 @@ The following tables contain information relevant to the disturbance matrix.
 db['tbldm']
 ```
 
+### tbldisturbancetypedefault
+
+```python
+db['tbldisturbancetypedefault']
+```
+
 ### tbldmassociationdefault
 
 ```python
-db['tbldmassociationdefault']
+db['tbldmassociationdefault']#.query("default_disturbance_type_id == 27")
 ```
 
 ### tbldmassociationspudefault
