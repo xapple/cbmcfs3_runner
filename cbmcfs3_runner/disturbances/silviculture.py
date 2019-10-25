@@ -90,10 +90,6 @@ class Silviculture(object):
         silv_for = df.query("status == 'CC'").copy()
         silv_for['status'] = 'For'
         df = df.append(silv_for)
-        # These changes below might or might not be a good idea.
-        # These changes should probably be done in the input data, not here.
-        # If FW_C disturbances are missing, duplicate IRW_C disturbances
-        # If FW_B disturances are missing, duplicate IRW_B disturbances
         # Return #
         return df
 
@@ -167,6 +163,11 @@ class Silviculture(object):
 
         Min_since_last represents the minimum age since the last disturbance for
         a new disturbance to be applied.
+
+        Note that `stock_available` is divided by `min_since_last`
+        so it might be smaller than the stock by a factor of 10 or more.
+        `stock_available` does not really represent an available stock.
+        It is only used to calculate a proportion in the harvest_proportion.
         """
         # Join with correction factor #
         join_columns = set(self.corr_fact.columns) - {'corr_fact'}
@@ -175,15 +176,12 @@ class Silviculture(object):
         index = ['status', 'forest_type', 'management_type',
                  'management_strategy', 'conifers_broadleaves']
         # Join #
-        df = self.stock_based_on_yield.left_join(silviculture, index)
+        df = self.stock_based_on_yield.inner_join(silviculture, index)
         # Filter #
-        df = (df.query('min_age < age & age < max_age')
+        df = (df.query('min_age <= age & age <= max_age')
                 .query('stock > 0')
                 .copy())
         # Compute the stock available #
-        # Note that it is divided by min_since_last so it might be smaller
-        # than the stock by a factor of 10 or more.
-        # stock_available is only used to calculate a proportion later.
         df['stock_available'] = (df['stock']
                                  * df['corr_fact']
                                  * df['perc_merch_biom_rem']
