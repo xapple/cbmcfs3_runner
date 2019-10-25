@@ -176,7 +176,7 @@ class Silviculture(object):
         index = ['status', 'forest_type', 'management_type',
                  'management_strategy', 'conifers_broadleaves']
         # Join #
-        df = self.stock_based_on_yield.inner_join(silviculture, index)
+        df = self.stock_based_on_yield.left_join(silviculture, index)
         # Filter #
         df = (df.query('min_age <= age & age <= max_age')
                 .query('stock > 0')
