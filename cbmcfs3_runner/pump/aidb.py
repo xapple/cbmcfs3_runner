@@ -230,3 +230,34 @@ class AIDB(object):
         # Return #
         return df
 
+    @property_cached
+    def merch_biom_rem(self):
+        """Retrieve the percentage of merchantable biomass removed
+        from every different disturbance type used in the silviculture
+        treatments."""
+        # Load #
+        df = self.dist_matrix_long
+        dist_types = self.parent.orig_data.disturbance_types
+        treats = self.parent.silviculture.treatments
+        # Filter dist_mat to take only disturbances that are actually used #
+        selector = df['dist_type_name'].isin(dist_types['dist_type_name'])
+        df = df[selector].copy()
+        # Take only products #
+        df = df.query("column_pool == 'products'")
+        df = df.query("row_pool == 'Softwood merchantable' or row_pool == 'Hardwood merch'")
+        # Join #
+        df = treats.left_join(df, 'dist_type_name')
+        # Take columns of interest #
+        cols = ['dist_type_name', 'perc_merch_biom_rem', 'dist_desc_aidb', 'row_pool', 'proportion']
+        df = df[cols]
+        # Columns might be missing #
+        try:
+            df['diff']= df['perc_merch_biom_rem'] - df['proportion']
+        except TypeError:
+            return df
+        # NaNs appear because of natural disturbances #
+        df = df.fillna(0)
+        # Check #
+        #assert all(df['diff'].abs() < 1e-3)
+        # Return #
+        return df
