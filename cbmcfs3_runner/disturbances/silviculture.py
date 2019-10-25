@@ -175,13 +175,11 @@ class Silviculture(object):
         index = ['status', 'forest_type', 'management_type',
                  'management_strategy', 'conifers_broadleaves']
         # Join #
-        df = (self.stock_based_on_yield
-              .set_index(index)
-              .join(silviculture.set_index(index))
-              .reset_index()
-              .query('min_age < age & age < max_age')
-              .query('stock > 0')
-              .copy())
+        df = self.stock_based_on_yield.left_join(silviculture, index)
+        # Filter #
+        df = (df.query('min_age < age & age < max_age')
+                .query('stock > 0')
+                .copy())
         # Compute the stock available #
         # Note that it is divided by min_since_last so it might be smaller
         # than the stock by a factor of 10 or more.

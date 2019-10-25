@@ -47,15 +47,17 @@ class DisturbanceMaker(object):
          'reset_age', 'wd', 'owc_perc', 'snag_perc', 'man_nat',
          'stock_available', 'stock_tot', 'prop', 'db', 'amount_m3',
          'owc_amount_from_IRW', 'snag_amount_from_IRW']
+
+        Allocation:
+        Join the GFTM demand and the allocation table
+        This will generate a much longer table, containing different
+        combinations of classifiers and disturbance ids for each HWP and year.
         """
-        # Allocation:
-        # Join the GFTM demand and the allocation table
-        # This will generate a much longer table, containing different
-        # combinations of classifiers and disturbance ids for each HWP and year.
-        df = (self.country.demand.gftm_irw
-             .set_index('hwp')
-             .join(self.country.silviculture.harvest_proportion.set_index('hwp'))
-             .reset_index())
+        # Load #
+        harv_prop = self.country.silviculture.harvest_proportion
+        gftm_irw = self.country.demand.gftm_irw
+        # Join #
+        df = gftm_irw.left_join(harv_prop, 'hwp')
         # Calculate the disturbance amount based on the proportion
         # Each proportion is different for each combination of classifiers.
         df['amount_m3'] = df['value_ob'] * df['prop']
@@ -146,10 +148,11 @@ class DisturbanceMaker(object):
         """Check that the industrial round wood disturbances
         weight in tonnes of carbon correspond to the demand
         volume in m3 over bark for each year."""
+        # Load #
         df = self.dist_irw_converted
-        # Assert that these values are close
-        numpy.testing.assert_allclose(df['amount_m3'], df['value_ob'],
-                                      rtol=1e-03)
+        # Assert that these values are all close to each other #
+        allclose = numpy.testing.assert_allclose
+        allclose(df['amount_m3'], df['value_ob'], rtol=1e-03)
 
     @property
     def dist_fw_converted(self):
