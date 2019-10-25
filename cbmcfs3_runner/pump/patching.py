@@ -16,9 +16,13 @@ Unit D1 Bioeconomy.
 import pandas
 
 # Internal modules #
-from cbmcfs3_runner.pump.common import left_join
+from cbmcfs3_runner.pump.common import left_join, right_join
+from cbmcfs3_runner.pump.common import inner_join, outer_join
 
 ###############################################################################
 # Add a nice method to DataFrame objects #
 pandas.DataFrame.left_join = left_join
+pandas.DataFrame.right_join = right_join
+pandas.DataFrame.inner_join = inner_join
+pandas.DataFrame.outer_join = outer_join
 

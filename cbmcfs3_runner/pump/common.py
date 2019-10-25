@@ -34,29 +34,30 @@ def reshape_yields_long(yields_wide):
     return df
 
 ###############################################################################
-def left_join(first, other, on):
-    """Implement a common left join pattern with pandas set_index()
-    on both data frames followed by a reset_index()
-    """
+def left_join(*args, **kwargs):
+    return flexible_join(*args, **kwargs, how='left')
+
+def right_join(*args, **kwargs):
+    return flexible_join(*args, **kwargs, how='right')
+
+def inner_join(*args, **kwargs):
+    return flexible_join(*args, **kwargs, how='inner')
+
+def outer_join(first, other, on):
+    return flexible_join(*args, **kwargs, how='outer')
+
+###############################################################################
+def flexible_join(first, other, on, how=None):
+    """Implement a common join pattern with pandas set_index()
+    on both data frames followed by a reset_index()."""
     # Check if `on` is a set #
     if isinstance(on, set): on = list(on)
     # Set indexes #
     first  = first.set_index(on)
     other  = other.set_index(on)
-    # TODO check the data type (dtypes) of index variables before the merge
-    # See for example strange error message
-    # for example in the case of
-    # left_join(flux_indicators, hwp_map, hwp_map_index)
-    result = first.join(other)
+    # TODO check the data type (dtypes) of index variables
+    #  are identical on both sides of the join
+    result = first.join(other, how=how)
     result = result.reset_index()
-    return result
-
-def outer_join(first, other, on):
-    """Implement a common outer join pattern with pandas set_index()
-    on both data frames followed by a reset_index()
-    """
-    first  = first.set_index(on)
-    other  = other.set_index(on)
-    result = first.join(other, how='outer')
-    result = result.reset_index()
+    # Return #
     return result
