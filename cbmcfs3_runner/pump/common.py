@@ -43,7 +43,7 @@ def right_join(*args, **kwargs):
 def inner_join(*args, **kwargs):
     return flexible_join(*args, **kwargs, how='inner')
 
-def outer_join(first, other, on):
+def outer_join(*args, **kwargs):
     return flexible_join(*args, **kwargs, how='outer')
 
 ###############################################################################
