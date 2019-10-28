@@ -251,6 +251,8 @@ class Silviculture(object):
 
         The proportion is based on the available stock by
         harvested wood products (HWP) category.
+        The proportion always sums to one for all combinations of classifiers
+        under a given arvested wood product category.
 
         Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
                       'conifers_broadleaves', 'dist_type_name', 'stock_available',
