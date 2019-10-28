@@ -103,7 +103,7 @@ class Inventory(object):
         df = df[columns_of_interest].copy()
         # Divide #
         df['merch_c_ha']   = df.biomass    / df.bef_tot
-        df['merch_vol_ha'] = df.merch_c_ha / df.db
+        df['merch_vol_ha'] = df.merch_c_ha / df.density
         # Return result #
         return df
 
