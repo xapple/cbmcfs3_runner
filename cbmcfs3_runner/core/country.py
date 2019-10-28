@@ -181,9 +181,10 @@ class Country(object):
     def coefficients(self):
         """Load the conversion coefficients from tons of carbon
         to cubic meters of wood.
-        Columns are: ['id', 'forest_type', 'c', 'db', 'harvest_gr']
+        The 'density' columns is the volumetric mass density in tons/m3
+        for a given species.
 
-        #TODO: Ask Roberto what the columns 'c' and 'db' are.
+        Columns are: ['id', 'forest_type', 'density', 'harvest_gr']
         """
         return pandas.read_csv(str(self.paths.coefficients))
 

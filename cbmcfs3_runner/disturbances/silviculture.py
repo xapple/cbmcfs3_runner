@@ -258,7 +258,7 @@ class Silviculture(object):
         """
         # Load data frames #
         df = self.stock_available_agg.copy()
-        coefs = self.parent.coefficients[['forest_type', 'db']]
+        coefs = self.parent.coefficients[['forest_type', 'density']]
         # Add aggregated column stock_tot
         # Note: we want to keep unaggregated columns in the df,
         # so we cannot use groupby().agg() below.

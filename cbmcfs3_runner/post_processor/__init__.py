@@ -108,7 +108,7 @@ class PostProcessor(object):
 
         Columns are: ['index', 'forest_type', 'user_defd_class_set_id', 'status', 'region',
                       'management_type', 'management_strategy', 'climatic_unit',
-                      'conifers_broadleaves', 'id', 'c', 'db', 'harvest_gr']
+                      'conifers_broadleaves', 'id', 'density', 'harvest_gr']
         """
 
         return (self.classifiers

@@ -51,7 +51,7 @@ class Harvest(object):
         Columns are: ['dist_type_id', 'dist_type_name', 'time_step', 'status', 'forest_type',
                       'management_type', 'management_strategy', 'conifers_broadleaves',
                       'dom_production', 'co2_production', 'merch_litter_input', 'oth_litter_input',
-                      'db', 'soft_production', 'hard_production', 'tc', 'vol_merch',
+                      'density', 'soft_production', 'hard_production', 'tc', 'vol_merch',
                       'vol_sub_merch', 'vol_snags', 'vol_forest_residues']
         """
         # First ungrouped #
@@ -72,7 +72,7 @@ class Harvest(object):
                            'co2_production',
                            'merch_litter_input',
                            'oth_litter_input',
-                           'db']
+                           'density']
         # Check that we don't produce NaNs #
         # See ~/repos/examples/python_modules/pandas/join_and_produce_nan.py
         # Check for NaNs coming from a join tables to avoid using them in an aggregation index
@@ -92,10 +92,10 @@ class Harvest(object):
         # Create new columns #
         df['tc']                  = df['soft_production'] + df['hard_production']
         df['prov_carbon']         = df['soft_production'] + df['hard_production'] + df['dom_production']
-        df['vol_merch']           = (df['tc'] * 2) / df['db']
-        df['vol_sub_merch']       = (df['co2_production'] * 2) / df['db']
-        df['vol_snags']           = (df['dom_production'] * 2) / df['db']
-        df['vol_forest_residues'] = ((df['merch_litter_input'] + df['oth_litter_input']) * 2) / df['db']
+        df['vol_merch']           = (df['tc'] * 2) / df['density']
+        df['vol_sub_merch']       = (df['co2_production'] * 2) / df['density']
+        df['vol_snags']           = (df['dom_production'] * 2) / df['density']
+        df['vol_forest_residues'] = ((df['merch_litter_input'] + df['oth_litter_input']) * 2) / df['density']
         # Return #
         return df
 

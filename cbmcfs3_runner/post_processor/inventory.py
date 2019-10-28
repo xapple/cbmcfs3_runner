@@ -98,7 +98,7 @@ class Inventory(object):
                .join(self.bef_ft.set_index('forest_type'))
                .reset_index())
         # Select only some columns #
-        columns_of_interest  = ['ave_age', 'time_step', 'area', 'biomass', 'bef_tot', 'db']
+        columns_of_interest  = ['ave_age', 'time_step', 'area', 'biomass', 'bef_tot', 'density']
         columns_of_interest += list(self.parent.classifiers.columns)
         df = df[columns_of_interest].copy()
         # Divide #

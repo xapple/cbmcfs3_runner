@@ -47,7 +47,7 @@ class DisturbanceMaker(object):
              'conifers_broadleaves', 'dist_type_name', 'sort_type', 'efficiency',
              'min_age', 'max_age', 'min_since_last', 'max_since_last', 'regen_delay',
              'reset_age', 'wd', 'owc_perc', 'snag_perc', 'man_nat',
-             'stock_available', 'stock_tot', 'prop', 'db', 'amount_m3',
+             'stock_available', 'stock_tot', 'prop', 'density', 'amount_m3',
              'owc_amount_from_irw', 'snag_amount_from_irw']
 
         Allocation:
@@ -292,7 +292,7 @@ class DisturbanceMaker(object):
         We convert disturbance volumes from m3 over bark to tonnes of carbon.
         TODO : correct these values based on code update
 
-            df['value_tc'] = df['value_ob'] * df['db'] / 2
+            df['value_tc'] = df['value_ob'] * df['density'] / 2
 
         Then we add the column: IRW_amount = prop * value_tc
         As well as the:          owc_amount_from_irw  = IRW_amount * OWC_Perc
@@ -368,43 +368,45 @@ class DisturbanceMaker(object):
         # and the original demand volumes in cubic meters of wood over bark.
         self.check_dist_irw()
         self.check_dist_fw()
+
         # Allocation:
         # Concatenate IRW and FW disturbance tables
         # Keep only the columns of interest for disturbances
         columns_of_interest = ['status', 'forest_type', 'management_type', 'management_strategy',
-                               'conifers_broadleaves', 'dist_type_name',
-                               'sort_type', 'efficiency',
+                               'conifers_broadleaves', 'dist_type_name', 'sort_type', 'efficiency',
                                'min_age', 'max_age', 'min_since_last', 'max_since_last', 'regen_delay',
-                               'reset_age', 'man_nat', 'amount_m3', 'step', 'db']
+                               'reset_age', 'man_nat', 'amount_m3', 'step', 'density']
         df = pandas.concat([self.dist_irw[columns_of_interest],
                             self.dist_fw[columns_of_interest]])
 
-        # Convert amount_m3 from m3 to tonnes of C
-        # 'db' is the volumetric mass density in t/m3 of the given species
-        # Tons of dry matter are converted to C applying a 0.5 conversion factor
+        # Convert amount_m3 from m3 to tonnes of carbon
+        # 'density' is the volumetric mass density in t/m3 of the given species
+        # Tons of dry matter are converted to tons of carbon by applying
+        # a 0.5 conversion factor
         # TODO rename amount to amount_tc, this needs to be done also in
-        # orig data for the historical period because these
-        # disturbances will be concatenated to the historical disturbances
-        df['amount'] = df['amount_m3'] * df['db'] / 2
-        # Drop columns un-used CBM input
-        df = df.drop(columns=['db', 'amount_m3'])
+        #  orig data for the historical period because these
+        #  disturbances will be concatenated to the historical disturbances
+        df['amount'] = df['amount_m3'] * df['density'] / 2
+
+        # Drop columns unused by the CBM input format #
+        df = df.drop(columns = ['density', 'amount_m3'])
 
         # Add and re-order columns
         # These classifiers are ignored when interacting with the economic model only
         df['climatic_unit'] = '?'
         df['region']        = '?'
 
-        # Min age max age are distinguished by hardwood and soft wood
+        # Min age max age are distinguished by hardwood and soft wood #
         df['sw_start'] = df['min_age']
         df['sw_end']   = df['max_age']
         df['hw_start'] = df['min_age']
         df['hw_end']   = df['max_age']
 
-        # Rename
+        # Rename #
         df = df.rename(columns = {'min_since_last': 'min_since_last_dist',
                                   'max_since_last': 'max_since_last_dist'})
 
-        # Add constant values required by CBM
+        # Add constant values required by CBM #
         df = self.add_constants(df)
 
         # Check consistency of Sort_Type with measurement type
@@ -415,9 +417,11 @@ class DisturbanceMaker(object):
                "The issue is present for dist_type_name: %s \n"
                "CBM error in this case is "
                "Error: 'Illegal target type for RANDOM sort in timestep...'")
+
         # Sanity check #
         if len(df_random) > 0:
             raise Exception(msg % (df_random['dist_type_name'].unique()))
+
         # Return #
         return df
 
