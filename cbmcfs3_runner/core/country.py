@@ -134,10 +134,11 @@ class Country(object):
            [1, 2, 3, 4, 5]
 
         Checking the consistency between the 2 functions:
-        >>> runner = continent[('static_demand', 'ZZ', 0)]
-        >>> year = runner.country.timestep_to_year([1,2])
-        >>> runner.country.year_to_timestep(year)
-        array([1, 2])
+
+            >>> runner = continent[('static_demand', 'ZZ', 0)]
+            >>> year = runner.country.timestep_to_year([1,2])
+            >>> runner.country.year_to_timestep(year)
+            array([1, 2])
         """
         return year - self.inventory_start_year + 1
 

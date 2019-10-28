@@ -103,18 +103,14 @@ class PostProcessor(object):
     @property_cached
     def classifiers_coefs(self):
         """A join between the coefficients and the classifiers table.
-        can be joined on the flux indicators table using user_defd_class_set_id
-        as an index.
+        Later they can be joined on the flux indicators table using
+        `user_defd_class_set_id` as an index.
 
         Columns are: ['index', 'forest_type', 'user_defd_class_set_id', 'status', 'region',
                       'management_type', 'management_strategy', 'climatic_unit',
                       'conifers_broadleaves', 'id', 'density', 'harvest_gr']
         """
-
-        return (self.classifiers
-                .set_index('forest_type')
-                .join(self.coefficients.set_index('forest_type'))
-                .reset_index())
+        return self.classifiers.left_join(self.coefficients, 'forest_type')
 
     @property_cached
     def classifiers_mapping(self):
@@ -149,6 +145,7 @@ class PostProcessor(object):
                       'efficiency', 'sort_type', 'measurement_type', 'amount', 'dist_type_name',
                       'time_step'],
         """
+        # Load #
         df = self.parent.input_data.disturbance_events
         # Rename classifier columns _1, _2, _3 to forest_type, region, etc. #
         df = df.rename(columns = self.classifiers_mapping)

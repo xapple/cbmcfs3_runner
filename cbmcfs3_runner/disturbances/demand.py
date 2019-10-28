@@ -71,6 +71,7 @@ class Demand(object):
 
         GFTM gives a yearly demand over a 5 year interval in
         cubic meters under bark.
+
         We will use this data frame to duplicate the yearly demand
         volume 5 times. This will then be used to generate disturbances.
 
@@ -100,8 +101,17 @@ class Demand(object):
 
     @property_cached
     def gftm_irw(self):
-        """Future IRW demand as predicted by GFTM.
-        Load and reshape the data frame in long format."""
+        """
+        Future IRW demand as predicted by GFTM.
+        Load and reshape the data frame in long format.
+
+        Now we have a yearly demand over a 5 year interval in
+        cubic meters over bark (column `value_ob`).
+
+        Columns are:
+
+            ['year_min', 'year_text', 'hwp', 'value_ob', 'year_max', 'year', 'step']
+        """
         # Fill values #
         header = self.gftm_header.fillna(method='ffill', axis=1)
         # Get the headers #

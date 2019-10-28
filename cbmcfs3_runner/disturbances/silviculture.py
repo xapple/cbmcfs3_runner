@@ -82,15 +82,12 @@ class Silviculture(object):
         df['dist_type_name']      = df['dist_type_name'].astype(str)
         df['management_strategy'] = df['management_strategy'].astype(str)
         df['management_type']     = df['management_type'].astype(str)
-        # 'For' and 'CC' receive the same silviculture treatment.
-        # Duplicate 'CC' rows in the silviculture treatment table and mark them as 'For'
-        # TODO change this duplication of silviculture treatments to a
-        #  change from CC to For if For is present in the inventory
-        #  Give an error if there is a mix of For and CC
-        #  (check if mix of CC and For exists at all in the input data)
-        silv_for = df.query("status == 'CC'").copy()
-        silv_for['status'] = 'For'
-        df = df.append(silv_for)
+        # If 'CC' is present in inventory (and there are no 'For'), then do nothing
+        # If 'For' is present in the inventory (and there are no 'CC'), then
+        # replace 'CC' by 'For' in the silviculture treatments.
+        if any(self.parent.orig_data.inventory['status'] == 'For'):
+            assert not any(self.parent.orig_data.inventory['status'] == 'CC')
+            df[df['status'] == 'CC'] = 'For'
         # Return #
         return df
 
