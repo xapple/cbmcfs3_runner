@@ -79,7 +79,7 @@ class InputData(object):
         # But this is only true where an age class is defined
         df['age_class'] = df['age_class'].mask(~df['using_id'])
         # Rename classifiers #
-        df.rename(columns = self.classifiers_mapping)
+        df = df.rename(columns = self.classifiers_mapping)
         # Return #
         return df
 

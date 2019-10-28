@@ -11,7 +11,7 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
-import pandas
+import pandas, numpy
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
@@ -132,11 +132,11 @@ class Silviculture(object):
         df = inventory.left_join(h_yields_long, index)
         # Compute stock #
         df['stock'] = df['area'] * df['volume']
-        # We are not interested in these columns #
-        cols_to_drop = ['using_id', 'age', 'delay', 'unfcccl', 'hist_dist', 'last_dist', 'sp']
-        df = df.drop(columns=cols_to_drop)
         # Compute the actual age #
-        df['age'] = df['age_class'] * 10
+        df['age'] = numpy.where(df['using_id'], df['age_class'] * 10, df['age'])
+        # We are not interested in these columns #
+        cols_to_drop = ['using_id', 'delay', 'unfcccl', 'hist_dist', 'last_dist', 'sp']
+        df = df.drop(columns=cols_to_drop)
         # Return #
         return df
 

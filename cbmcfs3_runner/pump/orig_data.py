@@ -68,7 +68,7 @@ class OrigData(object):
         # But this is only true where an age class is defined
         df['age_class'] = df['age_class'].mask(~df['using_id'])
         # Rename classifiers #
-        df.rename(columns = self.parent.classifiers.mapping)
+        df = df.rename(columns = self.parent.classifiers.mapping)
         # Return #
         return df
 
