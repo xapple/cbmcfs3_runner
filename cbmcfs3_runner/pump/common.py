@@ -11,6 +11,8 @@ Unit D1 Bioeconomy.
 ###############################################################################
 def reshape_yields_long(yields_wide):
     """
+    Reshape a wide data frame into a long one.
+
     Columns are:
 
     ['status', 'forest_type', 'region', 'management_type',
@@ -21,9 +23,8 @@ def reshape_yields_long(yields_wide):
     index = ['status', 'forest_type', 'region', 'management_type',
              'management_strategy', 'climatic_unit', 'conifers_broadleaves',
              'sp']
-    # Add classifier 8 for the specific case of Bulgaria
-    if 'yield_tables' in yields_wide.columns:
-        index += ['yield_tables']
+    # Add classifier 8 for the specific case of Bulgaria #
+    if 'yield_tables' in yields_wide.columns: index += ['yield_tables']
     # Melt #
     df = yields_wide.melt(id_vars    = index,
                           var_name   = "age_class",
@@ -35,28 +36,32 @@ def reshape_yields_long(yields_wide):
 
 ###############################################################################
 def left_join(*args, **kwargs):
+    """This method is patched onto pandas.DataFrame for convenience."""
     return flexible_join(*args, **kwargs, how='left')
 
 def right_join(*args, **kwargs):
+    """This method is patched onto pandas.DataFrame for convenience."""
     return flexible_join(*args, **kwargs, how='right')
 
 def inner_join(*args, **kwargs):
+    """This method is patched onto pandas.DataFrame for convenience."""
     return flexible_join(*args, **kwargs, how='inner')
 
 def outer_join(*args, **kwargs):
+    """This method is patched onto pandas.DataFrame for convenience."""
     return flexible_join(*args, **kwargs, how='outer')
 
 ###############################################################################
 def flexible_join(first, other, on, how=None):
     """Implement a common join pattern with pandas set_index()
-    on both data frames followed by a reset_index()."""
+    on both data frames followed by a reset_index() at the end."""
     # Check if `on` is a set #
     if isinstance(on, set): on = list(on)
     # Set indexes #
     first  = first.set_index(on)
     other  = other.set_index(on)
-    # TODO check the data type (dtypes) of index variables
-    #  are identical on both sides of the join
+    # TODO check the data types (dtypes) of all the index columns
+    #  are matching on both sides of the join.
     result = first.join(other, how=how)
     result = result.reset_index()
     # Return #

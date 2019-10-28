@@ -66,11 +66,12 @@ class Silviculture(object):
 
     @property_cached
     def treatments(self):
-        """Load the CSV that is 'silv_treatments.csv'.
+        """
+        Load the CSV that is 'silv_treatments.csv'.
         The column "man_nat" represents either 'Man-made disturbance'
         or a Natural disturbance.
-        'perc_merch_biom_rem' is redundant with 'dist_id' and simply shows
-        the percent of thinning.
+        The column'perc_merch_biom_rem' is redundant with 'dist_id'
+        and simply shows the percent of thinning.
         """
         # Read CSV #
         df = pandas.read_csv(str(self.paths.treatments))
@@ -84,9 +85,9 @@ class Silviculture(object):
         # 'For' and 'CC' receive the same silviculture treatment.
         # Duplicate 'CC' rows in the silviculture treatment table and mark them as 'For'
         # TODO change this duplication of silviculture treatments to a
-        # change from CC to For if For is present in the inventory
-        # Give an error if there is a mix of For and CC
-        # (check if mix of CC and For exists at all in the input data)
+        #  change from CC to For if For is present in the inventory
+        #  Give an error if there is a mix of For and CC
+        #  (check if mix of CC and For exists at all in the input data)
         silv_for = df.query("status == 'CC'").copy()
         silv_for['status'] = 'For'
         df = df.append(silv_for)
@@ -119,9 +120,6 @@ class Silviculture(object):
                       'management_strategy', 'climatic_unit',
                       'conifers_broadleaves', 'age_class', 'area', 'volume',
                       'stock', 'age']
-
-        #TODO use self.country.classifers to work with countires that have
-        #a variable number of classifiers (BG).
         """
         # Load data frames #
         inventory     = self.parent.orig_data.inventory
@@ -132,17 +130,18 @@ class Silviculture(object):
         df = inventory.left_join(h_yields_long, index)
         # Compute stock #
         df['stock'] = df['area'] * df['volume']
-        # Compute the actual age #
-        df['age'] = numpy.where(df['using_id'], df['age_class'] * 10, df['age'])
+        # Compute a proxy for the actual age #
+        df['age_proxy'] = numpy.where(df['using_id'], df['age_class'] * 10 - 5, df['age'])
         # We are not interested in these columns #
-        cols_to_drop = ['using_id', 'delay', 'unfcccl', 'hist_dist', 'last_dist', 'sp']
+        cols_to_drop = ['age', 'using_id', 'delay', 'unfcccl', 'hist_dist', 'last_dist', 'sp']
         df = df.drop(columns=cols_to_drop)
         # Return #
         return df
 
     @property_cached
     def stock_available_by_age(self):
-        """Calculate the stock available based on the harvest proportion
+        """
+        Calculate the stock available based on the harvest proportion
         in the silviculture_treatments table and multiplied by a correction factor.
 
         Note: the harvest proportion in the silviculture_treatments table should be
@@ -178,7 +177,7 @@ class Silviculture(object):
         # Join #
         df = self.stock_based_on_yield.left_join(silviculture, index)
         # Filter #
-        df = (df.query('min_age <= age & age <= max_age')
+        df = (df.query('min_age <= age_proxy & age_proxy <= max_age')
                 .query('stock > 0')
                 .copy())
         # Compute the stock available #
@@ -191,19 +190,19 @@ class Silviculture(object):
 
     @property_cached
     def stock_available_agg(self):
-        """Aggregate stock_available_by_age and sum the stock available over
+        """
+        Aggregate stock_available_by_age and sum the stock available over
         all age classes. Natural disturbances are ignored.
 
         Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
                       'conifers_broadleaves', 'dist_type_name', 'stock_available',
                       'hwp', 'status']
         """
-        # Index #
-        # Note the presence of 'hwp' as an additional classifier in the index
+        # Note the presence of 'hwp' as an additional classifier in the index #
         index = ['status', 'forest_type', 'management_type', 'management_strategy',
                  'conifers_broadleaves', 'dist_type_name', 'hwp']
         # These variables will be added to the groupby aggregate operation
-        # Because we need them later to create disturbances
+        # because we need them later to create disturbances
         vars_to_create_dists = ['sort_type', 'efficiency', 'min_age', 'max_age',
                                 'min_since_last', 'max_since_last',
                                 'regen_delay', 'reset_age', 'wd',
@@ -219,11 +218,11 @@ class Silviculture(object):
 
     @property_cached
     def harvest_proportion(self):
-        """To allocate the harvest across
-        disturbance types (clear cut, thinning)
-        and additional classifiers (forest type, management type,
-        management strategy) we use a proportion based
-        on the historical inventory and yield curve.
+        """
+        To allocate the harvest across disturbance types (clear cut, thinning)
+        and additional classifiers (forest type, management type, management
+        strategy) we use a proportion based on the historical inventory and
+        yield curve.
 
         The harvest proportion is calculated from the stock available
         by combining two information sources:
@@ -235,10 +234,9 @@ class Silviculture(object):
         "stock = area * volume" for each particular classifiers
         and age class combination.
 
-        The stock available is then calculated based
-        on the percentage moved in the disturbance matrix
-        (also available in the silviculture table perc_merch_biom_rem)
-        and on an empirical harvest correction factor,
+        The stock available is then calculated based on the percentage moved
+        in the disturbance matrix (also available in the silviculture table
+        perc_merch_biom_rem) and on an empirical harvest correction factor,
         for each disturbance and combination of classifiers:
 
             stock available = stock * percentage harvested
@@ -258,9 +256,9 @@ class Silviculture(object):
                       'conifers_broadleaves', 'dist_type_name', 'stock_available',
                       'hwp', 'status', 'stock_tot', 'prop']
         """
-        # Load data frame #
+        # Load data frames #
         df = self.stock_available_agg.copy()
-        coefficients = self.parent.coefficients[['forest_type', 'db']]
+        coefs = self.parent.coefficients[['forest_type', 'db']]
         # Add aggregated column stock_tot
         # Note: we want to keep unaggregated columns in the df,
         # so we cannot use groupby().agg() below.
@@ -270,10 +268,7 @@ class Silviculture(object):
         # Drop redundant total column #
         df.drop(columns=['stock_tot'])
         # Add coefficient of conversion from m^3 to tonnes of C
-        df = (df
-              .set_index('forest_type')
-              .join(coefficients.set_index('forest_type'))
-              .reset_index())
+        df = df.left_join(coefs, 'forest_type')
         # Sort for readability #
         df = df.sort_values(by=['hwp'], ascending=False)
         # Return

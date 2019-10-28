@@ -83,12 +83,15 @@ class OrigData(object):
          'Vol19', 'Vol20', 'Vol21', 'Vol22', 'Vol23', 'Vol24', 'Vol25', 'Vol26',
          'Vol27', 'Vol28', 'Vol29', 'Vol30']
         """
+        # Load #
         df = self['yields']
+        # Rename classifier _1, _2, _3 to forest_type, region, etc. #
         return df.rename(columns = self.parent.classifiers.mapping)
 
     @property_cached
     def historical_yields(self):
         """Historical yield taken from the original CSV file."""
+        # Load #
         df = self['historical_yields']
         # Rename classifier _1, _2, _3 to forest_type, region, etc. #
         return df.rename(columns = self.parent.classifiers.mapping)

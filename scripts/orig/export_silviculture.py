@@ -132,4 +132,5 @@ class ExportFromSilviculture(object):
 ###############################################################################
 if __name__ == '__main__':
     exporters = [ExportFromSilviculture(c) for c in continent]
+    #exporters = [e for e in exporters if e.country.iso2_code in ['PT', 'IE', 'HR']]
     for exporter in tqdm(exporters): exporter()
