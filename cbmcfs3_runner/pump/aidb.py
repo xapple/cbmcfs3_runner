@@ -236,9 +236,9 @@ class AIDB(object):
         from every different disturbance type used in the silviculture
         treatments."""
         # Load #
-        df = self.dist_matrix_long
+        df         = self.dist_matrix_long
         dist_types = self.parent.orig_data.disturbance_types
-        treats = self.parent.silviculture.treatments
+        treats     = self.parent.silviculture.treatments
         # Filter dist_mat to take only disturbances that are actually used #
         selector = df['dist_type_name'].isin(dist_types['dist_type_name'])
         df = df[selector].copy()

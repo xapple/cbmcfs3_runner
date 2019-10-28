@@ -38,7 +38,7 @@ class InputData(object):
         self.parent = parent
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
-        # Classifiers names #
+        # Shortcut for classifiers names #
         self.classifiers_mapping = self.parent.country.classifiers.mapping
 
     #--------------------- Access the spreadsheets ---------------------------#
@@ -71,12 +71,17 @@ class InputData(object):
         """
         # Get the right sheet #
         df = self.get_sheet("Inventory")
-        # Create the age_class column
-        # so it can be used as a join variable with a yields table
+        # Create the age_class column so it can be
+        # used as a join variable with a yields table
         df['age_class'] = (df['age']
                            .replace('AGEID', '', regex=True)
                            .astype('int'))
-        return df.rename(columns = self.classifiers_mapping)
+        # But this is only true where an age class is defined
+        df['age_class'] = df['age_class'].mask(~df['using_id'])
+        # Rename classifiers #
+        df.rename(columns = self.classifiers_mapping)
+        # Return #
+        return df
 
     @property_cached
     def disturbance_events(self):

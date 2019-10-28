@@ -58,13 +58,19 @@ class OrigData(object):
              'using_id', 'age', 'area', 'delay', 'unfcccl', 'hist_dist', 'last_dist',
              'age_class'],
         """
+        # Load #
         df = self['inventory']
-        # Create the age_class column
-        # so it can be used as a join variable with a yields table
+        # Create the age_class column so it can be
+        # used as a join variable with a yields table
         df['age_class'] = (df['age']
                            .replace('AGEID', '', regex=True)
                            .astype('int'))
-        return df.rename(columns = self.parent.classifiers.mapping)
+        # But this is only true where an age class is defined
+        df['age_class'] = df['age_class'].mask(~df['using_id'])
+        # Rename classifiers #
+        df.rename(columns = self.parent.classifiers.mapping)
+        # Return #
+        return df
 
     @property_cached
     def yields(self):
