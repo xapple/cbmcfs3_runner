@@ -30,7 +30,7 @@ from plumbing.logger      import create_file_logger
 from cbmcfs3_runner.core.country import Country
 from cbmcfs3_runner.scenarios import scen_classes
 
-# Where is the data, default case #
+# Where is the data, default case #
 cbm_data_repos = Path("~/repos/cbmcfs3_data/")
 
 # But you can override that with an environment variable #
@@ -82,6 +82,12 @@ class Continent(object):
         """Return a dictionary of scenario names to Scenario objects."""
         all_scenarios = [Scen(self) for Scen in scen_classes]
         return {s.short_name: s for s in all_scenarios}
+
+    def run_scenarios(self, verbose=True):
+        """Run all scenarios for all countries in continent"""
+        for scenario in self.scenarios.values():
+            print(scenario)
+            scenario(verbose=verbose)
 
     @property_cached
     def log(self):
