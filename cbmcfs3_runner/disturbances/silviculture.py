@@ -87,7 +87,7 @@ class Silviculture(object):
         # replace 'CC' by 'For' in the silviculture treatments.
         if any(self.parent.orig_data.inventory['status'] == 'For'):
             assert not any(self.parent.orig_data.inventory['status'] == 'CC')
-            df[df['status'] == 'CC'] = 'For'
+            df.loc[df['status'] == 'CC', 'status'] = 'For'
         # Return #
         return df
 
