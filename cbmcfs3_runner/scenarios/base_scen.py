@@ -31,6 +31,8 @@ class Scenario(object):
     /logs_summary.md
     """
 
+    short_name = 'base_scen'
+
     def __iter__(self): return iter(self.runners.values())
     def __len__(self):  return len(self.runners.values())
 
@@ -47,7 +49,7 @@ class Scenario(object):
         self.paths = AutoPaths(self.base_dir, self.all_paths)
 
     def __call__(self, verbose=False):
-        for code, steps in tqdm(self.runners.items(), ncols=60):
+        for code, steps in tqdm(self.runners.items()):
             for runner in steps:
                 runner(interrupt_on_error=False, verbose=verbose)
         self.compile_log_tails()
@@ -72,8 +74,7 @@ class Scenario(object):
     def concat_as_dict(self, step=-1, func=None):
         """A dictionary of data frames, with country iso2 code as keys."""
         # Default option, function that takes a runner, returns a data frame #
-        if func is None:
-            func = lambda r: r.input_data.disturbance_events
+        if func is None: func = lambda r: r.input_data.disturbance_events
         # Retrieve data #
         result = [(iso2, func(runners[step]).copy()) for iso2,runners in self.runners.items()]
         # Return result #
@@ -90,18 +91,17 @@ class Scenario(object):
                 if iso2 == "BG": continue
                 loc = list(dict_of_df['BG'].columns).index('_8')
                 df.insert(loc, '_8', '')
-        # DataFrame #
-        # option sort=True adds a column of NaN if the column is missing
+        # The option sort=True adds a column of NaN if the column is missing
         # for a particular country
         df = pandas.concat(dict_of_df, sort=True)
         df = df.reset_index(level=0)
         df = df.rename(columns={'level_0': 'country_iso2'})
-        # Return result #
+        # Return #
         return df
 
     def compare_col_names(self, *args, **kwargs):
-        """Compare column names in a dictionnary of data frames
-        to a reference data frame present under the key_ref"""
+        """Compare column names in a dictionary of data frames
+        to a reference data frame present under the `key_ref`."""
         # Reference key #
         key_ref = kwargs.get('key_ref')
         if key_ref is None: key_ref = "AT"
@@ -112,6 +112,6 @@ class Scenario(object):
         # Iterate #
         ref_columns = set(dict_of_df[key_ref].columns)
         comparison  = {iso2: set(df.columns) ^ ref_columns for iso2, df in dict_of_df.items()}
-        # Print result #
-        print(comparison)
+        # Return #
+        return comparison
 

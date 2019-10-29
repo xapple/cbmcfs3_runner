@@ -68,7 +68,7 @@ class Continent(object):
     def __len__(self):  return len(self.countries.values())
 
     def __call__(self):
-        for country in tqdm(self, ncols=60):
+        for country in tqdm(self):
             country()
 
     @property_cached
