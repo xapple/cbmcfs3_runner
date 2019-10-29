@@ -42,9 +42,9 @@ class Silviculture(object):
     Of course this is within the harvestable range, we will exclude trees that are
     too young.
 
-    The merchantable volume 'tot_v_merch' always goes to the product that
+    The merchantable volume `tot_v_merch` always goes to the product that
     is harvested.
-    The sub merchantable and snag volume 'tot_v_submerch' and 'tot_v_snags'
+    The sub merchantable and snag volume `tot_v_submerch` and `tot_v_snags`
     go to the corresponding fuel wood pool, either coniferous or broadleaved.
 
     * "IRW" stands for Industrial Round Wood.
@@ -69,16 +69,16 @@ class Silviculture(object):
         """
         Load the CSV that is 'silv_treatments.csv'.
         The column "man_nat" represents either 'Man-made disturbance'
-        or a Natural disturbance.
-        The column'perc_merch_biom_rem' is redundant with 'dist_id'
+        or a 'Natural disturbance'.
+        The column `perc_merch_biom_rem` is redundant with `dist_id`
         and simply shows the percent of thinning.
         """
         # Read CSV #
         df = pandas.read_csv(str(self.paths.treatments))
         # Rename the classifier columns to full names #
         df = df.rename(columns = self.parent.classifiers.mapping)
-        # dist_type_name can be given as either a numeric or a character variable
-        # convert to string to prevent issues when merging and filtering
+        # The column `dist_type_name` can be loaded as either an int or a str,
+        # so convert to string to prevent issues when merging and filtering
         df['dist_type_name']      = df['dist_type_name'].astype(str)
         df['management_strategy'] = df['management_strategy'].astype(str)
         df['management_type']     = df['management_type'].astype(str)
@@ -92,26 +92,28 @@ class Silviculture(object):
         return df
 
     @property_cached
-    def hwp_map(self):
-        """Mapping to add HWP information to a disturbance table
-        This table contains the classifiers columns,
-        the disturbance ids and HWP columns."""
-        return self.treatments[['status', 'forest_type',
-                                'management_type', 'management_strategy',
-                                'conifers_broadleaves', 'dist_type_name',
-                                'hwp']].copy()
-
-    @property_cached
     def corr_fact(self):
         """Load the CSV that is 'harvest_corr_fact.csv'."""
         return pandas.read_csv(str(self.paths.corr_fact))
+
+    @property_cached
+    def hwp_map(self):
+        """This data frame represents a mapping that is useful to add HWP
+        information to a disturbance table. This data frame contains only
+        the classifiers columns, the disturbance ids and the hwp columns."""
+        # Columns of interest #
+        cols = ['status', 'forest_type', 'management_type',
+                'management_strategy', 'conifers_broadleaves',
+                'dist_type_name', 'hwp']
+        # Return #
+        return self.treatments[cols].copy()
 
     @property_cached
     def stock_based_on_yield(self):
         """
         Calculate the theoretical stock based on the inventory area
         by age class multiplied by the corresponding volume-per-hectare for
-        each age class producing "stock" in terms of m^3.
+        each age class producing "stock" in terms of [m^3].
 
         Columns are: ['status', 'forest_type', 'region', 'management_type',
                       'management_strategy', 'climatic_unit',
@@ -157,7 +159,7 @@ class Silviculture(object):
                       'snag_perc', 'perc_merch_biom_rem', 'man_nat', 'corr_fact',
                       'stock_available']
 
-        Min_since_last represents the minimum age since the last disturbance for
+        `min_since_last` represents the minimum age since the last disturbance for
         a new disturbance to be applied.
 
         Note that `stock_available` is divided by `min_since_last`
@@ -165,18 +167,23 @@ class Silviculture(object):
         `stock_available` does not really represent an available stock.
         It is only used to calculate a proportion in the harvest_proportion.
         """
-        # Join with correction factor #
-        join_columns = set(self.corr_fact.columns) - {'corr_fact'}
-        silviculture = self.treatments.left_join(self.corr_fact, join_columns)
-        # Join only on these classifiers #
+        # Load data frames used here #
+        treatments     = self.treatments
+        corr_fact      = self.corr_fact
+        stock_by_yield = self.stock_based_on_yield
+        # Join treatments with correction factor #
+        # The corr_fact data frame sometimes has extra classifiers
+        join_columns = set(corr_fact.columns) - {'corr_fact'}
+        treats_corr  = treatments.left_join(corr_fact, join_columns)
+        # Now join only on these classifiers #
         index = ['status', 'forest_type', 'management_type',
                  'management_strategy', 'conifers_broadleaves']
-        # Join #
-        df = self.stock_based_on_yield.left_join(silviculture, index)
-        # Filter #
-        df = (df.query('min_age <= age_proxy & age_proxy <= max_age')
-                .query('stock > 0')
-                .copy())
+        # Join with treats_corr #
+        df = stock_by_yield.left_join(treats_corr, index)
+        # Filter for age conditions #
+        df = df.query('min_age <= age_proxy & age_proxy <= max_age').copy()
+        # Filter for existing stock #
+        df = df.query('stock > 0').copy()
         # Compute the stock available #
         df['stock_available'] = (df['stock']
                                  * df['corr_fact']
@@ -198,7 +205,7 @@ class Silviculture(object):
         # Note the presence of 'hwp' as an additional classifier in the index #
         index = ['status', 'forest_type', 'management_type', 'management_strategy',
                  'conifers_broadleaves', 'dist_type_name', 'hwp']
-        # These variables will be added to the groupby aggregate operation
+        # These variables will be added to the `groupby` aggregate operation
         # because we need them later to create disturbances
         vars_to_create_dists = ['sort_type', 'efficiency', 'min_age', 'max_age',
                                 'min_since_last', 'max_since_last',
@@ -249,16 +256,16 @@ class Silviculture(object):
         The proportion is based on the available stock by
         harvested wood products (HWP) category.
         The proportion always sums to one for all combinations of classifiers
-        under a given arvested wood product category.
+        under a given harvested wood product category.
 
         Columns are: ['status', 'forest_type', 'management_type', 'management_strategy',
                       'conifers_broadleaves', 'dist_type_name', 'stock_available',
                       'hwp', 'status', 'stock_tot', 'prop']
         """
         # Load data frames #
-        df = self.stock_available_agg.copy()
+        df    = self.stock_available_agg.copy()
         coefs = self.parent.coefficients[['forest_type', 'density']]
-        # Add aggregated column stock_tot
+        # Add aggregated column `stock_tot`
         # Note: we want to keep unaggregated columns in the df,
         # so we cannot use groupby().agg() below.
         df['stock_tot'] = df.groupby(['hwp'])['stock_available'].transform('sum')
