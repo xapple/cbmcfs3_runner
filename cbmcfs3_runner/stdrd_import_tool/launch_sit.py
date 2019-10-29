@@ -17,8 +17,8 @@ import pbs3
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
-from autopaths.dir_path import DirectoryPath
-from plumbing.cache import property_cached
+from autopaths.dir_path   import DirectoryPath
+from plumbing.cache       import property_cached
 from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
@@ -51,9 +51,11 @@ class LaunchSIT(object):
 
     @classmethod
     def install(cls):
-        """A method to automatically install the tool. Use it like this:
-        >>> from cbmcfs3_runner.stdrd_import_tool.launch_sit import LaunchSIT
-        >>> LaunchSIT.install()
+        """
+        A method to automatically install the tool. Use it like this:
+
+            >>> from cbmcfs3_runner.stdrd_import_tool.launch_sit import LaunchSIT
+            >>> LaunchSIT.install()
         """
         # Download it #
         print('Downloading...')
@@ -140,6 +142,7 @@ class DefaultSIT(LaunchSIT):
     To be run first to create the project.
     This affects the "historical_period" and "simulation_period".
     """
+
     append = False
     short_name = "default_mode"
 
@@ -161,6 +164,7 @@ class AppendSIT(LaunchSIT):
     the project.
     This affects the "initialization_period".
     """
+
     append = True
     short_name = "append_mode"
 

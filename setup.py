@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
         name             = 'cbmcfs3_runner',
-        version          = '0.4.1',
+        version          = '0.4.2',
         description      = 'cbmcfs3_runner is a python package for running carbon budget simulations.',
         long_description = open('README.md').read(),
         license          = 'MIT',

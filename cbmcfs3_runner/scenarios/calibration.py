@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-This scenario corresponds to the results that were generated manually
-using the GUI by R.P. and saved to Access databases stored in JRCbox.
+Written by Lucas Sinclair and Paul Rougieux.
+
+JRC biomass Project.
+Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
@@ -17,6 +19,11 @@ from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
 class Calibration(Scenario):
+    """
+    This scenario corresponds to the results that were generated manually
+    using the GUI by R.P. and saved to Access databases stored in JRCbox.
+    """
+
     short_name = 'calibration'
 
     @property_cached

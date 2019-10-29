@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-This scenarios represents a demand that is pre-calculated and is not a function of the
-maximum wood supply (no interaction yet with the GFTM model).
+Written by Lucas Sinclair and Paul Rougieux.
+
+JRC biomass Project.
+Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
@@ -17,6 +19,11 @@ from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
 class StaticDemand(Scenario):
+    """
+    This scenario represents a demand that is pre-calculated and is not a
+    function of the maximum wood supply (no interaction yet with the GFTM model).
+    """
+
     short_name = 'static_demand'
 
     @property_cached

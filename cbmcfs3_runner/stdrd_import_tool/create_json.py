@@ -13,8 +13,6 @@ import os
 
 # Third party modules #
 import simplejson as json
-if os.name == "posix": import sh as pbs
-if os.name == "nt":    import pbs
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths

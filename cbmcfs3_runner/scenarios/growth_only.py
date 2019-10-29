@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-Run CBM without any disturbances even for the historical period.
-This can then be used as a benchmark to start reproducing results
-with separate models.
+Written by Lucas Sinclair and Paul Rougieux.
+
+JRC biomass Project.
+Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
@@ -18,6 +19,12 @@ from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
 class GrowthOnly(Scenario):
+    """
+    Run CBM without any disturbances even for the historical period.
+    This can then be used as a benchmark to start reproducing results
+    with separate models.
+    """
+
     short_name = 'growth_only'
 
     @property_cached
@@ -33,9 +40,10 @@ class GrowthOnly(Scenario):
             # i.e. use only historical disturbances #
             pre_pro.disturbance_events = pre_pro.events_hist
             # Prolong the simulation until base_year + 15
-            base_year = runner.country.base_year
-            inventory_start_year = runner.country.inventory_start_year 
-            step_2015 =  base_year - inventory_start_year + 1
+            base_year       = runner.country.base_year
+            inv_start_year  = runner.country.inventory_start_year
+            step_2015       =  base_year - inv_start_year + 1
+            # Change attribute #
             runner.middle_processor.num_steps_to_extend = step_2015 + 15
         # Return #
         return result

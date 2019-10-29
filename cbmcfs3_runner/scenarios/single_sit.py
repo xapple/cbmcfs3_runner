@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-Call SIT only once.
+Written by Lucas Sinclair and Paul Rougieux.
+
+JRC biomass Project.
+Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
@@ -16,6 +19,10 @@ from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
 class SingleSIT(Scenario):
+    """
+    Call SIT only once.
+    """
+
     short_name = 'single_sit'
 
     @property_cached

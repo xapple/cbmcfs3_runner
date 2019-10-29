@@ -2,22 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-This scenario is based on static_demand. Except that here the species,
-management type and management strategy are not specified based on
-the silviculture table, they are simply let for CBM to decide with
-question marks.
+Written by Lucas Sinclair and Paul Rougieux.
 
-Classifiers in the disturbance table of the original static_demand scenario:
-
-    | forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
-    | For         | QR      | ?     | H         | E          | ?   | Broad     |
-    | For         | PA      | ?     | H         | E          | ?   | Con       |
-
-Classifiers in the disturbance table of the new auto_allocation scenario:
-
-    | forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
-    | For         | ?       | ?     | ?         | ?          | ?   | Broad     |
-    | For         | ?       | ?     | ?         | ?          | ?   | Con       |
+JRC biomass Project.
+Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
@@ -31,11 +19,31 @@ from cbmcfs3_runner.core.runner import Runner
 
 ###############################################################################
 class AutoAllocation(Scenario):
+    """
+    This scenario is based on static_demand. Except that here the species,
+    management type and management strategy are not specified based on
+    the silviculture table, they are simply let for CBM to decide with
+    question marks.
+
+    Classifiers in the disturbance table of the original static_demand scenario:
+
+        | forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
+        | For         | QR      | ?     | H         | E          | ?   | Broad     |
+        | For         | PA      | ?     | H         | E          | ?   | Con       |
+
+    Classifiers in the disturbance table of the new auto_allocation scenario:
+
+        | forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
+        | For         | ?       | ?     | ?         | ?          | ?   | Broad     |
+        | For         | ?       | ?     | ?         | ?          | ?   | Con       |
+    """
+
     short_name = 'auto_allocation'
 
     @property_cached
     def runners(self):
         """A dictionary of country codes as keys with a list of runners as values."""
+        # Create runners #
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         # Modify these runners #
         for country in self.continent:
@@ -43,4 +51,5 @@ class AutoAllocation(Scenario):
             pre_pro = runner.pre_processor
             # Replace disturbances by their aggregated version #
             pre_pro.disturbance_events = pre_pro.events_auto_allocation
+        # Return #
         return result

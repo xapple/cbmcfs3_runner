@@ -21,7 +21,7 @@ import pandas
 from six import BytesIO
 
 # First party modules #
-from plumbing.cache       import property_cached
+from plumbing.cache import property_cached
 
 # Internal modules #
 from cbmcfs3_runner import module_dir
@@ -48,8 +48,9 @@ class Faostat(object):
     def download(cls):
         """A method to automatically downloaded the needed CSV file.
         You should only need to run this once. Use it like this:
-        >>> from cbmcfs3_runner.faostat import Faostat
-        >>> Faostat.download()
+
+            >>> from cbmcfs3_runner.faostat import Faostat
+            >>> Faostat.download()
         """
         # Download it #
         response = requests.get(url, stream=True)
@@ -68,7 +69,8 @@ class Faostat(object):
 
     @property_cached
     def forestry(self):
-        """Transform the raw data table to something adapted to our needs.
+        """
+        Transform the raw data table to something adapted to our needs.
         For instance, We need to use DataFrame.stack() to place the
         years as rows instead of columns.
 
@@ -119,5 +121,5 @@ class Faostat(object):
         return df
 
 ###############################################################################
-# Make a singelton #
+# Make a singleton #
 faostat = Faostat()
