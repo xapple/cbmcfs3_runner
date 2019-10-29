@@ -21,14 +21,16 @@ from plumbing.cache import property_cached
 class FusionData(object):
     """
     This class will provide access to the FUSION inventory data of a Country
-    as a pandas dataframe. 
-    
-    The inventory from FUSION has the same format as 
-    the inventory we feed to CBM.
-    The only difference is that the forest protection status 'For' 
-    are divided into 3 status of Availability for Wood Supply (AWS)
-    'FNAWS', 'FRAWS' and 'FAWS' where NA means not available, 
-    RA means restricted available and A means available. 
+    as a pandas data frame.
+
+    The inventory from FUSION has the same format as the inventory we feed to CBM.
+    The only difference is that the forest protection status 'For'
+    are divided into 3 status of Availability for Wood Supply (AWS):
+
+        'FNAWS', 'FRAWS' and 'FAWS'
+
+    where NA means not available,  RA means restricted available
+    and A means available.
     """
 
     all_paths = """

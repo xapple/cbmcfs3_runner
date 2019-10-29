@@ -9,8 +9,8 @@ Unit D1 Bioeconomy.
 
 You can use this object like this:
 
-    from cbmcfs3_runner.core.continent import continent
-    print(continent)
+    >>> from cbmcfs3_runner.core.continent import continent
+    >>> print(continent)
 """
 
 # Built-in modules #
@@ -39,8 +39,7 @@ if os.environ.get("CBMCFS3_DATA"):
 
 ###############################################################################
 class Continent(object):
-    """Aggregates countries together. Enables access to a data frame containing
-    concatenates data from all countries."""
+    """Aggregates countries together."""
 
     all_paths = """
     /countries/
@@ -104,6 +103,6 @@ class Continent(object):
         return self.countries[key]
 
 ###############################################################################
-# Create list of all countries #
+# Create a singleton #
 continent = Continent(cbm_data_repos)
 
