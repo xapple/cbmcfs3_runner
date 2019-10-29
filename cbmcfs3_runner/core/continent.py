@@ -98,18 +98,6 @@ class Continent(object):
         """Return a runner based on scenario, country and step."""
         return self.scenarios[scenario].runners[country][step]
 
-    @property_cached
-    def country_ref_years(self):
-        """Access the country codes and reference years."""
-        cisy = [(c.country_name,
-                 c.iso2_code,
-                 c.inventory_start_year) for c in self]
-        df = pandas.DataFrame(cisy, columns=['country_name',
-                                             'iso2_code',
-                                             'inventory_start_year'])
-        return df
-
-
     @property
     def first(self):
         key = next(iter(self.countries))
