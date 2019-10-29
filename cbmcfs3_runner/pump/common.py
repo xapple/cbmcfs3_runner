@@ -66,3 +66,32 @@ def flexible_join(first, other, on, how=None):
     result = result.reset_index()
     # Return #
     return result
+
+###############################################################################
+def format_vertical_headers(df):
+    """
+    Display a pandas data frame with vertical column headers.
+    This is useful when column names are especially long
+    (for example the columns of disturbance matrices contain
+    very long carbon pool names).
+
+    Inspired by https://stackoverflow.com/a/53318677/2641825
+
+    Example use:
+        >>> import pandas
+        >>> data = [{'Way too long of a column to be reasonable': 4, 'Four?': 40},
+        >>>         {'Way too long of a column to be reasonable': 5, 'Four?': 50}]
+        >>> format_vertical_headers(pandas.DataFrame(data))
+    """
+    # Define styles #
+    styles = [{'selector': 'th',
+               'props':    [('width', '40px')]},
+              {'selector': 'th.col_heading',
+               'props':   [('writing-mode',   'vertical-rl'),
+                           ('transform',      'rotateZ(180deg)'),
+                           ('height',         '190px'),
+                           ('vertical-align', 'top')]}]
+    # Set styles #
+    df = df.fillna('').style.set_table_styles(styles)
+    # Return #
+    return
