@@ -27,13 +27,13 @@ class AutoAllocation(Scenario):
 
     Classifiers in the disturbance table of the original static_demand scenario:
 
-        | forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
+        | forest_type | species | admin | mgmt_type | mgmt_strat | eco | con_broad |
         | For         | QR      | ?     | H         | E          | ?   | Broad     |
         | For         | PA      | ?     | H         | E          | ?   | Con       |
 
     Classifiers in the disturbance table of the new auto_allocation scenario:
 
-        | forest_type | species | admin | mngt type | mngt strat | eco | con_broad |
+        | forest_type | species | admin | mgmt_type | mgmt_strat | eco | con_broad |
         | For         | ?       | ?     | ?         | ?          | ?   | Broad     |
         | For         | ?       | ?     | ?         | ?          | ?   | Con       |
     """

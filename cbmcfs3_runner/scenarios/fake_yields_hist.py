@@ -21,12 +21,14 @@ from cbmcfs3_runner.core.runner import Runner
 class FakeYieldsHist(Scenario):
     """
     This scenario is the same as `static_demand` except that we use the
-    HISTORICAL yield tables for the current period simulation.
+    HISTORICAL yield tables for all the three simulation periods:
 
-    Calling SIT both times with the same historical yield table.
+    initialization, historical, future.
+
+    In effect, calling SIT both times with the same historical yield table.
 
     We are normally not supposed to do this. But, for comparison purposes,
-    we are going to do so anyway to see what effect this change has on results..
+    we are going to do so anyway to see what effect this change has on results.
     """
 
     short_name = 'fake_yields_hist'

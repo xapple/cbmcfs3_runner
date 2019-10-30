@@ -40,21 +40,8 @@ class Products(object):
     #-------------------------------------------------------------------------#
     @property_cached
     def silviculture(self):
-        """Prepare the silviculture treatments data frame
-        for joining operations with harvest tables."""
-        # Load file #
-        df = self.parent.parent.country.silviculture.treatments
-        # Rename classifiers from _1 to forest etc. #
-        df = df.rename(columns = self.parent.classifiers_mapping)
-        # Rename a column #
-        df = df.rename(columns = {'dist_type_name': 'dist_type_name'})
-        # Change the type of dist_type_name to string so that it has the same type as
-        # the `harvest_check` dist_type_name column
-        df['dist_type_name'] = df['dist_type_name'].astype(str)
-        # Change the type of management_strategy to string (for SI)
-        df['management_strategy'] = df['management_strategy'].astype(str)
-        # Return #
-        return df
+        """Shortcut."""
+        return self.parent.parent.country.silviculture.treatments
 
     #-------------------------------------------------------------------------#
     @property_cached
