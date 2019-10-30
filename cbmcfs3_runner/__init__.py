@@ -9,7 +9,7 @@ Unit D1 Bioeconomy.
 """
 
 # Special variables #
-__version__ = '0.4.2'
+__version__ = '0.5.0'
 
 # Built-in modules #
 import os, sys
