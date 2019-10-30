@@ -85,7 +85,7 @@ class Continent(object):
         return {s.short_name: s for s in all_scenarios}
 
     def run_scenarios(self, verbose=True):
-        """Run all scenarios for all countries in continent"""
+        """Run all scenarios for all countries in continent."""
         for scenario in self.scenarios.values():
             print(scenario)
             scenario(verbose=verbose)
