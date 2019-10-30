@@ -5,7 +5,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.1'
-      jupytext_version: 1.1.7
+      jupytext_version: 1.2.4
   kernelspec:
     display_name: Python 3
     language: python
@@ -13,23 +13,30 @@ jupyter:
 ---
 
 ```python
+# Modules #
 import sys, pandas
-# Catch database related errors
+
+# Catch database related errors #
 from pyodbc import Error
 from pandas.io.sql import DatabaseError
 
-# Project modules
-# Load the cbm_runner package from 'repos/' (instead of 'deploy/') #
-sys.path.insert(0, "/repos/cbmcfs3_runner/")
+# Optionally, load the cbm_runner package from 'repos/' (instead of 'deploy/') #
+#sys.path.insert(0, "/repos/cbmcfs3_runner/")
+
+# Import the main continent #
 from cbmcfs3_runner.core.continent import continent
 
-# Choose  a country
-# country = 'LU'
-country = 'AT'
-runner = continent[('calibration', country, 0)]
+# Choose a country #
+country_code = 'LU'
+runner = continent[('calibration', country_code, 0)]
+
+# Load database #
 db = runner.post_processor.database
+
+# Constants #
 list_all_column_names = True
-# List to be used with .iloc[] to select the first two and last two rows of a data frame
+
+# List to be used with .iloc[f2l2] to select the first two and last two rows of a data frame #
 f2l2 = [0,1,-2,-1]
 ```
 
@@ -37,7 +44,7 @@ f2l2 = [0,1,-2,-1]
 
 List all tables and show part of the content of some tables from the calibration database. 
 Press on the table of contents icon to see the table of content. 
-Some tables are in fact storred queries. The ODBC engine we use to read Access tables doesn't distinguish between tables and storred queries. Note also the Query section, which gives the SQL content of the storred queries.
+Some tables are in fact storred queries. The ODBC engine we use to read Microsfot Access tables doesn't distinguish between tables and storred queries. Note also the Query section, which gives the SQL content of the storred queries.
 
 
 # List all tables 
@@ -47,13 +54,17 @@ db.tables
 ```
 
 # List all column names
-The list above contains tables and stored queries. 
-MS Acces databases contains tables and storred SQL queries.
-From the ODBC driver perspectives tables and queries are the same but queries take a longuer time to load (especially if there are nested queries underneath).
 
-The following code is a little bit innefficient since it loads the content of all tables, 
-just to display the column name. 
-But most time is spend in the queries anyway, not in fetching the tables. 
+The list above contains tables and stored queries. 
+
+Microsfot Acces databases contains tables and storred SQL queries.
+
+From the ODBC driver's perspective, tables and queries are the same but queries take a longer time to load (especially if there are nested queries underneath).
+
+The following code is a little bit inefficient since it loads the content of all tables, 
+just to display the column name.
+
+But most time is spent in the queries anyway, not in fetching the tables. 
 
 ```python
 if list_all_column_names:
@@ -89,7 +100,7 @@ except Exception as e:
 ## back_inventory
 
 ```python
-db['back_inventory']#.head(2)
+db['back_inventory'].head(2)
 ```
 
 ## dist_events_const
@@ -98,7 +109,7 @@ db['back_inventory']#.head(2)
 db['dist_events_const'].head(2)
 ```
 
-## reversed_disturbance_events
+## reversed_disturbance_events (doesn't exist?)
 
 ```python
 db['reversed_disturbance_events'].iloc[f2l2]
@@ -128,11 +139,10 @@ db['tblfluxindicators'].head(2)
 db['tblpoolindicators'].head(2)
 ```
 
-## tot_harvest_clearcut_disturbances
+## tot_harvest_clearcut_disturbances (doesn't exist?)
 
 ```python
 db['tot_harvest_clearcut_disturbances'].head(2)
-
 ```
 
 # SQL querries
@@ -411,11 +421,3 @@ GROUP BY Vol_ha_II.Vol_ha_II, Vol_ha_II.AG_Vol_ha_II, Vol_ha_II.TimeStep;
 |VOLINC_Summary:
 SELECT Merch_Incr_ha_FINAL.TimeStep, Merch_Incr_ha_FINAL.Vol_ha_II.Vol_ha_II AS Vol_ha, Merch_Incr_ha_FINAL.Vol_ha_II_1, Merch_Incr_ha_FINAL.NAI AS Merch_Stock_Change, Merch_Incr_ha_FINAL.Merch_Harvest_ha, Merch_Incr_ha_FINAL.GAI AS Merch_NAI, Net_Gross_Growth_FINAL.DeltaVol_AG_ha AS AG_CAI, Net_Gross_Growth_FINAL.AvgOfWD_CBM_FT AS Avg_CBM_WD, Net_Gross_Growth_FINAL.MerchLitt_Input_ha, [Merch_NAI]+[MerchLitt_Input_ha] AS YTs_Incr
 FROM Merch_In
-
-```python
-
-```
-
-```python
-
-```
