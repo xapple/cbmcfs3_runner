@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-A script to create the CSV files in the "export" directory which
-are all extracted from the "calibration.mdb" database.
+A script to create the CSV files in the "export" directory which are all extracted from the "calibration.mdb" database.
+
+One of the files goes into /orig/ instead.
 
 Typically you would run this file from a command line like this:
 
@@ -22,8 +23,6 @@ from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
 from cbmcfs3_runner.core.continent import continent
-
-# Constants #
 
 ###############################################################################
 class ExportCalibrationCSV(object):
@@ -92,8 +91,10 @@ class ExportCalibrationCSV(object):
             df.to_csv(destination, index=False)
 
     def rename_coefs(self):
-        """The coefficients file is a bit special. We will change one line.
-        And move it to /orig/ as it is constant per country."""
+        """
+        The coefficients file is a bit special. We will change one line.
+        And move it to /orig/ as it is constant per country.
+        """
         # Get the path #
         coef_file = self.paths.coefficients
         # Rename column 'Species' to match classifier 2's name #

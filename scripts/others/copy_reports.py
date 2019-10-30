@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-A script to copy PDF reports from the distant machine to the local workstation.
+A script to copy PDF reports from the distant machine (cbm1) to the local workstation.
+
+A wrapper to a rsync command.
 
 Typically you would run this file from a command line like this:
 

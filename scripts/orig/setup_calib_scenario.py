@@ -3,7 +3,7 @@
 
 """
 A script to copy files into the directory structure for the "fake" calibration scenario
-that we will not actually run, but pretend it has run by directly copying the output
+that we will not actually run, but pretend it has been run by directly copying the output
 database into the output directory.
 
 Typically you would run this file from a command line like this:

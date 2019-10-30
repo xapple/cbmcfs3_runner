@@ -15,11 +15,12 @@ Typically you would run this file from a command line like this:
 import pandas
 
 # First party modules #
-from plumbing.cache import property_cached
 from autopaths.auto_paths import AutoPaths
+from plumbing.cache import property_cached
 from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
+from cbmcfs3_runner.core.continent import continent
 
 # Constants #
 
@@ -80,8 +81,8 @@ class AssociationsChecker(object):
 
     def list_missing(self):
         """
-        A method to predict what errors the StandardImport tool will throw
-        by checking the contents of the AIDB.
+        A method to predict what errors the Standard Import Tool will throw
+        in advance, by checking the contents of the AIDB.
         """
         # Print function #
         def print_messages(default, names, key):
@@ -111,11 +112,12 @@ class AssociationsChecker(object):
         unmatched = types ^ names
         if unmatched:
             print('disturbance_types.csv - %s - %s ' % (self.parent.parent.country_iso2, unmatched))
-        # Nonforest #
+        # Non-forest #
         default = set(self.aidb['tblAfforestationPreTypeDefault']['Name'])
         names   = self.key_to_rows(self.keys[4]).values()
         print_messages(default, names, self.keys[4])
 
 ###############################################################################
 if __name__ == '__main__':
-    raise Exception("This script needs to be finished and is missing a few parts.")
+    checkers = [AssociationsChecker(c) for c in continent]
+    for checker in tqdm(checkers): checker()

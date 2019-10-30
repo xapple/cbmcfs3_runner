@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-A script to run all the countries.
+A script to run all the countries (of a given scenario) through the full pipeline.
 
 Typically you would run this file from a command line like this:
 
      ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_all_countries.py
 
-The last times the script was run it took this much time to run:
+The last times this script was run it took this much time to run:
 
 100%|████████████████████| 26/26 [9:49:52<00:00, 998.86s/it]
 100%|██████████████████| 26/26 [10:36:00<00:00, 1329.48s/it]
@@ -19,9 +19,6 @@ The last times the script was run it took this much time to run:
 # Third party modules #
 
 # First party modules #
-
-# Optionally, import from repos instead of deploy
-#sys.path.insert(0, "/repos/cbmcfs3_runner/")
 
 # Internal modules #
 from cbmcfs3_runner.core.continent import continent

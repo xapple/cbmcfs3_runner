@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-A script to run the current feature that is being developed and test it.
+A script to regenerate all the graphs for every country object and every runner object as well (of the static demand scenario).
 
 Typically you would run this file from a command line like this:
 
@@ -20,17 +20,17 @@ from tqdm import tqdm
 from cbmcfs3_runner.core.continent import continent
 
 ################################################################################
-for c in tqdm(continent.countries.values()):
+for country in tqdm(continent.countries.values()):
     # Get scenarios #
-    statc = c.scenarios['static_demand'][-1]
-    # Filter runners #
-    if statc.map_value < 1.0: continue
+    runner = country.scenarios['static_demand'][-1]
+    # Optionally, filter runners #
+    #if runner.map_value < 1.0: continue
     # Purge runners #
-    statc.paths.graphs_dir.remove()
+    runner.paths.graphs_dir.remove()
     # Purge country #
-    c.paths.graphs_dir.remove()
+    country.paths.graphs_dir.remove()
     # Runner report #
-    statc.report()
+    runner.report()
     # Country report #
-    c.report()
-    c.report.copy_to_outbox()
+    country.report()
+    country.report.copy_to_outbox()

@@ -2,13 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-A script to draw a map of all the countries that pass a certain step of the simulation.
+A script to draw a map of europe where each country is colored according to how far it runs in the simulation.
+
+For a runner, a value of 1.0 indicates that it passes all the way through the pipeline.
+For a runner, a value lower than 1.0 indicates that it fails at some stage.
 
 Typically you would run this file from a command line like this:
 
      ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/others/draw_europe_map.py
 
-Color brewer makes provides a range of color palettes:
+In this script, brewer2mpl is used to provides a range of color palettes:
 
     http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3
 """
@@ -52,12 +55,13 @@ m = folium.Map(
 )
 
 ###############################################################################
+# Other palettes include for instance 'PuBuGn'
 m.choropleth(
     geo_data   = 'https://github.com/simonepri/geo-maps/releases/download/v0.6.0/countries-land-10km.geo.json',
     data       = map_data,
     columns    = ['A3', 'value'],
     key_on     = 'feature.properties.A3',
-    fill_color = 'YlGn' # palette.hex_color # 'PuBuGn'
+    fill_color = 'YlGn'
 )
 
 ###############################################################################

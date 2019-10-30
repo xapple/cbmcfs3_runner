@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-A script to create the CSV files called "silviculture.csv"
-by extracting it from the "silviculture.sas" file.
+A script to create the CSV file called "silviculture.csv" by extracting it from the "silviculture.sas" file.
 
 Typically you would run this file from a command line like this:
 
@@ -49,15 +48,17 @@ class ExportFromSilviculture(object):
 
     def __call__(self):
         self.treatments()
-        #self.harvest_corr_fact()
-        #self.harvest_prop_fact()
+        self.harvest_corr_fact()
+        self.harvest_prop_fact()
 
     def treatments(self):
-        """Search the SAS file for the CSV that is hidden inside and return a
+        """
+        Search the SAS file for the CSV that is hidden inside and return a
         pandas DataFrame. Yes, you heard that correctly, the SAS file has
         a CSV hidden somewhere in the middle under plain text format.
         This data frame will later be used to generate disturbances from the
-        economic demand."""
+        economic demand.
+        """
         # Our regular expression #
         query = '\n {3}input (.*?);\n {3}datalines;\n\n(.*?)\n;\nrun'
         # Search in the file #
@@ -76,7 +77,8 @@ class ExportFromSilviculture(object):
         df.to_csv(str(self.paths.treatments), index=False)
 
     def harvest_corr_fact(self):
-        """There is actually an other hard-coded info inside the SAS file
+        """
+        There is actually an other hard-coded info inside the SAS file
         that we need.
 
         This method will extract a list of "harvest correction factors"
@@ -106,7 +108,8 @@ class ExportFromSilviculture(object):
         df.to_csv(str(self.paths.corr_fact), index=False)
 
     def harvest_prop_fact(self):
-        """This time we want the harvest proportion factors.
+        """
+        This time we want the harvest proportion factors.
 
               if dist_type_name=11 then Stock_available=Stock*0.10*CF;
               if dist_type_name=13 then Stock_available=Stock*0.20*CF;
@@ -131,6 +134,10 @@ class ExportFromSilviculture(object):
 
 ###############################################################################
 if __name__ == '__main__':
+    # Create all exporters #
     exporters = [ExportFromSilviculture(c) for c in continent]
-    #exporters = [e for e in exporters if e.country.iso2_code in ['PT', 'IE', 'HR']]
+    # Optionally, filter them #
+    #keep_countries = ['PT', 'IE', 'HR']
+    #exporters = [e for e in exporters if e.country.iso2_code in keep_countries]
+    # Run them all #
     for exporter in tqdm(exporters): exporter()

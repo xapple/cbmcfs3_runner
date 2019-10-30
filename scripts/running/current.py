@@ -4,6 +4,8 @@
 """
 A script to run the current feature that is being developed and test it.
 
+A sort of scrapbook for pieces of code used while developing the cbmcfs3_runner python package.
+
 Typically you would run this file from a command line like this:
 
      ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/current.py

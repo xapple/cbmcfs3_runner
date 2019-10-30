@@ -145,11 +145,13 @@ class CaseRenamer(object):
                 self.replace_word_if_other_word(file, old_name, 'query', new_name)
 
     def replace_word_if_other_word(self, path, word1, word2, replacement_word):
-        """Search the file for a given word, and if found,
+        """
+        Search the file for a given word, and if found,
         check the line in which it appears for another second word,
         if both the first and second word are found on the same line,
         then replace every occurrence of the first word with
-        the replacement word."""
+        the replacement word.
+        """
         # The original file #
         orig_file = Path(path)
         # Create a new file #
@@ -172,11 +174,11 @@ if __name__ == '__main__':
     for converter in tqdm(converters): converter()
     for converter in tqdm(converters): converter.fix_spelling()
     # Second part #
-    code_dir = home + "repos/sinclair/work/ispra_italy/repos/cbmcfs3_runner/cbmcfs3_runner/"
+    code_dir = home + "repos/cbmcfs3_runner/cbmcfs3_runner/"
     renamer  = CaseRenamer(code_dir, '.py')
     renamer()
     # Third part #
-    code_dir = home + "repos/sinclair/work/ispra_italy/repos/bioeconomy_notes/notebooks/"
+    code_dir = home + "repos/bioeconomy_notes/notebooks/"
     renamer  = CaseRenamer(code_dir, '.md')
     renamer()
 

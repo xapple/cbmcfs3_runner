@@ -15,6 +15,7 @@ Typically you would run this file from a command line like this:
 
 # Third party modules #
 import pandas
+from tqdm import tqdm
 
 # First party modules #
 from plumbing.cache import property_cached
@@ -22,6 +23,7 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
+from cbmcfs3_runner.core.continent import continent
 
 # Constants #
 
@@ -78,9 +80,11 @@ class AssociationsGenerator(object):
         return rows
 
     def __call__(self):
-        """Run this once before manually fixing the CSVs.
+        """
+        Run this once before manually fixing the CSVs.
         The keys of the dictionary are the names in the calibration.mdb
-        The values of the dictionary are the names in the aidb.mdb to map to."""
+        The values of the dictionary are the names in the aidb.mdb to map to.
+        """
         # Remove this warning if you must #
         raise Exception("Are you sure you want to regenerate the associations CSV?" + \
                         "They have been edited manually.")
@@ -93,6 +97,7 @@ class AssociationsGenerator(object):
         # Disturbances #
         left      = self.aidb['tblDisturbanceTypeDefault'].set_index('dist_type_id')
         right     = self.calib['tblDisturbanceType'].set_index('default_dist_type_id')
+        # Join #
         self.dist = left.join(right, how='inner', lsuffix='_archive', rsuffix='_calib')
         self.dist = zip(self.dist['description_calib'], self.dist['dist_type_name_archive'])
         # Filter empty disturbances #
@@ -109,4 +114,5 @@ class AssociationsGenerator(object):
 
 ###############################################################################
 if __name__ == '__main__':
-    raise Exception("This script needs to be finished and is missing a few parts.")
+    generators = [AssociationsGenerator(c) for c in continent]
+    for generator in tqdm(generators): generator()
