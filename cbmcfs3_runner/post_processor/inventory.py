@@ -67,7 +67,7 @@ class Inventory(object):
         df['bg_biomass'] = df.sw_coarse  + df.sw_fine    + \
                            df.hw_coarse  + df.hw_fine
         df['bef_tot']    = (df.tot_abg   + df.bg_biomass) / df.tot_abg
-        # Return result #
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -104,7 +104,7 @@ class Inventory(object):
         # Divide #
         df['merch_c_ha']   = df.biomass    / df.bef_tot
         df['merch_vol_ha'] = df.merch_c_ha / df.density
-        # Return result #
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#

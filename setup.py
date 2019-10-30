@@ -13,5 +13,5 @@ setup(
         install_requires = ['autopaths', 'plumbing', 'pymarktex', 'pbs3', 'pandas', 'pystache',
                             'pyexcel', 'pyexcel-xlsx', 'seaborn', 'xlrd', 'xlsxwriter',
                             'simplejson', 'brewer2mpl', 'matplotlib==3.0.3', 'tabulate', 'tqdm',
-                            'numpy'],
+                            'numpy', 'six'],
     )

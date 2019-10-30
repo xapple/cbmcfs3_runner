@@ -18,7 +18,6 @@ from plumbing.cache       import property_cached
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
-from cbmcfs3_runner.post_processor.dist_surplus import DistSurplus
 from cbmcfs3_runner.post_processor.harvest      import Harvest
 from cbmcfs3_runner.post_processor.inventory    import Inventory
 from cbmcfs3_runner.post_processor.products     import Products
@@ -56,8 +55,10 @@ class PostProcessor(object):
 
     @property_cached
     def classifiers(self):
-        """Creates a mapping between 'user_defd_class_set_id'
+        """
+        Creates a mapping between 'user_defd_class_set_id'
         and the classifiers values:
+
          * species, site_quality and forest_type in tutorial six
          * status, forest_type, region, management_type, management_strategy, climatic_unit, conifers_broadleaves
          in the European dataset
@@ -69,16 +70,17 @@ class PostProcessor(object):
         user_classes           = self.database["tblUserDefdClasses"]
         user_sub_classes       = self.database["tblUserDefdSubclasses"]
         user_class_sets_values = self.database["tblUserDefdClassSetValues"]
-        # Join
+        # Join #
         index = ['user_defd_class_id', 'user_defd_subclass_id']
         classifiers = user_sub_classes.set_index(index)
         classifiers = classifiers.join(user_class_sets_values.set_index(index))
-        # Unstack
+        # Unstack #
         index = ['user_defd_class_id', 'user_defd_class_set_id']
         classifiers = classifiers.reset_index().dropna().set_index(index)
         classifiers = classifiers[['user_defd_sub_class_name']].unstack('user_defd_class_id')
-        # Rename
+        # Rename #
         # This object will link: 1->species, 2->forest_type, etc.
+        # TODO replace this with country.classifiers.mapping
         mapping = user_classes.set_index('user_defd_class_id')['class_desc']
         mapping = mapping.apply(self.sanitize_names)
         classifiers = classifiers.rename(mapping, axis=1)
@@ -102,7 +104,8 @@ class PostProcessor(object):
 
     @property_cached
     def classifiers_coefs(self):
-        """A join between the coefficients and the classifiers table.
+        """
+        A join between the coefficients and the classifiers table.
         Later they can be joined on the flux indicators table using
         `user_defd_class_set_id` as an index.
 
@@ -166,8 +169,10 @@ class PostProcessor(object):
 
     @property_cached
     def flux_indicators(self):
-        """Load the flux indicators table add dist_type_name, classifiers and
-        coefficients"""
+        """
+        Load the flux indicators table add dist_type_name, classifiers and
+        coefficients.
+        """
         # Load tables #
         flux_indicators  = self.database['tblFluxIndicators']
         disturbance_type = self.database['tblDisturbanceType']
@@ -180,7 +185,7 @@ class PostProcessor(object):
 
     @property_cached
     def pool_indicators(self):
-        """Load the pool indicators table, add classifiers"""
+        """Load the pool indicators table, add classifiers."""
         # Load tables #
         pool  = self.database["tblPoolIndicators"]
         clifr = self.classifiers
@@ -203,8 +208,3 @@ class PostProcessor(object):
     @property_cached
     def products(self):
         return Products(self)
-
-    @property_cached
-    def dist_surplus(self):
-        return DistSurplus(self)
-

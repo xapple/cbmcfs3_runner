@@ -23,7 +23,7 @@ class FakeYieldsHist(Scenario):
     This scenario is the same as `static_demand` except that we use the
     HISTORICAL yield tables for all the three simulation periods:
 
-    initialization, historical, future.
+    initialization, historical, simulation (future).
 
     In effect, calling SIT both times with the same historical yield table.
 

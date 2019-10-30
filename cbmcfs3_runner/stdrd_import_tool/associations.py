@@ -46,26 +46,25 @@ class Associations(object):
         """
         Here is an example call:
 
-        >>> self.key_to_rows('MapDisturbanceType')
-        {'10% commercial thinning': '10% Commercial thinning',
-         'Deforestation': 'Deforestation',
-         'Fire': 'Wild Fire',
-         'Generic 15%': 'generic 15% mortality',
-         'Generic 20%': 'generic 20% mortality',
-         'Generic 30%': 'generic 30% mortality',
-         'Spruce Beetle 2% mortality (Ice sleet)': 'Spruce Beetle 2% mortality'}
+            >>> self.key_to_rows('MapDisturbanceType')
+            {'10% commercial thinning': '10% Commercial thinning',
+             'Deforestation': 'Deforestation',
+             'Fire': 'Wild Fire',
+             'Generic 15%': 'generic 15% mortality',
+             'Generic 20%': 'generic 20% mortality',
+             'Generic 30%': 'generic 30% mortality',
+             'Spruce Beetle 2% mortality (Ice sleet)': 'Spruce Beetle 2% mortality'}
         """
         query   = "A == '%s'" % mapping_name
         mapping = self.df.query(query).set_index('B')['C'].to_dict()
         return mapping
 
     def rows_to_list(self, mapping_name, user, default):
-        """Create a list string by picking the appropriate rows in the CSV file.
+        """Create a list by picking the appropriate rows in the CSV file.
 
         Here is an example call:
 
-        >>> self.key_to_rows('MapSpecies', 'user_species', 'default_species')
-        {...}
+            >>> self.key_to_rows('MapSpecies', 'user_species', 'default_species')
         """
         return [{user:k, default:v} for k,v in self.key_to_rows(mapping_name).items()]
 
@@ -93,12 +92,13 @@ class Associations(object):
     #-------------------------------------------------------------------------#
     @property_cached
     def map_disturbance(self):
-        """Filter the associations data frame for the
-        MapDisturbanceType part.
+        """
+        Filter the associations data frame for the MapDisturbanceType part.
 
-        For example:
+        Returns:
 
             dist_desc_input 	          name
+            ---------------               ----
             Fire 	                      Wild Fire
             Clearcut with slash bum H 	  Clearcut with slash-burn
             Clearcut with slash bum (...) Clearcut with slash-burn

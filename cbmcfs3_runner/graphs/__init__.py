@@ -28,9 +28,11 @@ class Graphs(object):
 
 ###############################################################################
 def load_graphs_from_module(parent, submodule):
-    """Sorry for the black magic. The result is an object whose attributes
+    """
+    Sorry for the black magic. The result is an object whose attributes
     are all the graphs found in submodule.py initialized with the
-    proper instance as only argument."""
+    proper instance as only argument.
+    """
     # Get all graphs of a submodule #
     graph_classes   = [getattr(submodule, g) for g in submodule.__all__]
     graph_instances = [g(parent)    for g in graph_classes]

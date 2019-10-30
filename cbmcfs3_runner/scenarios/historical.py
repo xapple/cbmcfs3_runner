@@ -20,8 +20,8 @@ from cbmcfs3_runner.core.runner import Runner
 ###############################################################################
 class Historical(Scenario):
     """
-    This scenarios represents a demand that is pre-calculated and is not a function of the
-    maximum wood supply (no interaction yet with the GFTM model).
+    This scenario runs only until the year 2015. It covers the historical period
+    only and it does not contain future disturbances.
     """
 
     short_name = 'historical'

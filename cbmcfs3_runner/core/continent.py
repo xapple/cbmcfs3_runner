@@ -49,8 +49,10 @@ class Continent(object):
     """
 
     def __init__(self, base_dir):
-        """Store the directory paths where there is a directory for every
-        country and for every scenario."""
+        """
+        Store the directory paths where there is a directory for every
+        country and for every scenario.
+        """
         # The base directory #
         self.base_dir = base_dir
         # Automatically access paths based on a string of many subpaths #

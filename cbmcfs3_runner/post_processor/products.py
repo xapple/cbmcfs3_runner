@@ -96,6 +96,7 @@ class Products(object):
         # Drop HWP column
         # because it doesn't make sense anymore below when we join different products together
         df = df.drop('hwp', axis = 1)
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -109,6 +110,7 @@ class Products(object):
                                'vol_snags':     'vol_snags_irw_c',
                                'tc':            'tc_irw_c'}))
         df = df.drop('hwp', axis = 1)
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -121,6 +123,7 @@ class Products(object):
                                'vol_sub_merch': 'vol_sub_merch_fw_b',
                                'vol_snags':     'vol_snags_fw_b',
                                'tc':            'tc_fw_b'}))
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -141,6 +144,7 @@ class Products(object):
                  'vol_merch_fw_b', 'vol_sub_merch_fw_b', 'vol_snags_fw_b',
                  'vol_sub_merch_irw_b', 'vol_snags_irw_b',
                  'tot_vol_fw_b']]
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -153,6 +157,7 @@ class Products(object):
                                'vol_sub_merch': 'vol_sub_merch_fw_c',
                                'vol_snags':     'vol_snags_fw_c',
                                'tc':            'tc_fw_c'}))
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -171,10 +176,12 @@ class Products(object):
                                               df['vol_snags_irw_c']]),
                                          sum([df['vol_sub_merch_irw_c'],
                                               df['vol_snags_irw_c']]))
+        # Select columns of interest #
         df = df[['time_step',
                  'vol_merch_fw_c','vol_sub_merch_fw_c','vol_snags_fw_c',
                  'vol_sub_merch_irw_c','vol_snags_irw_c',
                  'tot_vol_fw_c']]
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -185,7 +192,7 @@ class Products(object):
         Matching the product description available in the economic model
         and in the FAOSTAT historical data.
 
-        Join "Vol_Merch" columns from "irw_b" and "irw_c"
+        Join "vol_merch" columns from "irw_b" and "irw_c"
         to the total columns from "fw_b_total" and "fw_c_total",
         using the time step as an index.
         """
@@ -195,8 +202,9 @@ class Products(object):
               .join(self.fw_c_total.set_index('time_step')[['tot_vol_fw_c']])
               .join(self.fw_b_total.set_index('time_step')[['tot_vol_fw_b']])
               .reset_index())
-        # Add year
+        # Add year #
         df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
         # Rename columns to standard IRW and FW product names
         df = df.rename(columns=lambda x: re.sub(r'vol_merch_|tot_vol_',r'', x))
+        # Return #
         return df

@@ -20,7 +20,7 @@ from cbmcfs3_runner.core.runner import Runner
 ###############################################################################
 class SingleSIT(Scenario):
     """
-    Call SIT only once.
+    Call SIT only once, instead of twice. And use the historical yields.
     """
 
     short_name = 'single_sit'

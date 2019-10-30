@@ -122,14 +122,8 @@ class LaunchSIT(object):
 
     @property
     def log(self):
+        """Convenience shortcut method."""
         return self.parent.log
-
-    @property_cached
-    def project_mdb(self):
-        self.paths.mdb.must_exist()
-        database = AccessDatabase(self.paths.mdb)
-        database.convert_col_names_to_snake = True
-        return database
 
     @property
     def tail(self):

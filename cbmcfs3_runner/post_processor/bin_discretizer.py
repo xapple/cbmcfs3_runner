@@ -43,7 +43,8 @@ def bin_to_discrete(bin_height, bin_center,
                     bin_width = CBM_BIN_WIDTH,
                     precision = CBM_PRECISION,
                     testing   = False):
-    """This function is more or less the inverse of the pandas.cut method.
+    """
+    This function is more or less the inverse of the pandas.cut method.
     Starting with binned data, we will assume a uniform distribution and
     transform it back to discrete data with a given precision.
 
@@ -75,9 +76,11 @@ def bin_to_discrete(bin_height, bin_center,
 
 ###############################################################################
 def aggregator(df, sum_col, bin_col):
-    """The input df is a data frame with multiple rows and
+    """
+    The input df is a data frame with multiple rows and
     the grouping columns still present. One must return a numpy
-    vector representing the Area per Age. (i.e. the sum_col per bin_col)"""
+    vector representing the Area per Age. (i.e. the sum_col per bin_col)
+    """
     # Helper function #
     discretizer = lambda row: bin_to_discrete(row[sum_col], row[bin_col])
     # Get the discretized version of all rows as vectors #
@@ -117,8 +120,10 @@ def generate_bins(vector, bin_width, precision = CBM_PRECISION):
 
 ###############################################################################
 def binner(vector, sum_col, bin_width):
-    """Starting from a discretized vector, create a dataframe
-    with each row describing a bin."""
+    """
+    Starting from a discretized vector, create a data frame
+    with each row describing a bin.
+    """
     # Make bins #
     all_bins = generate_bins(vector, bin_width)
     # Make data frame #

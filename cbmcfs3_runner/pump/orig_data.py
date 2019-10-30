@@ -18,7 +18,6 @@ from autopaths.auto_paths import AutoPaths
 from plumbing.cache import property_cached
 
 # Internal modules #
-from cbmcfs3_runner.pump.common import reshape_yields_long
 
 ###############################################################################
 class OrigData(object):
@@ -47,6 +46,7 @@ class OrigData(object):
     def __getitem__(self, item):
         return pandas.read_csv(str(self.paths[item]))
 
+    #-------------------------- Inventory ------------------------------#
     @property_cached
     def inventory(self):
         """
@@ -72,6 +72,7 @@ class OrigData(object):
         # Return #
         return df
 
+    #-------------------------- Yields ------------------------------#
     @property_cached
     def yields(self):
         """
@@ -85,44 +86,73 @@ class OrigData(object):
         """
         # Load #
         df = self['yields']
-        # Rename classifier _1, _2, _3 to forest_type, region, etc. #
-        return df.rename(columns = self.parent.classifiers.mapping)
-
-    @property_cached
-    def historical_yields(self):
-        """Historical yield taken from the original CSV file."""
-        # Load #
-        df = self['historical_yields']
-        # Rename classifier _1, _2, _3 to forest_type, region, etc. #
-        return df.rename(columns = self.parent.classifiers.mapping)
-
-    @property_cached
-    def yields_long(self):
-        return reshape_yields_long(self.yields)
-
-    @property_cached
-    def historical_yields_long(self):
-        return reshape_yields_long(self.historical_yields)
-
-    @property_cached
-    def disturbance_events_raw(self):
-        """Load disturbance_events from the calibration database.
-        Change dist_type_name to a string and Step to an integer."""
-        # Load #
-        df = self['disturbance_events']
-        # Change dist_type_name to a string to harmonise data type.
-        # some countries have a string while others have an int.
-        df['dist_type_name'] = df['dist_type_name'].astype('str')
-        df['step'] = df['step'].astype(int)
         # Rename classifiers #
         df = df.rename(columns = self.parent.classifiers.mapping)
         # Return #
         return df
 
     @property_cached
+    def historical_yields(self):
+        """Historical yield taken from the original CSV file."""
+        # Load #
+        df = self['historical_yields']
+        # Rename classifiers #
+        df = df.rename(columns = self.parent.classifiers.mapping)
+        # Return #
+        return df
+
+    def reshape_yields_long(self, yields_wide):
+        """
+        Reshape a wide data frame into a long one.
+
+        Columns are:
+
+        ['status', 'forest_type', 'region', 'management_type',
+         'management_strategy', 'climatic_unit', 'conifers_broadleaves', 'sp',
+         'age_class', 'volume']
+         """
+        # Index #
+        index = ['status', 'forest_type', 'region', 'management_type',
+                 'management_strategy', 'climatic_unit', 'conifers_broadleaves',
+                 'sp']
+        # Add classifier 8 for the specific case of Bulgaria #
+        if 'yield_tables' in yields_wide.columns: index += ['yield_tables']
+        # Melt #
+        df = yields_wide.melt(id_vars    = index,
+                              var_name   = "age_class",
+                              value_name = "volume")
+        # Remove suffixes and keep just the number #
+        df['age_class'] = df['age_class'].str.lstrip("vol").astype('int')
+        # Return #
+        return df
+
+    @property_cached
+    def yields_long(self):
+        return self.reshape_yields_long(self.yields)
+
+    @property_cached
+    def historical_yields_long(self):
+        return self.reshape_yields_long(self.historical_yields)
+
+    #-------------------------- Disturbances ------------------------------#
+    @property_cached
+    def disturbance_types(self):
+        """
+        Load disturbance types from the calibration database.
+        Change dist_type_name to a string.
+        """
+        # Load #
+        df = self['disturbance_types']
+        # Cast to string #
+        df['dist_type_name'] = df['dist_type_name'].astype('str')
+        # Return #
+        return df
+
+    @property_cached
     def disturbance_events(self):
-        """Load disturbance events from the calibration database.
-        Add the year column."""
+        """
+        Same as below but add the year column.
+        """
         # Load #
         df = self.disturbance_events_raw
         # Add year #
@@ -131,12 +161,18 @@ class OrigData(object):
         return df
 
     @property_cached
-    def disturbance_types(self):
-        """Load disturbance types from the calibration database.
-        Change dist_type_name to a string."""
+    def disturbance_events_raw(self):
+        """
+        Load disturbance_events from the calibration database.
+        Change dist_type_name to a string and step to an integer.
+        """
         # Load #
-        df = self['disturbance_types']
-        # Cast to string #
+        df = self['disturbance_events']
+        # Change dist_type_name to a string to harmonize data types #
         df['dist_type_name'] = df['dist_type_name'].astype('str')
+        # Make step an integer #
+        df['step'] = df['step'].astype(int)
+        # Rename classifiers #
+        df = df.rename(columns = self.parent.classifiers.mapping)
         # Return #
         return df

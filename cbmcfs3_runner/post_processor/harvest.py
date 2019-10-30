@@ -45,6 +45,7 @@ class Harvest(object):
         Based on Roberto's query `Harvest analysis check` visible in the original calibration database.
 
         What are the units?
+
         * TC is in terms of tons of carbon.
         * Vol_Merch are in terms of cubic meters of wood.
 
@@ -133,7 +134,7 @@ class Harvest(object):
         df['tot_vol'] = df['vol_merch'] + df['vol_sub_merch'] + df['vol_snags']
         # Add the Measurement_type #
         df['measurement_type'] = 'M'
-        # Return result #
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -179,7 +180,7 @@ class Harvest(object):
               .reset_index())
         # Add the Measurement_type #
         df['measurement_type'] = 'A'
-        # Return result #
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -250,7 +251,7 @@ class Harvest(object):
             # Patch the harvest data frame to stop at the simulation year #
             selector = df['year'] <= self.parent.parent.country.base_year
             df = df.loc[selector].copy()
-        # Return result #
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
