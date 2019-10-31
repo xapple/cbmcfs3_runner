@@ -100,6 +100,8 @@ class Demand(object):
         selector = self.gftm_content[0] == self.parent.iso2_code
         return self.gftm_content.loc[selector].copy()
 
+    columns_of_interest = ['year', 'step', 'hwp', 'value_ob']
+
     @property_cached
     def gftm_irw(self):
         """
@@ -165,7 +167,8 @@ class Demand(object):
         # Repeat lines for each successive year within a range by
         # joining the year_expansion data frame
         df = df.left_join(self.year_expansion, 'year_min')
-        return df
+        # Return #
+        return df[self.columns_of_interest]
 
     @property_cached
     def gftm_fw(self):
@@ -173,6 +176,11 @@ class Demand(object):
         Future FW demand as predicted by GFTM. Using the historical
         proportion of fuel wood with respect to industrial round wood.
         Load and reshape the data frame in long format.
+
+        Columns are:
+
+            ['year_min', 'country_iso2', 'product_year', 'value', 'hwp', 'value_ob',
+             'year', 'step'],
         """
         # Get the row corresponding to the current country #
         selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
@@ -200,13 +208,14 @@ class Demand(object):
         # joining the year_expansion data frame
         df = df.left_join(self.year_expansion, 'year_min')
         # Return #
-        return df
+        return df[self.columns_of_interest]
 
     def gftm(self, columns_of_interest = ('hwp', 'value_ob', 'year', 'step')):
         """
         Concatenation of gftm_irw and gftm_fw, used only for
         diagnostics and analysis.
-        Actual demand allocation is made from gftm_irw and gftm_fw.
+        Actual demand allocation is made from gftm_irw and gftm_fw
+        directly.
         """
         return pandas.concat([self.gftm_irw[list(columns_of_interest)],
                               self.gftm_fw[list(columns_of_interest)]])
