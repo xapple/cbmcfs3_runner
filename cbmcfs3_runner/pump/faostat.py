@@ -9,7 +9,7 @@ Unit D1 Bioeconomy.
 
 You can use this object like this:
 
-    from cbmcfs3_runner.faostat import faostat
+    from cbmcfs3_runner.pump.faostat import faostat
     print(faostat.forestry)
 """
 
@@ -77,8 +77,10 @@ class Faostat(object):
         The resulting data frame will have missing data, for instance
         in Belgium, the ref_year is 1999 but data only starts in 2000.
 
-        Futhermore, we are only interested in these products mentioned
+        Furthermore, we are only interested in these products mentioned
         in self.products
+
+        The units are cubic meters under bark in the column 'value'.
 
         Columns in the output are: ???
         """
@@ -108,15 +110,21 @@ class Faostat(object):
         selector = df['year'] >= min_year
         df = df[selector].copy()
         # Remove countries we don't need #
-        selector = df['country'].isin(all_codes['Country'])
+        selector = df['country'].isin(all_codes['country'])
         df = df[selector].copy()
         # Add the correct iso2 code #
-        df = df.replace({"country": all_codes.set_index('Country')['ISO2 Code']})
+        df = df.replace({"country": all_codes.set_index('country')['iso2_code']})
         # Filter products #
         selector = df['product'].isin(self.products)
         df = df[selector].copy()
         # Rename the products to their shorter names #
         df = df.replace({'product': dict(zip(self.products, self.short_names))})
+        # This corresponds to our "hwp" column elsewhere #
+        df['hwp'] = df['product']
+        # Split the column into two and keep hwp #
+        df['product'], df['conifers_broadleaves'] = df['hwp'].str.split('_', 1).str
+        # The value is under bark #
+        df = df.rename(columns={'value': 'value_ub'})
         # Return #
         return df
 

@@ -100,7 +100,7 @@ class Demand(object):
         selector = self.gftm_content[0] == self.parent.iso2_code
         return self.gftm_content.loc[selector].copy()
 
-    columns_of_interest = ['year', 'step', 'hwp', 'value_ob']
+    columns_of_interest = ['year', 'step', 'hwp', 'value_ub', 'value_ob']
 
     @property_cached
     def gftm_irw(self):
@@ -144,7 +144,9 @@ class Demand(object):
         variable      = 'Annual  production (m3ub) - from GFTM'
         df = df.query("variable==@variable & year in @years_to_keep").copy()
         # Convert under bark demand volumes to over bark using a correction factor #
+        df['value_ub'] = df['value']
         df['value_ob'] = df['value'] / self.bark_correction_factor
+        df = df.drop(columns=['value'])
         # Sum log and pulpwood #
         # Create a little data frame to rename products to HWP #
         gftm_irw_names = pandas.DataFrame({'product': ['C log', 'C pulpwood',
@@ -157,13 +159,14 @@ class Demand(object):
               .join(gftm_irw_names.set_index('product'))
               # Aggregate the log and pulpwood values by HWP #
               .groupby(['year', 'hwp'])
-              .agg({'value_ob': sum})
+              .agg({'value_ob': sum,
+                    'value_ub': sum})
               .reset_index())
         df['year_min'] = df['year'].str[:4].astype(int)
         df['year_max'] = df['year'].str[-4:].astype(int)
         # Rename year column, because a new year column will be created later
         # when expanding the years
-        df = df.rename(columns={'year':'year_text'})
+        df = df.rename(columns={'year': 'year_text'})
         # Repeat lines for each successive year within a range by
         # joining the year_expansion data frame
         df = df.left_join(self.year_expansion, 'year_min')
@@ -203,7 +206,9 @@ class Demand(object):
         # Limit fw year to 2026 equal to the maximum of irw years #
         df = df.query('year_min<2030').copy()
         # Convert demand value to over bark #
+        df['value_ub'] = df['value']
         df['value_ob'] = df['value'] / self.bark_correction_factor
+        df = df.drop(columns=['value'])
         # Repeat lines for each successive year within a range by
         # joining the year_expansion data frame
         df = df.left_join(self.year_expansion, 'year_min')
