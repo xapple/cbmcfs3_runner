@@ -19,7 +19,6 @@ from plumbing.cache import property_cached
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
-from cbmcfs3_runner.pump.common import outer_join
 
 ###############################################################################
 class Products(object):
@@ -40,21 +39,8 @@ class Products(object):
     #-------------------------------------------------------------------------#
     @property_cached
     def silviculture(self):
-        """Prepare the silviculture treatments data frame
-        for joining operations with harvest tables."""
-        # Load file #
-        df = self.parent.parent.country.silviculture.treatments
-        # Rename classifiers from _1 to forest etc. #
-        df = df.rename(columns = self.parent.classifiers_mapping)
-        # Rename a column #
-        df = df.rename(columns = {'dist_type_name': 'dist_type_name'})
-        # Change the type of dist_type_name to string so that it has the same type as
-        # the `harvest_check` dist_type_name column
-        df['dist_type_name'] = df['dist_type_name'].astype(str)
-        # Change the type of management_strategy to string (for SI)
-        df['management_strategy'] = df['management_strategy'].astype(str)
-        # Return #
-        return df
+        """Shortcut."""
+        return self.parent.parent.country.silviculture.treatments
 
     #-------------------------------------------------------------------------#
     @property_cached
@@ -109,6 +95,7 @@ class Products(object):
         # Drop HWP column
         # because it doesn't make sense anymore below when we join different products together
         df = df.drop('hwp', axis = 1)
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -122,6 +109,7 @@ class Products(object):
                                'vol_snags':     'vol_snags_irw_c',
                                'tc':            'tc_irw_c'}))
         df = df.drop('hwp', axis = 1)
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -134,6 +122,7 @@ class Products(object):
                                'vol_sub_merch': 'vol_sub_merch_fw_b',
                                'vol_snags':     'vol_snags_fw_b',
                                'tc':            'tc_fw_b'}))
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -144,7 +133,7 @@ class Products(object):
         Join Industrial Round Wood co-products: 'vol_sub_merch_irw_b' and 'vol_snags_irw_b'
         into the fuel wood total.
         """
-        df = outer_join(self.irw_b, self.fw_b, 'time_step')
+        df = self.irw_b.outer_join(self.fw_b, 'time_step')
         df['tot_vol_fw_b'] = sum([df['vol_merch_fw_b'],
                                   df['vol_sub_merch_fw_b'],
                                   df['vol_snags_fw_b'],
@@ -154,6 +143,7 @@ class Products(object):
                  'vol_merch_fw_b', 'vol_sub_merch_fw_b', 'vol_snags_fw_b',
                  'vol_sub_merch_irw_b', 'vol_snags_irw_b',
                  'tot_vol_fw_b']]
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -166,6 +156,7 @@ class Products(object):
                                'vol_sub_merch': 'vol_sub_merch_fw_c',
                                'vol_snags':     'vol_snags_fw_c',
                                'tc':            'tc_fw_c'}))
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -175,7 +166,7 @@ class Products(object):
         Harvest volumes of Fuel Wood Coniferous
         Join Industrial Round Wood co-products.
         """
-        df = outer_join(self.irw_c, self.fw_c, 'time_step')
+        df = self.irw_c.outer_join(self.fw_c, 'time_step')
         df['tot_vol_fw_c'] = numpy.where(df['vol_merch_fw_c'] >= 0,
                                          sum([df['vol_merch_fw_c'],
                                               df['vol_sub_merch_fw_c'],
@@ -184,10 +175,12 @@ class Products(object):
                                               df['vol_snags_irw_c']]),
                                          sum([df['vol_sub_merch_irw_c'],
                                               df['vol_snags_irw_c']]))
+        # Select columns of interest #
         df = df[['time_step',
                  'vol_merch_fw_c','vol_sub_merch_fw_c','vol_snags_fw_c',
                  'vol_sub_merch_irw_c','vol_snags_irw_c',
                  'tot_vol_fw_c']]
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -198,7 +191,7 @@ class Products(object):
         Matching the product description available in the economic model
         and in the FAOSTAT historical data.
 
-        Join "Vol_Merch" columns from "irw_b" and "irw_c"
+        Join "vol_merch" columns from "irw_b" and "irw_c"
         to the total columns from "fw_b_total" and "fw_c_total",
         using the time step as an index.
         """
@@ -208,8 +201,9 @@ class Products(object):
               .join(self.fw_c_total.set_index('time_step')[['tot_vol_fw_c']])
               .join(self.fw_b_total.set_index('time_step')[['tot_vol_fw_b']])
               .reset_index())
-        # Add year
+        # Add year #
         df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
         # Rename columns to standard IRW and FW product names
         df = df.rename(columns=lambda x: re.sub(r'vol_merch_|tot_vol_',r'', x))
+        # Return #
         return df

@@ -16,7 +16,6 @@ import pandas
 # First party modules #
 from autopaths.dir_path   import DirectoryPath
 from autopaths.auto_paths import AutoPaths
-from plumbing.logger      import create_file_logger
 from plumbing.cache       import property_cached
 
 # Internal modules #
@@ -30,7 +29,7 @@ from cbmcfs3_runner.reports.country                import CountryReport
 from cbmcfs3_runner.stdrd_import_tool.associations import Associations
 from cbmcfs3_runner.disturbances.demand            import Demand
 from cbmcfs3_runner.disturbances.silviculture      import Silviculture
-from cbmcfs3_runner.faostat                        import faostat
+from cbmcfs3_runner.pump.faostat                   import faostat
 
 # Constants #
 country_code_path = module_dir + 'extra_data/country_codes.csv'
@@ -42,8 +41,10 @@ ref_years   = pandas.read_csv(str(ref_years_path))
 
 ###############################################################################
 class Country(object):
-    """This object gives access to the data pertaining to one country
-    amongst the 26 EU member states we are examining."""
+    """
+    This object gives access to the data pertaining to one country
+    amongst the 26 EU member states we are examining.
+    """
 
     all_paths = """
     /orig/
@@ -79,7 +80,8 @@ class Country(object):
         #c.report.copy_to_outbox()
 
     def set_codes(self):
-        """Update all the country codes for this country.
+        """
+        Update all the country codes for this country.
         Typically the result will look something like this:
 
          'iso2_code':      'BE',
@@ -144,8 +146,10 @@ class Country(object):
 
     @property_cached
     def associations(self):
-        """Associations of admin/eco/species/disturbances names between
-        the input and the reference."""
+        """
+        Associations of admin/eco/species/disturbances names between
+        the input and the reference.
+        """
         return Associations(self)
 
     @property_cached
@@ -180,7 +184,8 @@ class Country(object):
 
     @property_cached
     def coefficients(self):
-        """Load the conversion coefficients from tons of carbon
+        """
+        Load the conversion coefficients from tons of carbon
         to cubic meters of wood.
         The 'density' columns is the volumetric mass density in tons/m3
         for a given species.
@@ -197,8 +202,10 @@ class Country(object):
 
     @property_cached
     def scenarios(self):
-        """A dictionary linking scenario names to a list of runners
-        that concern only this country."""
+        """
+        A dictionary linking scenario names to a list of runners
+        that concern only this country.
+        """
         from cbmcfs3_runner.core.continent import continent
         return {n: s.runners[self.iso2_code] for n,s in continent.scenarios.items()}
 

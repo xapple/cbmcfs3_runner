@@ -43,7 +43,7 @@ class Demand(object):
     GFTM economic models and should be used to create the disturbances
     in the simulation period.
 
-    The cells for are empty for:
+    The cells are empty for:
 
         * Annual production (m3ub) - from GFTM 2031 to 2035
         * Annual harvest 2036 to 2040
@@ -66,7 +66,8 @@ class Demand(object):
 
     @property_cached
     def year_expansion(self):
-        """Create a little data frame to expand years
+        """
+        Create a little data frame to expand years
         from a 5 year time frame to a yearly time frame.
 
         GFTM gives a yearly demand over a 5 year interval in
@@ -168,9 +169,11 @@ class Demand(object):
 
     @property_cached
     def gftm_fw(self):
-        """Future FW demand as predicted by GFTM. Using the historical
+        """
+        Future FW demand as predicted by GFTM. Using the historical
         proportion of fuel wood with respect to industrial round wood.
-        Load and reshape the data frame in long format."""
+        Load and reshape the data frame in long format.
+        """
         # Get the row corresponding to the current country #
         selector = gftm_fw_demand['country_iso2'] == self.parent.iso2_code
         # Check there is something to find for this country #
@@ -199,20 +202,23 @@ class Demand(object):
         # Return #
         return df
 
-    def gftm(self,
-             columns_of_interest = ('hwp', 'value_ob', 'year', 'step')):
-        """Concatenation of gftm_irw and gftm_fw, used only for
+    def gftm(self, columns_of_interest = ('hwp', 'value_ob', 'year', 'step')):
+        """
+        Concatenation of gftm_irw and gftm_fw, used only for
         diagnostics and analysis.
-        Actual demand allocation is made from gftm_irw and gftm_fw."""
+        Actual demand allocation is made from gftm_irw and gftm_fw.
+        """
         return pandas.concat([self.gftm_irw[list(columns_of_interest)],
                               self.gftm_fw[list(columns_of_interest)]])
 
     @property_cached
     def historical_wide(self):
-        """Historical harvest corrected manually by R.P. from the original
+        """
+        Historical harvest corrected manually by R.P. from the original
         FAOSTAT data for the purpose of CBM calibration.
         Expert estimates and knowledge is used to change the values as
-        some values are clearly erroneous in the FAOSTAT."""
+        some values are clearly erroneous in the FAOSTAT.
+        """
         # Get the rows corresponding to the current country #
         selector = historical_demand['country'] == self.parent.iso2_code
         df = historical_demand.loc[selector].copy()

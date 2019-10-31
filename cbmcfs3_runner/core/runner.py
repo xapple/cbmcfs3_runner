@@ -37,9 +37,11 @@ home = os.environ.get('HOME', '~') + '/'
 
 ###############################################################################
 class Runner(object):
-    """This object is capable of running a CBM simulation pipeline, starting
+    """
+    This object is capable of running a CBM simulation pipeline, starting
     from a few input tables, such as an inventory and a list of disturbances
-    and to bring this data all the way to the predicted carbon stock."""
+    and to bring this data all the way to the predicted carbon stock.
+    """
 
     all_paths = """
     /input/
@@ -76,8 +78,10 @@ class Runner(object):
 
     @property_cached
     def log(self):
-        """Each runner will have its own logger.
-        By default we clear the log file when you start logging."""
+        """
+        Each runner will have its own logger.
+        By default we clear the log file when you start logging.
+        """
         return create_file_logger(self.short_name, self.paths.log)
 
     def __call__(self, interrupt_on_error=True, verbose=False):
@@ -90,8 +94,10 @@ class Runner(object):
             if interrupt_on_error: raise
 
     def run(self, verbose=False):
-        """Run the full modelling pipeline for a given country,
-        a given scenario and a given step."""
+        """
+        Run the full modelling pipeline for a given country,
+        a given scenario and a given step.
+        """
         # Send messages to console #
         if verbose: self.log.handlers[0].setLevel("DEBUG")
         # Messages #
@@ -130,8 +136,10 @@ class Runner(object):
         self.log.info("Done.")
 
     def remove_directory(self):
-        """Removes the directory that will be recreated by running this runner.
-        Note: we need to keep the log we are writing to currently."""
+        """
+        Removes the directory that will be recreated by running this runner.
+        Note: we need to keep the log we are writing to currently.
+        """
         # Message #
         self.log.info("Removing directory '%s'." % self.data_dir)
         # The output directory #
@@ -144,7 +152,6 @@ class Runner(object):
 
     @property_cached
     def input_data(self):
-        """Use the country object to copy the original input data."""
         return InputData(self)
 
     @property_cached
@@ -182,9 +189,11 @@ class Runner(object):
 
     @property
     def map_value(self):
-        """Return a float that indicates how far this country is running
+        """
+        Return a float that indicates how far this country is running
         within the pipeline. This can be used to plot the country on a
-        color scale map."""
+        color scale map.
+        """
         if   'run is completed' in self.paths.log.contents: return 1.0
         elif 'SIT created'      in self.paths.log.contents: return 0.5
         else:                                               return 0.0

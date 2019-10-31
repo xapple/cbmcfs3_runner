@@ -24,6 +24,7 @@ from pymarktex.figures import ScaledFigure
 ###############################################################################
 class ScenarioReport(Document):
     """A report generated in PDF describing a scenario."""
+
     builtin_template = 'sinclair_bio'
 
     def __init__(self, parent):

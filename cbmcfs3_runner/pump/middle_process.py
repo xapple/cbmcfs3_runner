@@ -26,22 +26,27 @@ class MiddleProcessor(object):
     Will modify the Microsoft Access database after its creation by
     SIT but before its usage by CBM.
 
-    The middle processor makes it possible to call SIT twice,
-    first in default mode, then in append mode.
+    The middle processor makes it possible to call SIT twice (first in default
+    mode, then in append mode), by finalizing that procedure after the two calls.
+
     Beware the order of these calls is reversed compared to the chronological period:
-    1. SIT default mode adds the current yield table
-       (used for the historical period and the simulation period),
-    2. SIT append mode adds the historical yield table
-       (used for the pool initialisation period)
+
+    1. SIT default mode adds the current yields table
+       (used for the historical period and the simulation period)
+
+    2. SIT append mode adds the historical yields table
+       (used for the initialization period)
     """
 
     all_paths = """
     /output/sit/project.mdb
     """
-    # 
+
+    # So that all reruns are the same #
     random_seed = 1
+
     # Attribute to extend the simulation in the absence of disturbances
-    # For a growth only scenario for example
+    # This is useful for the growth only scenario for example
     num_steps_to_extend = None
 
     def __init__(self, parent):
@@ -51,13 +56,13 @@ class MiddleProcessor(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
+        # Set the seed to be always the same #
         self.set_random_seed()
-        # Use both historical yields (for the pool initialisation) 
-        # and current yield if needed
-        if self.parent.sit_calling == 'dual': 
+        # If SIT was called twice, finish the procedure
+        if self.parent.sit_calling == 'dual':
             self.finish_append()
-        # Extend the simulation if needed
-        if self.num_steps_to_extend: 
+        # Extend the simulation if needed #
+        if self.num_steps_to_extend:
             self.extend_simulation(self.num_steps_to_extend )
 
     @property_cached
@@ -68,13 +73,15 @@ class MiddleProcessor(object):
 
     @property
     def current_timestep(self):
-        """Get the current end timestep of the siumlation"""
+        """Get the current end time step of the simulation."""
         query = "SELECT RunLength FROM tblRunTableDetails"
         return self.project_database.cursor.execute(query).fetchone()[0]
 
     def extend_simulation(self, num_steps):
-        """Will extend the simulation by num_steps time steps so that it runs extra
-        years without any disturbances."""
+        """
+        Will extend the simulation by num_steps time steps so that it runs extra
+        years even without any disturbances specified.
+        """
         # Log message #
         self.parent.log.info("Adjusting the simulation length with extra %i steps" % num_steps)
         # Update the value in the database #
@@ -87,7 +94,7 @@ class MiddleProcessor(object):
 
     def finish_append(self):
         """
-        According to Scott this is what we should do to finish the "yield appending" procedure
+        According to Scott, this is what we should do to finish the "yield appending" procedure
         so that it matches Roberto's procedure.
         See ticket on JIRA at https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-178
         """
@@ -115,11 +122,13 @@ class MiddleProcessor(object):
         self.project_database.cursor.commit()
 
     def set_random_seed(self):
-        """CBM uses pseudo-randomness for instance when allocating disturbances
+        """
+        CBM uses pseudo-randomness for instance when allocating disturbances
         that are supposed to be random. But we want every run to be comparable.
         This method will set the seed to a numerical value that's always the same.
         See https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-213
-        They say it defaults to a time based seed, if we do not do this step."""
+        They say it defaults to a time based seed, if we do not do this step.
+        """
         # Set a new one #
         query = "INSERT INTO tblRandomSeed (CBMRunID, RandomSeed, OnOffSwitch) VALUES ({0},{1},{2})"
         query = query.format(1, self.random_seed, True)

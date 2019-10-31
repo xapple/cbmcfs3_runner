@@ -53,7 +53,6 @@ class AIDB(object):
         database.convert_col_names_to_snake = True
         return database
 
-
     @property_cached
     def dm_table(self):
         """Main disturbance matrix."""
@@ -97,7 +96,7 @@ class AIDB(object):
 
     @property_cached
     def dist_type_default(self):
-        """Link betwen dist_type_id and dist_desc_aidb."""
+        """Link between dist_type_id and dist_desc_aidb."""
         # Load #
         df = self.database['tbldisturbancetypedefault']
         # Rename #
@@ -107,7 +106,8 @@ class AIDB(object):
 
     @property_cached
     def dm_assoc_default(self):
-        """Link between default_dist_type_id, defatul_ec_id, and dmid
+        """
+        Link between default_dist_type_id, defatul_ec_id, and dmid
 
         Pay attention to the tricky annual_order which might generate
         errors in some cases (see also libcbm aidb import efforts)
@@ -143,14 +143,16 @@ class AIDB(object):
 
     @property_cached
     def dm_assoc_spu_default(self):
-        """Link between default_dist_type_id, spuid and dmid.
+        """
+        Link between default_dist_type_id, spuid and dmid.
         Warning, it contains only wildfire distances in the EU AIDB.
 
-        Shape in the EU aidb 920 rows × 6 columns """
+        Shape in the EU aidb: 920 rows × 6 columns
+        """
         # Load #
         df = self.database['tbldmassociationspudefault']
         # Rename
-        # TODO, check if dist_type_id is exactly the correct name
+        # TODO check if dist_type_id is exactly the correct name
         df = df.rename(columns = {'default_disturbance_type_id': 'dist_type_id',
                                                          'name': 'spu_name',
                                                   'description': 'spu_desc'})
@@ -205,8 +207,10 @@ class AIDB(object):
 
     @property_cached
     def dist_matrix(self):
-        """Disturbance Matrix reshaped in the form of a matrix
-        with source pools in rows and sink pools in columns."""
+        """
+        Disturbance Matrix reshaped in the form of a matrix
+        with source pools in rows and sink pools in columns.
+        """
         # Load #
         df = self.dist_matrix_long.copy()
         # Make pool description columns suitable as column names #
@@ -232,9 +236,11 @@ class AIDB(object):
 
     @property_cached
     def merch_biom_rem(self):
-        """Retrieve the percentage of merchantable biomass removed
+        """
+        Retrieve the percentage of merchantable biomass removed
         from every different disturbance type used in the silviculture
-        treatments."""
+        treatments.
+        """
         # Load #
         df         = self.dist_matrix_long
         dist_types = self.parent.orig_data.disturbance_types
@@ -250,14 +256,11 @@ class AIDB(object):
         # Take columns of interest #
         cols = ['dist_type_name', 'perc_merch_biom_rem', 'dist_desc_aidb', 'row_pool', 'proportion']
         df = df[cols]
-        # Columns might be missing #
-        try:
-            df['diff']= df['perc_merch_biom_rem'] - df['proportion']
-        except TypeError:
-            return df
+        # Compute difference #
+        df['diff']= df['perc_merch_biom_rem'] - df['proportion']
         # NaNs appear because of natural disturbances #
         df = df.fillna(0)
         # Check #
-        #assert all(df['diff'].abs() < 1e-3)
+        assert all(df['diff'].abs() < 1e-3)
         # Return #
         return df

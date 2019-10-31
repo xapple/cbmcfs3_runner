@@ -78,7 +78,7 @@ class RunnerTemplate(ReportTemplate):
         return str(ScaledFigure(graph=graph))
 
     #------------------------------ Harvest ----------------------------------#
-    def harvested_wood_prodcuts(self):
+    def harvested_wood_products(self):
         return 0
 
     def harvest_exp_prov_vol(self):

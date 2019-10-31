@@ -28,12 +28,12 @@ class FacetPlot(Graph):
 
     @property
     def static(self):
-        """The last step in the static_demand scenario for the same country"""
+        """The last step in the static_demand scenario for the same country."""
         return self.parent.scenarios['static_demand'][-1].post_processor
 
     @property
     def calibr(self):
-        """The last step in the calibration scenario for the same country"""
+        """The last step in the calibration scenario for the same country."""
         return self.parent.scenarios['calibration'][-1].post_processor
 
     def subplot(self, **kwargs):
@@ -94,18 +94,3 @@ class FacetPlot(Graph):
 
         # Convenience: return for display in notebooks for instance #
         return p
-
-###############################################################################
-class Other(FacetPlot):
-
-    @property
-    def data(self):
-        # Return #
-        return df
-
-    def subplot(self, **kwargs):
-        df = kwargs.pop("data")
-        start, end  = df[self.age_cols[0]], df[self.age_cols[1]]
-        center = start + (end - start) / 2
-        height = df[self.value_col]
-        pyplot.bar(x=center, height=height, width=self.width, **kwargs)

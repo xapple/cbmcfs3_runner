@@ -39,9 +39,11 @@ class MerchStock(Graph):
 
     @property
     def data_raw(self):
-        """Extract the total merchantable stock for all scenarios
-           By default data is returned for all scenarios.
-           User can specify a list of scenarios as a property."""
+        """
+        Extract the total merchantable stock for all scenarios
+        By default data is returned for all scenarios.
+        User can specify a list of scenarios as a property.
+        """
         # Compare all scenarios or only a subset of them #
         if not hasattr(self, 'scenario_names'):
             self.scenario_names = self.parent.scenarios.keys()

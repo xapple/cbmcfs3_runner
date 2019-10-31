@@ -21,7 +21,8 @@ from cbmcfs3_runner.core.runner import Runner
 class Calibration(Scenario):
     """
     This scenario corresponds to the results that were generated manually
-    using the GUI by R.P. and saved to Access databases stored in JRCbox.
+    using the GUI by R.P. and saved to Microsoft Access databases stored
+    originally in JRCbox. You can't actually run this scenario.
     """
 
     short_name = 'calibration'

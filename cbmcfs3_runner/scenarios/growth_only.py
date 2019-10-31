@@ -20,7 +20,8 @@ from cbmcfs3_runner.core.runner import Runner
 ###############################################################################
 class GrowthOnly(Scenario):
     """
-    Run CBM without any disturbances even for the historical period.
+    Run CBM without any disturbances events for the future period.
+    The disturbances for the historical period remain.
     This can then be used as a benchmark to start reproducing results
     with separate models.
     """

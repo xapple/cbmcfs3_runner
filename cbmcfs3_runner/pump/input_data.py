@@ -19,7 +19,6 @@ from plumbing.cache import property_cached
 from plumbing.common import camel_to_snake
 
 # Internal modules #
-from cbmcfs3_runner.pump.common import reshape_yields_long
 
 ###############################################################################
 class InputData(object):
@@ -54,35 +53,12 @@ class InputData(object):
 
     #-------------------------- Other methods --------------------------------#
     def get_sheet(self, name):
-        """Get a specific sheet in the first excel"""
+        """Get a specific sheet in the first excel."""
         df = self.xls.parse(name)
         df = df.rename(columns=camel_to_snake)
         return df
 
     #-------------------------- Specific sheets ------------------------------#
-    @property_cached
-    def inventory(self):
-        """
-        Columns are:
-
-        ['status', 'forest_type', 'region', 'management_type',
-         'management_strategy', 'climatic_unit', 'conifers_broadleaves',
-         'using_id', 'age', 'area', 'delay', 'unfcccl', 'hist_dist', 'last_dist']
-        """
-        # Get the right sheet #
-        df = self.get_sheet("Inventory")
-        # Create the age_class column so it can be
-        # used as a join variable with a yields table
-        df['age_class'] = (df['age']
-                           .replace('AGEID', '', regex=True)
-                           .astype('int'))
-        # But this is only true where an age class is defined
-        df['age_class'] = df['age_class'].mask(~df['using_id'])
-        # Rename classifiers #
-        df = df.rename(columns = self.classifiers_mapping)
-        # Return #
-        return df
-
     @property_cached
     def disturbance_events(self):
         """
@@ -103,9 +79,9 @@ class InputData(object):
         """
         # Get the right sheet #
         df = self.get_sheet("DistEvents")
-        # Harmonise Dist_Type_ID data type amoung countries
-        # some have int, others have str, make it str for all.
+        # Harmonize the dist_type_id data type amongst countries
         df['dist_type_name'] = df['dist_type_name'].astype(str)
+        # Return #
         return df
 
     @property_cached
@@ -119,53 +95,3 @@ class InputData(object):
         df['dist_type_name'] = df['dist_type_name'].astype(str)
         # Return #
         return df
-
-    @property_cached
-    def yields(self):
-        """
-        Columns are:
-
-        ['_1', '_2', '_3', '_4', '_5', '_6', '_7', 'sp', 'Vol0', 'Vol1', 'Vol2',
-         'Vol3', 'Vol4', 'Vol5', 'Vol6', 'Vol7', 'Vol8', 'Vol9', 'Vol10',
-         'Vol11', 'Vol12', 'Vol13', 'Vol14', 'Vol15', 'Vol16', 'Vol17', 'Vol18',
-         'Vol19', 'Vol20', 'Vol21', 'Vol22', 'Vol23', 'Vol24', 'Vol25', 'Vol26',
-         'Vol27', 'Vol28', 'Vol29', 'Vol30']
-        """
-        # Get the right sheet #
-        df = self.get_sheet("Growth")
-        return df.rename(columns = self.classifiers_mapping)
-
-    @property_cached
-    def historical_yields(self):
-        """
-        Historical yield taken from the xls_append object.
-        The object used to append historical yield
-        to the Standard Import Tool
-        for the carbon pool initialization period
-        """
-        # Get the right sheet #
-        df = self.get_sheet("Growth")
-        # Rename classifier _1, _2, _3 to forest_type, region, etc. #
-        return df.rename(columns = self.classifiers_mapping)
-
-    @property_cached
-    def yields_long(self):
-        return reshape_yields_long(self.yields)
-
-    @property_cached
-    def historical_yields_long(self):
-        return reshape_yields_long(self.historical_yields)
-
-    @property_cached
-    def ageclass(self):
-        # Get the right sheet #
-        return self.get_sheet("AgeClasses")
-
-    @property_cached
-    def classifiers(self):
-        # Get the right sheet #
-        df = self.get_sheet("Classifiers")
-        sort_by = ['classifier_number', 'classifier_value_id']
-        return df.sort_values(by=sort_by, ascending=[True, False])
-
-

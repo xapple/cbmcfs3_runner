@@ -31,7 +31,8 @@ class DisturbanceFilter(object):
 
     @property_cached
     def df(self):
-        """The calibration database is configured to run over a period of
+        """
+        The calibration database is configured to run over a period of
          100 years. We would like to limit the simulation to the historical
          period. Currently Year < 2015.
 
