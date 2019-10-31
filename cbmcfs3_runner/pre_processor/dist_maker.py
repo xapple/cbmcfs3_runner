@@ -376,13 +376,13 @@ class DisturbanceMaker(object):
         # Allocation:
         # Concatenate IRW and FW disturbance tables
         # Keep only the columns of interest for disturbances
-        five_classif = ['status', 'forest_type', 'management_type', 'management_strategy',
+        silv_classif = ['status', 'forest_type', 'management_type', 'management_strategy',
                         'conifers_broadleaves']
         columns_of_interest = ['dist_type_name', 'sort_type', 'efficiency', 'min_age',
                                'max_age', 'min_since_last', 'max_since_last', 'regen_delay',
                                'reset_age', 'man_nat', 'amount_m3', 'step', 'density']
-        df = pandas.concat([self.dist_irw[five_classif + columns_of_interest],
-                            self.dist_fw[ five_classif + columns_of_interest]])
+        df = pandas.concat([self.dist_irw[silv_classif + columns_of_interest],
+                            self.dist_fw[ silv_classif + columns_of_interest]])
 
         # Convert amount_m3 from m3 to tonnes of carbon
         # 'density' is the volumetric mass density in t/m3 of the given species
@@ -398,7 +398,7 @@ class DisturbanceMaker(object):
 
         # Add and re-order columns
         # These classifiers are ignored when interacting with the economic model only
-        missing_classif = set(self.country.classifiers.names) - set(five_classif)
+        missing_classif = set(self.country.classifiers.names) - set(silv_classif)
         for col in missing_classif: df[col] = '?'
 
         # Min age max age are distinguished by hardwood and soft wood #
