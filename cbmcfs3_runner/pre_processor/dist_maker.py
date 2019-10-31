@@ -376,12 +376,13 @@ class DisturbanceMaker(object):
         # Allocation:
         # Concatenate IRW and FW disturbance tables
         # Keep only the columns of interest for disturbances
-        columns_of_interest = ['status', 'forest_type', 'management_type', 'management_strategy',
-                               'conifers_broadleaves', 'dist_type_name', 'sort_type', 'efficiency',
-                               'min_age', 'max_age', 'min_since_last', 'max_since_last', 'regen_delay',
+        five_classif = ['status', 'forest_type', 'management_type', 'management_strategy',
+                        'conifers_broadleaves']
+        columns_of_interest = ['dist_type_name', 'sort_type', 'efficiency', 'min_age',
+                               'max_age', 'min_since_last', 'max_since_last', 'regen_delay',
                                'reset_age', 'man_nat', 'amount_m3', 'step', 'density']
-        df = pandas.concat([self.dist_irw[columns_of_interest],
-                            self.dist_fw[columns_of_interest]])
+        df = pandas.concat([self.dist_irw[five_classif + columns_of_interest],
+                            self.dist_fw[ five_classif + columns_of_interest]])
 
         # Convert amount_m3 from m3 to tonnes of carbon
         # 'density' is the volumetric mass density in t/m3 of the given species
@@ -397,8 +398,8 @@ class DisturbanceMaker(object):
 
         # Add and re-order columns
         # These classifiers are ignored when interacting with the economic model only
-        df['climatic_unit'] = '?'
-        df['region']        = '?'
+        missing_classif = set(self.country.classifiers.names) - set(five_classif)
+        for col in missing_classif: df[col] = '?'
 
         # Min age max age are distinguished by hardwood and soft wood #
         df['sw_start'] = df['min_age']
@@ -435,7 +436,7 @@ class DisturbanceMaker(object):
         # Load data #
         dist_past   = self.parent.disturbance_filter.df
         dist_future = self.demand_to_dist
-        # Rearrange columns according so they match #
+        # Rearrange columns accordingly so they match #
         dist_columns = list(dist_past)
         dist_future = dist_future[dist_columns]
         # Concatenate #
