@@ -170,6 +170,12 @@ class Silviculture(object):
         so it might be smaller than the stock by a factor of 10 or more.
         `stock_available` does not really represent an available stock.
         It is only used to calculate a proportion in the harvest_proportion.
+
+        In other words, taking a stand with min_since_last = 10 means
+        that harvest can happen only every 10 years to that stand.
+        While another stand with min_since_last = 1 can be harvested every year.
+        We want to come back 10 times less often to the first stand.
+        That is why we divide its proportion by min_since_last here below.
         """
         # Load data frames used here #
         treatments     = self.treatments
