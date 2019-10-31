@@ -143,6 +143,10 @@ class Silviculture(object):
         Calculate the stock available based on the harvest proportion
         in the silviculture_treatments table and multiplied by a correction factor.
 
+        This 'correction factor' is an adjustment factor created in an attempt
+        to better fit the simulation to the real historical data during the
+        manual calibration process of R.P.
+
         Note: the harvest proportion in the silviculture_treatments table should be
         the same as the proportion going to products in the disturbance matrix.
         See script "scripts/checking/check_harvest_prop.py".

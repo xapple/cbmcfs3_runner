@@ -171,6 +171,14 @@ class AIDB(object):
         (disturbance matrix id),
         i.e for each dist_type_name there is one and only one dmid.
         The opposite is not true, as there are more dist_type_name than dmid.
+
+        Columns are:
+
+            ['dist_desc_input', 'dist_desc_aidb', 'dist_type_id', 'dmid',
+             'dm_column', 'dm_structure_id', 'dm_row', 'proportion', 'dist_desc_dm',
+             'dist_desc_long', 'row_pool', 'column_pool', 'on_off_switch',
+             'description', 'is_stand_replacing', 'is_multi_year',
+             'multi_year_count', 'dist_type_name'],
         """
         # Load tables from the aidb #
         dm_table    = self.dm_table
@@ -208,7 +216,7 @@ class AIDB(object):
     @property_cached
     def dist_matrix(self):
         """
-        Disturbance Matrix reshaped in the form of a matrix
+        The disturbance matrix is reshaped in the form of a matrix
         with source pools in rows and sink pools in columns.
         """
         # Load #
@@ -240,6 +248,9 @@ class AIDB(object):
         Retrieve the percentage of merchantable biomass removed
         from every different disturbance type used in the silviculture
         treatments.
+
+        The column "perc_merch_biom_rem" comes from silviculture.csv
+        The column "proportion" comes from aidb.mdb and multiple joins.
         """
         # Load #
         df         = self.dist_matrix_long
