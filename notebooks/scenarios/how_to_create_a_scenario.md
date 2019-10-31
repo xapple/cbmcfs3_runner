@@ -33,7 +33,7 @@ There are several existing scenarios:
 * `fake_yields_hist` is a scenario that tests using current yields for all period.
 * `fake_yields_cur` is a scenario that tests using historical yields for all periods.
 * `single_sit` is a scenario that does not perform a seperate carbon pool initialization with different yield curves.
-* `growh_only` is a scneario where the historical period contains disturbances but the future period does not.
+* `growth_only` is a scenario where the historical period contains disturbances but the future period does not.
 * `auto_allocation` is a scneario where the future disturances have question marks in all calssifiers (except con_broad).
 
 ## Scenario objects
