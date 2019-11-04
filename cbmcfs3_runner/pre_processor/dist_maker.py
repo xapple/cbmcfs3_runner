@@ -465,3 +465,9 @@ class DisturbanceMaker(object):
               .reset_index())
         # Return #
         return df
+
+    @property_cached
+    def df_max_supply(self):
+        """
+        """
+        pass

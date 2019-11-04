@@ -17,7 +17,8 @@ from cbmcfs3_runner.scenarios.static_demand      import StaticDemand
 from cbmcfs3_runner.scenarios.auto_allocation    import AutoAllocation
 from cbmcfs3_runner.scenarios.calibration        import Calibration
 from cbmcfs3_runner.scenarios.growth_only        import GrowthOnly
+from cbmcfs3_runner.scenarios.max_supply         import MaxSupply
 
 ###############################################################################
 scen_classes = [Historical, StaticDemand, AutoAllocation,
-                Calibration, GrowthOnly]
+                Calibration, GrowthOnly, MaxSupply]
