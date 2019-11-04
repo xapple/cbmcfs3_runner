@@ -5,7 +5,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.1'
-      jupytext_version: 1.2.4
+      jupytext_version: 1.1.7
   kernelspec:
     display_name: Python 3
     language: python
@@ -63,7 +63,16 @@ if list_all_column_names:
 
 
 
-## tbladminboundarydefault
+## tblsimulation
+
+```python
+db['tblsimulation']
+```
+
+## Spatial Units (SPU)
+
+
+### tbladminboundarydefault
 
 
 ```python
@@ -71,10 +80,48 @@ db['tbladminboundarydefault'].query("admin_boundary_name=='Luxembourg'")
 ```
 
 
-## tblsimulation
+### tblecoboundarydefault
 
 ```python
-db['tblsimulation']
+db['tblecoboundarydefault']
+```
+
+## Biomass Components
+Kull 2014:
+
+> "[...] the allometric equations used to convert aboveground stand-level merchantable volume to
+>  aboveground stand-level biomass by components (Boudewyn et al. 2007), and the allometric equations used
+> to convert aboveground biomass to belowground biomass by components (Li et al. 2003)."
+
+
+### tblbiomasscomponent
+
+```python
+db['tblbiomasscomponent']
+```
+
+### tblbiomasstocarbondefault
+
+```python
+db['tblbiomasstocarbondefault']
+```
+
+### tblbiototalstemwoodforesttypedefault 
+
+```python
+db['tblbiototalstemwoodforesttypedefault']
+```
+
+### tblbiototalstemwoodgenusdefault
+
+```python
+db['tblbiototalstemwoodgenusdefault']
+```
+
+### tblbiototalstemwoodspeciestypedefault
+
+```python
+db['tblbiototalstemwoodspeciestypedefault']
 ```
 
 ## Disturbance Matrix
