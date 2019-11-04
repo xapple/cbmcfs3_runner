@@ -181,12 +181,12 @@ class AIDB(object):
              'multi_year_count', 'dist_type_name'],
         """
         # Load tables from the aidb #
-        dm_table    = self.dm_table
-        source      = self.source
-        sink        = self.sink
-        lookup      = self.lookup
-        assoc_short = self.dm_assoc_default_short
-        dist_type   = self.dist_type_default
+        dm_table     = self.dm_table
+        source       = self.source
+        sink         = self.sink
+        lookup       = self.lookup
+        assoc_short  = self.dm_assoc_default_short
+        dist_default = self.dist_type_default
         # Load tables from orig_data #
         map_disturbance = self.parent.associations.map_disturbance
         dist_types      = self.parent.orig_data.disturbance_types
@@ -207,7 +207,7 @@ class AIDB(object):
                        .reset_index())
         # Add 'dist_type_name' corresponding to orig/disturbance_types.csv
         df = df.left_join(assoc_short,     'dmid')
-        df = df.left_join(dist_type,       'dist_type_id')
+        df = df.left_join(dist_default,    'dist_type_id')
         df = df.left_join(map_disturbance, 'dist_desc_aidb')
         df = df.left_join(dist_types,      'dist_desc_input')
         # Return #
