@@ -34,6 +34,8 @@ class Harvest(object):
         self.parent = parent
         # Directories #
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
+        # Shortcut #
+        self.country = self.parent.parent.country
 
     #-------------------------------------------------------------------------#
     @property_cached
@@ -67,13 +69,7 @@ class Harvest(object):
                  'management_strategy',
                  'conifers_broadleaves']
         # Not real grouping variables only here to keep them in the final table
-        # Their values should be unique for the all combination of the other grouping vars
-        # But in fact they are not! But we will group again later with other vars
-        secondary_index = ['dom_production',
-                           'co2_production',
-                           'merch_litter_input',
-                           'oth_litter_input',
-                           'density']
+        secondary_index = ['density']
         # Check that we don't produce NaNs #
         # See ~/repos/examples/python_modules/pandas/join_and_produce_nan.py
         # Check for NaNs coming from a join tables to avoid using them in an aggregation index
@@ -82,8 +78,13 @@ class Harvest(object):
         # Then group #
         df = (ungrouped
               .groupby(index + secondary_index)
-              .agg({'soft_production': 'sum',
-                    'hard_production': 'sum'})
+              .agg({'soft_production':   'sum',
+                    'hard_production':   'sum',
+                    'dom_production' :   'sum',
+                    'co2_production' :   'sum',
+                    'merch_litter_input':'sum',
+                    'oth_litter_input':  'sum'
+                    })
               .reset_index())
         # Check conservation of total mass #
         flux_raw = self.parent.database['tblFluxIndicators']
@@ -98,6 +99,22 @@ class Harvest(object):
         df['vol_snags']           = (df['dom_production'] * 2) / df['density']
         df['vol_forest_residues'] = ((df['merch_litter_input'] + df['oth_litter_input']) * 2) / df['density']
         # Return #
+        return df
+
+    @property_cached
+    def prop_sub_merch_snags(self):
+        """proportion of sub merchantable and snags compared to merchantable.
+
+        Note: sub-merchantable is also called other wood components (owc)
+        and generally refers to branches. It is represented by the CO2
+        pool in the CBM output."""
+        # Load
+        df = self.check.copy()
+        df['prop_sub_merch'] = df['vol_sub_merch'] / df['vol_merch']
+        df['prop_snags'] = df['vol_snags'] / df['vol_merch']
+        cols_of_interest = self.country.classifiers.names
+        cols_of_interest += ['prop_snags', 'prop_sub_merch']
+        #return
         return df
 
     #-------------------------------------------------------------------------#
@@ -239,7 +256,7 @@ class Harvest(object):
         # Add the delta column #
         df['delta'] = (df.expected - df.provided)
         # Add year and remove TimeStep #
-        df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
+        df['year'] = self.country.timestep_to_year(df['time_step'])
         df = df.drop('time_step', axis=1)
         # Load dist_type_name and their description
         dist_type = self.parent.parent.input_data.disturbance_types
@@ -249,7 +266,7 @@ class Harvest(object):
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
             # Patch the harvest data frame to stop at the simulation year #
-            selector = df['year'] <= self.parent.parent.country.base_year
+            selector = df['year'] <= self.country.base_year
             df = df.loc[selector].copy()
         # Return #
         return df
