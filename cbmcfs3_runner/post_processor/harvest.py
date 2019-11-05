@@ -78,12 +78,12 @@ class Harvest(object):
         # Then group #
         df = (ungrouped
               .groupby(index + secondary_index)
-              .agg({'soft_production':   'sum',
-                    'hard_production':   'sum',
-                    'dom_production' :   'sum',
-                    'co2_production' :   'sum',
-                    'merch_litter_input':'sum',
-                    'oth_litter_input':  'sum'
+              .agg({'soft_production':    'sum',
+                    'hard_production':    'sum',
+                    'dom_production' :    'sum',
+                    'co2_production' :    'sum',
+                    'merch_litter_input': 'sum',
+                    'oth_litter_input':   'sum'
                     })
               .reset_index())
         # Check conservation of total mass #
@@ -103,22 +103,27 @@ class Harvest(object):
 
     @property_cached
     def prop_sub_merch_snags(self):
-        """proportion of sub merchantable and snags compared to merchantable.
+        """
+        Proportion of sub merchantable and snags compared to merchantable.
 
         Note: sub-merchantable is also called other wood components (owc)
         and generally refers to branches. It is represented by the CO2
-        pool in the CBM output."""
-        # TODO: aggregate for all classifiers except 3 admin and 6 eco,
-        #  and eventually yield_stuff for BG i.e. aggregate for
-        #  classifiers present in the silviculture treatments table
-        #
-        # Load
+        pool in the CBM output.
+
+        TODO: aggregate for all classifiers except 3 admin and 6 eco,
+         and eventually yield_stuff for BG i.e. aggregate for
+         classifiers present in the silviculture treatments table
+        """
+        # Load #
         df = self.check.copy()
+        # New columns #
         df['prop_sub_merch'] = df['vol_sub_merch'] / df['vol_merch']
-        df['prop_snags'] = df['vol_snags'] / df['vol_merch']
+        df['prop_snags']     = df['vol_snags']     / df['vol_merch']
+        # Keep only some columns #
         cols_of_interest = self.country.classifiers.names
         cols_of_interest += ['prop_snags', 'prop_sub_merch']
-        #return
+        df = df[cols_of_interest]
+        # Return #
         return df
 
     #-------------------------------------------------------------------------#
@@ -146,7 +151,7 @@ class Harvest(object):
                         'management_strategy'])
               .agg({'vol_merch':           'sum',
                     'vol_snags':           'sum',
-                    'vol_sub_merch':        'sum',
+                    'vol_sub_merch':       'sum',
                     'vol_forest_residues': 'sum',
                     'prov_carbon':         'sum',
                     'tc':                  'sum'})
