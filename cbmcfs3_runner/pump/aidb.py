@@ -11,6 +11,7 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
+import numpy
 
 # First party modules #
 from autopaths            import Path
@@ -179,6 +180,9 @@ class AIDB(object):
              'dist_desc_long', 'row_pool', 'column_pool', 'on_off_switch',
              'description', 'is_stand_replacing', 'is_multi_year',
              'multi_year_count', 'dist_type_name'],
+
+        #TODO this code returns NaN for many dmids when joining with dist_type_names.
+          Possibly the code is all wrong.
         """
         # Load tables from the aidb #
         dm_table     = self.dm_table
@@ -273,5 +277,17 @@ class AIDB(object):
         df = df.fillna(0)
         # Check #
         assert all(df['diff'].abs() < 1e-3)
+        # Return #
+        return df
+
+    @property_cached
+    def dmid_map(self):
+        """Map the dist_type_name to its dmid for the current country."""
+        # Load #
+        dist_mat   = self.dist_matrix_long
+        # Keep only two columns #
+        df = dist_mat[['dist_type_name', 'dmid']].drop_duplicates()
+        # Check #
+        #assert not any(df['dmid'] == numpy.nan)
         # Return #
         return df
