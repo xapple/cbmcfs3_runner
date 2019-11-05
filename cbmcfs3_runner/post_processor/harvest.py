@@ -108,6 +108,10 @@ class Harvest(object):
         Note: sub-merchantable is also called other wood components (owc)
         and generally refers to branches. It is represented by the CO2
         pool in the CBM output."""
+        # TODO: aggregate for all classifiers except 3 admin and 6 eco,
+        #  and eventually yield_stuff for BG i.e. aggregate for
+        #  classifiers present in the silviculture treatments table
+        #
         # Load
         df = self.check.copy()
         df['prop_sub_merch'] = df['vol_sub_merch'] / df['vol_merch']
