@@ -35,6 +35,8 @@ class Inventory(object):
         self.parent = parent
         # Directories #
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
+        # Shortcut #
+        self.country = self.parent.parent.country
 
     #-------------------------------------------------------------------------#
     @property_cached
@@ -225,11 +227,13 @@ class Inventory(object):
     @property_cached
     def sum_merch_stock(self):
         """
-        Total biomass *stock* per forest type coming from the pool indicators table.
+        Total biomass *stock* in tons of carbon directly from the
+        pool indicators table distinguished by forest type.
+        Also contains the volume in cubic meters over bark.
+
         It's an indication of the overall evolution of the growing stock
         (not yet disturbed). This is useful for making a high level check avoiding
         intermediate queries which could be sources of errors.
-        The mass is measured as tons of carbon.
 
         Columns are: ['year', 'forest_type', 'conifers_broadleaves', 'mass']
         """
@@ -237,7 +241,7 @@ class Inventory(object):
         df    = self.parent.database['tblPoolIndicators']
         clifr = self.parent.classifiers.set_index("user_defd_class_set_id")
         # Our index #
-        index = ['time_step', 'forest_type']
+        index = ['time_step', 'forest_type', 'conifers_broadleaves']
         # Join #
         df = (df
               .set_index('user_defd_class_set_id')
@@ -254,11 +258,11 @@ class Inventory(object):
         for i, row in df.iterrows():
             if row['hw_merch'] > 0.0 and row['sw_merch'] > 0.0:
                 warnings.warn("There is a mixed species at row %i.\n%s" % (i,row))
-        # Convert from wide to long format #
-        df = df.melt(id_vars    = ['year', 'forest_type'],
-                     value_vars = ['hw_merch', 'sw_merch'],
-                     var_name   = 'conifers_broadleaves',
-                     value_name = 'mass')
+        df['mass'] = df['hw_merch'] + df['sw_merch']
+        # calculate the volume in cubic meters over bark #
+        # join density
+        df = df.left_join(self.country.coefficients, 'forest_type')
+        df['volume'] = df['mass'] / df['density']
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
             # Patch the harvest data frame to stop at the simulation year #

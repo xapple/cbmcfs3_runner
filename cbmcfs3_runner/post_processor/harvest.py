@@ -29,6 +29,11 @@ class Harvest(object):
     /output/harvest/
     """
 
+    # Classifiers used in silviculture treatments
+    classifiers_silv = ['status', 'forest_type',
+                        'management_type', 'management_strategy',
+                        'conifers_broadleaves']
+
     def __init__(self, parent):
         # Default attributes #
         self.parent = parent
@@ -36,10 +41,6 @@ class Harvest(object):
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
         # Shortcut #
         self.country = self.parent.parent.country
-        # Classifiers used in silviculture treatments
-        self.classifiers_silv = ['status', 'forest_type',
-                                 'management_type', 'management_strategy',
-                                 'conifers_broadleaves']
 
     #-------------------------------------------------------------------------#
     @property_cached
