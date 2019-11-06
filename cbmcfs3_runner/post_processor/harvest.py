@@ -36,6 +36,10 @@ class Harvest(object):
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
         # Shortcut #
         self.country = self.parent.parent.country
+        # Classifiers used in silviculture treatments
+        self.classifiers_silv = ['status', 'forest_type',
+                                 'management_type', 'management_strategy',
+                                 'conifers_broadleaves']
 
     #-------------------------------------------------------------------------#
     @property_cached
@@ -116,7 +120,7 @@ class Harvest(object):
         df = self.check.copy()
         df['prop_sub_merch'] = df['vol_sub_merch'] / df['vol_merch']
         df['prop_snags'] = df['vol_snags'] / df['vol_merch']
-        cols_of_interest = self.country.classifiers.names
+        cols_of_interest = self.classifiers_silv
         cols_of_interest += ['prop_snags', 'prop_sub_merch']
         #return
         return df
