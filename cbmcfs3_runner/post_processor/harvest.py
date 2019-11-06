@@ -120,13 +120,17 @@ class Harvest(object):
         """
         # Load #
         df = self.check.copy()
+        index = self.classifiers_silv.copy()
+        index += ['dist_type_name']
+        df = (df
+              .groupby(index)
+              .agg({'vol_merch':sum,
+                    'vol_sub_merch':sum,
+                    'vol_snags':sum})
+              .reset_index())
         # New columns #
         df['prop_sub_merch'] = df['vol_sub_merch'] / df['vol_merch']
         df['prop_snags']     = df['vol_snags']     / df['vol_merch']
-        # Keep only some columns #
-        cols_of_interest = self.classifiers_silv
-        cols_of_interest += ['prop_snags', 'prop_sub_merch']
-        df = df[cols_of_interest]
         # Return #
         return df
 
