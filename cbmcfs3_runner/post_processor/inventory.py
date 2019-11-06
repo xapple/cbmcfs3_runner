@@ -208,12 +208,12 @@ class Inventory(object):
         """Same as grouped_bins but with the TimeStep swtiched to years.
         The four important class attributes are:
             * group_cols, sum_col, bin_col, bin_width
-        Adapting these variables will modify the behavior of this final dataframe.
+        Adapting these variables will modify the behavior of this final data frame.
         """
         # Load the vector version #
         df = self.grouped_bins.reset_index()
         # Add year and remove TimeStep #
-        df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
+        df['year'] = self.country.timestep_to_year(df['time_step'])
         df = df.drop('time_step', axis=1)
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
@@ -251,7 +251,7 @@ class Inventory(object):
                     'sw_merch': 'sum'})
               .reset_index())
         # Add year and remove TimeStep #
-        df['year'] = self.parent.parent.country.timestep_to_year(df['time_step'])
+        df['year'] = self.country.timestep_to_year(df['time_step'])
         df = df.drop('time_step', axis=1)
         # Check for mixed species that would produce both hard and soft #
         import warnings
@@ -266,7 +266,7 @@ class Inventory(object):
         # Only if we are in the calibration scenario #
         if self.parent.parent.scenario.short_name == 'calibration':
             # Patch the harvest data frame to stop at the simulation year #
-            selector = df['year'] <= self.parent.parent.country.base_year
+            selector = df['year'] <= self.country.base_year
             df = df.loc[selector].copy()
         # Return #
         return df
