@@ -39,8 +39,14 @@ if os.environ.get("CBMCFS3_DATA"):
 
 ###############################################################################
 class Continent(object):
-    """Aggregates countries together.
-    Continent is a singleton."""
+    """Continent is a singleton i.e. an object of which there is a single instance.
+    Continent contains many countries and many scenarios.
+
+    Country objects give access to the original data used
+    as simulation input to CBM.
+    Scenarios objects give access to various modifications of the input data
+    relevant for many simulations.
+    """
 
     all_paths = """
     /countries/

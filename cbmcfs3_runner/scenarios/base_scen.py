@@ -24,7 +24,8 @@ from cbmcfs3_runner.reports.scenario import ScenarioReport
 ###############################################################################
 class Scenario(object):
     """
-    This object represents a harvest and economic scenario.
+    This object represents a modification of the input data for the purpose.
+    A scenario can be harvest and economic scenario.
     Actual scenarios should inherit from this class.
     """
 
