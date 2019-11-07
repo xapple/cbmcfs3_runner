@@ -44,6 +44,10 @@ class Country(object):
     """
     This object gives access to the data pertaining to one country
     amongst the 26 EU member states we are examining.
+
+    The data storred in orig_data consists of original csv file. The
+    data storred in export_data also constists of csv files, exported
+    from a calibration database (an MS access database used by CBMCFS3)
     """
 
     all_paths = """
@@ -109,7 +113,9 @@ class Country(object):
         """Update all the reference years for this country."""
         # This is the same for all countries #
         self.base_year = 2015
-        # This is variable #
+        # This is different for each country.
+        # inventory_start_year is the oldest year in the inventory data
+        # reported by the national forest inventory
         row = ref_years.loc[ref_years['country'] == self.iso2_code].iloc[0]
         self.inventory_start_year = row['ref_year']
 
