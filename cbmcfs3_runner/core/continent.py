@@ -39,7 +39,8 @@ if os.environ.get("CBMCFS3_DATA"):
 
 ###############################################################################
 class Continent(object):
-    """Aggregates countries together."""
+    """Aggregates countries together.
+    Continent is a singleton."""
 
     all_paths = """
     /countries/

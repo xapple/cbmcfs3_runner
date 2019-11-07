@@ -27,10 +27,6 @@ from plumbing.cache import property_cached
 from cbmcfs3_runner import module_dir
 from tqdm import tqdm
 
-# Constants #
-faostat_fo_path = module_dir + 'extra_data/faostat_forestry.csv'
-url = 'http://fenixservices.fao.org/faostat/static/bulkdownloads/Forestry_E_Europe.zip'
-
 ###############################################################################
 class Faostat(object):
     """
@@ -44,16 +40,19 @@ class Faostat(object):
 
     short_names = ['irw_c', 'irw_b', 'fw_c', 'fw_b']
 
-    @classmethod
-    def download(cls):
+    # Constants #
+    faostat_fo_path = module_dir + 'extra_data/faostat_forestry.csv'
+    url = 'http://fenixservices.fao.org/faostat/static/bulkdownloads/Forestry_E_Europe.zip'
+
+    def download(self):
         """A method to automatically downloaded the needed CSV file.
         You should only need to run this once. Use it like this:
 
-            >>> from cbmcfs3_runner.faostat import Faostat
-            >>> Faostat.download()
+            >>> from cbmcfs3_runner.faostat import faostat
+            >>> faostat.download()
         """
         # Download it #
-        response = requests.get(url, stream=True)
+        response = requests.get(self.url, stream=True)
         total_size = int(response.headers.get('content-length'))
         block_size = int(total_size/1024)
         # Do it #
@@ -64,7 +63,7 @@ class Faostat(object):
         zip_archive = zipfile.ZipFile(zip_file)
         file_name = "Forestry_E_Europe_NOFLAG.csv"
         # We can't use zip_archive.extract() because it preserves directories #
-        with open(faostat_fo_path, 'wb') as handle:
+        with open(self.faostat_fo_path, 'wb') as handle:
             handle.write(zip_archive.read(file_name))
 
     @property_cached
@@ -87,7 +86,7 @@ class Faostat(object):
         # Import internal modules #
         from cbmcfs3_runner.core.country import all_codes, ref_years
         # Read #
-        df = pandas.read_csv(str(faostat_fo_path))
+        df = pandas.read_csv(str(self.faostat_fo_path))
         # Rename all columns to lower case #
         df = df.rename(columns=lambda name: name.replace(' ', '_').lower())
         # Areas are actually countries, items are products #
