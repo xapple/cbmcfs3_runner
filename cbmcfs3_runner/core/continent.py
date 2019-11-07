@@ -18,13 +18,11 @@ import os
 
 # Third party modules #
 from tqdm import tqdm
-import pandas
 
 # First party modules #
 from autopaths            import Path
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
-from plumbing.logger      import create_file_logger
 
 # Internal modules #
 from cbmcfs3_runner.core.country import Country
@@ -42,17 +40,17 @@ class Continent(object):
     """Continent is a singleton i.e. an object of which there is a single instance.
     Continent contains many countries and many scenarios.
 
-    Country objects give access to the original data used
-    as simulation input to CBM.
-    Scenarios objects give access to various modifications of the input data
-    relevant for many simulations.
+     * Country objects give access to the original data used
+         as simulation input to CBM.
+     * Scenarios objects give access to various simulation runs,
+         i.e. modifications of the input data to create scenarios and
+         the ensuing post processing to analyse simulation results.
     """
 
     all_paths = """
     /countries/
     /scenarios/
     /reports/
-    /logs/continent.log
     """
 
     def __init__(self, base_dir):
@@ -97,21 +95,14 @@ class Continent(object):
             print(scenario)
             scenario(verbose=verbose)
 
-    @property_cached
-    def log(self):
-        """Each runner will have its own logger."""
-        return create_file_logger('continent', self.paths.log)
-
     def get_runner(self, scenario, country, step):
-        """Return a runner based on scenario, country and step."""
-        return self.scenarios[scenario].runners[country][step]
+        """Return a runner based on scenario, country and step.
 
-    @property
-    def first(self):
-        key = next(iter(self.countries))
-        return self.countries[key]
+            >>> from cbmcfs3_runner.core.continent import continent
+            >>> runner = continent[('historical', 'AT', 0)]
+        """
+        return self.scenarios[scenario].runners[country][step]
 
 ###############################################################################
 # Create a singleton #
 continent = Continent(cbm_data_repos)
-
