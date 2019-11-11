@@ -127,7 +127,9 @@ class Silviculture(object):
         index = self.parent.classifiers.names + ['age_class']
         # Join #
         df = inventory.left_join(h_yields_long, index)
-        # Compute stock #
+        # Compute stock in m^3 #
+        # Area is in hectares
+        # Volume is in m^3 / hectares
         df['stock'] = df['area'] * df['volume']
         # Compute a proxy for the actual age #
         df['age_proxy'] = numpy.where(df['using_id'], df['age_class'] * 10 - 5, df['age'])
