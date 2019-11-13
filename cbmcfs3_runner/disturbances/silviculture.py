@@ -192,8 +192,10 @@ class Silviculture(object):
                  'management_strategy', 'conifers_broadleaves']
         # Join with treats_corr #
         df = stock_by_yield.left_join(treats_corr, index)
-        # Filter for age conditions #
-        df = df.query('min_age <= age_proxy & age_proxy <= max_age').copy()
+        # Filter for age conditions at the base year #
+        step_at_base = self.parent.year_to_timestep(self.parent.base_year)
+        df['age_base'] = df['age_proxy'] + step_at_base
+        df = df.query('min_age <= age_base & age_base <= max_age').copy()
         # Filter for existing stock #
         df = df.query('stock > 0').copy()
         # Compute the stock available #
