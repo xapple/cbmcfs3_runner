@@ -195,7 +195,14 @@ class Silviculture(object):
         # Filter for age conditions at the base year #
         step_at_base = self.parent.year_to_timestep(self.parent.base_year)
         df['age_base'] = df['age_proxy'] + step_at_base
-        df = df.query('min_age <= age_base & age_base <= max_age').copy()
+        df['max_age_base'] = df['max_age'] + step_at_base
+        # The age at the base period should be:
+        # * greater than min_age
+        # * and smaller than max age plus step_at_base
+        # This information is only used to calculate the harvest proportion
+        # We had to do this because we cannot change the disturbance min age and
+        # max age otherwise this would change the behaviour of the disturbances.
+        df = df.query('min_age <= age_base & age_base <= max_age_base').copy()
         # Filter for existing stock #
         df = df.query('stock > 0').copy()
         # Compute the stock available #
