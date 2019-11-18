@@ -96,10 +96,10 @@ from cbmcfs3_runner.core.continent import continent
 #    c.report.copy_to_outbox()
 
 ################################################################################
-scenario = continent.scenarios['static_demand']
-runners  = [rs[-1] for k,rs in scenario.runners.items() if k == 'BG']
-runner   = runners[0]
-print(runner.run(verbose=True))
+#scenario = continent.scenarios['static_demand']
+#runners  = [rs[-1] for k,rs in scenario.runners.items() if k == 'BG']
+#runner   = runners[0]
+#print(runner.run(verbose=True))
 
 ################################################################################
 #for c in tqdm(continent.countries.values()):
@@ -112,3 +112,10 @@ print(runner.run(verbose=True))
 #r = continent[('static_demand', country, -1)]
 #dist_mat = r.country.aidb.dist_matrix_long
 
+################################################################################
+scenario = continent.scenarios['demand_plus_20']
+runners  = [rs[-1] for k,rs in scenario.runners.items()]
+for r in tqdm(runners):
+    r.remove_directory()
+    r.pre_processor()
+    r.pre_flight()
