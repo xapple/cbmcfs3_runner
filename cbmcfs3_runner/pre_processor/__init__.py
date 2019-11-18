@@ -47,7 +47,7 @@ class PreProcessor(object):
         self.country = parent.country
         # Directories #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
-        # Attributes might be overwritten by scenarios
+        # These attributes might be overwritten by scenarios #
         self.disturbance_events = self.events_static_demand
 
     def __call__(self):
@@ -55,11 +55,12 @@ class PreProcessor(object):
         # Some files don't change so take them straight from orig_data #
         for file in self.unchanged:
             self.parent.country.orig_data.paths[file].copy(self.paths[file])
-        # Actually call the function #
+        # Other files are special and need changing #
+        # Generate disturbances (dynamic function) and write those #
         df = self.disturbance_events()
-        # Some are special and need changing #
         df.to_csv(str(self.paths.events), index=False)
 
+    #--------------------------- Different events ----------------------------#
     def events_hist(self):
         """Only historical disturbances."""
         return self.disturbance_filter.df
@@ -72,6 +73,7 @@ class PreProcessor(object):
         """Auto allocation disturbances."""
         return self.disturbance_maker.df_auto_allocation
 
+    #----------------------------- Properties --------------------------------#
     @property_cached
     def disturbance_maker(self):
         """All information for making new disturbance events."""

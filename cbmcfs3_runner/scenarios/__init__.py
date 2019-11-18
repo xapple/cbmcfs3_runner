@@ -16,11 +16,12 @@ scenario to this directory, it will get automatically loaded.
     >>> scen_classes = [Historical, StaticDemand, AutoAllocation]
 
 scen_classes is automatically filled with black magic functions
-from inspect and importlib.
+from inspect and importlib. For a class to qualify it should have
+a `short_name` attribute.
 """
 
 # Built-in modules #
-import inspect, importlib, sys
+import inspect, importlib
 
 # First party modules #
 from autopaths import Path
@@ -40,15 +41,15 @@ for scen_file in this_dir.flat_files:
     if scen_file.prefix.startswith('__'): continue
     if scen_file.prefix == 'base_scen':   continue
     # Import it #
-    rel_mod_name = '.' + scen_file.prefix
-    scen_module  = importlib.import_module(rel_mod_name, package=__name__)
+    rel_mod_name  = '.' + scen_file.prefix
+    scen_module   = importlib.import_module(rel_mod_name, package=__name__)
     # Get list of all classes #
-    all_classes  = [c for name, c in inspect.getmembers(scen_module, inspect.isclass)]
+    all_classes   = [c for name, c in inspect.getmembers(scen_module, inspect.isclass)]
     # Filter for only locally defined ones #
     is_local      = lambda c: c.__module__ == scen_module.__name__
     local_classes = [c for c in all_classes if is_local(c)]
     # Filter for scenario classes #
     is_scenario   = lambda c: hasattr(c, 'short_name')
-    local_classes = [c for c in all_classes if is_scenario(c)]
+    scenarios     = [c for c in all_classes if is_scenario(c)]
     # Append it #
-    scen_classes += scen_class
+    scen_classes += scenarios

@@ -58,6 +58,7 @@ class Demand(object):
     unknown reason.
     """
 
+    # This value ... #
     bark_correction_factor = 0.88
 
     def __init__(self, parent):

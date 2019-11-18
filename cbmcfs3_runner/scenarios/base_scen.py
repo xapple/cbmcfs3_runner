@@ -33,8 +33,6 @@ class Scenario(object):
     /logs_summary.md
     """
 
-    short_name = 'base_scen'
-
     def __iter__(self): return iter(self.runners.values())
     def __len__(self):  return len(self.runners.values())
 
@@ -63,7 +61,7 @@ class Scenario(object):
 
     @property
     def scenarios_dir(self):
-        """Shortcut to the scenarios directory"""
+        """Shortcut to the scenarios directory."""
         return self.continent.scenarios_dir
 
     @property_cached
