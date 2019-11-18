@@ -108,7 +108,7 @@ class AIDB(object):
     @property_cached
     def dm_assoc_default(self):
         """
-        Link between default_dist_type_id, defatul_ec_id, and dmid
+        Link between default_dist_type_id, default_ec_id, and dmid
 
         Pay attention to the tricky annual_order which might generate
         errors in some cases (see also libcbm aidb import efforts)
