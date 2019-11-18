@@ -121,20 +121,27 @@ class Silviculture(object):
                       'stock', 'age']
         """
         # Load data frames #
-        inventory     = self.parent.orig_data.inventory
+        df = self.parent.orig_data.inventory.copy()
         h_yields_long = self.parent.orig_data.historical_yields_long
+        # Compute a proxy for the actual age #
+        df['age_proxy'] = numpy.where(df['using_id'],
+                                      df['age_class'] * 10 - 5,
+                                      df['age'])
+        # Add missing age_class column for Greece
+        df['age_class'] = numpy.where(df['using_id'],
+                                      df['age_class'],
+                                      df['age']/10)
         # Index #
         index = self.parent.classifiers.names + ['age_class']
         # Join #
-        df = inventory.left_join(h_yields_long, index)
+        df = df.left_join(h_yields_long, index)
         # Compute stock in m^3 #
         # Area is in hectares
         # Volume is in m^3 / hectares
         df['stock'] = df['area'] * df['volume']
-        # Compute a proxy for the actual age #
-        df['age_proxy'] = numpy.where(df['using_id'], df['age_class'] * 10 - 5, df['age'])
         # We are not interested in these columns #
-        cols_to_drop = ['age', 'using_id', 'delay', 'unfcccl', 'hist_dist', 'last_dist', 'sp']
+        cols_to_drop = ['age', 'using_id', 'delay', 'unfcccl',
+                        'hist_dist', 'last_dist', 'sp']
         df = df.drop(columns=cols_to_drop)
         # Return #
         return df
