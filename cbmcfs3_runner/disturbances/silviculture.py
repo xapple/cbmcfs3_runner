@@ -127,10 +127,12 @@ class Silviculture(object):
         df['age_proxy'] = numpy.where(df['using_id'],
                                       df['age_class'] * 10 - 5,
                                       df['age'])
-        # Add missing age_class column for Greece
+        # Add missing age_class column for Greece.
+        # Use age_proxy (instead of age ) as this is guaranteed
+        # to be an integer value
         df['age_class'] = numpy.where(df['using_id'],
                                       df['age_class'],
-                                      df['age']/10)
+                                      df['age_proxy']/10)
         # Index #
         index = self.parent.classifiers.names + ['age_class']
         # Join #
