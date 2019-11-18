@@ -29,6 +29,7 @@ class StaticDemand(Scenario):
     @property_cached
     def runners(self):
         """A dictionary of country codes as keys with a list of runners as values."""
+        # Create all runners #
         result = {c.iso2_code: [Runner(self, c, 0)] for c in self.continent}
         # Don't modify these runners #
         return result
