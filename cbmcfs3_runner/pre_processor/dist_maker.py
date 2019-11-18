@@ -150,7 +150,7 @@ class DisturbanceMaker(object):
         """
         Check that the industrial round wood disturbances
         weight in tonnes of carbon correspond to the demand
-        volume in m3 over bark for each year.
+        volume in m^3 over bark, for each year.
         """
         # Load #
         df = self.dist_irw_converted
