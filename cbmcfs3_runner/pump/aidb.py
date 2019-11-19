@@ -180,9 +180,6 @@ class AIDB(object):
              'dist_desc_long', 'row_pool', 'column_pool', 'on_off_switch',
              'description', 'is_stand_replacing', 'is_multi_year',
              'multi_year_count', 'dist_type_name'],
-
-        #TODO this code returns NaN for many dmids when joining with dist_type_names.
-          Possibly the code is all wrong.
         """
         # Load tables from the aidb #
         dm_table     = self.dm_table
