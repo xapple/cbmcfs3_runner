@@ -282,7 +282,14 @@ class AIDB(object):
 
     @property_cached
     def dmid_map(self):
-        """Map the dist_type_name to its dmid for the current country."""
+        """Map the dist_type_name to its dmid for the current country.
+           Only returns the unique available combinations
+           of dmid and dist_type_name.
+           Note two dist_type_name can map to the same dmid.
+
+           Columns:
+               ['dist_type_name', 'dmid', 'dist_desc_aidb']
+        """
         # Load #
         dist_mat   = self.dist_matrix_long
         # Keep only two columns #
