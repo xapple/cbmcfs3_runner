@@ -286,7 +286,8 @@ class AIDB(object):
         # Load #
         dist_mat   = self.dist_matrix_long
         # Keep only two columns #
-        df = dist_mat[['dist_type_name', 'dmid']].drop_duplicates()
+        columns_of_interest = ['dist_type_name', 'dmid', 'dist_desc_aidb']
+        df = dist_mat[columns_of_interest].drop_duplicates()
         # Check #
         #assert not any(df['dmid'] == numpy.nan)
         # Return #
