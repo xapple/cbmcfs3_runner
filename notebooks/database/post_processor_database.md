@@ -43,7 +43,7 @@ runner = runner_CZ
 db = runner.post_processor.database
 ```
 
-# List all tables 
+# List all tables
 
 ```python
 db.tables
@@ -87,6 +87,13 @@ db['tblfluxindicators'].head(2)
 ```python
 db['tblpoolindicators'].head(2)
 ```
+
+## tblageindicators
+
+```python
+db['tblageindicators'].head(2)
+```
+
 
 ## tblspeciestype
 
