@@ -57,7 +57,7 @@ class PostProcessor(object):
     def classifiers(self):
         """
         Creates a mapping between 'user_defd_class_set_id'
-        and the classifiers values:
+        and the classifiers values present in the CBM output data:
 
          * species, site_quality and forest_type in tutorial six
          * status, forest_type, region, management_type, management_strategy, climatic_unit, conifers_broadleaves
@@ -118,6 +118,10 @@ class PostProcessor(object):
     @property_cached
     def classifiers_mapping(self):
         return self.parent.country.classifiers.mapping
+
+    @property_cached
+    def classifiers_names(self):
+        return self.parent.country.classifiers.names
 
     @property_cached
     def disturbance_type(self):
@@ -184,6 +188,15 @@ class PostProcessor(object):
         return df
 
     @property_cached
+    def flux_indicators_long(self):
+        """Flux table unpivoted to a long format. """
+        df = self.flux_indicators
+        df = df.melt(id_vars = self.classifiers_names,
+                     var_name = 'pool',
+                     value_name = 'tc')
+        return df
+
+    @property_cached
     def pool_indicators(self):
         """Load the pool indicators table, add classifiers."""
         # Load tables #
@@ -195,6 +208,19 @@ class PostProcessor(object):
         clifr = clifr.set_index(index)
         # Join #
         return pool.join(clifr)
+
+    @property_cached
+    def pool_indicators_long(self):
+        """Pool indicators table in long format.
+        The melt (aka. unpivot) operation leaves classifiers as
+        index variables and keeps only 2 extra columns containing the
+        pool name (pool) and the total carbon weight (tc).
+        """
+        df = self.pool_indicators
+        df = df.melt(id_vars = self.classifiers_names,
+                     var_name='pool',
+                     value_name='tc')
+        return df
 
     #-------------------------------------------------------------------------#
     @property_cached
