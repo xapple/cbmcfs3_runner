@@ -200,8 +200,6 @@ class PostProcessor(object):
         df = df.melt(id_vars = index,
                      var_name = 'pool',
                      value_name = 'tc')
-        # Convert classifiers to categorial variables
-        df[index] = df[index].astype('category')
         return df
 
     @property_cached
@@ -230,8 +228,6 @@ class PostProcessor(object):
         df = df.melt(id_vars = index,
                      var_name='pool',
                      value_name='tc')
-        # Convert classifiers to categorial variables
-        df[index] = df[index].astype('category')
         return df
 
     #-------------------------------------------------------------------------#
