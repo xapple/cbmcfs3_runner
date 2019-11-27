@@ -192,9 +192,12 @@ class PostProcessor(object):
     def flux_indicators_long(self):
         """Flux table unpivoted to a long format. """
         df = self.flux_indicators
-        df = df.melt(id_vars = self.classifiers_names,
+        index = self.classifiers_names
+        df = df.melt(id_vars = index,
                      var_name = 'pool',
                      value_name = 'tc')
+        # Convert classifiers to categorial variables
+        df[index] = df[index].astype('category')
         return df
 
     @property_cached
@@ -219,9 +222,12 @@ class PostProcessor(object):
         pool name (pool) and the total carbon weight (tc).
         """
         df = self.pool_indicators
-        df = df.melt(id_vars = self.classifiers_names,
+        index = self.classifiers_names
+        df = df.melt(id_vars = index,
                      var_name='pool',
                      value_name='tc')
+        # Convert classifiers to categorial variables
+        df[index] = df[index].astype('category')
         return df
 
     #-------------------------------------------------------------------------#
