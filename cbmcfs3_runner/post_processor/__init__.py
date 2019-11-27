@@ -94,8 +94,12 @@ class PostProcessor(object):
         classifiers = classifiers.rename(columns={'broad_conifers': 'conifers_broadleaves'})
         # C.f the PL column problem #
         classifiers = classifiers.rename(columns={'natural_forest_region': 'management_type'})
+        # Convert to categorical variables
+        classifiers = classifiers.astype('category')
+        # Reset the index
+        classifiers = classifiers.reset_index()
         # Return result #
-        return classifiers.reset_index()
+        return classifiers
 
     @property
     def coefficients(self):
