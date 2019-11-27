@@ -188,6 +188,7 @@ class PostProcessor(object):
         return df
 
     # Do not cache since it can be re-computed trivially from the above
+    @property
     def flux_indicators_long(self):
         """Flux table unpivoted to a long format. """
         df = self.flux_indicators
@@ -210,6 +211,7 @@ class PostProcessor(object):
         return pool.join(clifr)
 
     # Do not cache since it can be re-computed trivially from the above
+    @property
     def pool_indicators_long(self):
         """Pool indicators table in long format.
         The melt (aka. unpivot) operation leaves classifiers as
