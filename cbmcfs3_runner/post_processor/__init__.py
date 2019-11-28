@@ -196,6 +196,8 @@ class PostProcessor(object):
     def flux_indicators_long(self):
         """Flux table unpivoted to a long format. """
         df = self.flux_indicators
+        # TODO: add missing variables to the index,
+        # in a similar way to the pool_indicators_long table below.
         index = self.classifiers_names
         df = df.melt(id_vars = index,
                      var_name = 'pool',
@@ -224,7 +226,8 @@ class PostProcessor(object):
         pool name (pool) and the total carbon weight (tc).
         """
         df = self.pool_indicators
-        index = self.classifiers_names
+        additional_ids = ['time_step', 'spuid', 'land_class_id', 'pool_ind_id']
+        index = self.classifiers_names + additional_ids
         df = df.melt(id_vars = index,
                      var_name='pool',
                      value_name='tc')
