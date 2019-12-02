@@ -234,6 +234,8 @@ class PostProcessor(object):
                      var_name='pool',
                      value_name='tc')
         df = df.reset_index()
+        # Add year
+        df['year'] = self.parent.country.timestep_to_year(df['time_step'])
         return df
 
     #-------------------------------------------------------------------------#

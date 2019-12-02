@@ -59,7 +59,6 @@ class Ipcc(object):
         # Return #
         return df
 
-
     @property_cached
     def pool_indicators_long(self):
         """ Aggregate the pool indicators table along the 5 IPCC pools"""
@@ -70,13 +69,30 @@ class Ipcc(object):
         df['ipcc_pool'] = df['ipcc_pool'].fillna('not_available')
         # Aggregate total carbon weight along the 5 IPCC pools
         index = self.country.classifiers.names
-        index = index + ['ipcc_pool'] + ['time_step']
+        index = index + ['ipcc_pool', 'time_step', 'year']
         df = (df
               .groupby(index)
-              .aggregate({'tc':sum})
+              .agg({'tc':sum})
               .reset_index()
               )
         return df
+
+
+    @property_cached
+    def pool_indicators_long_agg(self):
+        """ Aggregate the pool indicators table for the whole country"""
+        df = self.pool_indicators_long
+        index = ['ipcc_pool', 'time_step', 'year']
+        df = (df
+              .groupby(index)
+              .agg({'tc':sum})
+              .reset_index()
+              )
+        # Add iso3 code
+        df['country_iso3'] = self.country.country_iso3
+        return df
+
+
 
     @property_cached
     def pool_indicators(self):
