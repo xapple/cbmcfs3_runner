@@ -74,7 +74,7 @@ class Ipcc(object):
         df = (df
               .groupby(index)
               .aggregate({'tc':sum})
-              .rest_index()
+              .reset_index()
               )
         return df
 
