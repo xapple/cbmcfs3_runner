@@ -233,6 +233,7 @@ class PostProcessor(object):
         df = df.melt(id_vars = index,
                      var_name='pool',
                      value_name='tc')
+        df = df.reset_index()
         return df
 
     #-------------------------------------------------------------------------#
