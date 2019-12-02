@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Written by Lucas Sinclair and Paul Rougieux.
+
+JRC biomass Project.
+Unit D1 Bioeconomy.
+
+You can use this object like this:
+
+    from cbmcfs3_runner.pump.faostat import faostat
+    print(faostat.forestry)
+"""
+
+# Built-in modules #
+
+
+# Third party modules #
+import pandas
+
+# First party modules #
+from plumbing.cache import property_cached
+
+# Internal modules #
+from cbmcfs3_runner import module_dir
+
+# Internal modules
+from cbmcfs3_runner.pump.common import multi_index_pivot
+
+
+###############################################################################
+class Ipcc(object):
+    """
+    Provides access to the IPCC pool mapping
+    """
+
+    # Constants #
+    ipcc_pools_path = module_dir + 'extra_data/ipcc_pools.csv'
+
+    def __init__(self, parent):
+        # Default attributes #
+        self.parent = parent
+        # Shortcut #
+        self.country = self.parent.parent.country
+
+    @property_cached
+    def ipcc_pool_mapping(self):
+        """
+        Load a maping between IPCC pools and CBM pool names.
+
+        Columns in the output are:
+            pool	ipcc_pool_name	ipcc_pool
+
+        The pool column contains the cbm pool.
+        """
+        # Read #
+        df = pandas.read_csv(str(self.ipcc_pools_path))
+        # Return #
+        return df
+
+
+    @property_cached
+    def pool_indicators_long(self):
+        """ Aggregate the pool indicators table along the 5 ipcc pools"""
+        df = self.parent.pool_indicators_long
+        # Add the 5 IPCC pools to the table
+        df = df.left_join(self.ipcc_pool_mapping, on=['pool'])
+        # Excplicity name NA values before grouping
+        df['ipcc_pool'] = df['ipcc_pool'].fillna('not_available')
+        # Aggregate
+        index = self.country.classifiers.names
+        index = index + ['ipcc_pool'] + ['time_step']
+        df = (df
+              .groupby(index)
+              .aggregate({'tc':sum})
+              )
+        return df
+
+    @property_cached
+    def pool_indicators(self):
+        """Pivot the pool indicators table to a wider format with
+        pools in columns"""
+        df = self.pool_indicators_long
+        index = self.country.classifiers.names + ['time_step']
+        df = multi_index_pivot(df.set_index(index),
+                               columns = 'ipcc_pool', values='tc')
+        return df

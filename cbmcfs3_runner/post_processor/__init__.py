@@ -21,6 +21,7 @@ from autopaths.auto_paths import AutoPaths
 from cbmcfs3_runner.post_processor.harvest      import Harvest
 from cbmcfs3_runner.post_processor.inventory    import Inventory
 from cbmcfs3_runner.post_processor.products     import Products
+from cbmcfs3_runner.post_processor.ipcc         import Ipcc
 
 ###############################################################################
 class PostProcessor(object):
@@ -248,3 +249,7 @@ class PostProcessor(object):
     @property_cached
     def products(self):
         return Products(self)
+
+    @property_cached
+    def ipcc(self):
+        return Ipcc(self)
