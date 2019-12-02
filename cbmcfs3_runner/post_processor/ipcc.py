@@ -62,18 +62,19 @@ class Ipcc(object):
 
     @property_cached
     def pool_indicators_long(self):
-        """ Aggregate the pool indicators table along the 5 ipcc pools"""
+        """ Aggregate the pool indicators table along the 5 IPCC pools"""
         df = self.parent.pool_indicators_long
         # Add the 5 IPCC pools to the table
         df = df.left_join(self.ipcc_pool_mapping, on=['pool'])
         # Excplicity name NA values before grouping
         df['ipcc_pool'] = df['ipcc_pool'].fillna('not_available')
-        # Aggregate
+        # Aggregate total carbon weight along the 5 IPCC pools
         index = self.country.classifiers.names
         index = index + ['ipcc_pool'] + ['time_step']
         df = (df
               .groupby(index)
               .aggregate({'tc':sum})
+              .rest_index()
               )
         return df
 
