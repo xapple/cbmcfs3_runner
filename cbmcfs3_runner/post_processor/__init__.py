@@ -227,11 +227,9 @@ class PostProcessor(object):
         pool name (pool) and the total carbon weight (tc).
         """
         df = self.pool_indicators
-        additional_ids = ['time_step', 'spuid', 'land_class_id', 'pool_ind_id']
-        # Convert additional indexes to categorical variables
-        df[additional_ids] = df[additional_ids].astype('category')
+        additional_ids = ['spuid', 'land_class_id', 'pool_ind_id']
         # Pivot to a long format
-        index = self.classifiers_names + additional_ids
+        index = self.classifiers_names + additional_ids + ['time_step']
         df = df.melt(id_vars = index,
                      var_name='pool',
                      value_name='tc')
