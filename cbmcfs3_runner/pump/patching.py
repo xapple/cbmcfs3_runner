@@ -18,7 +18,7 @@ import pandas
 # Internal modules #
 
 ###############################################################################
-def flexible_join(first, other, on, how=None):
+def flexible_join(first, other, on, how=None, lsuffix='', rsuffix=''):
     """Implement a common join pattern with pandas set_index()
     on both data frames followed by a reset_index() at the end."""
     # Check if `on` is a set #
@@ -28,7 +28,7 @@ def flexible_join(first, other, on, how=None):
     other  = other.set_index(on)
     # TODO check the data types (dtypes) of all the index columns
     #  are matching on both sides of the join.
-    result = first.join(other, how=how)
+    result = first.join(other, how=how, lsuffix=lsuffix, rsuffix=rsuffix)
     result = result.reset_index()
     # Return #
     return result
