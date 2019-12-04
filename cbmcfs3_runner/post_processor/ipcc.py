@@ -94,7 +94,7 @@ class Ipcc(object):
         # Get the total forest area, ignore non forested areas
         area = (inv
                 .query("status not in 'NF'")
-                .sum())
+                .agg({'area':sum}))
         # Add total carbon per hectare
         df['tc_ha'] = df['tc'] / area
         # Add iso3 code
