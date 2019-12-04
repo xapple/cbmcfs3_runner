@@ -81,13 +81,22 @@ class Ipcc(object):
     @property_cached
     def pool_indicators_long_agg(self):
         """ Aggregate the pool indicators table for the whole country"""
+        # input
         df = self.pool_indicators_long
+        inv = self.country.orig_data.inventory.copy()
+        # Aggregate over pools and time
         index = ['ipcc_pool', 'time_step', 'year']
         df = (df
               .groupby(index)
               .agg({'tc':sum})
               .reset_index()
               )
+        # Get the total forest area, ignore non forested areas
+        area = (inv
+                .query("status not in 'NF'")
+                .sum())
+        # Add total carbon per hectare
+        df['tc_ha'] = df['tc'] / area
         # Add iso3 code
         df['country_iso3'] = self.country.country_iso3
         return df

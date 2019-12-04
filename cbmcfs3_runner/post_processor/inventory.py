@@ -38,6 +38,20 @@ class Inventory(object):
         # Shortcut #
         self.country = self.parent.parent.country
 
+
+    #-------------------------------------------------------------------------#
+    @property_cached
+    def age_indicators(self):
+        """CBM output table containing the forest area by age class"""
+        # Load table #
+        age_indicators = self.parent.database["tblAgeIndicators"]
+        classifr_coefs = self.parent.classifiers_coefs
+        # Join
+        df = (age_indicators
+              .left_join(classifr_coefs, on='user_defd_class_set_id')
+              )
+        return df
+
     #-------------------------------------------------------------------------#
     @property_cached
     def bef_ft(self):
@@ -86,19 +100,8 @@ class Inventory(object):
              'time_step', 'area', 'biomass', 'bef_tot', 'db', 'merch_c_ha',
              'Merch_Vol_ha']
         """
-        # Load table #
-        age_indicators = self.parent.database["tblAgeIndicators"]
-        classifr_coefs = self.parent.classifiers_coefs
-        # Set the same index #
-        age_indicators = age_indicators.set_index('user_defd_class_set_id')
-        classifr_coefs = classifr_coefs.set_index('user_defd_class_set_id')
-        # Double join #
-        df = (age_indicators
-               .join(classifr_coefs)
-               .reset_index()
-               .set_index('forest_type')
-               .join(self.bef_ft.set_index('forest_type'))
-               .reset_index())
+        df = (self.age_indicators
+              .left_join(self.bef_ft, on='forest_type'))
         # Select only some columns #
         columns_of_interest  = ['ave_age', 'time_step', 'area', 'biomass', 'bef_tot', 'density']
         columns_of_interest += list(self.parent.classifiers.columns)
