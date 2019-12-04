@@ -80,7 +80,11 @@ class Ipcc(object):
 
     @property_cached
     def pool_indicators_long_agg(self):
-        """ Aggregate the pool indicators table for the whole country"""
+        """ Aggregate the pool indicators table for the whole country
+        Calculate:
+         * `tc` tons of carbon in IPCC pools
+         * `tc_ha` tons of carbon per hectare in IPCC pools
+        """
         # input
         df = self.pool_indicators_long
         inv = self.country.orig_data.inventory.copy()
@@ -92,11 +96,13 @@ class Ipcc(object):
               .reset_index()
               )
         # Get the total forest area, ignore non forested areas
-        area = (inv
-                .query("status not in 'NF'")
-                .agg({'area':sum}))
+        total_area = (inv
+                      .query("status not in 'NF'")
+                      .agg({'area':sum}))
+        # Make the pandas series into a scalar
+        total_area = total_area[0]
         # Add total carbon per hectare
-        df['tc_ha'] = df['tc'] / area
+        df['tc_ha'] = df['tc'] / total_area
         # Add iso3 code
         df['country_iso3'] = self.country.country_iso3
         return df
