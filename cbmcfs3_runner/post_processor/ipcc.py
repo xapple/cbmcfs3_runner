@@ -103,6 +103,13 @@ class Ipcc(object):
         total_area = total_area[0]
         # Add total carbon per hectare
         df['tc_ha'] = df['tc'] / total_area
+        # TODO add the stock change per hectare
+        # first calculate the stock change
+        # then the stock change per hectare
+        #index = ['country_iso3', 'ipcc_pool']
+        #pools_agg = pools_agg.sort_values(by=index + ['year'])
+        #pools_agg['co2_stock_change'] = pools_agg.groupby(index)['co2_stock'].diff().fillna(0)
+
         # Add iso3 code
         df['country_iso3'] = self.country.country_iso3
         return df
