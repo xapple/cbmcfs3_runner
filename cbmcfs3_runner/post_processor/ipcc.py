@@ -61,11 +61,14 @@ class Ipcc(object):
 
     @property_cached
     def pool_indicators_long(self):
-        """ Aggregate the pool indicators table along the 5 IPCC pools"""
+        """ Aggregate the pool indicators table along the 5 IPCC pools
+        Keep the details of each stand separate
+        i.e. each possible combination of classifiers remains in the data.
+        """
         df = self.parent.pool_indicators_long
         # Add the 5 IPCC pools to the table
         df = df.left_join(self.ipcc_pool_mapping, on=['pool'])
-        # Excplicity name NA values before grouping
+        # Explicity name NA values before grouping
         df['ipcc_pool'] = df['ipcc_pool'].fillna('not_available')
         # Aggregate total carbon weight along the 5 IPCC pools
         index = self.country.classifiers.names
@@ -77,13 +80,15 @@ class Ipcc(object):
               )
         return df
 
-
     @property_cached
-    def pool_indicators_long_agg(self):
-        """ Aggregate the pool indicators table for the whole country
-        Calculate:
-         * `tc` tons of carbon in IPCC pools
-         * `tc_ha` tons of carbon per hectare in IPCC pools
+    def carbon_stock_change_long(self):
+        """ Aggregate the pool indicators table over the whole country
+        Calculate these variable for each IPCC pool at each time step:
+         * `tc` tons of carbon
+         * `tc_ha` tons of carbon per hectare
+         * `tc_change` net change of carbon stock in tons of carbon
+         * `tc_change_ha` in tons of carbon per hectare
+
         """
         # input
         df = self.pool_indicators_long
@@ -101,17 +106,39 @@ class Ipcc(object):
                       .agg({'area':sum}))
         # Make the pandas series into a scalar
         total_area = total_area[0]
-        # Add total carbon per hectare
+        # Total carbon per hectare
         df['tc_ha'] = df['tc'] / total_area
-        # TODO add the stock change per hectare
-        # first calculate the stock change
-        # then the stock change per hectare
-        #index = ['country_iso3', 'ipcc_pool']
-        #pools_agg = pools_agg.sort_values(by=index + ['year'])
-        #pools_agg['co2_stock_change'] = pools_agg.groupby(index)['co2_stock'].diff().fillna(0)
-
+        # Carbon stock change
+        # and Carbon stock change per hectare
+        index = ['ipcc_pool']
+        df = df.sort_values(by = index + ['year'])
+        df['tc_change'] = df.groupby(index)['tc'].diff().fillna(0)
+        df['tc_change_ha'] = df.groupby(index)['tc_ha'].diff().fillna(0)
         # Add iso3 code
         df['country_iso3'] = self.country.country_iso3
+        return df
+
+    @property_cached
+    def net_co2_emissions_removals(self):
+        """ Net CO2 emissions/removals over the whole country.
+
+        The CBM output pools are expressed in tons of Carbon,
+        while the IPCC emission values are expressed in CO2.
+
+        energyeducation.ca
+        [C_vs_CO2](https://energyeducation.ca/encyclopedia/C_vs_CO2):
+        > "Carbon has an atomic mass of 12 and oxygen has an atomic mass of 16.
+        > Therefore CO2 has an atomic mass of 44.
+        > This means that one kilogram (kg) of carbon
+        > will produce 44/12 × 1kg = 3.67 kg of CO2."s
+        """
+        df = self.carbon_stock_change
+        index = ['time_step', 'year']
+        df = (df
+              .groupby(index)
+              # Is it useful to compute the C02 emissions here ?
+              )
+        df['co2_stock'] = - df['tc'] * 44/12
         return df
 
 
