@@ -89,6 +89,15 @@ class Ipcc(object):
          * `tc_change` net change of carbon stock in tons of carbon
          * `tc_change_ha` in tons of carbon per hectare
 
+        Note on the conversion from carbon to CO2.
+        The CBM output pools are expressed in tons of Carbon,
+        while the IPCC emission values are expressed in CO2.
+        energyeducation.ca
+        [C_vs_CO2](https://energyeducation.ca/encyclopedia/C_vs_CO2):
+        > "Carbon has an atomic mass of 12 and oxygen has an atomic mass of 16.
+        > Therefore CO2 has an atomic mass of 44.
+        > This means that one kilogram (kg) of carbon
+        > will produce 44/12 × 1kg = 3.67 kg of CO2."
         """
         # input
         df = self.pool_indicators_long
@@ -114,6 +123,8 @@ class Ipcc(object):
         df = df.sort_values(by = index + ['year'])
         df['tc_change'] = df.groupby(index)['tc'].diff().fillna(0)
         df['tc_change_ha'] = df.groupby(index)['tc_ha'].diff().fillna(0)
+        # Add emissions per hectare
+        df['co2_change_ha'] = df['tc_change_ha'] * 44/12
         # Add iso3 code
         df['country_iso3'] = self.country.country_iso3
         return df
@@ -121,16 +132,6 @@ class Ipcc(object):
     @property_cached
     def net_co2_emissions_removals(self):
         """ Net CO2 emissions/removals over the whole country.
-
-        The CBM output pools are expressed in tons of Carbon,
-        while the IPCC emission values are expressed in CO2.
-
-        energyeducation.ca
-        [C_vs_CO2](https://energyeducation.ca/encyclopedia/C_vs_CO2):
-        > "Carbon has an atomic mass of 12 and oxygen has an atomic mass of 16.
-        > Therefore CO2 has an atomic mass of 44.
-        > This means that one kilogram (kg) of carbon
-        > will produce 44/12 × 1kg = 3.67 kg of CO2."s
         """
         df = self.carbon_stock_change
         index = ['time_step', 'year']
