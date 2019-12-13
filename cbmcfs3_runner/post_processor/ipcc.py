@@ -118,6 +118,8 @@ class Ipcc(object):
         total_area = total_area[0]
         # Total carbon per hectare
         df['tc_ha'] = df['tc'] / total_area
+        # Keep the area
+        df['area'] = total_area
         # Carbon stock change
         # and Carbon stock change per hectare
         index = ['ipcc_pool']
