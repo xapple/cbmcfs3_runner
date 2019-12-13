@@ -126,7 +126,12 @@ class PostProcessor(object):
 
     @property_cached
     def classifiers_names(self):
-        return self.parent.country.classifiers.names
+        # Previously used:
+        # self.parent.country.classifiers.names
+        # Make it dependent on the output db only
+        c = self.classifiers.columns.copy()
+        c = c.drop('user_defd_class_set_id')
+        return c
 
     @property_cached
     def disturbance_type(self):
