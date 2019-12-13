@@ -129,8 +129,8 @@ class PostProcessor(object):
         # Previously used:
         # self.parent.country.classifiers.names
         # Make it dependent on the output db only
-        c = self.classifiers.columns.copy()
-        c = c.drop('user_defd_class_set_id')
+        c = list(self.classifiers.columns.copy())
+        c.remove('user_defd_class_set_id')
         return c
 
     @property_cached
