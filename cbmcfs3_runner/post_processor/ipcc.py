@@ -64,6 +64,7 @@ class Ipcc(object):
         """ Aggregate the pool indicators table along the 5 IPCC pools
         Keep the details of each stand separate
         i.e. each possible combination of classifiers remains in the data.
+        TODO: check if non forested area need to be filtered out
         """
         df = self.parent.pool_indicators_long
         # Add the 5 IPCC pools to the table
@@ -121,8 +122,8 @@ class Ipcc(object):
         # and Carbon stock change per hectare
         index = ['ipcc_pool']
         df = df.sort_values(by = index + ['year'])
-        df['tc_change'] = df.groupby(index)['tc'].diff().fillna(0)
-        df['tc_change_ha'] = df.groupby(index)['tc_ha'].diff().fillna(0)
+        df['tc_change'] = df.groupby(index)['tc'].diff()
+        df['tc_change_ha'] = df.groupby(index)['tc_ha'].diff()
         # Add emissions per hectare
         df['co2_change_ha'] = df['tc_change_ha'] * 44/12
         # Add iso3 code
