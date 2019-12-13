@@ -72,7 +72,7 @@ class Ipcc(object):
         # Explicity name NA values before grouping
         df['ipcc_pool'] = df['ipcc_pool'].fillna('not_available')
         # Aggregate total carbon weight along the 5 IPCC pools
-        index = self.country.classifiers.names
+        index = self.parent.classifiers_names
         index = index + ['ipcc_pool', 'time_step', 'year']
         df = (df
               .groupby(index)
@@ -152,7 +152,7 @@ class Ipcc(object):
         """Pivot the pool indicators table to a wider format with
         pools in columns"""
         df = self.pool_indicators_long
-        index = self.country.classifiers.names + ['time_step']
+        index = self.parent.classifiers_names + ['time_step']
         df = multi_index_pivot(df.set_index(index),
                                columns = 'ipcc_pool', values='tc')
         return df
