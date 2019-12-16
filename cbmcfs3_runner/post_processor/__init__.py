@@ -221,7 +221,10 @@ class PostProcessor(object):
         pool  = pool.set_index(index)
         clifr = clifr.set_index(index)
         # Join #
-        return pool.join(clifr)
+        df = pool.join(clifr)
+        # Remove index column user_defd_class_set_id
+        df = df.reset_index(drop=True)
+        return df
 
     # Do not cache since it can be re-computed trivially from the above
     @property
