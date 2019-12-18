@@ -82,7 +82,7 @@ class Ipcc(object):
         return df
 
     @property_cached
-    def carbon_stock_change_long(self):
+    def carbon_stock_long(self):
         """ Aggregate the pool indicators table over the whole country
         Calculate these variable for each IPCC pool at each time step:
          * `tc` tons of carbon
