@@ -89,6 +89,7 @@ class Ipcc(object):
          * `tc_ha` tons of carbon per hectare
          * `tc_change` net change of carbon stock in tons of carbon
          * `tc_change_ha` in tons of carbon per hectare
+         * `co2_em_ha` CO2 emissions per hectare
 
         Note on the conversion from carbon to CO2.
         The CBM output pools are expressed in tons of Carbon,
@@ -126,8 +127,8 @@ class Ipcc(object):
         df = df.sort_values(by = index + ['year'])
         df['tc_change'] = df.groupby(index)['tc'].diff()
         df['tc_change_ha'] = df.groupby(index)['tc_ha'].diff()
-        # Add emissions per hectare
-        df['co2_change_ha'] = df['tc_change_ha'] * 44/12
+        # Add CO2 emissions per hectare
+        df['co2_em_ha'] = - df['tc_change_ha'] * 44/12
         # Add iso3 code
         df['country_iso3'] = self.country.country_iso3
         return df
