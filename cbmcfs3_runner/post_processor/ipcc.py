@@ -103,6 +103,9 @@ class Ipcc(object):
         """
         # input
         df = self.pool_indicators_long
+        # ignore non forested areas
+        df = df.query("status not in 'NF'")
+
         inv = self.country.orig_data.inventory.copy()
         # Aggregate over pools and time
         index = ['ipcc_pool', 'time_step', 'year']
