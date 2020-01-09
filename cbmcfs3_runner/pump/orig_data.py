@@ -201,8 +201,13 @@ class OrigData(object):
         # Change dist_type_name to a string to harmonize data types #
         df['dist_type_name'] = df['dist_type_name'].astype('str')
         # Rename classifiers #
-        # This will only rename the first incoming classifiers columns.
-        # The outgoing classifiers '_1.1', '_2.1', ... will remain unchanged.
+        # This renames the origin classifiers columns.
         df = df.rename(columns = self.parent.classifiers.mapping)
+        # This renames the destination classifier columns
+        # ['_1.1', '_2.1', '_3.1', ...
+        # to 'status_dest', 'forest_type_dest', 'region_dest', ...
+        mapping = self.parent.classifiers.mapping + '_dest'
+        mapping.index = self.parent.classifiers.mapping.index + '.1'
+        df = df.rename(columns=mapping)
         # Return #
         return df
