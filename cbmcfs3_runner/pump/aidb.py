@@ -229,6 +229,7 @@ class AIDB(object):
         df['column_pool'] = (df['column_pool'].str.replace(' ','_') + '_' +
                              df['dm_column'].astype(str))
         # Filter proportions #
+        # TODO correct missing name from the index (see HU for example)
         index = ['dmid', 'dm_structure_id', 'dm_row', 'name', 'row_pool']
         df = (df
               .set_index(index)

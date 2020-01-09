@@ -115,6 +115,7 @@ class Ipcc(object):
               .reset_index()
               )
         # Get the total forest area, ignore non forested areas
+        # TODO: use changing area as in post_processing non_forested
         total_area = (inv
                       .query("status not in 'NF'")
                       .agg({'area':sum}))
