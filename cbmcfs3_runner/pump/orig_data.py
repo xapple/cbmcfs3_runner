@@ -168,13 +168,13 @@ class OrigData(object):
         """
         # Load #
         df = self['disturbance_events']
-        # Change dist_type_name to a string to harmonize data types #
-        df['dist_type_name'] = df['dist_type_name'].astype('str')
-        df['climatic_unit'] = df['climatic_unit'].astype('str')
         # Make step an integer #
         df['step'] = df['step'].astype(int)
         # Rename classifiers #
         df = df.rename(columns = self.parent.classifiers.mapping)
+        # Change variables to string to harmonize data types #
+        df['dist_type_name'] = df['dist_type_name'].astype('str')
+        df['climatic_unit'] = df['climatic_unit'].astype('str')
         # Return #
         return df
 
@@ -198,9 +198,6 @@ class OrigData(object):
         """
         # Load #
         df = self['transition_rules']
-        # Change dist_type_name to a string to harmonize data types #
-        df['dist_type_name'] = df['dist_type_name'].astype('str')
-        df['climatic_unit'] = df['climatic_unit'].astype('str')
         # Rename classifiers #
         # This renames the origin classifiers columns.
         df = df.rename(columns = self.parent.classifiers.mapping)
@@ -210,6 +207,9 @@ class OrigData(object):
         mapping = self.parent.classifiers.mapping + '_dest'
         mapping.index = self.parent.classifiers.mapping.index + '.1'
         df = df.rename(columns=mapping)
+        # Change variable to strings to harmonize data types #
+        df['dist_type_name'] = df['dist_type_name'].astype('str')
+        df['climatic_unit'] = df['climatic_unit'].astype('str')
         # Return #
         return df
 
