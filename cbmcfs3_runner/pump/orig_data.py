@@ -177,7 +177,6 @@ class OrigData(object):
         # Return #
         return df
 
-
     @property_cached
     def transition_rules(self):
         """
@@ -210,4 +209,20 @@ class OrigData(object):
         mapping.index = self.parent.classifiers.mapping.index + '.1'
         df = df.rename(columns=mapping)
         # Return #
+        return df
+
+    @property_cached
+    def afforestation(self):
+        """
+        Query the non forested areas transitionning to forested area.
+        Join the disturbance table to the transition rules table.
+        """
+        # Keep only classifiers and dist_type_name
+        # from the transition rules table
+        index = self.parent.classifiers.names + ['dist_type_name']
+        df = (self.transition_rules[index]
+              # Keep only non forested areas
+              .query("status=='NF'")
+              .left_join(self.disturbance_events, index)
+              )
         return df
