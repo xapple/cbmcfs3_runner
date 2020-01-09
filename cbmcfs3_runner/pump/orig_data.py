@@ -176,3 +176,33 @@ class OrigData(object):
         df = df.rename(columns = self.parent.classifiers.mapping)
         # Return #
         return df
+
+
+    @property_cached
+    def transition_rules(self):
+        """
+        Load transition_rules from the calibration database.
+        Change dist_type_name to a string.
+
+        Transition rules describe the transition between one particular set
+        of classifiers and another set of classifiers. They are used for example
+        for afforestation to move land area from status 'NF' non forested
+        to status 'For' (or 'CC') forested.
+
+        Note on column renaming:
+        The transition rules table contains duplicated column names.
+        By default pandas leaves the columns that appear first as-is:
+            ['_1', '_2', '_3', '_4', '_5', '_6', '_7']
+        and renames the duplicated columns that way:
+            ['_1.1', '_2.1', '_3.1', '_4.1', '_5.1', '_6.1', '_7.1']
+        """
+        # Load #
+        df = self['transition_rules']
+        # Change dist_type_name to a string to harmonize data types #
+        df['dist_type_name'] = df['dist_type_name'].astype('str')
+        # Rename classifiers #
+        # This will only rename the first incoming classifiers columns.
+        # The outgoing classifiers '_1.1', '_2.1', ... will remain unchanged.
+        df = df.rename(columns = self.parent.classifiers.mapping)
+        # Return #
+        return df
