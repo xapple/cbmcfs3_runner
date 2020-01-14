@@ -63,7 +63,6 @@ class Ipcc(object):
         """Aggregate the pool indicators table along the 5 IPCC pools
         Keep the details of each stand separate
         i.e. each possible combination of classifiers remains in the data.
-        TODO: check if non forested area need to be filtered out
         """
         # Load the one from the post processor #
         df = self.parent.pool_indicators_long
@@ -72,6 +71,8 @@ class Ipcc(object):
         # Explicitly name NA values before grouping #
         df['ipcc_pool'] = df['ipcc_pool'].fillna('not_available')
         # Aggregate total carbon weight along the 5 IPCC pools #
+        # Change ipcc_pool column to a factor variable
+        df['ipcc_pool'] = df['ipcc_pool'].astype('category')
         index = self.parent.classifiers_names
         index = index + ['ipcc_pool', 'time_step', 'year']
         df = (df
