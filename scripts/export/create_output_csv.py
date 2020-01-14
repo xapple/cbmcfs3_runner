@@ -20,7 +20,13 @@ from tqdm import tqdm
 from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
+# Pick a scenario #
 scenario = continent.scenarios['historical']
+
+# Go through every runner #
 for runners in tqdm(scenario.runners.values()):
     r = runners[-1]
     r.post_processor.csv_maker()
+
+# Make zip file #
+scenario.make_csv_zip('ipcc_pools', '~/exports/for_sarah/')

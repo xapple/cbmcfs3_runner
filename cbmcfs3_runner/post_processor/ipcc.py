@@ -71,6 +71,7 @@ class Ipcc(object):
         df['ipcc_pool'] = df['ipcc_pool'].astype('category')
         index = self.parent.classifiers_names
         index = index + ['ipcc_pool', 'time_step', 'year']
+        # Group by and aggregate #
         df = (df
               .groupby(index, observed=True)
               .agg({'tc':sum})
