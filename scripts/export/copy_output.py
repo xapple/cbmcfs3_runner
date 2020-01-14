@@ -26,4 +26,4 @@ exclude = ['--exclude', '.git']
 
 # Copy #
 rlcone = pbs3.Command('rclone.exe')
-rlcone('copyto', source, destin, *exclude)
+rlcone('copyto', *exclude, source, destin)
