@@ -72,7 +72,7 @@ class Ipcc(object):
         index = self.parent.classifiers_names
         index = index + ['ipcc_pool', 'time_step', 'year']
         df = (df
-              .groupby(index)
+              .groupby(index, observed=True)
               .agg({'tc':sum})
               .reset_index()
               )
