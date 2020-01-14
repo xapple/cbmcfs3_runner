@@ -6,12 +6,13 @@ A script to create all useful export CSVs.
 
 Typically you would run this file from a command line like this:
 
-     ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/export/create_output_csv.py
+     ipython3 -i -- ~/deploy/cbmcfs3_runner/scripts/export/create_output_csv.py
 """
 
 # Built-in modules #
 
 # Third party modules #
+from tqdm import tqdm
 
 # First party modules #
 
@@ -20,4 +21,6 @@ from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
 scenario = continent.scenarios['historical']
-scenario
+for runners in tqdm(scenario.runners.values()):
+    r = runners[-1]
+    r.post_processor.csv_maker()

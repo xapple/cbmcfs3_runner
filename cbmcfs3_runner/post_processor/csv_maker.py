@@ -35,7 +35,7 @@ class CSVMaker(object):
         # Record the post_processor #
         self.parent = parent
         # Directories #
-        self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
+        self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
 
     def __call__(self):
         """Export all tables."""
