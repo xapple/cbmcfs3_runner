@@ -28,7 +28,6 @@ from cbmcfs3_runner import module_dir
 # Internal modules
 from cbmcfs3_runner.pump.common import multi_index_pivot
 
-
 ###############################################################################
 class Ipcc(object):
     """
@@ -61,17 +60,18 @@ class Ipcc(object):
 
     @property_cached
     def pool_indicators_long(self):
-        """ Aggregate the pool indicators table along the 5 IPCC pools
+        """Aggregate the pool indicators table along the 5 IPCC pools
         Keep the details of each stand separate
         i.e. each possible combination of classifiers remains in the data.
         TODO: check if non forested area need to be filtered out
         """
+        # Load the one from the post processor #
         df = self.parent.pool_indicators_long
-        # Add the 5 IPCC pools to the table
+        # Add the 5 IPCC pools to the table #
         df = df.left_join(self.ipcc_pool_mapping, on=['pool'])
-        # Explicity name NA values before grouping
+        # Explicitly name NA values before grouping #
         df['ipcc_pool'] = df['ipcc_pool'].fillna('not_available')
-        # Aggregate total carbon weight along the 5 IPCC pools
+        # Aggregate total carbon weight along the 5 IPCC pools #
         index = self.parent.classifiers_names
         index = index + ['ipcc_pool', 'time_step', 'year']
         df = (df
@@ -79,6 +79,7 @@ class Ipcc(object):
               .agg({'tc':sum})
               .reset_index()
               )
+        # Return #
         return df
 
     @property_cached
@@ -149,8 +150,6 @@ class Ipcc(object):
               )
         df['co2_stock'] = - df['tc'] * 44/12
         return df
-
-
 
     @property_cached
     def pool_indicators(self):

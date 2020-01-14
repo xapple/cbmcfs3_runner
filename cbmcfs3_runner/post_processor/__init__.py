@@ -18,6 +18,7 @@ from plumbing.cache       import property_cached
 from autopaths.auto_paths import AutoPaths
 
 # Internal modules #
+from cbmcfs3_runner.post_processor.csv_maker    import CSVMaker
 from cbmcfs3_runner.post_processor.harvest      import Harvest
 from cbmcfs3_runner.post_processor.inventory    import Inventory
 from cbmcfs3_runner.post_processor.products     import Products
@@ -42,6 +43,7 @@ class PostProcessor(object):
 
     def __call__(self):
         self.harvest.check_exp_prov()
+        self.csv_maker()
 
     def sanitize_names(self, name):
         """Remove spaces and slashes from column names."""
@@ -229,7 +231,8 @@ class PostProcessor(object):
     # Do not cache since it can be re-computed trivially from the above
     @property
     def pool_indicators_long(self):
-        """Pool indicators table in long format.
+        """
+        Pool indicators table in long format.
         The melt (aka. unpivot) operation leaves classifiers as
         index variables and keeps only 2 extra columns containing the
         pool name (pool) and the total carbon weight (tc).
@@ -262,3 +265,7 @@ class PostProcessor(object):
     @property_cached
     def ipcc(self):
         return Ipcc(self)
+
+    @property
+    def csv_maker(self):
+        return CSVMaker(self)
