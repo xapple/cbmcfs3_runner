@@ -6,15 +6,9 @@ Written by Lucas Sinclair and Paul Rougieux.
 
 JRC biomass Project.
 Unit D1 Bioeconomy.
-
-You can use this object like this:
-
-    from cbmcfs3_runner.pump.faostat import faostat
-    print(faostat.forestry)
 """
 
 # Built-in modules #
-
 
 # Third party modules #
 import pandas
@@ -31,7 +25,7 @@ from cbmcfs3_runner.pump.common import multi_index_pivot
 ###############################################################################
 class Ipcc(object):
     """
-    Provides access to the IPCC pool mapping
+    Provides access to the IPCC pool mapping.
     """
 
     # Constants #
@@ -46,9 +40,10 @@ class Ipcc(object):
     @property_cached
     def ipcc_pool_mapping(self):
         """
-        Load a maping between IPCC pools and CBM pool names.
+        Load a mapping between IPCC pools and CBM pool names.
 
         Columns in the output are:
+
             pool	ipcc_pool_name	ipcc_pool
 
         The pool column contains the cbm pool.
@@ -60,7 +55,8 @@ class Ipcc(object):
 
     @property_cached
     def pool_indicators_long(self):
-        """Aggregate the pool indicators table along the 5 IPCC pools
+        """
+        Aggregate the pool indicators table along the 5 IPCC pools
         Keep the details of each stand separate
         i.e. each possible combination of classifiers remains in the data.
         TODO: check if non forested area need to be filtered out
@@ -84,8 +80,10 @@ class Ipcc(object):
 
     @property_cached
     def carbon_stock_long(self):
-        """ Aggregate the pool indicators table over the whole country
+        """
+        Aggregate the pool indicators table over the whole country
         Calculate these variable for each IPCC pool at each time step:
+
          * `tc` tons of carbon
          * `tc_ha` tons of carbon per hectare
          * `tc_change` net change of carbon stock in tons of carbon
@@ -102,29 +100,28 @@ class Ipcc(object):
         > This means that one kilogram (kg) of carbon
         > will produce 44/12 × 1kg = 3.67 kg of CO2."
         """
-        # input
+        # Load pool indicators #
         df = self.pool_indicators_long
-        # ignore non forested areas
+        # ignore non forested areas #
         df = df.query("status not in 'NF'")
-
         inv = self.country.orig_data.inventory.copy()
-        # Aggregate over pools and time
+        # Aggregate over pools and time #
         index = ['ipcc_pool', 'time_step', 'year']
         df = (df
               .groupby(index)
               .agg({'tc':sum})
               .reset_index()
               )
-        # Get the total forest area, ignore non forested areas
+        # Get the total forest area, ignore non forested areas #
         # TODO: use changing area as in post_processing non_forested
         total_area = (inv
                       .query("status not in 'NF'")
                       .agg({'area':sum}))
-        # Make the pandas series into a scalar
+        # Make the pandas series into a scalar #
         total_area = total_area[0]
-        # Total carbon per hectare
+        # Total carbon per hectare #
         df['tc_ha'] = df['tc'] / total_area
-        # Keep the area
+        # Keep the area #
         df['area'] = total_area
         # Carbon stock change
         # and Carbon stock change per hectare
@@ -132,16 +129,16 @@ class Ipcc(object):
         df = df.sort_values(by = index + ['year'])
         df['tc_change'] = df.groupby(index)['tc'].diff()
         df['tc_change_ha'] = df.groupby(index)['tc_ha'].diff()
-        # Add CO2 emissions per hectare
+        # Add CO2 emissions per hectare #
         df['co2_em_ha'] = - df['tc_change_ha'] * 44/12
-        # Add iso3 code
+        # Add iso3 code #
         df['country_iso3'] = self.country.country_iso3
+        # Return #
         return df
 
     @property_cached
     def net_co2_emissions_removals(self):
-        """ Net CO2 emissions/removals over the whole country.
-        """
+        """Net CO2 emissions/removals over the whole country."""
         df = self.carbon_stock_change
         index = ['time_step', 'year']
         df = (df
@@ -149,14 +146,19 @@ class Ipcc(object):
               # Is it useful to compute the C02 emissions here ?
               )
         df['co2_stock'] = - df['tc'] * 44/12
+        # Return #
         return df
 
     @property_cached
     def pool_indicators(self):
-        """Pivot the pool indicators table to a wider format with
-        pools in columns"""
+        """
+        Pivot the pool indicators table to a wider format with
+        pools in columns.
+        """
+        # Load pool indicators #
         df = self.pool_indicators_long
         index = self.parent.classifiers_names + ['time_step']
         df = multi_index_pivot(df.set_index(index),
                                columns = 'ipcc_pool', values='tc')
+        # Return #
         return df
