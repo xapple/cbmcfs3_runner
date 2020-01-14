@@ -13,8 +13,10 @@ Unit D1 Bioeconomy.
 # Third party modules #
 
 # First party modules #
+import autopaths
 from autopaths            import Path
 from autopaths.auto_paths import AutoPaths
+from autopaths.tmp_path   import new_temp_dir
 from plumbing.cache       import property_cached
 from tqdm import tqdm
 
@@ -74,3 +76,37 @@ class Scenario(object):
         summary.handle.write("# Summary of all log file tails\n\n")
         summary.handle.writelines(r[step].tail for r in self.runners.values() if r[step])
         summary.close()
+
+    # ------------------------------ Others ----------------------------------#
+    def make_csv_zip(self, csv_name, dest_dir):
+        """
+        Will make a zip file will the specified CSV file from every country
+        together and place it in the given destination directory.
+        For instance you can do:
+
+        >>> f = scenario.make_csv_zip('ipcc_pools', '~/exports/for_sarah/')
+        >>> print(f)
+        """
+        # Files to put in the zip #
+        files = {iso: rl[-1].post_processor.csv_maker.paths(csv_name)
+                 for iso, rl in self.runners.items()}
+        # Actual name of CSV file #
+        csv_full_name = next(iter(files.items()))[1].name
+        # Destination directory #
+        dest_dir = Path(dest_dir)
+        # If it's not a directory #
+        assert isinstance(dest_dir, autopaths.dir_path.DirectoryPath)
+        # Destination zip file #
+        dest_zip = dest_dir + csv_full_name + '.zip'
+        # Temporary directory #
+        tmp_dir = new_temp_dir()
+        zip_dir = tmp_dir + csv_full_name + '/'
+        zip_dir.create()
+        # Copy #
+        for iso, f in files.items(): f.copy(zip_dir + iso + '.csv')
+        # Compress #
+        zip_dir.zip_to(dest_zip)
+        # Remove #
+        tmp_dir.remove()
+        # Return #
+        return dest_zip
