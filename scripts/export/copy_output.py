@@ -15,14 +15,25 @@ Typically you would run this file from a command line like this:
 # Third party modules #
 import pbs3
 
-# Source #
-source = "/repos/cbmcfs3_data/"
-
-# Destination #
-destin = "jrcbox:" + "/Forbiomod/SourceData/EFDM/cbmcfs3_data/"
-
 # Excludes #
 exclude = ['--exclude', '.git']
+
+
+###############################################################################
+# Copy input data
+# Specify source and destination #
+source = "/repos/cbmcfs3_data/countries"
+destin = "jrcbox:" + "/Forbiomod/SourceData/EFDM/cbmcfs3_data/countries"
+
+# Copy #
+rlcone = pbs3.Command('rclone.exe')
+rlcone('copyto', *exclude, source, destin)
+
+###############################################################################
+# Copy the historical scenario
+# Specify source and destination #
+source = "/repos/cbmcfs3_data/scenarios/historical"
+destin = "jrcbox:" + "/Forbiomod/SourceData/EFDM/cbmcfs3_data/scenarios/historical"
 
 # Copy #
 rlcone = pbs3.Command('rclone.exe')

@@ -7,6 +7,11 @@ A script to create all useful export CSVs.
 Typically you would run this file from a command line like this:
 
      ipython3 -i -- ~/deploy/cbmcfs3_runner/scripts/export/create_output_csv.py
+
+Or on the windows machine:
+
+    ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/export/create_output_csv.py
+
 """
 
 # Built-in modules #
