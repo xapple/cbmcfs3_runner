@@ -2,6 +2,9 @@
 
 `cbmcfs3_runner` is a python package for dealing with the automation and running of a complex series of models involving the European economy, the forest sector, carbon budgets and their interactions. Notably in relation to the CBM-CFS3 model developed by Canada.
 
+The development version is hosted on git lab:
+https://gitlab.com/bioeconomy/cbmcfs3/cbmcfs3_runner
+
 ## Warnings
 
 This package is currently under heavy development and the master branch is subject to breaking changes at any moment. If you are interested in using this package in your own installation, please contact the authors.

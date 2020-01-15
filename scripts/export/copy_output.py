@@ -7,7 +7,11 @@ from the AWS Windows machine to JRCbox.
 
 Typically you would run this file from a command line like this:
 
-     ipython3.exe /deploy/cbmcfs3_runner/scripts/others/copy_output.py
+     ipython3.exe /deploy/cbmcfs3_runner/scripts/export/copy_output.py
+
+or from repos:
+
+     ipython3.exe /repos/cbmcfs3_runner/scripts/export/copy_output.py
 """
 
 # Built-in modules #
