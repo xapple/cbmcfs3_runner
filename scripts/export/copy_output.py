@@ -43,11 +43,8 @@ def rclone_to_jrc_box(sub_folder):
     rlcone = pbs3.Command('rclone.exe')
     rlcone('copyto', *exclude, source, destin)
 
-###############################################################################
-# Copy input data
+# Copy the cbmcfs3_runner input data to jrc box
 #rclone_to_jrc_box('countries')
 
-###############################################################################
-# Copy the historical scenario
-# Specify source and destination #
+# Copy the historical scenario to jrc box
 rclone_to_jrc_box('scenarios/historical')
