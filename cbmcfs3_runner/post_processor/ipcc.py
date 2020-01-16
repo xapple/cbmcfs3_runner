@@ -79,8 +79,12 @@ class Ipcc(object):
         Keep the details of each stand separate
         i.e. each possible combination of classifiers remains in the data.
         """
-        # Load the one from the post processor #
+        classifiers_names = self.parent.classifiers_names
+        # Load pools #
         df = self.parent.pool_indicators_long
+        # Load output inventory area #
+        columns_of_interest = classifiers_names + ['time_step', 'area']
+        inv = self.parent.inventory.age_indicators[columns_of_interest]
         # Add the 5 IPCC pools to the table #
         df = df.left_join(self.ipcc_pool_mapping, on=['pool'])
         # Explicitly name NA values before grouping #
@@ -88,14 +92,16 @@ class Ipcc(object):
         # Aggregate total carbon weight along the 5 IPCC pools #
         # Change ipcc_pool column to a factor variable
         df['ipcc_pool'] = df['ipcc_pool'].astype('category')
-        index = self.parent.classifiers_names
-        index = index + ['ipcc_pool', 'time_step', 'year']
+        index = classifiers_names + ['ipcc_pool', 'time_step', 'year']
         # Group by and aggregate #
         df = (df
               .groupby(index, observed=True)
               .agg({'tc':sum})
               .reset_index()
               )
+        # Add the area column
+        index = classifiers_names + ['time_step']
+        df = df.left_join(inv, on=index)
         # Return #
         return df
 

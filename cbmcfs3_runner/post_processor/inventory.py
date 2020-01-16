@@ -47,6 +47,7 @@ class Inventory(object):
         Interesting values:
         * classifiers
         * 'ave_age' the average age of a stand
+        * 'area' the area in hectares
         * 'biomass' in **tons of carbon per hectare**, includes above
         and below ground biomass
 
