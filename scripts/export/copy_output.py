@@ -23,22 +23,31 @@ import pbs3
 exclude = ['--exclude', '.git']
 
 
+def rclone_to_jrc_box(sub_folder):
+    """Copy a given sub folder from the cbmcfs3_data folder to jrc box
+
+    For example to copy the input data to jrc box use:
+
+        rclone_jrc_box('countries')
+
+    To copy the historical scenario to jrc box use:
+
+        rclone_jrc_box('historical')
+
+    """
+    # Specify source and destination #
+    source = "/repos/cbmcfs3_data/" + sub_folder
+    destin = "jrcbox:" + "/Forbiomod/SourceData/EFDM/cbmcfs3_data/" + sub_folder
+
+    # Copy #
+    rlcone = pbs3.Command('rclone.exe')
+    rlcone('copyto', *exclude, source, destin)
+
 ###############################################################################
 # Copy input data
-# Specify source and destination #
-source = "/repos/cbmcfs3_data/countries"
-destin = "jrcbox:" + "/Forbiomod/SourceData/EFDM/cbmcfs3_data/countries"
-
-# Copy #
-rlcone = pbs3.Command('rclone.exe')
-rlcone('copyto', *exclude, source, destin)
+#rclone_to_jrc_box('countries')
 
 ###############################################################################
 # Copy the historical scenario
 # Specify source and destination #
-source = "/repos/cbmcfs3_data/scenarios/historical"
-destin = "jrcbox:" + "/Forbiomod/SourceData/EFDM/cbmcfs3_data/scenarios/historical"
-
-# Copy #
-rlcone = pbs3.Command('rclone.exe')
-rlcone('copyto', *exclude, source, destin)
+rclone_to_jrc_box('scenarios/historical')
