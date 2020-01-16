@@ -99,9 +99,15 @@ class Ipcc(object):
               .agg({'tc':sum})
               .reset_index()
               )
-        # Add the area column
+        # Aggregate the inventory
+        # i.e. sum the area for all ages
         index = classifiers_names + ['time_step']
-        df = df.left_join(inv, on=index)
+        inv_agg = (inv
+                   .groupby(index, observed=True)
+                   .agg({'area':sum})
+                   .reset_index())
+        # Add the area column to the pool table
+        df = df.left_join(inv_agg, on=index)
         # Return #
         return df
 
