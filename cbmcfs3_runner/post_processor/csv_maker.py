@@ -41,13 +41,18 @@ class CSVMaker(object):
     def __call__(self):
         """Export all tables."""
         self.export_ipcc_pools()
+        self.export_output_inventory()
 
     def export_ipcc_pools(self):
-        """Export used by the land use change models LUISA and FUSION."""
+        """Export cbm output pools aggregated to 5 ipcc pools.
+
+        Data used by the land use change models LUISA and FUSION."""
         df = self.parent.ipcc.pool_indicators_long
         df.to_csv(str(self.paths.ipcc_pools),  index=False)
 
     def export_output_inventory(self):
-        """Export used by the land use change models LUISA and FUSION."""
+        """Export cbm output inventory area by age classes.
+
+        Data used by the land use change models LUISA and FUSION."""
         df = self.parent.inventory.age_indicators
         df.to_csv(str(self.paths.inventory_age),  index=False)
