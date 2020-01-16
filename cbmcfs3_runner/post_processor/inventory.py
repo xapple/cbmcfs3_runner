@@ -65,6 +65,8 @@ class Inventory(object):
         df = (age_indicators
               .left_join(classifr_coefs, on='user_defd_class_set_id')
               )
+        # Place classifiers first
+        df = df.set_index(self.parent.classifiers_names).reset_index()
         return df
 
     #-------------------------------------------------------------------------#
