@@ -48,3 +48,7 @@ def rclone_to_jrc_box(sub_folder):
 
 # Copy the historical scenario to jrc box
 rclone_to_jrc_box('scenarios/historical')
+
+# TODO use argparse.ArgumentParser as in
+# bioeconomy_notes/src/aws/update_aws_hostname.py
+
