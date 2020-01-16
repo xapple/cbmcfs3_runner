@@ -25,7 +25,8 @@ from cbmcfs3_runner.pump.common import multi_index_pivot
 ###############################################################################
 class Ipcc(object):
     """
-    Provides access to the IPCC pool mapping.
+    Provides access to the CBM pool and fluxes aggregated according to the
+    IPCC pool mapping.
     """
 
     # Constants #
@@ -52,17 +53,17 @@ class Ipcc(object):
         in table 4.A of the National Inventory Submissions to the IPCC:
         https://unfccc.int/process-and-meetings/transparency-and-reporting/reporting-and-review-under-the-convention/greenhouse-gas-inventories-annex-i-parties/national-inventory-submissions-2019
 
-        The only difference is that we distinguished below ground
+        The difference is that we distinguished below ground
         from above ground biomass while the living biomass net change reported
         to NIS contains both above ground and below ground biomass.
 
-        | IPCC NIS Table 4.A                    | pool as mentionned here  |
+        | IPCC NIS Table 4.A                    | Pool as mentionned here  |
         |---------------------------------------|--------------------------|
         | Carbon stock change in living biomass | NA                       |
-        | Gains                                 | NA                       |
-        | Losses                                | NA                       |
-        | Net change                            | abgr_bmass + belgr_bmass |
-        | carbon stock change in dead wood      | dead_wood                |
+        |     Gains                             | NA                       |
+        |     Losses                            | NA                       |
+        |     Net change                        | abgr_bmass + belgr_bmass |
+        | Carbon stock change in dead wood      | dead_wood                |
         | Net carbon stock change in litter     | litter                   |
         | Net carbon stock change in soils      | soil_dom                 |
         """

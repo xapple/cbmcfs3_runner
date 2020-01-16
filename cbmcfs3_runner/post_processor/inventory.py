@@ -42,7 +42,21 @@ class Inventory(object):
     #-------------------------------------------------------------------------#
     @property_cached
     def age_indicators(self):
-        """CBM output table containing the forest area by age class"""
+        """CBM output table containing the forest area by age class
+
+        Interesting values:
+        * classifiers
+        * 'ave_age' the average age of a stand
+        * 'biomass' in **tons of carbon per hectare**, includes above
+        and below ground biomass
+
+        Columns of the data frame:
+            ['user_defd_class_set_id', 'age_ind_id', 'time_step', 'spuid',
+               'age_class_id', 'land_class_id', 'kf2', 'kf3', 'kf4', 'kf5', 'kf6',
+               'area', 'biomass', 'dom', 'ave_age', 'forest_type', 'status', 'region',
+               'management_type', 'management_strategy', 'climatic_unit',
+               'conifers_broadleaves', 'id', 'density', 'harvest_gr']
+        """
         # Load table #
         age_indicators = self.parent.database["tblAgeIndicators"]
         classifr_coefs = self.parent.classifiers_coefs
@@ -58,7 +72,11 @@ class Inventory(object):
         """
         Stands for "Biomass Expansion Factor, by Forest Type", we think.
         This is translated from an SQL query authored by RP.
-        It calculates merchantable biomass.
+        It calculates the ratio of
+        (total above and below ground biomass) / total above ground biomass.
+
+        TODO: replace sums by a reshape in long format and the use of
+        grouping variables.
         """
         # Join #
         df = self.parent.pool_indicators
@@ -82,6 +100,8 @@ class Inventory(object):
                            df.hw_other   + df.sw_other
         df['bg_biomass'] = df.sw_coarse  + df.sw_fine    + \
                            df.hw_coarse  + df.hw_fine
+        # Calculate the biomass expansion factor
+        # Ratio of (total above and below ground) / total above ground
         df['bef_tot']    = (df.tot_abg   + df.bg_biomass) / df.tot_abg
         # Return #
         return df
@@ -106,7 +126,7 @@ class Inventory(object):
         columns_of_interest  = ['ave_age', 'time_step', 'area', 'biomass', 'bef_tot', 'density']
         columns_of_interest += list(self.parent.classifiers.columns)
         df = df[columns_of_interest].copy()
-        # Divide #
+        # Divide biomass by the expansion factor #
         df['merch_c_ha']   = df.biomass    / df.bef_tot
         df['merch_vol_ha'] = df.merch_c_ha / df.density
         # Return #

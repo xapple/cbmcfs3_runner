@@ -29,6 +29,7 @@ class CSVMaker(object):
 
     all_paths = """
     /output/csv/ipcc_pools.csv
+    /output/csv/inventory_age.csv
     """
 
     def __init__(self, parent):
@@ -42,5 +43,11 @@ class CSVMaker(object):
         self.export_ipcc_pools()
 
     def export_ipcc_pools(self):
-        """Export used by Sarah."""
-        self.parent.ipcc.pool_indicators_long.to_csv(str(self.paths.ipcc_pools))
+        """Export used by the land use change models LUISA and FUSION."""
+        df = self.parent.ipcc.pool_indicators_long
+        df.to_csv(str(self.paths.ipcc_pools),  index=False)
+
+    def export_output_inventory(self):
+        """Export used by the land use change models LUISA and FUSION."""
+        df = self.parent.inventory.age_indicators
+        df.to_csv(str(self.paths.inventory_age),  index=False)
