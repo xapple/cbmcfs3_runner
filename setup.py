@@ -5,6 +5,7 @@ setup(
         version          = '0.5.0',
         description      = 'cbmcfs3_runner is a python package for running carbon budget simulations.',
         long_description = open('README.md').read(),
+        long_description_content_type = 'text/markdown',
         license          = 'MIT',
         url              = 'https://github.com/xapple/cbmcfs3_runner',
         author           = 'Lucas Sinclair',
