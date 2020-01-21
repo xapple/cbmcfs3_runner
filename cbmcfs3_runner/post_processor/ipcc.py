@@ -141,7 +141,7 @@ class Ipcc(object):
         # Aggregate over pools and time #
         index = ['ipcc_pool', 'time_step', 'year']
         df = (df
-              .groupby(index)
+              .groupby(index, observed=True)
               .agg({'tc':sum})
               .reset_index()
               )
