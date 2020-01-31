@@ -19,8 +19,10 @@ import pandas
 
 ###############################################################################
 def flexible_join(first, other, on, how=None, lsuffix='', rsuffix=''):
-    """Implement a common join pattern with pandas set_index()
-    on both data frames followed by a reset_index() at the end."""
+    """
+    Implement a common join pattern with pandas set_index()
+    on both data frames followed by a reset_index() at the end.
+    """
     # Check if `on` is a set #
     if isinstance(on, set): on = list(on)
     # Set indexes #
