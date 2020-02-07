@@ -90,7 +90,7 @@ class PostProcessor(object):
         # Remove multilevel column index, replace by level(1) (second level)
         classifiers.columns = classifiers.columns.get_level_values(1)
         # Remove the confusing name #
-        del classifiers.columns.name
+        classifiers.columns.name = None
         # In the calibration scenario we can't change names and there is a conflict #
         # This should not impact other scenarios hopefully #
         # C.f the "Broad/Conifers" to "Conifers/Bradleaves" problem in several countries #
