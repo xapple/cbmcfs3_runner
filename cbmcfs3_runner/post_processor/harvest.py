@@ -226,9 +226,9 @@ class Harvest(object):
 
         In this method we transform *df*, by adding:
 
-         - Years instead of TimeSteps
-         - Rows where expected and provided are both zero removed
-         - An extra column indicating the delta between expected and provided
+         - Years instead of TimeSteps.
+         - Rows where expected and provided are both zero removed.
+         - An extra column indicating the delta between expected and provided.
          - An extra column indicating the disturbance description sentence.
         """
         # Columns we will keep #

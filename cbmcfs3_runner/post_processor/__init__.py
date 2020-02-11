@@ -145,8 +145,7 @@ class PostProcessor(object):
     def disturbances(self):
         """
         Load the disturbance table (input_data.disturbance_events)
-        that was sent as an input to CBM for the particular simulation
-        we are now analysing in the post processing step.
+        that was sent as an input to CBM for the particular simulation.
 
         This corresponds to the "expected" aspect of "expected_provided" harvest
         and will contain both Area ('A') and Mass ('M'). The units for 'M' are

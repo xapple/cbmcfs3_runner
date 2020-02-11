@@ -47,7 +47,7 @@ class MerchStock(Graph):
         # Compare all scenarios or only a subset of them #
         if not hasattr(self, 'scenario_names'):
             self.scenario_names = self.parent.scenarios.keys()
-        # A list of dataframes that we concatenate together #
+        # A list of data frames that we concatenate together #
         merch = [self.get_sum_merch_stock(scen) for scen in self.scenario_names]
         df = pandas.concat(merch)
         # Convert to millions of tons #
