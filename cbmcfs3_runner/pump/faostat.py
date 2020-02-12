@@ -30,7 +30,14 @@ from tqdm import tqdm
 ###############################################################################
 class Faostat(object):
     """
-    Provides access to the databases from http://www.fao.org/.
+    Provides access to a forestry production and trade databases from
+    http://www.fao.org/faostat/en/#data/FO
+
+    The download method gets data from a bulk file specified in the
+    url attribute of this class.
+
+    The forestry method returns a data frame containing
+    round wood and fuel wood harvest volumes.
     """
 
     products = ['Roundwood, coniferous (production)',

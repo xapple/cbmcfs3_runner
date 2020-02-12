@@ -139,7 +139,6 @@ class Ipcc(object):
         df = self.pool_indicators_long
         # ignore non forested areas #
         df = df.query("status not in 'NF'")
-        inv = self.country.orig_data.inventory.copy()
         # Aggregate over pools and time #
         index = ['ipcc_pool', 'time_step', 'year']
         df = (df
@@ -147,17 +146,8 @@ class Ipcc(object):
               .agg({'tc':sum})
               .reset_index()
               )
-        # Get the total forest area, ignore non forested areas #
-        # TODO: use changing area as in post_processing non_forested
-        total_area = (inv
-                      .query("status not in 'NF'")
-                      .agg({'area':sum}))
-        # Make the pandas series into a scalar #
-        total_area = total_area[0]
         # Total carbon per hectare #
-        df['tc_ha'] = df['tc'] / total_area
-        # Keep the area #
-        df['area'] = total_area
+        df['tc_ha'] = df['tc'] / df['area']
         # Carbon stock change
         # and Carbon stock change per hectare
         index = ['ipcc_pool']
