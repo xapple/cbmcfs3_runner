@@ -22,7 +22,7 @@ import pbs3
 # Excludes #
 exclude = ['--exclude', '.git']
 
-
+###############################################################################
 def rclone_to_jrc_box(sub_folder):
     """Copy a given sub folder from the cbmcfs3_data folder to jrc box
 

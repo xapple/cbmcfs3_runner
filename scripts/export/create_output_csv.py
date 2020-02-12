@@ -29,11 +29,11 @@ from cbmcfs3_runner.core.continent import continent
 scenarios = ['historical', 'static_demand', 'demand_plus_20', 'demand_minus_20']
 
 # Go through every runner #
-for scen_name in scenarios:
+for scen_name in tqdm(scenarios, desc='Scenarios'):
     # Load scenario #
     scenario = continent.scenarios[scen_name]
     # Loop runners #
-    for runners in tqdm(scenario.runners.values()):
+    for runners in tqdm(scenario.runners.values(), desc='Countries', leave=False):
         r = runners[-1]
         r.post_processor.csv_maker()
     # Make zip file #

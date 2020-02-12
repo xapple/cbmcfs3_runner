@@ -30,7 +30,7 @@ class CSVMaker(object):
     all_paths = """
     /output/csv/ipcc_pools.csv
     /output/csv/inventory_age.csv
-    /output/csv/ipcc_carbon.csv
+    /output/csv/ipcc_agg_country.csv
     """
 
     def __init__(self, parent):
@@ -41,9 +41,12 @@ class CSVMaker(object):
 
     def __call__(self):
         """Export all tables."""
+        # Remove all the directory #
+        self.paths.csv_dir.remove()
+        # Make each file #
         self.export_ipcc_pools()
         self.export_output_inventory()
-        self.export_ipcc_carbon()
+        self.export_ipcc_agg()
 
     def export_ipcc_pools(self):
         """
@@ -61,9 +64,9 @@ class CSVMaker(object):
         df = self.parent.inventory.age_indicators
         df.to_csv(str(self.paths.inventory_age), index=False)
 
-    def export_ipcc_carbon(self):
+    def export_ipcc_agg(self):
         """
         Export carbon_stock_long.
         """
         df = self.parent.ipcc.carbon_stock_long
-        df.to_csv(str(self.paths.ipcc_carbon), index=False)
+        df.to_csv(str(self.paths.ipcc_agg), index=False)

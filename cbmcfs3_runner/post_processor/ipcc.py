@@ -143,7 +143,8 @@ class Ipcc(object):
         index = ['ipcc_pool', 'time_step', 'year']
         df = (df
               .groupby(index, observed=True)
-              .agg({'tc':sum})
+              .agg({'tc':   'sum',
+                    'area': 'sum'})
               .reset_index()
               )
         # Total carbon per hectare #
