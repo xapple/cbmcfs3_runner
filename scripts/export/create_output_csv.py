@@ -25,13 +25,16 @@ from tqdm import tqdm
 from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
-# Pick a scenario #
-scenario = continent.scenarios['historical']
+# Many scenarios #
+scenarios = ['historical', 'static_demand', 'demand_plus_20', 'demand_minus_20']
 
 # Go through every runner #
-for runners in tqdm(scenario.runners.values()):
-    r = runners[-1]
-    r.post_processor.csv_maker()
-
-# Make zip file #
-scenario.make_csv_zip('ipcc_pools', '~/exports/for_sarah/')
+for scen_name in scenarios:
+    # Load scenario #
+    scenario = continent.scenarios[scen_name]
+    # Loop runners #
+    for runners in tqdm(scenario.runners.values()):
+        r = runners[-1]
+        r.post_processor.csv_maker()
+    # Make zip file #
+    scenario.make_csv_zip('ipcc_pools', '~/exports/for_sarah/' + scen_name + '/')

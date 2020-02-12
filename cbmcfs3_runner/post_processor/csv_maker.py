@@ -30,6 +30,7 @@ class CSVMaker(object):
     all_paths = """
     /output/csv/ipcc_pools.csv
     /output/csv/inventory_age.csv
+    /output/csv/ipcc_carbon.csv
     """
 
     def __init__(self, parent):
@@ -42,17 +43,27 @@ class CSVMaker(object):
         """Export all tables."""
         self.export_ipcc_pools()
         self.export_output_inventory()
+        self.export_ipcc_carbon()
 
     def export_ipcc_pools(self):
-        """Export cbm output pools aggregated to 5 ipcc pools.
-
-        Data used by the land use change models LUISA and FUSION."""
+        """
+        Export cbm output pools aggregated to 5 ipcc pools.
+        Data used by the land use change models LUISA and FUSION.
+        """
         df = self.parent.ipcc.pool_indicators_long
-        df.to_csv(str(self.paths.ipcc_pools),  index=False)
+        df.to_csv(str(self.paths.ipcc_pools), index=False)
 
     def export_output_inventory(self):
-        """Export cbm output inventory area by age classes.
-
-        Data used by the land use change models LUISA and FUSION."""
+        """
+        Export cbm output inventory area by age classes.
+        Data used by the land use change models LUISA and FUSION.
+        """
         df = self.parent.inventory.age_indicators
-        df.to_csv(str(self.paths.inventory_age),  index=False)
+        df.to_csv(str(self.paths.inventory_age), index=False)
+
+    def export_ipcc_carbon(self):
+        """
+        Export carbon_stock_long.
+        """
+        df = self.parent.ipcc.carbon_stock_long
+        df.to_csv(str(self.paths.ipcc_carbon), index=False)

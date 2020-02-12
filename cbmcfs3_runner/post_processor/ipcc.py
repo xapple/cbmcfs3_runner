@@ -51,6 +51,8 @@ class Ipcc(object):
 
         The ipcc_pool names are not exactly the ipcc pools available
         in table 4.A of the National Inventory Submissions to the IPCC:
+
+        #TODO put this in tinyurl
         https://unfccc.int/process-and-meetings/transparency-and-reporting/reporting-and-review-under-the-convention/greenhouse-gas-inventories-annex-i-parties/national-inventory-submissions-2019
 
         The difference is that we distinguished below ground

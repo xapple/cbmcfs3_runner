@@ -77,8 +77,8 @@ class Harvest(object):
         secondary_index = ['density']
         # Check that we don't produce NaNs #
         # See ~/repos/examples/python_modules/pandas/join_and_produce_nan.py
-        # Check for NaNs coming from a join tables to avoid using them in an aggregation index
-        # (currently ES, HU have some in the secondary_index) #
+        # Check for NaNs coming from a join tables to avoid using them in an aggregation
+        # index (currently ES, HU have some in the secondary_index) #
         assert not ungrouped[index].isna().any().any()
         # Then group #
         df = (ungrouped
