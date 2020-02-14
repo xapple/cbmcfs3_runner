@@ -82,7 +82,7 @@ class Harvest(object):
         assert not ungrouped[index].isna().any().any()
         # Then group #
         df = (ungrouped
-              .groupby(index + secondary_index)
+              .groupby(index + secondary_index, observed=True)
               .agg({'soft_production':    'sum',
                     'hard_production':    'sum',
                     'dom_production' :    'sum',
@@ -122,7 +122,7 @@ class Harvest(object):
         index = self.classifiers_silv.copy()
         index += ['dist_type_name']
         df = (df
-              .groupby(index)
+              .groupby(index, observed=True)
               .agg({'vol_merch':sum,
                     'vol_sub_merch':sum,
                     'vol_snags':sum})
@@ -155,7 +155,7 @@ class Harvest(object):
                         'status',
                         'forest_type',
                         'management_type',
-                        'management_strategy'])
+                        'management_strategy'], observed=True)
               .agg({'vol_merch':           'sum',
                     'vol_snags':           'sum',
                     'vol_sub_merch':       'sum',
@@ -165,7 +165,7 @@ class Harvest(object):
               .reset_index())
         # Add the total volume column #
         df['tot_vol'] = df['vol_merch'] + df['vol_sub_merch'] + df['vol_snags']
-        # Add the Measurement_type #
+        # Add the Measurement_type (used only as a filter later for joining) #
         df['measurement_type'] = 'M'
         # Return #
         return df
@@ -207,7 +207,7 @@ class Harvest(object):
         # Compute #
         df = (ungrouped
               .set_index('dist_type_id')
-              .groupby(index)
+              .groupby(index, observed=True)
               .agg({'dist_area':    'sum',
                     'dist_product': 'sum'})
               .reset_index())
@@ -249,12 +249,12 @@ class Harvest(object):
         expected = expected.loc[selector].copy()
         # Aggregate expected #
         expected = (expected
-                    .groupby(index)
+                    .groupby(index, observed=True)
                     .agg({'amount': 'sum'})
                     .reset_index())
         # Aggregate provided #
         provided = (provided
-                    .groupby(index)
+                    .groupby(index, observed=True)
                     .agg({prov_col_name: 'sum'})
                     .reset_index())
         # Index columns to join disturbances and harvest check #

@@ -59,7 +59,7 @@ class Ipcc(object):
         from above ground biomass while the living biomass net change reported
         to NIS contains both above ground and below ground biomass.
 
-        | IPCC NIS Table 4.A                    | Pool as mentionned here  |
+        | IPCC NIS Table 4.A                    | Pool as mentioned here   |
         |---------------------------------------|--------------------------|
         | Carbon stock change in living biomass | NA                       |
         |     Gains                             | NA                       |
