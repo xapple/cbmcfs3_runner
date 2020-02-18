@@ -165,7 +165,7 @@ class Harvest(object):
               .reset_index())
         # Add the total volume column #
         df['tot_vol'] = df['vol_merch'] + df['vol_sub_merch'] + df['vol_snags']
-        # Add the Measurement_type (used only as a filter later for joining) #
+        # Add the measurement type (used only as a filter later for joining) #
         df['measurement_type'] = 'M'
         # Return #
         return df

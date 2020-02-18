@@ -192,23 +192,38 @@ class PostProcessor(object):
         flux_indicators  = self.database['tblFluxIndicators']
         disturbance_type = self.database['tblDisturbanceType']
         coefficients     = self.classifiers_coefs
-        # Ungrouped #
+        # Perform two joins #
         df = flux_indicators.left_join(disturbance_type, 'dist_type_id')
         df = df.left_join(coefficients, 'user_defd_class_set_id')
         # Return #
         return df
 
-    # Do not cache since it can be re-computed trivially from the above
     @property
     def flux_indicators_long(self):
-        """Flux table unpivoted to a long format. """
+        """
+        Flux table un-pivoted to a long format.
+
+        TODO:
+        Warning: the column "tc" has a problem and contains 'Con' and 'Broad'
+
+        TODO: add missing variables to the index,
+        in a similar way to the pool_indicators_long table below.
+
+        Columns are:['status', 'forest_type', 'region', 'management_type',
+                     'management_strategy', 'climatic_unit', 'conifers_broadleaves', 'pool',
+                     'tc'],
+        """
+        # Load #
         df = self.flux_indicators
-        # TODO: add missing variables to the index,
-        # in a similar way to the pool_indicators_long table below.
-        index = self.classifiers_names
-        df = df.melt(id_vars = index,
-                     var_name = 'pool',
+        # Index #
+        index = ['time_step', 'dist_type_id', 'spuid', 'user_defd_class_set_id',
+                 'harvest_gr', 'density', 'id', 'dist_type_name']
+        index += self.classifiers_names
+        # Pivot #
+        df = df.melt(id_vars    = index,
+                     var_name   = 'pool',
                      value_name = 'tc')
+        # Return #
         return df
 
     @property_cached
