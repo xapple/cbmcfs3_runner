@@ -49,10 +49,10 @@ class Harvest(object):
         Converts flux indicators in tons of carbon to harvested
         wood products volumes in cubic meters of wood.
 
-        Based on Roberto's query `Harvest analysis check` visible in the original calibration database.
+        Based on Roberto's query "Harvest analysis check" visible in the
+        original calibration database.
 
         What are the units?
-
         * TC is in terms of tons of carbon.
         * Vol_Merch are in terms of cubic meters of wood.
 
@@ -99,7 +99,7 @@ class Harvest(object):
         # Create new columns #
         df['tc']                  = df['soft_production'] + df['hard_production']
         df['prov_carbon']         = df['soft_production'] + df['hard_production'] + df['dom_production']
-        df['vol_merch']           = (df['tc'] * 2) / df['density']
+        df['vol_merch']           = (df['tc'] * 2)             / df['density']
         df['vol_sub_merch']       = (df['co2_production'] * 2) / df['density']
         df['vol_snags']           = (df['dom_production'] * 2) / df['density']
         df['vol_forest_residues'] = ((df['merch_litter_input'] + df['oth_litter_input']) * 2) / df['density']
@@ -113,7 +113,7 @@ class Harvest(object):
 
         Note: sub-merchantable is also called other wood components (owc)
         and generally refers to branches. It is represented by the CO2
-        pool in the CBM output.
+        pool in the CBM output (hackish).
         """
         # Load #
         df = self.check.copy()
@@ -123,9 +123,9 @@ class Harvest(object):
         index += ['dist_type_name']
         df = (df
               .groupby(index, observed=True)
-              .agg({'vol_merch':sum,
-                    'vol_sub_merch':sum,
-                    'vol_snags':sum})
+              .agg({'vol_merch':     'sum',
+                    'vol_sub_merch': 'sum',
+                    'vol_snags':     'sum'})
               .reset_index())
         # New columns #
         df['prop_sub_merch'] = df['vol_sub_merch'] / df['vol_merch']
