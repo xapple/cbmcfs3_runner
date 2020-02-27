@@ -11,7 +11,6 @@ Unit D1 Bioeconomy.
 # Built-in modules #
 
 # Third party modules #
-import numpy
 
 # First party modules #
 from autopaths            import Path
@@ -20,7 +19,7 @@ from plumbing.cache       import property_cached
 from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
-from cbmcfs3_runner.pump.common import multi_index_pivot
+from plumbing.dataframes import multi_index_pivot
 
 # Constants #
 default_path = "/Program Files (x86)/Operational-Scale CBM-CFS3/Admin/DBs/ArchiveIndex_Beta_Install.mdb"
