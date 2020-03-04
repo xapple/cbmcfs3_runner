@@ -26,17 +26,14 @@ import pandas
 ###############################################################################
 def load_species_info():
     """
-    Parse the hard-coded table genus and species to density.
-    These values come from a publication:
+    This table summarizes the link between species codes used by RP and their
+    mapping to actual latin names of genera and species.
 
-        Chapter 4: Forest Land 2006 IPCC Guidelines for National Greenhouse Gas Inventories
-        Table 4.14 Basic Wood Density (d) Of Selected Temperate And Boreal Tree Taxa
-        https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/4_Volume4/V4_04_Ch4_Forest_Land.pdf
-        See page 71.
+    Not all codes could be identified unfortunately. Even by looking at all the
+    publications.
 
-    The density in [tons / m³] more precisely [oven-dry tonnes of C per moist m³].
-    We convert it to [kg / m³] here.
-    Note: we do not know if they measure the volume over or under bark.
+    Most answers were found in:
+    bioeconomy_notes/shared_with_us/roberto_docs/classifier_overview_nfi_cz_uk/classifiers_overview.xlsx
     """
     # Constants #
     result = module_dir + 'extra_data/species_abbreviations.csv'
