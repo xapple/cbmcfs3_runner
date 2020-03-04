@@ -30,6 +30,7 @@ class Inventory(object):
     /output/inventory/
     """
 
+
     def __init__(self, parent):
         # Default attributes #
         self.parent = parent
@@ -37,7 +38,6 @@ class Inventory(object):
         self.paths = AutoPaths(self.parent.parent.data_dir, self.all_paths)
         # Shortcut #
         self.country = self.parent.parent.country
-
 
     #-------------------------------------------------------------------------#
     @property_cached
