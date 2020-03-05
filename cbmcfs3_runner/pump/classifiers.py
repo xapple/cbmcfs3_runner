@@ -29,13 +29,13 @@ class Classifiers(object):
         >>> print(r.country.classifiers.mapping)
 
         id
-        _7    conifers_broadleaves
         _1                 status
         _2            forest_type
         _3                 region
         _4        management_type
         _5    management_strategy
         _6          climatic_unit
+        _7   conifers_broadleaves
         Name: class_desc, dtype: object
 
         Typically you use it like this:
