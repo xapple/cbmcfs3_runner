@@ -193,7 +193,7 @@ class Country(object):
         """
         Load the conversion coefficients from tons of carbon
         to cubic meters of wood.
-        The 'density' columns is the volumetric mass density in tons/m3
+        The 'density' columns is the volumetric mass density in [tons/m^3]
         for a given species.
 
         Columns are: ['id', 'forest_type', 'density', 'harvest_gr']

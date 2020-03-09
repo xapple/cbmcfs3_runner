@@ -123,15 +123,16 @@ class Inventory(object):
              'time_step', 'area', 'biomass', 'bef_tot', 'db', 'merch_c_ha',
              'Merch_Vol_ha']
         """
-        df = (self.age_indicators
-              .left_join(self.bef_ft, on='forest_type'))
+        # Join #
+        df = self.age_indicators.left_join(self.bef_ft, on='forest_type')
         # Select only some columns #
         columns_of_interest  = ['ave_age', 'time_step', 'area', 'biomass', 'bef_tot', 'density']
         columns_of_interest += list(self.parent.classifiers.columns)
+        # Drop the other columns #
         df = df[columns_of_interest].copy()
         # Divide biomass by the expansion factor #
-        df['merch_c_ha']   = df.biomass    / df.bef_tot
-        df['merch_vol_ha'] = df.merch_c_ha / df.density
+        df['merch_c_ha']   = df['biomass']    / df['bef_tot']
+        df['merch_vol_ha'] = df['merch_c_ha'] / df['density']
         # Return #
         return df
 
