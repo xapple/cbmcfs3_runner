@@ -27,8 +27,8 @@ RP,robinia,pseudoacacia,locust
 QH,quercus,ilex,holm_oak
 EG,eucalyptus,NaN,eucalyptus
 MP,pinus,NaN,mediterranean_pine
-CM,NaN,NaN,es_mediterranean_scots_pine_and_others
-BA,NaN,NaN,es_atlantic_broad_leaves_eucalypt_and_others
+CM,pinus,NaN,es_mediterranean_scots_pine_and_others
+BA,eucalyptus,NaN,es_atlantic_broad_leaves_eucalypt_and_others
 BM,NaN,NaN,es_mediterranean_holm_oak_and_others
 OE,NaN,NaN,other_evergreen
 OC,NaN,NaN,other_coniferous
