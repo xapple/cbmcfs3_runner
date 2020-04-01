@@ -15,7 +15,7 @@ import socket
 import cbmcfs3_runner
 
 # First party modules #
-from pymarktex import Template
+from pymarktex.templates import Template
 from plumbing.common import pretty_now
 
 ###############################################################################
