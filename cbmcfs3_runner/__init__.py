@@ -37,4 +37,4 @@ import pbs3
 pbs3.ErrorReturnCode.truncate_cap = 2000
 
 # Monkey patch external libraries #
-import cbmcfs3_runner.pump.patching
+import plumbing.pandas_patching
