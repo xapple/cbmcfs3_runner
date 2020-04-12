@@ -30,7 +30,6 @@ class Inventory(object):
     /output/inventory/
     """
 
-
     def __init__(self, parent):
         # Default attributes #
         self.parent = parent
@@ -42,21 +41,22 @@ class Inventory(object):
     #-------------------------------------------------------------------------#
     @property_cached
     def age_indicators(self):
-        """CBM output table containing the forest area by age class
+        """
+        CBM output table containing the forest area by age class.
 
         Interesting values:
-        * classifiers
-        * 'ave_age' the average age of a stand
-        * 'area' the area in hectares
-        * 'biomass' in **tons of carbon per hectare**, includes above
-        and below ground biomass
+            * Classifiers.
+            * 'ave_age' the average age of a stand.
+            * 'area' the area in hectares.
+            * 'biomass' in **tons of carbon per hectare**, includes above
+            and below ground biomass.
 
         Columns of the data frame:
             ['user_defd_class_set_id', 'age_ind_id', 'time_step', 'spuid',
-               'age_class_id', 'land_class_id', 'kf2', 'kf3', 'kf4', 'kf5', 'kf6',
-               'area', 'biomass', 'dom', 'ave_age', 'forest_type', 'status', 'region',
-               'management_type', 'management_strategy', 'climatic_unit',
-               'conifers_broadleaves', 'id', 'density', 'harvest_gr']
+             'age_class_id', 'land_class_id', 'kf2', 'kf3', 'kf4', 'kf5', 'kf6',
+             'area', 'biomass', 'dom', 'ave_age', 'forest_type', 'status', 'region',
+             'management_type', 'management_strategy', 'climatic_unit',
+             'conifers_broadleaves', 'id', 'density', 'harvest_gr']
         """
         # Load table #
         age_indicators = self.parent.database["tblAgeIndicators"]
