@@ -20,7 +20,7 @@ from plumbing.cache import property_cached
 from cbmcfs3_runner import module_dir
 
 # Internal modules
-from plumbing.dataframes import multi_index_pivot
+from cbmcfs3_runner.pump.dataframes import multi_index_pivot
 
 ###############################################################################
 class Ipcc(object):
