@@ -82,6 +82,33 @@ As visible from ~/rp/cbmcfs3_runner/setup.py under the `install_requires` variab
     pip install xlsxwriter
 
 
+# Jupyter notebook dependencies
+
+Install
+
+    pip install jupytext   
+    conda install jupyter
+
+Configure juptytext
+
+    python -m jupyter notebook --generate-config
+    python -m jupyter nbextension install jupytext --py --user
+    python -m jupyter nbextension enable  jupytext --py --user
+
+Start the notebooks
+
+    python -m jupyter notebook
+
+
+# Git usage for cbmcfs3_runner
+
+Current status of your git repository
+
+    git status
+
+Check previous version of the file, for example the documentation folder
+
+
 ## Install Python dependencies with anaconda
 
 [how to install pypi packages using 

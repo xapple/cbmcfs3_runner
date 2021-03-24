@@ -27,11 +27,9 @@ import seaborn
 sys.path.insert(0, "/repos/cbmcfs3_runner/")
 #sys.path.insert(0, "/home/sinclair/repos/bioeconomy_notes/src/")
 
-# Import utils 
-from cbmcfs3_utils.csv_download import csv_download_link
+from cbmcfs3_runner.pump.dataframes import csv_download_link
 # Monkey patch because this method was removed from the scenario
-import cbmcfs3_utils
-from cbmcfs3_utils.concatenation import concat_as_df
+from cbmcfs3_runner.pump.dataframes import concat_as_df
 from cbmcfs3_runner.scenarios.base_scen import Scenario
 Scenario.concat_as_df = concat_as_df
 
@@ -64,12 +62,19 @@ It also compares the inventory areas modified by FUSION.
 ### Inventory
 Load inventory tables for all countries.
 
+- The default scenario inventory runs on country.orig_data.inventory
+- There is another inventory with different classifier for the availability for wood supply running on 
+    country.fustion_data.inventory_aws
+
+
 ```python
 # Large data frame with all inventory of all countries #
 def get_inv(runner): return runner.country.orig_data.inventory
 inv = scenario.concat_as_df(func=get_inv)
 inv.iloc[[0,1,-2,-1]]
 ```
+
+Inv AWS is the Availability for Wood supply inventory used in an exchange with FUSION.
 
 ```python
 # Large data frame with all inventory of all countries #
