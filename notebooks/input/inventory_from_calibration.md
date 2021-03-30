@@ -4,8 +4,8 @@ jupyter:
     text_representation:
       extension: .md
       format_name: markdown
-      format_version: '1.2'
-      jupytext_version: 1.3.3
+      format_version: '1.3'
+      jupytext_version: 1.11.1
   kernelspec:
     display_name: Python 3
     language: python
@@ -15,6 +15,13 @@ jupyter:
 ```python
 %matplotlib inline
 ```
+
+# Introduction
+
+The purpose of this document is to analyze inventory area from the calibration database. 
+
+It also compares the inventory areas modified by FUSION.
+
 
 ```python
 # Modules #
@@ -49,14 +56,6 @@ inv_AT = runner_AT.country.orig_data.inventory
 inv_LU = runner_LU.country.orig_data.inventory
 ```
 
-# Introduction
-
-The purpose of this document is to analyze inventory area from the calibration database. 
-
-It also compares the inventory areas modified by FUSION.
-
-
-
 ## Load data
 
 ### Inventory
@@ -75,6 +74,17 @@ inv.iloc[[0,1,-2,-1]]
 ```
 
 Inv AWS is the Availability for Wood supply inventory used in an exchange with FUSION.
+
+<!-- #raw -->
+inv
+
+
+<!-- #endraw -->
+
+```python
+inv.query("country_iso2=='LU' & age_class < 10 ")
+
+```
 
 ```python
 # Large data frame with all inventory of all countries #
@@ -391,4 +401,8 @@ display(df.groupby(['status']).agg({'area':sum}))
 # This NF area is represented by only 24 rows in the input inventory 
 # Compared to 500 rows for the forested areas
 display(count_unique_index(df, ['_merge', 'status']))
+```
+
+```python
+
 ```
