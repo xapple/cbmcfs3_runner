@@ -1,9 +1,9 @@
+# Introduction
 
+The approach was to install the cbmcfs3_runner python package. Then work through the
+error message and solve the missing dependencies.
 
-# Installation steps on windows
-
-
-## Install python and ipython 
+# Installation of Python related tools
 
 Python was installed on the machine.
 
@@ -36,6 +36,7 @@ Display environnemental variables from within python
     import os
     print(os.environ['CBMCFS3_DATA'])
     print(os.environ['PYTHONPATH'])
+    print(os.environ['PATH'])
 
 [How to update a windows environment variable without
 rebooting](https://serverfault.com/questions/8855/how-do-you-add-a-windows-environment-variable-without-rebooting)
@@ -57,7 +58,9 @@ Display the python path
 
 
 
-## Install Python dependencies with pip
+## Pip install 
+
+Install Python dependencies with pip.
 
 As visible from ~/rp/cbmcfs3_runner/setup.py under the `install_requires` variable.
 
@@ -70,6 +73,7 @@ As visible from ~/rp/cbmcfs3_runner/setup.py under the `install_requires` variab
     pip install plumbing
     pip install pyexcel
     pip install pyexcel-xlsx
+    pip install pyexcel-xls
     pip install pymarktex
     pip install pystache
     pip install requests
@@ -82,34 +86,9 @@ As visible from ~/rp/cbmcfs3_runner/setup.py under the `install_requires` variab
     pip install xlsxwriter
 
 
-# Jupyter notebook dependencies
+## Conda install
 
-Install
-
-    pip install jupytext   
-    conda install jupyter
-
-Configure juptytext
-
-    python -m jupyter notebook --generate-config
-    python -m jupyter nbextension install jupytext --py --user
-    python -m jupyter nbextension enable  jupytext --py --user
-
-Start the notebooks
-
-    python -m jupyter notebook
-
-
-# Git usage for cbmcfs3_runner
-
-Current status of your git repository
-
-    git status
-
-Check previous version of the file, for example the documentation folder
-
-
-## Install Python dependencies with anaconda
+Install Python dependencies with anaconda
 
 [how to install pypi packages using 
 anacond](https://stackoverflow.com/questions/29286624/how-to-install-pypi-packages-using-anaconda-conda-command)
@@ -129,7 +108,65 @@ If you want conda to replace the PyPI packages with its own (where possible), ju
 Given that the above setting is made. Conda marks its own channels as higher priority than pip, thus packages will be replaced.
 
 
-# Show input data
+## Jupyter notebooks 
+
+Install Jupyter notebooks and dependencies to explore data, convert to markdown text and
+display a table of content.
+
+Install
+
+    pip install jupytext   
+    conda install jupyter
+
+Configure juptytext
+
+    python -m jupyter notebook --generate-config
+    python -m jupyter nbextension install jupytext --py --user
+    python -m jupyter nbextension enable  jupytext --py --user
+
+Start the notebooks
+
+    python -m jupyter notebook
+
+
+# cbm3_python python and SIT
+
+Create a repos in your user folder on windows
+
+Cbmcfs3_runner depends on a package made by the canadian team called cbm3_python
+
+    git clone https://github.com/cat-cfs/cbm3_python.git 
+
+Download the standard import tool from the releases
+
+    https://github.com/cat-cfs/StandardImportToolPlugin/releases
+
+There was a table import bug when running that version of SIT and we installed an older
+version 
+
+    https://github.com/cat-cfs/StandardImportToolPlugin/releases/download/1.3.0.1/Release.zip
+
+Unzip the folder in the machine. Add the location of the folder containing
+
+    StandardImportToolPlugin.exe
+
+Add its location to the environment variables.
+
+
+# Data
+
+We need: 
+- input csv
+- Archive index database
+
+Clone the cbmcfs3_data repository make it available to python by entering thet system
+environment variable CBMCFS3_DATA as explained above.
+
+Copy the CBM Archive Index database 
+https://jrcbox.jrc.ec.europa.eu/index.php/apps/files/?dir=/Forbiomod/SourceData/EFDM/cbmcfs3_data/countries/LU/orig&fileid=12184184
+
+
+## Show input data
 
     from cbmcfs3_runner.core.continent import continent
     runner_AT    = continent[('static_demand', 'AT', 0)]
@@ -145,6 +182,32 @@ Given that the above setting is made. Conda marks its own channels as higher pri
 
 
 
+# Git usage for cbmcfs3_runner
+
+Current status of your git repository
+
+    git status
+
+Check previous version of the file, for example the documentation folder
+
+Add files describe changes and push to the gitlab repository
+
+    git add file_name
+    git commit -m "Describe your changes"
+    git push
+
+
 # Run for one country
+
+Run the historical scenario (easier because there is no creation of disturbances) 
+
+    from cbmcfs3_runner.core.continent import continent
+    runner = continent[('historical', 'LU', 0)]
+
+    
+# Reflections
+
+- Each country has its specific AIDB because each country has slightly different species
+  definitions. Maybe these should be 
 
 
