@@ -24,13 +24,13 @@ class CreateJSON(object):
     template = {
       "output_path": None,
       "import_config": {
-        "ageclass_table_name":           "../csv/ageclass.csv",
-        "classifiers_table_name":        "../csv/classifiers.csv",
-        "disturbance_events_table_name": "../csv/disturbance_events.csv",
-        "disturbance_types_table_name":  "../csv/disturbance_types.csv",
-        "inventory_table_name":          "../csv/inventory.csv",
-        "transition_rules_table_name":   "../csv/transition_rules.csv",
-        "yield_table_name":               None},
+        "ageclass_path":           None,
+        "classifiers_path":        None,
+        "disturbance_events_path": None,
+        "disturbance_types_path":  None,
+        "inventory_path":          None,
+        "transition_rules_path":   None,
+        "yield_path":              None},
       "mapping_config": {
         "spatial_units": {
           "mapping_mode":     "SeperateAdminEcoClassifiers",
@@ -68,8 +68,15 @@ class CreateJSON(object):
         config = self.template.copy()
         # Two main paths #
         config['output_path']           = self.parent.paths.mdb
-        # Different yield tables depending on the value of yield_table_name
-        config['import_config']['yield_table_name'] = "../csv/" + self.parent.yield_table_name
+        csv_dir = self.parent.parent.data_dir + "input/csv/"      
+        config['import_config']['ageclass_path'] = csv_dir + "ageclass.csv"
+        config['import_config']['classifiers_path'] = csv_dir + "classifiers.csv"
+        config['import_config']['disturbance_events_path'] = csv_dir + "disturbance_events.csv"
+        config['import_config']['disturbance_types_path'] = csv_dir + "disturbance_types.csv"
+        config['import_config']['inventory_path'] = csv_dir + "inventory.csv"
+        config['import_config']['transition_rules_path'] = csv_dir + "transition_rules.csv"
+        # different yiled tables name for initialization and running
+        config['import_config']['yield_path'] = csv_dir + self.parent.yield_table_name
         # Retrieve the four classifiers mappings #
         mappings = self.runner.country.associations.all_mappings
         # Set the four classifiers mappings #
