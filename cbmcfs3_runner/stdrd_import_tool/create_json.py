@@ -24,15 +24,13 @@ class CreateJSON(object):
     template = {
       "output_path": None,
       "import_config": {
-        "path":                          None,
-        "ageclass_table_name":           "AgeClasses$",
-        "classifiers_table_name":        "Classifiers$",
-        "disturbance_events_table_name": "DistEvents$",
-        "disturbance_types_table_name":  "DistType$",
-        "inventory_table_name":          "Inventory$",
-        "transition_rules_table_name":   "Transitions$",
-        "yield_table_name":              "Growth$"
-      },
+        "ageclass_table_name":           "../csv/ageclass.csv",
+        "classifiers_table_name":        "../csv/classifiers.csv",
+        "disturbance_events_table_name": "../csv/disturbance_events.csv",
+        "disturbance_types_table_name":  "../csv/disturbance_types.csv",
+        "inventory_table_name":          "../csv/inventory.csv",
+        "transition_rules_table_name":   "../csv/transition_rules.csv",
+        "yield_table_name":               None},
       "mapping_config": {
         "spatial_units": {
           "mapping_mode":     "SeperateAdminEcoClassifiers",
@@ -70,7 +68,8 @@ class CreateJSON(object):
         config = self.template.copy()
         # Two main paths #
         config['output_path']           = self.parent.paths.mdb
-        config['import_config']['path'] = self.parent.create_xls.paths.tables_xls
+        # Different yield tables depending on the value of yield_table_name
+        config['import_config']['yield_table_name'] = "../csv/" + self.parent.yield_table_name
         # Retrieve the four classifiers mappings #
         mappings = self.runner.country.associations.all_mappings
         # Set the four classifiers mappings #

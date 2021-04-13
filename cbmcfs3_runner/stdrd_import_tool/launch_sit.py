@@ -6,6 +6,23 @@ Written by Lucas Sinclair and Paul Rougieux.
 
 JRC biomass Project.
 Unit D1 Bioeconomy.
+
+This will be added to a runner, in the form of default_sit or append_sit
+
+For example:
+
+    from cbmcfs3_runner.core.continent import continent
+    runner    = continent[('historical', 'LU', 0)]
+    # The pre processor copies the csv input files
+    runner.pre_processor()
+    # Show the different yield tables names
+    In [35]: runner.default_sit.yield_table_name
+    Out[35]: 'yields.csv'
+    In [36]: runner.append_sit.yield_table_name
+    Out[36]: 'historical_yields.csv'
+    # Create a json configuration file so SIT knows where those files are
+    runner.default_sit.create_json()
+
 """
 
 # Built-in modules #
@@ -82,7 +99,6 @@ class LaunchSIT(object):
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
     def __call__(self):
-        self.create_xls()
         self.create_json()
         self.run_sit()
         self.move_log()
