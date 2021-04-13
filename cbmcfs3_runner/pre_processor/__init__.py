@@ -39,7 +39,7 @@ class PreProcessor(object):
 
     # Default case #
     unchanged = ['ageclass', 'inventory', 'classifiers', 'types',
-                 'transition_rules', 'yields', 'historical_yields']
+                 'yields', 'historical_yields']
 
     def __init__(self, parent):
         # Default attributes #
@@ -59,6 +59,12 @@ class PreProcessor(object):
         # Generate disturbances (dynamic function) and write those #
         df = self.disturbance_events()
         df.to_csv(str(self.paths.events), index=False)
+        # Rename columns of the transition rules 
+        # To prevent a SIT error on import 
+        # Unhandled Exception: System.Data.DuplicateNameException:
+        #    A column named '_1' already belongs to this DataTable.
+        self.parent.country.orig_data.transition_rules
+        df.to_csv(str(self.paths.transition), index=False)
 
     #--------------------------- Different events ----------------------------#
     def events_hist(self):

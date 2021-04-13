@@ -16,11 +16,11 @@ For example:
     # The pre processor copies the csv input files
     runner.pre_processor()
     # Show the different yield tables names
-    In [35]: runner.default_sit.yield_table_name
-    Out[35]: 'yields.csv'
-    In [36]: runner.append_sit.yield_table_name
-    Out[36]: 'historical_yields.csv'
-    # Create a json configuration file so SIT knows where those files are
+    In : runner.default_sit.yield_table_name
+    Out: 'yields.csv'
+    In : runner.append_sit.yield_table_name
+    Out: 'historical_yields.csv'
+    # Create a json configuration file to tell SIT the location of the csv files
     runner.default_sit.create_json()
 
 """

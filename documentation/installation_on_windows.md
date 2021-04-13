@@ -3,6 +3,11 @@
 The approach was to install the cbmcfs3_runner python package. Then work through the
 error message and solve the missing dependencies.
 
+
+See also 
+
+    ~/rp/bioeconomy_notes/models/cbmcfs3/docs/windows_vm_setup.md 
+
 # Installation of Python related tools
 
 Python was installed on the machine.
@@ -71,10 +76,8 @@ As visible from ~/rp/cbmcfs3_runner/setup.py under the `install_requires` variab
     pip install pandas
     pip install pbs3
     pip install plumbing
-    pip install pyexcel
-    pip install pyexcel-xlsx
-    pip install pyexcel-xls
     pip install pymarktex
+    pip install pyodbc
     pip install pystache
     pip install requests
     pip install seaborn
@@ -85,6 +88,10 @@ As visible from ~/rp/cbmcfs3_runner/setup.py under the `install_requires` variab
     pip install xlrd
     pip install xlsxwriter
 
+    # Excel dependency not needed once you load sit from csv files
+    pip install pyexcel
+    pip install pyexcel-xlsx
+    pip install pyexcel-xls
 
 ## Conda install
 
@@ -204,7 +211,49 @@ Run the historical scenario (easier because there is no creation of disturbances
     from cbmcfs3_runner.core.continent import continent
     runner = continent[('historical', 'LU', 0)]
 
-    
+# Debug
+
+## Modify the JSON file to configure SIT
+  
+    from cbmcfs3_runner.core.continent import continent
+    runner    = continent[('historical', 'LU', 0)]
+    # The pre processor copies the csv input files
+    runner.pre_processor()
+    # Show the different yield tables names
+    In : runner.default_sit.yield_table_name
+    Out: 'yields.csv'
+    In : runner.append_sit.yield_table_name
+    Out: 'historical_yields.csv'
+    # Create a json configuration file to tell SIT the location of the csv files
+    runner.default_sit.create_json()
+
+
+## Modify the transition rules table
+
+Rename columns of the transition rules 
+To prevent a SIT error on import 
+
+    Unhandled Exception: System.Data.DuplicateNameException:
+       A column named '_1' already belongs to this DataTable.
+
+
+    from cbmcfs3_runner.core.continent import continent
+    runner    = continent[('historical', 'LU', 0)]
+    # The pre processor copies the csv input files
+    runner.pre_processor()
+
+
+
+## Connect to an access database
+
+Make it possible to change the user name
+
+    from cbmcfs3_runner.core.continent import continent
+    runner = continent[('historical', 'LU', 0)]
+    runner.launch_cbm.generated_database
+
+
+
 # Reflections
 
 - Each country has its specific AIDB because each country has slightly different species
