@@ -57,14 +57,14 @@ class PreProcessor(object):
             self.parent.country.orig_data.paths[file].copy(self.paths[file])
         # Other files are special and need changing #
         # Generate disturbances (dynamic function) and write those #
-        df = self.disturbance_events()
-        df.to_csv(str(self.paths.events), index=False)
+        dist = self.disturbance_events()
+        dist.to_csv(str(self.paths.events), index=False)
         # Rename columns of the transition rules 
         # To prevent a SIT error on import 
         # Unhandled Exception: System.Data.DuplicateNameException:
         #    A column named '_1' already belongs to this DataTable.
-        self.parent.country.orig_data.transition_rules
-        df.to_csv(str(self.paths.transition), index=False)
+        transition = self.parent.country.orig_data.transition_rules
+        transition.to_csv(str(self.paths.transition), index=False)
 
     #--------------------------- Different events ----------------------------#
     def events_hist(self):
