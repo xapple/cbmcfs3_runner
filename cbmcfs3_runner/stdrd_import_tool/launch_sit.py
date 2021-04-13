@@ -100,6 +100,7 @@ class LaunchSIT(object):
 
     def __call__(self):
         self.create_json()
+        self.create_xls()
         self.run_sit()
         self.move_log()
         self.check_for_errors()
