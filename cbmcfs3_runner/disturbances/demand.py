@@ -6,6 +6,14 @@ Written by Lucas Sinclair and Paul Rougieux.
 
 JRC biomass Project.
 Unit D1 Bioeconomy.
+
+Create a runner and display the demand data frames
+
+    from cbmcfs3_runner.core.continent import continent
+    runner = continent[('historical', 'LU', 0)]
+    runner.country.demand.gftm_irw
+    runner.country.demand.gftm_fw
+
 """
 
 # Built-in modules #
@@ -199,7 +207,7 @@ class Demand(object):
         df = fw_wide.melt(id_vars='country_iso2', var_name='product_year',
                           value_name='value')
         # Separate the hwp and year_min columns  #
-        df['hwp'], df['year_min'] = df['product_year'].str.split('_', 1).str
+        df[['hwp', 'year_min']] = df['product_year'].str.split('_', n=1, expand=True)
         # Rename #
         df['hwp'] = df['hwp'].replace(['coniferous', 'broadleaved'],
                                       ['fw_c', 'fw_b'])
