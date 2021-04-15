@@ -194,6 +194,7 @@ class Runner(object):
         within the pipeline. This can be used to plot the country on a
         color scale map.
         """
+        if not self.paths.log.exists: return 0.0
         if   'run is completed' in self.paths.log.contents: return 1.0
         elif 'SIT created'      in self.paths.log.contents: return 0.5
         else:                                               return 0.0
