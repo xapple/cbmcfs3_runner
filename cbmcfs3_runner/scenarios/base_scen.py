@@ -112,7 +112,7 @@ class Scenario(object):
         # Return #
         return dest_zip
 
-    def concat_as_df(self):
+    def concat_as_df(self, *args, **kwargs):
         """A data frame with many countries together, crucial for analysis"""
-        return concat_as_df(self)
+        return concat_as_df(self, *args, **kwargs)
 
