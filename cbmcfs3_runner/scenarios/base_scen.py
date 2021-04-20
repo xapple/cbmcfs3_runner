@@ -22,6 +22,7 @@ from tqdm import tqdm
 
 # Internal modules #
 from cbmcfs3_runner.reports.scenario import ScenarioReport
+from cbmcfs3_runner.pump.dataframes import concat_as_df
 
 ###############################################################################
 class Scenario(object):
@@ -110,3 +111,8 @@ class Scenario(object):
         tmp_dir.remove()
         # Return #
         return dest_zip
+
+    def concat_as_df(self):
+        """A data frame with many countries together, crucial for analysis"""
+        return concat_as_df(self)
+
