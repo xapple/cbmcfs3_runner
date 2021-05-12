@@ -43,7 +43,10 @@ def multi_index_pivot(df, columns=None, values=None):
     # Return #
     return df
 
-###############################################################################
+
+##########################################################
+# Functions applied to many countries within a scenarios #
+##########################################################
 def concat_as_dict(scenario, step=-1, func=None, verbose=False):
     """A dictionary of data frames, with country iso2 code as keys."""
     # Default option, function that takes a runner, returns a data frame #
@@ -96,6 +99,39 @@ def compare_col_names(scenario, *args, **kwargs):
     comparison  = {iso2: set(df.columns) ^ ref_columns for iso2, df in dict_of_df.items()}
     # Return #
     return comparison
+
+
+#######################################
+# Functions applied to many scenarios #
+#######################################
+def concat_as_df_from_many_scenarios(scenario, func):
+    """
+    Concatenate data frame returned by the given function for given scenario.
+
+    :param list scenario: list of scenario names
+    :param func function: function giving a pandas data frame as output
+    return: a concatenated dataframe with a scenario column and
+            all the other columns in the func output.
+    Example usage:
+
+    from cbmcfs3_runner.pump import concat_as_df_from_many_scenarios
+    scenario_names = ['static_demand','demand_minus_20', 'demand_plus_20']
+
+    # Get all scenario output for one country
+    country_iso2 = "LT"
+    def get_merch(scenario):
+        runner = continent[(scenario, country_iso2, 0)]
+        df =  runner.post_processor.inventory.sum_merch_stock
+        return df
+    merch = concat_as_df_from_many_scenarios(scenario_names, get_merch)
+    """
+    scenario_dict = {x: func(x).copy() for x in scenario_names}
+    # for a particular country
+    df = pandas.concat(scenario_dict, sort=True)
+    df = df.reset_index(level=0)
+    df = df.rename(columns={'level_0': 'scenario'})
+    return df
+
 
 ###############################################################################
 def csv_download_link(df, csv_file_name, delete_prompt=True):
