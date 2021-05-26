@@ -297,3 +297,44 @@ class Inventory(object):
             df = df.loc[selector].copy()
         # Return #
         return df
+    
+# addedd 18/05/2021   
+    @property_cached
+    def sum_agb_stock(self):
+        # Load data #
+        df    = self.parent.database['tblPoolIndicators']
+        clifr = self.parent.classifiers.set_index("user_defd_class_set_id")
+        # Our index #
+        index = ['time_step', 'forest_type', 'conifers_broadleaves']
+        # Join #
+        df = (df
+              .set_index('user_defd_class_set_id')
+              .join(clifr)
+              .groupby(index)
+              .agg({'hw_merch': 'sum',
+                    'sw_merch': 'sum',
+                    'hw_other': 'sum',
+                    'sw_other': 'sum',
+                    'hw_foliage': 'sum',
+                    'sw_foliage': 'sum'})
+              .reset_index())
+        # Add year and remove TimeStep #
+        df['year'] = self.country.timestep_to_year(df['time_step'])
+        df = df.drop('time_step', axis=1)
+        # Check for mixed species that would produce both hard and soft #
+        import warnings
+        for i, row in df.iterrows():
+            if row['hw_merch'] > 0.0 and row['sw_merch'] > 0.0:
+                warnings.warn("There is a mixed species at row %i.\n%s" % (i,row))
+        df['mass'] = df['hw_merch'] + df['sw_merch']+df['hw_other'] + df['sw_other']+df['hw_foliage'] + df['sw_foliage']
+        # calculate the volume in cubic meters over bark #
+        # join density
+        #df = df.left_join(self.country.coefficients, 'forest_type')
+        #df['volume'] = df['mass'] / df['density']
+        # Only if we are in the calibration scenario #
+        if self.parent.parent.scenario.short_name == 'calibration':
+            # Patch the harvest data frame to stop at the simulation year #
+            selector = df['year'] <= self.country.base_year
+            df = df.loc[selector].copy()
+        # Return #
+        return df

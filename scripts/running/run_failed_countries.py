@@ -6,7 +6,8 @@ A script to rerun only the countries that didn't pass (in a given scenario).
 
 Typically you would run this file from a command line like this:
 
-     ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_failed_countries.py
+        ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_failed_countries.py
+
 """
 
 # Built-in modules #

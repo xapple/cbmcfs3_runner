@@ -22,7 +22,7 @@ from plumbing.databases.access_database import AccessDatabase
 from cbmcfs3_runner.pump.dataframes import multi_index_pivot
 
 # Constants #
-default_path = "/Program Files (x86)/Operational-Scale CBM-CFS3/Admin/DBs/ArchiveIndex_Beta_Install.mdb"
+default_path = "C:/Program Files (x86)/Operational-Scale CBM-CFS3/Admin/DBs/ArchiveIndex_Beta_Install.mdb"
 default_path = Path(default_path)
 
 ###############################################################################

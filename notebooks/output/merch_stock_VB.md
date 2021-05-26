@@ -35,9 +35,6 @@ runner_minus_20 = continent[('demand_minus_20', country_iso2, 0)]
 runner_plus_20 = continent[('demand_plus_20', country_iso2, 0)]
 
 # Choose scenarios to compare
-#scenario_names = runner_static.country.scenarios.keys() # all available
-#scenario_names = runner_minus_20.country.scenarios.keys() # all available
-#scenario_names = runner_plus_20.country.scenarios.keys() # all available
 scenario_names = ['static_demand','demand_minus_20', 'demand_plus_20']
 
 def get_merch(scenario):
@@ -45,13 +42,18 @@ def get_merch(scenario):
     df =  runner.post_processor.inventory.sum_merch_stock
     return df
 scenario_dict = {x: get_merch(x) for x in scenario_names}
+
 # for a particular country
 df = pandas.concat(scenario_dict, sort=True)
 df = df.reset_index(level=0)
 df = df.rename(columns={'level_0': 'scenario'})
 merch = df
-display(merch)
+#merch[merch.scenario == 'static_demand'])
+merch_static=merch[merch.scenario=='static_demand']
+merch_minus_20 = merch[merch.scenario=='demand_minus_20']
+merch_plus_20 = merch[merch.scenario=='demand_plus_20']
 
+#display(runner_static)
 #use pd.concat()
 #scenario = continent.scenarios['demand_minus_20']
 
@@ -89,14 +91,14 @@ v= runner_minus_20.post_processor.inventory.sum_merch_stock
 #v.drop_duplicates()
 #v.iloc[10:15]
 #v.loc[:,'hw_merch':'year']
-#v.filter(regex = '\_')
+v.filter(regex = '\_')
 #v.iloc[:,[1,3,6]]
 #v.loc[v['sw_merch']<1500000, ['sw_merch', 'hw_merch', 'mass']]
 #t=v.groupby(by = "forest_type")
 #t.head()
 #v.query("forest_type == 'PT'")
 #len(v)
-v.info()
+#v.info()
 #t=v.dropna()
 #v.plot.scatter(x ='year', y='sw_merch')
 ```
@@ -107,9 +109,9 @@ runner_plus_20.post_processor.inventory.sum_merch_stock
 
 ```python
 #represent Merch. Stock for the three sceanrios 
-merch_static = runner_static.post_processor.inventory.sum_merch_stock
-merch_plus_20 = runner_plus_20.post_processor.inventory.sum_merch_stock
-merch_minus_20 = runner_minus_20.post_processor.inventory.sum_merch_stock
+#merch_static = runner_static.post_processor.inventory.sum_merch_stock
+#merch_plus_20 = runner_plus_20.post_processor.inventory.sum_merch_stock
+#merch_minus_20 = runner_minus_20.post_processor.inventory.sum_merch_stock
 # for 2018 only: .query("year == 2018")
 
 ms = merch_static.groupby('year').agg({'volume':sum,
@@ -124,25 +126,25 @@ mm20 = merch_minus_20.groupby('year').agg({'volume':sum,
 #join_merch = pd.merge(ms,join_merch_0,
 #         how = 'left', on = 'year')
 
-join_merch_0 = mp20.merge(mm20,
-         how = 'left', on = 'year', suffixes = ("plus_20", "minus_20"))
-join_merch = ms.merge(join_merch_0,
-         how = 'left', on = 'year')
+#join_merch_0 = mp20.merge(mm20,
+#         how = 'left', on = 'year', suffixes = ("plus_20", "minus_20"))
+#join_merch = ms.merge(join_merch_0,
+#         how = 'left', on = 'year')
 
 
 #join_merch 
-SumTable=join_merch.rename(columns={"volume":"Volume_static", "mass": "Mass_static", "volume_x":"Volume_p20", "mass_x": "Mass_p20","volume_y":"Volume_m20", "mass_y": "Mass_m20"})
+#SumTable=join_merch.rename(columns={"volume":"Volume_static", "mass": "Mass_static", "volume_x":"Volume_p20", "mass_x": "Mass_p20","volume_y":"Volume_m20", "mass_y": "Mass_m20"})
 #display(SumTable)
 
-display(join_merch)
+#display(join_merch)
 
 #csv_download_link(SumTable,"SumTable.csv")
 ```
 
 ```python
 #year Volume_p20 Mass_p20 Volume_m20 Mass_m20
-SumTable.reset_index().plot(x='year',y=['Volume_static','Volume_p20','Volume_m20','Mass_static','Mass_p20','Mass_m20' ], 
-                            title = "Standing volume and biomass", color=["b", "r", "g"])
+#SumTable.reset_index().plot(x='year',y=['Volume_static','Volume_p20','Volume_m20','Mass_static','Mass_p20','Mass_m20' ], 
+#                            title = "Standing volume and biomass", color=["b", "r", "g", "g", "f", "o"])
 #plt.savefig("C:/CBM/figure.png") # save as png
 ```
 
@@ -181,13 +183,14 @@ merch = scenario_minus_20.country.graphs.merch_stock.data_raw
 This gives access to the merchangable stock table for a single scenario
 
 
-
+```python
 ### reorder columns
 data=runner_static.post_processor.inventory.sum_merch_stock
 runner_static.post_processor.inventory.sum_merch_stock.head(2)
 cols = data.columns.tolist()
 cols
 data_=data[['year','id', 'forest_type','conifers_broadleaves','hw_merch','sw_merch', 'mass', 'density', 'harvest_gr', 'volume']]
+```
 
 ```python
 #sum across years 
