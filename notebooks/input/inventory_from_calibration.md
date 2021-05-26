@@ -79,7 +79,7 @@ inv.iloc[[0,1,-2,-1]]
 Inv AWS is the **Availability for Wood Supply** inventory used in an exchange with FUSION.
 
 ```python
-# Large data frame with all inventory of all countries #
+# Large data frame with inventory aws of all countries where it is available #
 def get_inv_aws(runner):
     try:
         df = runner.country.fusion_data.inventory_aws
