@@ -104,17 +104,18 @@ def compare_col_names(scenario, *args, **kwargs):
 #######################################
 # Functions applied to many scenarios #
 #######################################
-def concat_as_df_from_many_scenarios(scenario, func):
+def concat_as_df_one_country_from_many_scenarios(scenario_names, func):
     """
-    Concatenate data frame returned by the given function for given scenario.
+    Concatenate data frames returned by the given function for given list of scenarios.
 
-    :param list scenario: list of scenario names
-    :param func function: function giving a pandas data frame as output
+    :param list scenario_names: list of scenario names
+    :param func function: function taking a runner as an argument and
+        giving a pandas data frame as output
     return: a concatenated dataframe with a scenario column and
             all the other columns in the func output.
     Example usage:
 
-    from cbmcfs3_runner.pump import concat_as_df_from_many_scenarios
+    from cbmcfs3_runner.pump import concat_as_df_one_country_from_many_scenarios
     scenario_names = ['static_demand','demand_minus_20', 'demand_plus_20']
 
     # Get all scenario output for one country
@@ -125,12 +126,62 @@ def concat_as_df_from_many_scenarios(scenario, func):
         return df
     merch = concat_as_df_from_many_scenarios(scenario_names, get_merch)
     """
-    scenario_dict = {x: func(x).copy() for x in scenario_names}
-    # for a particular country
-    df = pandas.concat(scenario_dict, sort=True)
+    # Dictionary of all data frames returned by the function with scenario names as keys
+    dict_of_df = {x: func(x).copy() for x in scenario_names}
+    # Concatenate those tables for many scenarios for a particular country
+    df = pandas.concat(dict_of_df, sort=True)
     df = df.reset_index(level=0)
     df = df.rename(columns={'level_0': 'scenario'})
     return df
+
+
+def concat_as_df_from_many_scenarios(scenario_dict, func):
+    """
+    concatenate data frames returned by the given function (which takes a runner object as an argument) for
+    the given scenarios
+
+    :param list scenario_dict: a dictionary of scenario names: scenario objects
+    :param func function: function taking a runner as an argument and
+        giving a pandas data frame as output
+    return: a concatenated dataframe with a scenario column and
+            all the other columns in the func output.
+
+    Example usage:
+
+    from cbmcfs3_runner.core.continent import continent
+    from cbmcfs3_runner.pump.dataframes import concat_as_df_from_many_scenarios
+    import pandas # Used to return an empty data frame in the except statement of the get_ms_merch() function below
+
+    # Create a dictionary of all scenario objects
+    scenario_names = ['static_demand', 'demand_minus_20', 'demand_plus_20']
+    scenario_dict = {x: continent.scenarios[x] for x in scenario_names}
+
+    # Load the input inventory for all countries in all scenarios
+    def get_inv(runner): return runner.country.orig_data.inventory
+    inv = concat_as_df_from_many_scenarios(scenario_dict, func=get_inv)
+
+    # Load the output merchantable stock for all countries in all scenarios
+    # Use a try and except statement to avoid countries where data is potentially missing
+    def get_ms_merch(runner):
+        try:
+            df = runner.post_processor.inventory.sum_merch_stock
+        except Exception as e:
+            print("no data in ", runner.country.iso2_code)
+            print('Error loading data: '+ str(e))
+            df = pandas.DataFrame()
+        return df
+    merch = concat_as_df_from_many_scenarios(scenario_dict, func = get_ms_merch)
+
+    """
+    # Initialize an empty data frame
+    df = pandas.DataFrame()
+    for scenario_name, scenario in scenario_dict.items():
+        print('Loading data from', scenario_name)
+        df1 = scenario.concat_as_df(func=func)
+        df1['scenario'] = scenario_name
+        df = pandas.concat([df, df1])
+    return df
+
 
 
 ###############################################################################
