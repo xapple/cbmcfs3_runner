@@ -21,27 +21,38 @@ The script is located at the following link.  This is currently a private fork f
 In retrospect this could be packaged in a better way but it should work with the following script. The following python just assumes that the notebook is in the git clone dir
 
 ```python
-import os
-from cbm_defaults import app
+# Import
+from libcbm_runner.core.continent import continent
+ 
+# Init
+scenario = continent.scenarios['historical']
+runner_libcbm = scenario.runners['LU'][-1]
+runner_libcbm.run()
 
-input_aidb_path = "C:\\Program Files (x86)\\Operational-Scale CBM-CFS3\\Admin\\DBs\\ArchiveIndex_Beta_Install.mdb"
-output_db_path = os.path.abspath("cbm_defaults.db")
 
-app.run(
-    config={
-        "output_path": output_db_path,
-        "schema_path": "schema/cbmDefaults.ddl",
-        "default_locale": "en-CA",
-        "locales": [
-            {"id": 1, "code": "en-CA"},
-        ],
-        "archive_index_data": [
-            {
-                "locale": "en-CA",
-                "path": input_aidb_path
-            },       
-        ]
-    })
+# Show results
+#print(runner_libcbm.simulation.results)
+#print(runner_libcbm.simulation.inventory)
+ 
+
+# Retrieve pools
+pools_libcbm = runner_libcbm.simulation.results.pools
+
+# Make dataframe
+merch_libcbm_by_year = (pools_libcbm
+  .groupby('timestep')
+  .agg({'HardwoodMerch': 'sum',
+        'SoftwoodMerch': 'sum'})
+  .reset_index())
+
+# Show
+print(merch_libcbm_by_year)
+```
+
+```python
+#mmm = merch_libcbm_by_year.iloc[0:33,]
+#from cbmcfs3_runner.pump.dataframes import csv_download_link
+#csv_download_link(mmm,"mmm.csv")
 ```
 
 # Historical and Contemporary Growth curves
@@ -57,7 +68,6 @@ app.run(
 from libcbm.input.sit import sit_cbm_factory
 from libcbm.model.cbm import cbm_simulator
 
-
 libcbm_config_path = os.path.abspath(r"./data/libcbm_config.json")
 sit = sit_cbm_factory.load_sit(libcbm_config_path)
 classifiers, inventory = sit_cbm_factory.initialize_inventory(sit)
@@ -69,7 +79,6 @@ def get_classifier_id(classifier_name, classifier_value):
     # needs to be filled in a bit more to fetch the appropriate value from 
     # "classifier_info" whose format is documented here:
     # https://github.com/cat-cfs/libcbm_py/blob/e9e37ce5a91cb2bcb07011812a7d49c859d88fa4/libcbm/model/cbm/cbm_config.py#L130
-
 
 results, reporting_func = cbm_simulator.create_in_memory_reporting_func()
 rule_based_processor = sit_cbm_factory.create_sit_rule_based_processor(sit, cbm)
@@ -95,8 +104,6 @@ cbm_simulator.simulate(
     pre_dynamics_func    = pre_dynamics_func, # note we are now calling the above function here
     reporting_func       = reporting_func
 )
-
-
 ```
 
 ## Option 2: make a custom simulation loop

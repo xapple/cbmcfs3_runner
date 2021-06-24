@@ -18,6 +18,7 @@ jupyter:
 from matplotlib import pyplot
 from cbmcfs3_runner.core.continent import continent
 runner = continent[('static_demand','LU',0)]
+
 ```
 
 <!-- #region -->
@@ -50,6 +51,7 @@ def merch_stock_by(runner,index):
     return merch
 merch_cbmcfs3_by_year=merch_stock_by(runner,'time_step')
 merch_cbmcfs3_by_year
+
 ```
 
 ```python
@@ -68,7 +70,6 @@ inv_cbmcfs3['area'].sum()
 age_indic = runner.post_processor.database['tblageindicators']
 age_indic0 = age_indic.query('time_step == 0')
 age_indic0['area'].sum()
-
 ```
 
 ```python
@@ -76,7 +77,7 @@ age_indic0['area'].sum()
 ```
 
 ```python
-# pools = runner.post_processor.database['tblPoolIndicators']
+pools = runner.post_processor.database['tblPoolIndicators']
 pools0=pools.query('time_step==0')
 #for c in pools0.columns:
 #    print (c, sum(pools0[c]))
@@ -126,8 +127,8 @@ print(inv['area'].sum())
 ```
 
 ```python
-#print(runner_libcbm.simulation.results)
-#print(runner_libcbm.simulation.inventory)
+print(runner_libcbm.simulation.results)
+print(runner_libcbm.simulation.inventory)
 
 pools_libcbm = runner_libcbm.simulation.results.pools
 

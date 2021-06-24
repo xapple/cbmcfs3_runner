@@ -20,9 +20,7 @@ import numpy
 display(pyplot.plot(0,0))
 import sys, seaborn
 import pandas as pd
-import pandas
 from cbmcfs3_runner.pump.dataframes import csv_download_link
-
 from cbmcfs3_runner.core.continent import continent
 from cbmcfs3_runner.pump.dataframes import concat_as_df_from_many_scenarios
 import pandas # Used to return an empty data frame in the except statement of the get_ms_merch() function below
@@ -30,12 +28,10 @@ import pandas # Used to return an empty data frame in the except statement of th
 
 ```python
 # Project modules
-
 # Choose scenarios to compare
+# Load module (at the very first cell)
 
-
-      # Load module (at the very first cell)
-
+# extract volume and biomass in merch pool only for each country for each scenario
 # Create a dictionary of all scenario objects
 scenario_names = ['static_demand', 'demand_minus_20', 'demand_plus_20']
 scenario_dict = {x: continent.scenarios[x] for x in scenario_names}
@@ -45,36 +41,38 @@ def get_ms_merch(runner):
     try:
         df = runner.post_processor.inventory.sum_merch_stock
     except Exception as e:
-        print("no data in ", runner.country.iso2_code)
+        print("no data in", runner.country.iso2_code)
         print('Error loading data: '+ str(e))
         df = pandas.DataFrame()
     return df
 merch = concat_as_df_from_many_scenarios(scenario_dict, func = get_ms_merch)
+df_ms_merch = merch [['year','scenario','country_iso2', 'conifers_broadleaves', 'density', 'forest_type', 'harvest_gr', 'hw_merch', 'id', 'mass', 'sw_merch', 'volume']]
+df_ms_merch
+```
+
+```python
+# Project modules
+# Choose scenarios to compare
+# Load module (at the very first cell)
+
+# extract volume and biomass in merch pool only for each country for each scenario
+# Create a dictionary of all scenario objects
+scenario_names = ['static_demand', 'demand_minus_20', 'demand_plus_20']
+scenario_dict = {x: continent.scenarios[x] for x in scenario_names}
+# Load the output merchantable stock for all countries in all scenarios
+# Use a try and except statement to avoid countries where data is potentially missing
+def get_ms_merch(runner):
+    try:
+        df = runner.post_processor.inventory.sum_merch_stock_detailed
+    except Exception as e:
+        print("no data in", runner.country.iso2_code)
+        print('Error loading data: '+ str(e))
+        df = pandas.DataFrame()
+    return df
+merch = concat_as_df_from_many_scenarios(scenario_dict, func = get_ms_merch)
+#df_ms_merch = merch [['year','scenario','country_iso2', 'conifers_broadleaves', 'density', 'forest_type', 'harvest_gr', 'hw_merch', 'id', 'mass', 'sw_merch', 'volume']]
+#df_ms_merch
 merch
-    
-    
-  
-  
-
-
-
-
-# extract volume and biomass in merch pool only for each country
-#for country_iso2 in country_names:
-#    print(country_iso2)
-#    def get_ms_merch(scenario):
-#        runner = continent[(scenario, country_names, 0)]
-#        df_ms_merch =  runner.post_processor.inventory.sum_merch_stock
-#        return df_ms_merch
-    # get the merchantable table for all scenarios 
-#    scenario_merch_dict = {x: get_ms_merch(x) for x in scenario_names}
-    
-    # instantiation for a particular country
-#    df_ms_merch = pd.concat(scenario_merch_dict, sort=True)
-#    df_ms_merch = df_ms_merch.rename(columns={'level_0': 'scenario'})
-#    df_ms_merch = df_ms_merch.reset_index()
-#    df_ms_merch
-
 ```
 
 ```python
