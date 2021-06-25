@@ -317,6 +317,12 @@ CBMCFS3 from running. List of forums with potential workarounds:
 - [4 different ways to fix MS access security 
   notice](http://www.accessrepairnrecovery.com/blog/fix-microsoft-access-security-notice)
 
+- [General error Unable to open registry key Temporary (volatile) Ace DSN for process 
+  ...](https://stackoverflow.com/a/26317631/2641825) "This is the top-level error 
+  message produced by the Access Database Engine (a.k.a. "ACE") ODBC driver when the 
+  current process is unable to open the Access database file ". The answer goes on to 
+  propose 5 different solutions depending on the reason that could generate this error.
+
 
 # Reflections
 
