@@ -241,7 +241,7 @@ machine.
     ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_all_countries.py
 
 
-# Debug
+# Errors messages and potential solutions
 
 ## Modify the JSON file to configure SIT
   
