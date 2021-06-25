@@ -58,6 +58,7 @@ Display the python path
 
 ## Configure spyder
 
+In SPYDER CONSOLE, install spyder kernel and update it
     pip install spyder-kernels
 
 
@@ -255,6 +256,8 @@ machine.
     # Create a json configuration file to tell SIT the location of the csv files
     runner.default_sit.create_json()
 
+# Instal SIT from zip, create directory SIT in C:\CBM\SIT 
+download zip from https://github.com/cat-cfs/StandardImportToolPlugin/releases
 
 ## Modify the transition rules table
 
