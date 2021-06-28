@@ -23,30 +23,82 @@ In retrospect this could be packaged in a better way but it should work with the
 ```python
 # Import
 from libcbm_runner.core.continent import continent
+import pandas as pd
  
 # Init
 scenario = continent.scenarios['historical']
 runner_libcbm = scenario.runners['LU'][-1]
 runner_libcbm.run()
 
-
 # Show results
-#print(runner_libcbm.simulation.results)
 #print(runner_libcbm.simulation.inventory)
- 
+#print(runner_libcbm.simulation.results)
+
+#results_sim= runner_libcbm.simulation.results
+#results_sim.columns.names
 
 # Retrieve pools
 pools_libcbm = runner_libcbm.simulation.results.pools
 
 # Make dataframe
-merch_libcbm_by_year = (pools_libcbm
-  .groupby('timestep')
-  .agg({'HardwoodMerch': 'sum',
-        'SoftwoodMerch': 'sum'})
-  .reset_index())
+#merch_libcbm_by_year = (pools_libcbm#  .groupby('timestep')
+#  .agg({'HardwoodMerch': 'sum',
+#        'SoftwoodMerch': 'sum'})
+#  .reset_index())
 
 # Show
-print(merch_libcbm_by_year)
+#print(merch_libcbm_by_year)
+```
+
+```python
+# list the columns in teh result file
+pools_libcbm.columns
+```
+
+```python
+# subset a dataframe with soil relevant columns, inclduing area ("input") in order to estimate initialized C stock,
+#in the timestep 0
+
+soil_pools_df= pools_libcbm[['identifier', 'timestep', 'Input', 'AboveGroundVeryFastSoil',
+       'BelowGroundVeryFastSoil', 'AboveGroundFastSoil', 'BelowGroundFastSoil',
+       'MediumSoil', 'AboveGroundSlowSoil', 'BelowGroundSlowSoil',
+       'SoftwoodStemSnag', 'SoftwoodBranchSnag', 'HardwoodStemSnag',
+       'HardwoodBranchSnag']]
+soil_pools_df_ind= (soil_pools_df 
+                   .reset_index())
+soil_pools_df_ind_sum=soil_pools_df_ind.sum(axis=1)
+soil_pools_df_ss=(soil_pools_df_ind_sum
+              .reset_index())
+SOC_aggreg = pd.merge(soil_pools_df_ind,soil_pools_df_ss,
+         how = 'left', on = 'index')
+
+SOC=SOC_aggreg.rename(columns ={"Input":"Area", 0:"Total_SOC"})
+SOC_timestep_0= SOC.loc[SOC["timestep"]==0,["Area","Total_SOC"]]
+SOC_timestep_0['SOC_per_ha']=SOC_timestep_0 ['Total_SOC']/SOC_timestep_0['Area']
+#print(SOC_timestep_0)
+#average_soil_carbon = SOC_timestep_0['SOC_per_ha_timestep_0']
+
+ss = SOC_timestep_0["SOC_per_ha"].mean()
+ss
+
+#df["weight"].mean()
+#average_soil_carbon
+#print(average_soil_carbon.mean)
+```
+
+```python
+
+init_soil_libcbm = (pools_libcbm
+    .groupby('timestep')
+    .agg({'AboveGroundVeryFastSoil': 'sum',
+            'BelowGroundVeryFastSoil': 'sum', 
+            'AboveGroundFastSoil': 'sum', 
+           'BelowGroundFastSoil': 'sum',
+           'MediumSoil': 'sum',
+           'AboveGroundSlowSoil': 'sum',
+           'BelowGroundSlowSoil': 'sum'})
+    .reset_index())
+print(init_soil_libcbm)
 ```
 
 ```python
