@@ -214,7 +214,7 @@ Add files describe changes and push to the gitlab repository
 Run the historical scenario (easier because there is no creation of disturbances) 
 
     from cbmcfs3_runner.core.continent import continent
-    runner = continent[('demand_minus_20', 'LU', 0)]
+    runner = continent[('static_demand', 'LU', 0)]
     runner.run(verbose=True)
     
 
@@ -229,7 +229,7 @@ Run the historical scenario for all countries
 Run static demand scenario for all countries 
  
     from cbmcfs3_runner.core.continent import continent
-    scenario = continent.scenarios['historical']
+    scenario = continent.scenarios['static_demand']
     scenario(verbose=True)
     
 
@@ -269,7 +269,7 @@ To prevent a SIT error on import
 
 
     from cbmcfs3_runner.core.continent import continent
-    runner    = continent[('historical', 'AT', 0)]
+    runner    = continent[('historical', 'LU', 0)]
     runner.run(verbose=True)
     # The pre processor copies the csv input files
     runner.pre_processor()
