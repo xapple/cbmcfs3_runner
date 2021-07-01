@@ -95,7 +95,9 @@ As visible from ~/rp/cbmcfs3_runner/setup.py under the `install_requires` variab
     pip install pyexcel-xlsx
     pip install pyexcel-xls
 
-## Conda install
+## Conda 
+
+### Conda install packages
 
 Install Python dependencies with anaconda
 
@@ -115,6 +117,13 @@ If you want conda to replace the PyPI packages with its own (where possible), ju
     conda update --all
 
 Given that the above setting is made. Conda marks its own channels as higher priority than pip, thus packages will be replaced.
+
+
+### Conda remove package
+
+Remove a package
+
+    conda remove package
 
 
 ## Jupyter notebooks 
@@ -137,7 +146,35 @@ Start the notebooks
 
     python -m jupyter notebook
     
- 
+Install the table of content
+
+Install 
+[jupyter_contrib_nbextensions](https://github.com/ipython-contrib/jupyter_contrib_nbextensions)
+
+    pip install --user jupyter_contrib_nbextensions
+    python3 -m jupyter contrib nbextension install --user
+
+Installation doesn't work on windows because nbextensions is missing from the path
+
+    open cmd to install manually
+    cd c:\Users\blujd\AppData\Roaming\Python\Python38\site-packages\jupyter_contrib_nbextensions
+    python application.py install
+
+
+If you don't now the location just run
+
+    pip install --user jupyter_contrib_nbextensions
+
+The pip output will show the location of the extensions.
+
+Activate the table of content extension:
+
+    python3 -m jupyter nbextension enable toc2/main
+
+Start the notebook
+
+    jupyter notebook
+
 
 # cbm3_python python and SIT
 
