@@ -6,20 +6,34 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.1
+      jupytext_version: 1.11.3
   kernelspec:
     display_name: Python 3
     language: python
     name: python3
 ---
 
-# Run cbm_defaults script
+# Introduction
 
-The script is located at the following link.  This is currently a private fork from our cat-cfs github organization, but it's up-to-data and both Paul and Lucas should have access
-[https://github.com/smorken/cbm_defaults](https://github.com/smorken/cbm_defaults)
+The purpose of this notebook is to compare soil pools between libcbm and cbmcfs3.
 
-In retrospect this could be packaged in a better way but it should work with the following script. The following python just assumes that the notebook is in the git clone dir
 
+
+
+## Create runner objects
+
+```python
+# Create a libcbm runner
+from libcbm_runner.core.continent import continent
+import pandas as pd
+# TODO call it static demand and make sure it loads a disturbance file from the static demand scenario
+scenario = continent.scenarios['historical']
+runner_libcbm = scenario.runners['LU'][-1]
+
+# Create a cbmcfs3 runner
+from cbmcfs3_runner.core.continent import continent
+runner_cbm3 = continent[('static_demand','LU',0)]
+```
 
 # Soil Organic Matter content at timestep 0
 
@@ -27,13 +41,7 @@ In retrospect this could be packaged in a better way but it should work with the
 #  SOC by libcbm
 
 ```python
-# Import
-from libcbm_runner.core.continent import continent
-import pandas as pd
- 
-# Initialization
-scenario = continent.scenarios['historical']
-runner_libcbm = scenario.runners['LU'][-1]
+# run
 runner_libcbm.run()
 
 # Retrieve pools
@@ -80,14 +88,15 @@ soil_libscbm_init.describe()
 
 # SOC by cbmcfs3_runner
 
+
+## First attempt at adding area
+
 ```python
-from cbmcfs3_runner.core.continent import continent
-runner = continent[('historical','LU',0)]
-pools_cbmcfs3 = runner.post_processor.database['tblPoolIndicators']
-clifr = runner.post_processor.classifiers.set_index("user_defd_class_set_id")
+pools_cbmcfs3 = runner_cbmcfs3.post_processor.database['tblPoolIndicators']
+clifr = runner_cbmcfs3.post_processor.classifiers.set_index("user_defd_class_set_id")
 
 # we need to add area which is missing in 'tblPoolIndicators', age_indicators have the same level of details as tblPoolIndicators 
-area_init = runner.post_processor.inventory.age_indicators
+area_init = runner_cbmcfs3.post_processor.inventory.age_indicators
 area_init.set_index("user_defd_class_set_id")
 area = area_init.loc[area_init["time_step"]==0,["time_step", "user_defd_class_set_id","area"]]
 area_a = (area
@@ -132,7 +141,7 @@ soil_cbmcfs3_time_step_00
 soil_cbmcfs3_init = pd.merge(soil_cbmcfs3_time_step_00, area_aa,
             how = 'left', on = 'user_defd_class_set_id')
 
-soil_cbmcfs3_init['SOC_cbmcfs3_ha']=soil_cbmcfs3_init ['Total_dom']/soil_cbmcfs3_init['area']
+soil_cbmcfs3_init['SOC_cbmcfs3_ha']=soil_cbmcfs3_init['Total_dom']/soil_cbmcfs3_init['area']
 print(soil_cbmcfs3_init)
 ```
 
@@ -142,6 +151,70 @@ soil_libscbm_init.describe()
 
 ```python
 soil_cbmcfs3_init.describe()
+```
+
+## Second attempt at adding the area
+
+
+```python
+pools_cbm3 = runner_cbm3.post_processor.pool_indicators_long
+# classifiers = runner_cbm3.post_processor.classifiers.set_index("user_defd_class_set_id")
+
+# We need to add area which is missing in 'tblPoolIndicators', 
+classifiers_names = runner_cbm3.post_processor.classifiers_names
+#columns_of_interest = classifiers_names + ['time_step', 'area', 'biomass', 'dom']
+inv_cbm3 = runner_cbm3.post_processor.inventory.age_indicators#[columns_of_interest]
+```
+
+```python
+pools_cbm3.iloc[[1,2,-2,-1]]
+```
+
+```python
+inv_cbm3.iloc[[1,2,-2,-1]]
+```
+
+```python
+# Aggregate by classifier, time step and join
+index = classifiers_names + ['pool', 'time_step', 'year']
+# Aggregate the pools #
+pools_cbm3_agg = (pools_cbm3
+    .groupby(index, observed=True)
+    .agg({'tc':sum})
+    .reset_index()
+    )
+# Aggregate the inventory area
+# i.e. sum the area for all ages
+index = classifiers_names + ['time_step']
+inv_cbm3_agg = (inv_cbm3
+         .groupby(index, observed=True)
+         .agg({'area':sum})
+         .reset_index())
+# Add the area column to the pool table
+pools_cbm3_agg = pools_cbm3_agg.left_join(inv_cbm3_agg, on=index)
+
+pools_cbm3_agg.iloc[[1,2,-2,-1]]
+```
+
+```python
+inv_cbm3_agg.iloc[[1,2,-2,-1]]
+```
+
+# Compare libcbm and cbm3
+
+```python
+pools_cbm3_t0 = pools_cbm3_agg.query("time_step == 0").reset_index(drop=True)
+pools_cbm3_t0.iloc[[1,2,-2,-1]]
+```
+
+```python
+pools_cbm3_t0.pool.unique()
+```
+
+```python
+soil_pools = ['v_fast_ag', 'v_fast_bg', 'fast_ag', 'fast_bg', 'medium', 'slow_ag',
+ 'slow_bg', 'sw_stem_snag', 'sw_branch_snag', 'hw_stem_snag', 'hw_branch_snag']
+pools_cbm3_t0.query("pool in @soil_pools")
 ```
 
 ```python
