@@ -37,7 +37,8 @@ if os.environ.get("CBMCFS3_DATA"):
 
 ###############################################################################
 class Continent(object):
-    """Continent is a singleton i.e. an object of which there is a single instance.
+    """
+    Continent is a singleton i.e. an object of which there is a single instance.
     Continent contains many countries and many scenarios.
 
      * Country objects give access to the original data used
@@ -65,6 +66,9 @@ class Continent(object):
         # Where the data will be stored for this run #
         self.countries_dir = self.paths.countries_dir
         self.scenarios_dir = self.paths.scenarios_dir
+
+    def __repr__(self):
+        return '%s object with %i countries' % (self.__class__, len(self))
 
     def __getitem__(self, key):
         """Return a runner based on a tuple of scenario, country and step."""
@@ -96,7 +100,8 @@ class Continent(object):
             scenario(verbose=verbose)
 
     def get_runner(self, scenario, country, step):
-        """Return a runner based on scenario, country and step.
+        """
+        Return a runner based on scenario, country and step.
 
             >>> from cbmcfs3_runner.core.continent import continent
             >>> runner = continent[('historical', 'AT', 0)]
