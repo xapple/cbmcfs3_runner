@@ -7,7 +7,7 @@ https://gitlab.com/bioeconomy/cbmcfs3/cbmcfs3_runner
 
 ## Warnings
 
-This package is currently under heavy development and the master branch is subject to breaking changes at any moment. If you are interested in using this package in your own installation, please contact the authors.
+This package is currently under heavy development, and the master branch is subject to breaking changes at any moment. If you are interested in using this package in your own installation, please contact the authors.
 
 ## Installing
 
@@ -15,7 +15,7 @@ No automated installation has been developed for the `cbmcfs3_runner` package ye
 
 #### Step 1: Cloning the repository
 
-Here you will download a copy of the code from github and place it in your file system.
+Here you will download a copy of the code from GitHub and place it in your file system.
 
     $ cd /
     $ mkdir repos
@@ -71,7 +71,7 @@ For instance, you can now create a runner for the 'growth_only' scenario, the 'A
 
     >>> runner = continent[('growth_only', 'AT', 0)]
 
-Finally to run that step of the model:
+Finally, to run that step of the model:
 
     >>> runner.run(verbose=True)
 
