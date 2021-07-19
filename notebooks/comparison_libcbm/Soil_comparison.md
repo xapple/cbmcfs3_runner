@@ -6,7 +6,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.1
+      jupytext_version: 1.11.3
   kernelspec:
     display_name: Python 3
     language: python
@@ -74,28 +74,43 @@ print(soil_aggreg_libcbm)
 # subset a dataframe with soil relevant columns, inclduing area ("=input") 
 #in order to estimate initialized C stock per_ha in the timestep 0
 
-soil_aggreg_libcbm=soil_aggreg_libcbm.rename(columns ={"Input":"Area", 0:"Total_dom"})
-soil_libscbm_init= soil_aggreg_libcbm.loc[soil_aggreg_libcbm["timestep"]==0,["Area","Total_dom"]]
+soil_aggreg_libcbm = soil_aggreg_libcbm.rename(columns ={"Input":"Area", 0:"Total_dom"})
+soil_libscbm_init = soil_aggreg_libcbm.loc[soil_aggreg_libcbm["timestep"]==0,["Area","Total_dom"]]
 
-soil_libscbm_init['SOC_libcbm_per_ha']=soil_libscbm_init['Total_dom']/soil_libscbm_init['Area']
+soil_libscbm_init['SOC_libcbm_per_ha'] = soil_libscbm_init['Total_dom'] / soil_libscbm_init['Area']
 
 print(soil_libscbm_init)
 
-from cbmcfs3_runner.pump.dataframes import csv_download_link
-csv_download_link(soil_libscbm_init,"soil_timestep_0.csv")
+#from cbmcfs3_runner.pump.dataframes import csv_download_link
+#csv_download_link(soil_libscbm_init,"soil_timestep_0.csv")
 #soc_libcbm_0 = soil_timestep_0["SOC_per_ha"].mean()
 #soil_libscbm_init.describe()
 ```
+
+Average soil organic carbon
 
 ```python
 libcbm_average_SOC = soil_libscbm_init['SOC_libcbm_per_ha'].mean()
 libcbm_average_SOC
 ```
 
+### Sum of the soil DOM pools
+
+```python
+soil_libscbm_init['Total_dom'].sum()
+```
+
+Pool by pool
+
+
+```python
+soil_libscbm_init
+```
+
 ```python
 soil_libscbm_init
 from cbmcfs3_runner.pump.dataframes import csv_download_link
-csv_download_link(soil_libscbm_init,"SumTable.csv")
+#csv_download_link(soil_libscbm_init,"SumTable.csv")
 ```
 
 # SOC by cbmcfs3_runner
@@ -166,7 +181,7 @@ soil_libscbm_init.describe()
 soil_cbmcfs3_init.describe()
 ```
 
-# Second attempt at adding the area
+## Second attempt at adding the area
 
 
 ```python
@@ -223,23 +238,7 @@ inv_cbm3_agg.iloc[[1,2,-2,-1]]
 inv_cbm3_agg
 ```
 
-# Third attempt to estimate SOC_ha from cbm3
-
-
-# Third attempt to estimate SOC_ha from cbm3¶
-
-
-# Third attempt to estimate SOC_ha from cbm3¶¶
-
-
-# Third attempt to estimate SOC_ha from cbm3
-
-
 # Compare libcbm and cbm3
-
-```python
-
-```
 
 ```python
 pools_cbm3_t0 = pools_cbm3_agg.query("time_step == 0").reset_index(drop=True)
@@ -253,6 +252,12 @@ pools_cbm3_t0.pool.unique()
 ```
 
 ```python
+# libcbm pool names
+# 'AboveGroundVeryFastSoil', 'BelowGroundVeryFastSoil', 'AboveGroundFastSoil', 'BelowGroundFastSoil',
+# 'MediumSoil', 'AboveGroundSlowSoil', 'BelowGroundSlowSoil',
+# 'SoftwoodStemSnag', 'SoftwoodBranchSnag', 'HardwoodStemSnag',
+# 'HardwoodBranchSnag'
+
 soil_pools = ['v_fast_ag', 'v_fast_bg', 'fast_ag', 'fast_bg', 'medium', 'slow_ag',
  'slow_bg', 'sw_stem_snag', 'sw_branch_snag', 'hw_stem_snag', 'hw_branch_snag']
 pools_cbm3_t0.query("pool in @soil_pools")
