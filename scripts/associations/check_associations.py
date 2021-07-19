@@ -13,6 +13,7 @@ Typically you would run this file from a command line like this:
 
 # Third party modules #
 import pandas
+from tqdm import tqdm
 
 # First party modules #
 from autopaths.auto_paths import AutoPaths
