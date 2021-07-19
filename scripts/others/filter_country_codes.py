@@ -5,7 +5,7 @@
 A script to generate the country names files and filter out countries that are not amongst the 26.
 """
 
-# Built in modules #
+# Built in modules #
 import inspect
 
 # First party modules #
