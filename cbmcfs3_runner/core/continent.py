@@ -20,7 +20,7 @@ import os
 from tqdm import tqdm
 
 # First party modules #
-from autopaths            import Path
+from autopaths.dir_path   import DirectoryPath
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
 
@@ -29,11 +29,11 @@ from cbmcfs3_runner.core.country import Country
 from cbmcfs3_runner.scenarios import scen_classes
 
 # Where is the data, default case #
-cbm_data_repos = Path("~/repos/cbmcfs3_data/")
+cbm_data_repos = DirectoryPath("~/repos/cbmcfs3_data/")
 
 # But you can override that with an environment variable #
 if os.environ.get("CBMCFS3_DATA"):
-    cbm_data_repos = Path(os.environ['CBMCFS3_DATA'])
+    cbm_data_repos = DirectoryPath(os.environ['CBMCFS3_DATA'])
 
 ###############################################################################
 class Continent(object):
