@@ -86,9 +86,18 @@ runner_libcbm.run()
 ## Retrieve pools for both model versions
 
 ```python
-pools_libcbm = runner_libcbm.simulation.results.pools
+pools_libcbm_wide = runner_libcbm.simulation.results.pools
+display(pools_libcbm_wide.iloc[[1,-1]])
+print(f"Number of rows in the wide table {len(pools_libcbm_wide)}")
+```
+
+```python
+# Reshape to long format #
+pools_libcbm = pools_libcbm_wide.melt(id_vars=['identifier', 'timestep', 'Input'],
+                                    var_name='pool',
+                                    value_name='tc')
 display(pools_libcbm.iloc[[1,-1]])
-print(f"Number of rows in the wide format table {len(pools_libcbm)}")
+print(f"Number of rows in the long table {len(pools_libcbm)}")
 ```
 
 ```python
@@ -112,6 +121,13 @@ pools_libcbm.columns
 pools_cbm3.pool.unique()
 ```
 
+```python
+from cbmcfs3_runner.pump.libcbm_mapping import libcbm_mapping
+print(libcbm_mapping)
+# Remove the unnecessary ipcc pool names
+libcbm_mapping = libcbm_mapping[['libcbm', 'cbmcfs3']]
+```
+
 # Sum all pools at t0
 
 Compare all pools at time step zero by summing their value. 
@@ -120,8 +136,16 @@ Compare all pools at time step zero by summing their value.
 ## libcbm
 
 ```python
+pools_libcbm
+```
+
+```python
 pools_libcbm_t0 = pools_libcbm.query("timestep == 0")
-pools_libcbm_t0_sum = pools_libcbm_t0.set_index(['identifier', 'timestep', 'Input']).sum()
+
+pools_libcbm_t0_sum = (pools_libcbm_t0
+                       .groupby(['pool'])
+                       .agg(tc_libcbm = ('tc', sum))
+                      )
 pools_libcbm_t0_sum
 ```
 
@@ -131,7 +155,7 @@ pools_libcbm_t0_sum
 pools_cbm3_t0 = pools_cbm3.query("time_step == 0")
 pools_cbm3_t0_sum =  (pools_cbm3_t0
  .groupby(['pool'])
- .agg(total_new_name = ('tc', sum))
+ .agg(tc_cbmcfs3 = ('tc', sum))
 )
 pools_cbm3_t0_sum
 ```
@@ -139,7 +163,17 @@ pools_cbm3_t0_sum
 ## Compare
 
 ```python
+help(pd.merge)
+```
 
+```python
+pools_t0_comp = (pools_cbm3_t0_sum
+ .merge(libcbm_mapping, 'left', left_index = True, right_on = 'cbmcfs3')
+ .merge(pools_libcbm_t0_sum, 'outer', left_on = 'libcbm', right_index = True)
+ .reset_index(drop = True))
+pools_t0_comp['diff'] = pools_t0_comp['tc_libcbm'] - pools_t0_comp['tc_cbmcfs3']
+pools_t0_comp['diff_pct'] = (pools_t0_comp['tc_libcbm'] / pools_t0_comp['tc_cbmcfs3']) - 1
+pools_t0_comp
 ```
 
 # Compare all pools at all time steps
