@@ -128,16 +128,12 @@ print(libcbm_mapping)
 libcbm_mapping = libcbm_mapping[['libcbm', 'cbmcfs3']]
 ```
 
-# Sum all pools at t0
+# Compare all pools at t0
 
-Compare all pools at time step zero by summing their value. 
+Aggregate with a sum, then compare all carbon pools at time step zero. 
 
 
-## libcbm
-
-```python
-pools_libcbm
-```
+Aggregate libcbm by pool
 
 ```python
 pools_libcbm_t0 = pools_libcbm.query("timestep == 0")
@@ -146,10 +142,9 @@ pools_libcbm_t0_sum = (pools_libcbm_t0
                        .groupby(['pool'])
                        .agg(tc_libcbm = ('tc', sum))
                       )
-pools_libcbm_t0_sum
 ```
 
-## cbmcfs3
+Aggregate cbmcfs3 by pool
 
 ```python
 pools_cbm3_t0 = pools_cbm3.query("time_step == 0")
@@ -157,14 +152,9 @@ pools_cbm3_t0_sum =  (pools_cbm3_t0
  .groupby(['pool'])
  .agg(tc_cbmcfs3 = ('tc', sum))
 )
-pools_cbm3_t0_sum
 ```
 
-## Compare
-
-```python
-help(pd.merge)
-```
+Merge and compare the difference 
 
 ```python
 pools_t0_comp = (pools_cbm3_t0_sum
@@ -177,7 +167,3 @@ pools_t0_comp
 ```
 
 # Compare all pools at all time steps
-
-```python
-
-```
