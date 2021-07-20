@@ -82,10 +82,12 @@ Finally, to run that step of the model:
 
 ### Inventory start year and base year
 
-The Simulation base year is visible by calling the following code in the old cbmcfs3_runner code base. 
+The inventory start year and simulation base year are visible by creating a runner 
+object for a given scenario (here called "static_demand") and by calling the following 
+methods:
     
     from cbmcfs3_runner.core.continent import continent
-    runner = continent[('growth_only', 'AT', 0)]
+    runner = continent[('static_demand', 'AT', 0)]
     runner.country.inventory_start_year
     runner.country.base_year
 
