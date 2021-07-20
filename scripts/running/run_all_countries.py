@@ -6,7 +6,7 @@ A script to run all the countries (of a given scenario) through the full pipelin
 
 Typically you would run this file from a command line like this:
 
-     ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_all_countries.py
+    ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_all_countries.py
 
 The last times this script was run it took this much time to run:
 

@@ -20,7 +20,7 @@ import os
 from tqdm import tqdm
 
 # First party modules #
-from autopaths            import Path
+from autopaths.dir_path   import DirectoryPath
 from autopaths.auto_paths import AutoPaths
 from plumbing.cache       import property_cached
 
@@ -29,15 +29,16 @@ from cbmcfs3_runner.core.country import Country
 from cbmcfs3_runner.scenarios import scen_classes
 
 # Where is the data, default case #
-cbm_data_repos = Path("~/repos/cbmcfs3_data/")
+cbm_data_repos = DirectoryPath("~/repos/cbmcfs3_data/")
 
 # But you can override that with an environment variable #
 if os.environ.get("CBMCFS3_DATA"):
-    cbm_data_repos = Path(os.environ['CBMCFS3_DATA'])
+    cbm_data_repos = DirectoryPath(os.environ['CBMCFS3_DATA'])
 
 ###############################################################################
 class Continent(object):
-    """Continent is a singleton i.e. an object of which there is a single instance.
+    """
+    Continent is a singleton i.e. an object of which there is a single instance.
     Continent contains many countries and many scenarios.
 
      * Country objects give access to the original data used
@@ -65,6 +66,9 @@ class Continent(object):
         # Where the data will be stored for this run #
         self.countries_dir = self.paths.countries_dir
         self.scenarios_dir = self.paths.scenarios_dir
+
+    def __repr__(self):
+        return '%s object with %i countries' % (self.__class__, len(self))
 
     def __getitem__(self, key):
         """Return a runner based on a tuple of scenario, country and step."""
@@ -96,7 +100,8 @@ class Continent(object):
             scenario(verbose=verbose)
 
     def get_runner(self, scenario, country, step):
-        """Return a runner based on scenario, country and step.
+        """
+        Return a runner based on scenario, country and step.
 
             >>> from cbmcfs3_runner.core.continent import continent
             >>> runner = continent[('historical', 'AT', 0)]

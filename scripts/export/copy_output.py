@@ -24,7 +24,8 @@ exclude = ['--exclude', '.git']
 
 ###############################################################################
 def rclone_to_jrc_box(sub_folder):
-    """Copy a given sub folder from the cbmcfs3_data folder to jrc box
+    """
+    Copy a given sub folder from the cbmcfs3_data folder to jrc box
 
     For example to copy the input data to jrc box use:
 

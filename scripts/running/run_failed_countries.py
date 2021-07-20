@@ -6,8 +6,7 @@ A script to rerun only the countries that didn't pass (in a given scenario).
 
 Typically you would run this file from a command line like this:
 
-        ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_failed_countries.py
-
+    ipython3.exe -i -- /deploy/cbmcfs3_runner/scripts/running/run_failed_countries.py
 """
 
 # Built-in modules #
@@ -26,7 +25,7 @@ scenario       = continent.scenarios['static_demand']
 runners        = [r[-1] for k,r in scenario.runners.items()]
 failed_runners = [r for r in runners if r.map_value < 1.0]
 
-# Run them #
+# Run them #
 for r in tqdm(failed_runners):
     r(interrupt_on_error=False)
 

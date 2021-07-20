@@ -22,7 +22,7 @@ from cbmcfs3_runner.core.continent import continent
 for scenario in continent.scenarios.values():
     # The calibration scenario can't be run #
     if scenario.short_name == 'calibration': continue
-    # Message #
+    # Message #
     print("*** Scenario: %s ***\n" % scenario.short_name)
     # Run #
     scenario(verbose=True)
