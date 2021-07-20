@@ -39,15 +39,6 @@ from cbmcfs3_runner.core.continent import continent
 runner_cbm3 = continent[('static_demand','LU',0)]
 ```
 
-## Run libcbm to get output
-
-This running step is needed because libcbm doesn't store the output. It is not needed for cbmcfs3 because the output is storred in the Access output database and reused from there. 
-
-```python
-# run
-runner_libcbm.run()
-```
-
 ## Compare the input to check it is identical
 
 Make sure that the cbmcfs3 and libcbm runners use the same input inventory, disturbances and yields.
@@ -77,67 +68,81 @@ dist_libcbm_agg = (dist_libcbm
                    .groupby(['measurement_type', 'step'])
                    .agg(amount_libcbm = ('amount', sum))
                   )
-
 dist_comp = dist_cbm3_agg.merge(dist_libcbm_agg, "left", left_index = True, right_index = True)
-dist_comp.iloc[[0,1,2,3,4,5,-3,-2,-1]]
+dist_comp['diff'] = dist_comp.amount_cbm3 - dist_comp.amount_libcbm
+print("\nNote how the disturbance amout differs from time step 12 onwards")
+dist_comp#.iloc[[0,1,2,3,4,5,-3,-2,-1]]
+```
+
+## Run libcbm to get its output
+
+This running step is needed because libcbm doesn't store the output. It is not needed for cbmcfs3 because the output is storred in the Access output database and reused from there. 
+
+```python
+# run
+runner_libcbm.run()
 ```
 
 ## Retrieve pools for both model versions
 
 ```python
 pools_libcbm = runner_libcbm.simulation.results.pools
-pools_libcbm.iloc[[1,-1]]
+display(pools_libcbm.iloc[[1,-1]])
+print(f"Number of rows in the wide format table {len(pools_libcbm)}")
 ```
 
 ```python
-pools_cbm3 = runner_cbm3.post_processor.database['tblPoolIndicators']
+pools_cbm3 = runner_cbm3.post_processor.pool_indicators_long
+display(pools_cbm3.iloc[[1,-1]])
+print(f"Number of rows in the long format table {len(pools_cbm3)}")
 ```
 
-## Load pool names mapping table
+<!-- #region -->
+## Pool names and mapping table
+
 
 Pool names differ between the 2 model versions, load a mapping table.
-
-```python
-
-```
-
-# Compare all pools at t0
-
-
-## libcbm
+<!-- #endregion -->
 
 ```python
 pools_libcbm.columns
 ```
 
 ```python
-so_me_pools_libcbm = pools_libcbm[['identifier', 'timestep', 'Input', 'AboveGroundVeryFastSoil',
-       'BelowGroundVeryFastSoil', 'AboveGroundFastSoil', 'BelowGroundFastSoil',
-       'MediumSoil', 'AboveGroundSlowSoil', 'BelowGroundSlowSoil',
-       'SoftwoodStemSnag', 'SoftwoodBranchSnag', 'HardwoodStemSnag',
-       'HardwoodBranchSnag', 'SoftwoodMerch', 'HardwoodMerch']]
-
-so_me_pools_libcbm_t0 = so_me_pools_libcbm.query("timestep == 0")
-so_me_pools_libcbm_t0.set_index(['identifier', 'timestep', 'Input']).sum()
-```
-
-## cbmcfs3 
-
-```python
 pools_cbm3.pool.unique()
 ```
 
+# Sum all pools at t0
+
+Compare all pools at time step zero by summing their value. 
+
+
+## libcbm
+
 ```python
-soil_pools = ['fast_ag', 'fast_bg', 'hw_branch_snag', 'hw_stem_snag', 'medium', 'slow_ag', 'slow_bg', 'sw_branch_snag','sw_stem_snag', 'v_fast_ag', 'v_fast_bg']
-soil_and_merch_pools = soil_pools + ['hw_merch', 'sw_merch']
-so_me_pools_cbm3 = pools_cbm3.query("pool in @soil_and_merch_pools") 
-so_me_pools_cbm3_t0 = so_me_pools_cbm3.query("time_step == 0")
-so_me_pools_cbm3_t0_sum =  (so_me_pools_cbm3_t0
+pools_libcbm_t0 = pools_libcbm.query("timestep == 0")
+pools_libcbm_t0_sum = pools_libcbm_t0.set_index(['identifier', 'timestep', 'Input']).sum()
+pools_libcbm_t0_sum
+```
+
+## cbmcfs3
+
+```python
+pools_cbm3_t0 = pools_cbm3.query("time_step == 0")
+pools_cbm3_t0_sum =  (pools_cbm3_t0
  .groupby(['pool'])
  .agg(total_new_name = ('tc', sum))
 )
-so_me_pools_cbm3_t0_sum
+pools_cbm3_t0_sum
 ```
+
+## Compare
+
+```python
+
+```
+
+# Compare all pools at all time steps
 
 ```python
 

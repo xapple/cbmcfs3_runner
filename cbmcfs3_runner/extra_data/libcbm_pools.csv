@@ -1,0 +1,24 @@
+libcbm,cbmcfs3,ipcc
+AboveGroundVeryFastSoil,v_fast_ag,Litter
+BelowGroundVeryFastSoil,v_fast_bg,Soil organic matter
+AboveGroundFastSoil,fast_ag,Litter
+BelowGroundFastSoil,fast_bg,Dead wood
+MediumSoil,medium,Dead wood
+AboveGroundSlowSoil,slow_ag,Litter
+BelowGroundSlowSoil,slow_bg,Soil organic matter
+SoftwoodStemSnag,sw_stem_snag,Dead wood
+SoftwoodBranchSnag,hw_branch_snag,Dead wood
+HardwoodStemSnag,sw_stem_snag,Dead wood
+HardwoodBranchSnag,hw_branch_snag,Dead wood
+SoftwoodMerch,sw_merch,Aboveground biomass
+SoftwoodFoliage,sw_foliage,Aboveground biomass
+SoftwoodOther,sw_other,Aboveground biomass
+SoftwoodCoarseRoots,sw_coarse,Belowground biomass
+SoftwoodFineRoots,sw_fine,Belowground biomass
+HardwoodMerch,hw_merch,Aboveground biomass
+HardwoodFoliage,hw_foliage,Aboveground biomass
+HardwoodOther,hw_other,Aboveground biomass
+HardwoodCoarseRoots,hw_coarse,Belowground biomass
+HardwoodFineRoots,hw_fine,Belowground biomass
+NA,hw_sub_merch,Aboveground biomass
+NA,sw_sub_merch,Aboveground biomass
