@@ -70,6 +70,8 @@
 	<text transform="matrix(1 0 0 1 69.4064 277.7303)" class="st1 st3">initialization_period</text>
 	<rect x="229.3" y="224.5" class="st0" width="257.7" height="28"/>
 	<text transform="matrix(1 0 0 1 229.2502 241.7829)" class="st4 st5">inventory_start_year</text>
+	<rect x="818.2" y="97.4" class="st0" width="179.7" height="28.4"/>
+	<text transform="matrix(1 0 0 1 618.1324 114.7099)" class="st4 st5">“current_period”</text>
 </g>
 <g id="Timeline">
 	<g>
@@ -196,6 +198,17 @@
 			</g>
 			<g>
 				<path d="M676.6,284.7c-4.3,1.6-9.5,4.3-12.8,7.1l2.6-7.1l-2.6-7.1C667.1,280.4,672.4,283.1,676.6,284.7z"/>
+			</g>
+		</g>
+	</g>
+	<g>
+		<g>
+			<line class="st11" x1="374.1" y1="137.6" x2="1086.8" y2="137.6"/>
+			<g>
+				<path d="M365,137.6c4.3,1.6,9.5,4.3,12.8,7.1l-2.6-7.1l2.6-7.1C374.6,133.3,369.3,136,365,137.6z"/>
+			</g>
+			<g>
+				<path d="M1093.2,137.6c-4.3,1.6-9.5,4.3-12.8,7.1l2.6-7.1l-2.6-7.1C1083.7,133.3,1089,136,1093.2,137.6z"/>
 			</g>
 		</g>
 	</g>
