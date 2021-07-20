@@ -162,8 +162,9 @@ pools_t0_comp = (pools_cbm3_t0_sum
  .merge(pools_libcbm_t0_sum, 'outer', left_on = 'libcbm', right_index = True)
  .reset_index(drop = True))
 pools_t0_comp['diff'] = pools_t0_comp['tc_libcbm'] - pools_t0_comp['tc_cbmcfs3']
-pools_t0_comp['diff_pct'] = (pools_t0_comp['tc_libcbm'] / pools_t0_comp['tc_cbmcfs3']) - 1
-pools_t0_comp
+pools_t0_comp['diff_prop'] = (pools_t0_comp['tc_libcbm'] / pools_t0_comp['tc_cbmcfs3']) - 1
+# Query to remove NA values 
+pools_t0_comp.query("libcbm == libcbm")
 ```
 
 # Compare all pools at all time steps
