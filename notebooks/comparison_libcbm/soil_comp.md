@@ -22,23 +22,68 @@ The purpose of this notebook is to compare soil pools between libcbm and cbmcfs3
 
 ## Create runner objects
 
+Create a runner object for each model.
+
+
 ```python
 # Create a libcbm runner
 from libcbm_runner.core.continent import continent
 import pandas as pd
 # TODO call it static demand and make sure it loads a disturbance file from the static demand scenario
+
 scenario = continent.scenarios['historical']
 runner_libcbm = scenario.runners['LU'][-1]
 
 # Create a cbmcfs3 runner
 from cbmcfs3_runner.core.continent import continent
-runner_cbm3 = continent[('historical','LU',0)]
+runner_cbm3 = continent[('static_demand','LU',0)]
+```
+
+# Compare the input
+
+Make sure that the cbmcfs3 and libcbm runners use the same input inventory, disturbances and yields.
+
+```python
+# Compare the Input inventory
+print(f"cbmcfs3 input inventory area: {runner_cbm3.input_data.get_sheet('Inventory').area.sum()}")
+libcbminv = pd.read_csv(runner_libcbm.input_data.paths.inventory)
+print(f"libcbm input inventory area: {libcbminv.area.sum()}")
+```
+
+```python
+# Compare the yields
+
+```
+
+```python
+# Compare the disturbances
+dist_cbm3 = runner_cbm3.input_data.disturbance_events
+dist_libcbm = pd.read_csv(runner_libcbm.input_data.paths.events)
+dist_cbm3_agg = (dist_cbm3
+                 .groupby(['measurement_type', 'step'])
+                 .agg(amount_cbm3 = ('amount',sum))
+                )
+dist_libcbm_agg = (dist_libcbm
+                   .groupby(['measurement_type', 'step'])
+                   .agg(amount_libcbm = ('amount', sum))
+                  )
+
+dist_cbm3_agg.merge(dist_libcbm_agg, "left", left_index = True, right_index = True)
+```
+
+```python
+
+
+```
+
+```python
+
 ```
 
 # Soil Organic Matter content at timestep 0
 
 
-#  SOC by libcbm
+##  SOC by libcbm
 
 ```python
 # run
@@ -70,6 +115,8 @@ soil_aggreg_libcbm = pd.merge(soil_pools_libcbm_ind,soil_pools_libcbm_ss,
 print(soil_aggreg_libcbm)
 ```
 
+### Sum and mean of the soil DOM pools
+
 ```python
 # subset a dataframe with soil relevant columns, inclduing area ("=input") 
 #in order to estimate initialized C stock per_ha in the timestep 0
@@ -94,8 +141,6 @@ libcbm_average_SOC = soil_libscbm_init['SOC_libcbm_per_ha'].mean()
 libcbm_average_SOC
 ```
 
-### Sum of the soil DOM pools
-
 ```python
 soil_libscbm_init['Total_dom'].sum()
 ```
@@ -113,7 +158,7 @@ from cbmcfs3_runner.pump.dataframes import csv_download_link
 #csv_download_link(soil_libscbm_init,"SumTable.csv")
 ```
 
-# SOC by cbmcfs3_runner
+## SOC by cbmcfs3_runner
 
 
 ## First attempt at adding area
