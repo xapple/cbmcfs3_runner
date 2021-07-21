@@ -46,8 +46,6 @@ class ClassifierAdder(object):
         self.paths = AutoPaths(self.country.data_dir, self.all_paths)
 
     def __call__(self):
-        # Record header #
-        self.record_header()
         # All files #
         self.mod_classifiers()
         self.mod_events()
@@ -55,55 +53,70 @@ class ClassifierAdder(object):
         self.mod_ylds()
         self.mod_hist_ylds()
         self.mod_inv()
-        # Restore header #
-        self.restore_header()
 
     #-------------------------- Every file  -----------------------------------#
     def mod_classifiers(self):
+        # The path #
+        p = self.paths.classifiers
         # Read into memory #
         df = pandas.read_csv(str(p))
         # Change #
-        df = df
+        df.loc[len(df)] = (8, '_CLASSIFIER', 'Simulation period (for yields)')
+        df.loc[len(df)] = (8, 'Init', 'Initialization period')
+        df.loc[len(df)] = (8, 'Cur', 'Current period')
         # Write back to disk #
         df.to_csv(str(p), index=False, float_format='%g')
 
     def mod_events(self):
+        # The path #
+        p = self.paths.events
         # Read into memory #
         df = pandas.read_csv(str(p))
         # Change #
-        df = df
+        df.insert(loc=7, column='_8', value='Cur')
         # Write back to disk #
         df.to_csv(str(p), index=False, float_format='%g')
 
     def mod_rules(self):
+        # The path #
+        p = self.paths.rules
         # Read into memory #
         df = pandas.read_csv(str(p))
         # Change #
-        df = df
+        df.insert(loc=7, column='_8', value='Cur')
+        df.insert(loc=21, column='_8.1', value='Cur')
         # Write back to disk #
         df.to_csv(str(p), index=False, float_format='%g')
+        # Restore header #
+        self.restore_header()
 
     def mod_ylds(self):
+        # The path #
+        p = self.paths.yields
         # Read into memory #
         df = pandas.read_csv(str(p))
         # Change #
-        df = df
+        df.insert(loc=7, column='_8', value='Cur')
         # Write back to disk #
         df.to_csv(str(p), index=False, float_format='%g')
 
     def mod_hist_ylds(self):
+        # The path #
+        p = self.paths.historical_yields
         # Read into memory #
         df = pandas.read_csv(str(p))
         # Change #
-        df = df
+        df.insert(loc=7, column='_8', value='Init')
         # Write back to disk #
         df.to_csv(str(p), index=False, float_format='%g')
 
     def mod_inv(self):
+        # The path #
+        p = self.paths.inventory
         # Read into memory #
         df = pandas.read_csv(str(p))
         # Change #
-        df = df
+        df.insert(loc=7, column='_8', value='Init')
         # Write back to disk #
         df.to_csv(str(p), index=False, float_format='%g')
 
@@ -115,14 +128,19 @@ class ClassifierAdder(object):
         "transition_rules", column names are repeated. So we have to restore
         these headers afterwards.
         """
+        # Read from disk #
+        header = self.paths.rules.first
+        # Modify #
+        header = header.split(',')
+        header = [n.replace('.1', '') for n in header]
+        header = ','.join(header)
+        # Write to disk #
         self.paths.rules.remove_first_line()
-        self.paths.rules.prepend(self.header)
-
-    def record_header(self):
-        """Keep the first line of the file "transition_rules" in memory."""
-        self.header = self.paths.rules.first
+        self.paths.rules.prepend(header)
 
 ###############################################################################
 if __name__ == '__main__':
     adders = [ClassifierAdder(c) for c in continent]
-    for adder in tqdm(adders): adder()
+    for adder in tqdm(adders):
+        if adder.country.iso2_code == 'BG': continue
+        adder()
