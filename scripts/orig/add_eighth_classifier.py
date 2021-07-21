@@ -21,7 +21,10 @@ from cbmcfs3_runner.core.continent import continent
 
 ###############################################################################
 class ClassifierAdder(object):
-    """This class takes many of the CSV files in "export/" and changes them."""
+    """
+    This class takes many of the CSV files in "export/" and changes them.
+
+    """
 
     all_paths = """
     /export/ageclass.csv
@@ -41,6 +44,9 @@ class ClassifierAdder(object):
         self.paths = AutoPaths(self.country.data_dir, self.all_paths)
 
     def __call__(self):
+        # Record header #
+        self.record_header()
+        # Loop #
         for p in self.paths:
             # Read into memory #
             df = pandas.read_csv(str(p))
@@ -48,6 +54,21 @@ class ClassifierAdder(object):
             df = df
             # Write back to disk #
             df.to_csv(str(p), index=False, float_format='%g')
+        # Restore header #
+        self.restore_header()
+
+    def restore_header(self):
+        """
+        In a pandas dataframe, the column names have to be unique, because
+        they are implemented as an index. However in the file
+        "transition_rules", column names are repeated. So we have to restore
+        these headers afterwards.
+        """
+        self.header
+
+    def record_header(self):
+        """Keep the first line of the file "transition_rules" in memory."""
+        self.header =
 
 ###############################################################################
 if __name__ == '__main__':
