@@ -30,6 +30,7 @@ class CSVMaker(object):
     all_paths = """
     /output/csv/ipcc_pools.csv
     /output/csv/inventory_age.csv
+    /output/csv/inventory_simulated.csv
     /output/csv/ipcc_agg_country.csv
     """
 
@@ -63,6 +64,14 @@ class CSVMaker(object):
         """
         df = self.parent.inventory.age_indicators
         df.to_csv(str(self.paths.inventory_age), index=False)
+
+    def export_inventory_simulated(self):
+        """
+        Export cbm output inventory area by age classes.
+        Data used by the land use change models LUISA and FUSION.
+        """
+        df = self.parent.inventory.simulated
+        df.to_csv(str(self.paths.inventory_simulated), index=False)
 
     def export_ipcc_agg(self):
         """
