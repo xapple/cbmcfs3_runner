@@ -7,7 +7,7 @@ MediumSoil,medium,Dead wood
 AboveGroundSlowSoil,slow_ag,Litter
 BelowGroundSlowSoil,slow_bg,Soil organic matter
 SoftwoodStemSnag,sw_stem_snag,Dead wood
-SoftwoodBranchSnag,hw_branch_snag,Dead wood
+SoftwoodBranchSnag,sw_branch_snag,Dead wood
 HardwoodStemSnag,hw_stem_snag,Dead wood
 HardwoodBranchSnag,hw_branch_snag,Dead wood
 SoftwoodMerch,sw_merch,Aboveground biomass
