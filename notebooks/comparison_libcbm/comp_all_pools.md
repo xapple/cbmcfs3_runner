@@ -6,7 +6,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.3
+      jupytext_version: 1.11.1
   kernelspec:
     display_name: Python 3
     language: python
@@ -32,11 +32,11 @@ import pandas as pd
 # TODO call it static demand and make sure it loads a disturbance file from the static demand scenario
 
 scenario = continent.scenarios['historical']
-runner_libcbm = scenario.runners['LU'][-1]
+runner_libcbm = scenario.runners['IE'][-1]
 
 # Create a cbmcfs3 runner
 from cbmcfs3_runner.core.continent import continent
-runner_cbm3 = continent[('static_demand','LU',0)]
+runner_cbm3 = continent[('historical','IE',0)]
 ```
 
 ## Compare the input to check it is identical
@@ -45,7 +45,7 @@ Make sure that the cbmcfs3 and libcbm runners use the same input inventory, dist
 
 ```python
 # Compare the Input inventory
-print(f"cbmcfs3 input inventory area: {runner_cbm3.input_data.get_sheet('Inventory').area.sum()}")
+#print(f"cbmcfs3 input inventory area: {runner_cbm3.input_data.get_sheet('Inventory').area.sum()}")
 libcbminv = pd.read_csv(runner_libcbm.input_data.paths.inventory)
 print(f"libcbm input inventory area: {libcbminv.area.sum()}")
 ```
@@ -53,7 +53,7 @@ print(f"libcbm input inventory area: {libcbminv.area.sum()}")
 ```python
 # Compare the yields
 yield_cbm3 = runner_cbm3.input_data.get_sheet('Growth')
-yield_libcbm = pd.read_csv(runner_libcbm.input_data.paths["yield"])
+yield_libcbm = pd.read_csv(runner_libcbm.input_data.paths["growth_curves"])
 ```
 
 ```python
@@ -80,6 +80,10 @@ This running step is needed because libcbm doesn't store the output. It is not n
 
 ```python
 # run
+from libcbm_runner.core.continent import continent
+import pandas as pd
+scenario = continent.scenarios['historical']
+runner_libcbm = scenario.runners['RO'][-1]
 runner_libcbm.run()
 ```
 
@@ -168,3 +172,7 @@ pools_t0_comp.query("libcbm == libcbm")
 ```
 
 # Compare all pools at all time steps
+
+```python
+
+```
