@@ -223,15 +223,16 @@ class PostProcessor(object):
         index variables and keeps only 2 extra columns containing the
         pool name (pool) and the total carbon weight (tc).
         """
+        # Load #
         df = self.pool_indicators
         additional_ids = ['spuid', 'land_class_id', 'pool_ind_id']
-        # Pivot to a long format
+        # Pivot to a long format #
         index = self.classifiers_names + additional_ids + ['time_step']
         df = df.melt(id_vars = index,
                      var_name='pool',
                      value_name='tc')
         df = df.reset_index()
-        # Add year
+        # Add year #
         df['year'] = self.parent.country.timestep_to_year(df['time_step'])
         return df
 
