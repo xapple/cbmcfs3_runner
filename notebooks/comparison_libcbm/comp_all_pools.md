@@ -6,7 +6,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.1
+      jupytext_version: 1.11.3
   kernelspec:
     display_name: Python 3
     language: python
@@ -83,11 +83,15 @@ This running step is needed because libcbm doesn't store the output. It is not n
 from libcbm_runner.core.continent import continent
 import pandas as pd
 scenario = continent.scenarios['historical']
-runner_libcbm = scenario.runners['RO'][-1]
+runner_libcbm = scenario.runners['LU'][-1]
 runner_libcbm.run()
 ```
 
 ## Retrieve pools for both model versions
+
+```python
+#pools_libcbm_wide = runner_libcbm.simulation.results.pools
+```
 
 ```python
 pools_libcbm_wide = runner_libcbm.simulation.results.pools
@@ -118,7 +122,7 @@ Pool names differ between the 2 model versions, load a mapping table.
 <!-- #endregion -->
 
 ```python
-pools_libcbm.columns
+pools_libcbm.pool.unique()
 ```
 
 ```python
@@ -172,6 +176,30 @@ pools_t0_comp.query("libcbm == libcbm")
 ```
 
 # Compare all pools at all time steps
+
+```python
+import os
+home = os.environ.get('HOME', '~') + '/'
+from importlib.machinery import SourceFileLoader
+path = home + 'repos/libcbm_runner/scripts/comparison/pools.py'
+comp = SourceFileLoader('pools', path).load_module()
+from cbmcfs3_runner.core.continent import continent as cbmcfs3_continent
+comparisons = [comp.ComparisonRunner(c) for c in cbmcfs3_continent]
+```
+
+```python
+c = comparisons[17]
+```
+
+Aggregate pools
+
+```python
+c.pools_cbmcfs3
+```
+
+```python
+c.pools_libcbm
+```
 
 ```python
 
