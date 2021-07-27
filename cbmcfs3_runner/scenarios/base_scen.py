@@ -104,7 +104,12 @@ class Scenario(object):
         zip_dir = tmp_dir + csv_full_name + '/'
         zip_dir.create()
         # Copy #
-        for iso, f in files.items(): f.copy(zip_dir + iso + '.csv')
+        for iso, f in files.items():
+            try:
+                f.copy(zip_dir + iso + '.csv')
+            except Exception as e:
+                print("no data in ", iso)
+                print('Error loading data: '+ str(e))
         # Compress #
         zip_dir.zip_to(dest_zip)
         # Remove #
