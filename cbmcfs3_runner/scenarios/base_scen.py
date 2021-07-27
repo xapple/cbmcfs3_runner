@@ -51,6 +51,9 @@ class Scenario(object):
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.base_dir, self.all_paths)
 
+    def __repr__(self):
+        return '%s object with %i runners' % (self.__class__, len(self))
+
     def __call__(self, verbose=False):
         for code, steps in tqdm(self.runners.items()):
             for runner in steps:
