@@ -122,18 +122,18 @@ Pool names differ between the 2 model versions, load a mapping table.
 <!-- #endregion -->
 
 ```python
+from cbmcfs3_runner.pump.libcbm_mapping import libcbm_mapping
+print(libcbm_mapping)
+# Remove the unnecessary ipcc pool names
+libcbm_mapping = libcbm_mapping[['libcbm', 'cbmcfs3']]
+```
+
+```python
 pools_libcbm.pool.unique()
 ```
 
 ```python
 pools_cbm3.pool.unique()
-```
-
-```python
-from cbmcfs3_runner.pump.libcbm_mapping import libcbm_mapping
-print(libcbm_mapping)
-# Remove the unnecessary ipcc pool names
-libcbm_mapping = libcbm_mapping[['libcbm', 'cbmcfs3']]
 ```
 
 # Compare all pools at t0
@@ -185,20 +185,80 @@ path = home + 'repos/libcbm_runner/scripts/comparison/pools.py'
 comp = SourceFileLoader('pools', path).load_module()
 from cbmcfs3_runner.core.continent import continent as cbmcfs3_continent
 comparisons = [comp.ComparisonRunner(c) for c in cbmcfs3_continent]
-```
-
-```python
+# Select just one country
 c = comparisons[17]
 ```
 
-Aggregate pools
-
 ```python
-c.pools_cbmcfs3
+c.pools_libcbm.iloc[[1,-1]]
 ```
 
 ```python
-c.pools_libcbm
+c.pools_cbmcfs3.iloc[[1,-1]]
+```
+
+Aggregate pools over all classifier for each time step.
+
+```python
+index = ['pool', 'timestep']
+pools_libcbm_sum = (c.pools_libcbm
+                    .groupby(index)
+                    .agg(tc_libcbm = ('tc', sum))
+                    .reset_index()
+                   )
+pools_libcbm_sum.iloc[[1,-1]]
+```
+
+```python
+index = ['pool', 'time_step']
+pools_cbm3_sum =  (c.pools_cbmcfs3
+                   .groupby(index)
+                   .agg(tc_cbmcfs3 = ('tc', sum))
+                   .reset_index()
+                  )
+pools_cbm3_sum.iloc[[1,-1]]
+```
+
+```python
+# Reminder of how the mapping table looks like
+libcbm_mapping.iloc[[1,-1]]
+```
+
+```python
+pools_comp = (pools_cbm3_sum
+              # Join mapping table between cbmcfs3 and libcbm pool names
+              .merge(libcbm_mapping, 'left', left_on = 'pool', right_on = 'cbmcfs3')
+              # Drop redundant column pool also storred in cbmcfs3 column
+              .drop(columns='pool')
+              # Full join to keep all pools even those which exist in only one version of the model
+              .merge(pools_libcbm_sum, 'outer', 
+                     left_on = ['libcbm', 'time_step'], 
+                     right_on = ['pool', 'timestep'])
+              .drop(columns='pool')
+              .reset_index(drop = True)
+             )
+# Compute the relative difference between the old and the new model
+pools_comp['diff_prop'] = (pools_comp['tc_libcbm'] / pools_comp['tc_cbmcfs3']) - 1
+
+```
+
+```python
+# Compare at step zero
+pools_comp.query("time_step == 0")
+```
+
+```python
+# Compare at step 10
+pools_comp.query("time_step == 10")
+```
+
+```python
+# Compare at max time step
+```
+
+```python
+max_timestep = max(pools_comp.timestep)
+pools_comp.query("time_step == @max_timestep")
 ```
 
 ```python
