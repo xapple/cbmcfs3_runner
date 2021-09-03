@@ -17,8 +17,7 @@ jupyter:
 # Force creation of a matplotlib device, so that plots can be viewed in this notebook
 from matplotlib import pyplot
 from cbmcfs3_runner.core.continent import continent
-runner = continent[('static_demand','LU',0)]
-
+runner = continent[('historical','LU',0)]
 ```
 
 <!-- #region -->
@@ -103,7 +102,16 @@ runner_libcbm.run()
 ```
 
 ```python
-runner_libcbm.simulation.classifiers.iloc[[0,1,-2,-1]]
+pools_libcbm = runner_libcbm.output.load('pools')
+pools_libcbm
+```
+
+```python
+runner_libcbm.output.load('classifiers').iloc[[0,1,-2,-1]]
+```
+
+```python
+pools_libcbm.columns
 ```
 
 ```python
@@ -119,41 +127,43 @@ with pandas.option_context('display.max_rows', None, 'display.max_columns', None
 ```python
 inv = runner_libcbm.input_data['inventory']
 pools0 = pools_libcbm.query('timestep == 0')
-pools0['Input'].sum()
+pools0['area'].sum()
 
-print(pools0['Input'].sum())
+print(pools0['area'].sum())
 print(inv['area'].sum())
-
 ```
 
 ```python
-print(runner_libcbm.simulation.results)
-print(runner_libcbm.simulation.inventory)
-
-pools_libcbm = runner_libcbm.simulation.results.pools
-
 merch_libcbm_by_year = (pools_libcbm
   .groupby('timestep')
-  .agg({'HardwoodMerch': 'sum',
-        'SoftwoodMerch': 'sum'})
+  .agg({'hardwood_merch': 'sum',
+        'softwood_merch': 'sum'})
   .reset_index())
+merch_libcbm_by_year
+```
 
+```python
 pools0_libcbm=pools_libcbm.query('timestep==0')
-for c in pools0_libcbm.columns:
-    print (c, sum(pools0_libcbm[c]))
+for i in pools0_libcbm.columns:
+    print (i, sum(pools0_libcbm[i]))
 
-#pools0_libcbm
+pools0_libcbm
+```
 
+```python
+print(merch_libcbm_by_year.columns)
+print(merch_cbmcfs3_by_year.columns)
 ```
 
 ```python
 merch_libcbm_by_year.rename(columns ={'timestep':'time_step'})
-print(merch_libcbm_by_year.columns)
-print(merch_cbmcfs3_by_year.columns)
 merch_comp=merch_cbmcfs3_by_year.merge(merch_libcbm_by_year, left_on='time_step', right_on='timestep')
-merch_comp['hw_ratio']= merch_comp.HardwoodMerch/merch_comp.hw_merch
-merch_comp['sw_ratio']= merch_comp.SoftwoodMerch/merch_comp.sw_merch
+merch_comp['hw_ratio']= merch_comp.hardwood_merch/merch_comp.hw_merch
+merch_comp['sw_ratio']= merch_comp.softwood_merch/merch_comp.sw_merch
 merch_comp
+```
+
+```python
 
 ```
 
