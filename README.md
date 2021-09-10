@@ -100,17 +100,17 @@ all countries, hard coded to 2015, the inventory start year differs.
 
 Below is drawn the flowchart describing the data processing along all the steps of `cbmcfs3_runner`:
 
-![Flowchart](documentation/exported_to_png/data_flowchart.png)
+![Flowchart](docs/exported_to_png/data_flowchart.png)
 
 ## Objects Diagram
 
 Below is presented a tentative UML-style diagram detailing not the inheritance of the classes but the use of the composition design pattern between the objects created:
 
-![Diagram](documentation/exported_to_png/objects_diagram.png)
+![Diagram](docs/exported_to_png/objects_diagram.png)
 
 ## Timeline representation
 
 The simulation is broken down into several periods which are represented below.
 
-![Timeline](documentation/exported_to_png/timeline_and_periods.png)
+![Timeline](docs/exported_to_png/timeline_and_periods.png)
 

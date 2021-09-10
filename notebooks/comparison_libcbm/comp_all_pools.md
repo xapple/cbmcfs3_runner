@@ -6,7 +6,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.1
+      jupytext_version: 1.11.3
   kernelspec:
     display_name: Python 3
     language: python
@@ -83,7 +83,7 @@ This running step is needed because libcbm doesn't store the output. It is not n
 from libcbm_runner.core.continent import continent
 import pandas as pd
 scenario = continent.scenarios['historical']
-runner_libcbm = scenario.runners['AT'][-1]
+runner_libcbm = scenario.runners['LU'][-1]
 runner_libcbm.run()
 ```
 
@@ -102,7 +102,7 @@ print(f"Number of rows in the wide table {len(pools_libcbm_wide)}")
 ```python
 # Reshape to long format #
 pools_libcbm = pools_libcbm_wide.melt(id_vars=['identifier', 'timestep', 'Input'],
-                                    var_name='pool',
+                                        var_name='pool',
                                     value_name='tc')
 display(pools_libcbm.iloc[[1,-1]])
 print(f"Number of rows in the long table {len(pools_libcbm)}")
