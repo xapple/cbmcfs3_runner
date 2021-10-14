@@ -36,11 +36,13 @@ import pbs3
 from autopaths.auto_paths import AutoPaths
 from autopaths.dir_path   import DirectoryPath
 from plumbing.cache       import property_cached
-from plumbing.databases.access_database import AccessDatabase
 
 # Internal modules #
 from cbmcfs3_runner.stdrd_import_tool.create_json import CreateJSON
 from cbmcfs3_runner.stdrd_import_tool.create_xls  import CreateXLS
+
+# Constants #
+home = os.environ.get('HOME', '~') + '/'
 
 ###############################################################################
 class LaunchSIT(object):
@@ -76,21 +78,21 @@ class LaunchSIT(object):
         """
         # Download it #
         print('Downloading...')
-        path     = '/Users/Administrator/test/'
         response = urlopen(cls.url)
         # Decompress it #
         print('Decompressing...')
-        archive  = zipfile.ZipFile(io.BytesIO(response.read()))
+        archive = zipfile.ZipFile(io.BytesIO(response.read()))
+        path    = home + 'test/'
         archive.extractall(path=path)
         # Move it #
         print('Moving...')
-        source = DirectoryPath('/Users/Administrator/test/Release/')
+        source = DirectoryPath(home + 'test/Release/')
         destin = DirectoryPath('/Program Files/StandardImportToolPlugin/')
         destin.remove()
         source.move_to(destin)
         # Check it #
         print('Checking installation...')
-        print(pbs3.Command("StandardImportToolPlugin.exe")('--version'))
+        print(pbs3.Command("StandardImportToolPlugin.exe")('--version').stderr)
 
     def __init__(self, parent):
         # Keep access to the parent object #
