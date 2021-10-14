@@ -307,7 +307,7 @@ class AIDB(object):
         # Get environment variable #
         aidb_repo = DirectoryPath(os.environ["AIDB_REPO"])
         # The source #
-        source = aidb_repo + self.parent.iso2_code + '/orig/aidb.mdb'
+        source = aidb_repo + self.parent.iso2_code + '/orig/aidb_eu.mdb'
         assert source
         # The destination #
         destin = self.paths.aidb
