@@ -14,7 +14,7 @@ Previous versions of the installation procedure and related documents can be fou
     ~/repos/bioeconomy_notes/setup/setup_new_windows_ec2/create_minimal_image.md
     ~/repos/bioeconomy_notes/setup/cbmcfs3_tutorial_install.md
 
-## Install Python 3
+## Install Python 3
 
 Run this command from an administrator shell if you don't already have python:
 
@@ -22,11 +22,11 @@ Run this command from an administrator shell if you don't already have python:
 
 It requires the chocolatey package manager from https://chocolatey.org for windows.
 At the end, you will have to reboot.
-Finally check the version in a new shell:
+Finally, check the version in a new shell:
 
     $ python -V
 
-## Install dependencies
+## Install dependencies
 
 Run these commands from an administrator shell to get the "Microsoft Access Database Engine 2010":
 
@@ -37,7 +37,7 @@ Run these commands from an administrator shell to get the "Microsoft Access Data
 
 Run this command from an administrator PowerShell to enable some "dot net" features:
 
-  DISM /Online /Enable-Feature:NetFx3 /All
+    $ DISM /Online /Enable-Feature:NetFx3 /All
 
 ## Obtain CBM-CFS3
 
@@ -61,7 +61,7 @@ Place it in "Program Files" and add the directory containing the executable to y
 
 # Clone repositories
 
-Run this command from an administrator PowerShell:
+Run these commands from an administrator PowerShell:
 
     $ New-Item -ItemType Directory -Path $HOME/repos
     $ cd $HOME/repos
@@ -106,7 +106,7 @@ Set the environment variable that tells `cbmcfs3_runner` where the simulation da
 
 Set the environment variable that tells `cbmcfs3_runner` where the special AIDBs are located:
 
-    $ SETX AIDB_REPO "$HOME\repos\cbmcfs3_aidb"
+    $ SETX CBMCFS3_AIDB "$HOME\repos\cbmcfs3_aidb"
 
 ## Symlink AIDBs
 
@@ -114,7 +114,14 @@ Create symlinks for these special files (requires administrator privileges):
 
     $ ipython -i -c "from cbmcfs3_runner.core.continent import continent as ct; print([c.aidb.symlink() for c in ct])"
 
-# Run
+If you want to make an arbitrary symlink in windows you can proceed like this:
+
+    >>> from autopaths.dir_path import DirectoryPath
+    >>> destin = DirectoryPath(r"C:\Users\bob\repos\cbmcfs3_data")
+    >>> source = DirectoryPath(r"N:\cbmcfs3_data")
+    >>> source.link_to(destin)
+
+# Run one country
 
 Run a given country from the historical scenario.
 
@@ -122,3 +129,13 @@ You can use this command in python:
 
     >>> from cbmcfs3_runner.core.continent import continent as ct
     >>> r = ct[('historical', 'LU', 0)]; r.run(verbose=True)
+
+# Run all countries
+
+To run a full scenario, proceed as so:
+
+    >>> from cbmcfs3_runner.core.continent import continent
+    >>> scenario = continent.scenarios['historical']
+    >>> scenario(verbose=True)
+
+This can take between six and twelve hours depending on your machine.

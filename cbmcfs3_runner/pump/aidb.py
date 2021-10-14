@@ -304,8 +304,11 @@ class AIDB(object):
 
     #-------------------------- Special Methods ------------------------------#
     def symlink(self):
-        # Get environment variable #
-        aidb_repo = DirectoryPath(os.environ["AIDB_REPO"])
+        # Where is the data, default case #
+        aidb_repo = DirectoryPath("~/repos/libcbm_aidb/")
+        # But you can override that with an environment variable #
+        if os.environ.get("CBMCFS3_AIDB"):
+            aidb_repo = DirectoryPath(os.environ['CBMCFS3_AIDB'])
         # The source #
         source = aidb_repo + self.parent.iso2_code + '/orig/aidb_eu.mdb'
         # Special case for ZZ #
