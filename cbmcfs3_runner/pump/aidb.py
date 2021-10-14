@@ -45,6 +45,9 @@ class AIDB(object):
         # Automatically access paths based on a string of many subpaths #
         self.paths = AutoPaths(self.parent.data_dir, self.all_paths)
 
+    def __repr__(self):
+        return "%s object at '%s'" % (self.__class__, self.paths.aidb)
+
     def switch(self):
         default_path.remove()
         self.paths.aidb.copy(default_path)
@@ -304,7 +307,7 @@ class AIDB(object):
         # Get environment variable #
         aidb_repo = DirectoryPath(os.environ["AIDB_REPO"])
         # The source #
-        source = aidb_repo + self.parent.iso2_code + '/orig/aidb.db'
+        source = aidb_repo + self.parent.iso2_code + '/orig/aidb.mdb'
         assert source
         # The destination #
         destin = self.paths.aidb

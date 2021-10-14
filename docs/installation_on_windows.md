@@ -104,6 +104,12 @@ Set the environment variable that tells `cbmcfs3_runner` where the special AIDBs
 
     $ SETX AIDB_REPO "$HOME\repos\cbmcfs3_aidb"
 
+## Symlink AIDBs
+
+Create symlinks for these special files:
+
+    $ ipython -i -c "from cbmcfs3_runner.core.continent import continent as ct; print([c.aidb.symlink() for c in ct])"
+
 # Run
 
 Run a given country from the historical scenario:
