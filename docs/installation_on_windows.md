@@ -14,7 +14,7 @@ Previous versions of the installation procedure and related documents can be fou
     ~/repos/bioeconomy_notes/setup/setup_new_windows_ec2/create_minimal_image.md
     ~/repos/bioeconomy_notes/setup/cbmcfs3_tutorial_install.md
 
-# Install Python 3
+## Install Python 3
 
 Run this command from an administrator shell if you don't already have python:
 
@@ -26,26 +26,26 @@ Finally check the version in a new shell:
 
     $ python -V
 
-# Install dependencies
+## Install dependencies
 
 Run these commands from an administrator shell to get the "Microsoft Access Database Engine 2010":
 
     $ choco install -y made2010
     $ choco install -y git
 
-# Enable old features
+## Enable old features
 
 Run this command from an administrator PowerShell to enable some "dot net" features:
 
   DISM /Online /Enable-Feature:NetFx3 /All
 
-## Obtain latest CBM-CFS3
+## Obtain CBM-CFS3
 
 The file is located at https://carbon.nfis.org/cbm/downloadFile.action?file_id=1316
 But you have to log-in with a user account to have access to the downloads.
 Also the website was geo-ip filtered in the past, so you can set your VPN to Canada.
 
-## Install latest CBM-CFS3
+## Install CBM-CFS3
 
 Assuming the file you downloaded is in Downloads, run this:
 
@@ -59,7 +59,7 @@ https://github.com/cat-cfs/StandardImportToolPlugin/releases
 
 Place it in "Program Files" and add the directory containing the executable to your PATH environment variable.
 
-# Clone essential git repositories
+# Clone repositories
 
 Run this command from an administrator PowerShell:
 
@@ -89,6 +89,10 @@ Use pip from an administrator shell:
     $ pip install simplejson
     $ pip install pyexcel
     $ pip install pypiwin32
+    $ pip install xlsxwriter
+    $ pip install pyexcel-xls
+    $ pip install pyexcel-xlsx
+    $ pip install sqlalchemy
 
 ## Set environment variables
 
@@ -112,9 +116,9 @@ Create symlinks for these special files (requires administrator privileges):
 
 # Run
 
-Run a given country from the historical scenario:
+Run a given country from the historical scenario.
 
-    $ ipython
-    from cbmcfs3_runner.core.continent import continent
-    runner = continent[('historical', 'LU', 0)]
-    runner.run(verbose=True)
+You can use this command in python:
+
+    >>> from cbmcfs3_runner.core.continent import continent as ct
+    >>> r = ct[('historical', 'LU', 0)]; r.run(verbose=True)
