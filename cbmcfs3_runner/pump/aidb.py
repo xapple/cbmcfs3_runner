@@ -9,12 +9,14 @@ Unit D1 Bioeconomy.
 """
 
 # Built-in modules #
+import os
 
 # Third party modules #
 
 # First party modules #
 from autopaths            import Path
 from autopaths.auto_paths import AutoPaths
+from autopaths.dir_path   import DirectoryPath
 from plumbing.cache       import property_cached
 from plumbing.databases.access_database import AccessDatabase
 
@@ -296,3 +298,15 @@ class AIDB(object):
         #assert not any(df['dmid'] == numpy.nan)
         # Return #
         return df
+
+    #-------------------------- Special Methods ------------------------------#
+    def symlink(self):
+        # Get environment variable #
+        aidb_repo = DirectoryPath(os.environ["AIDB_REPO"])
+        # The source #
+        source = aidb_repo + self.parent.iso2_code + '/orig/aidb.db'
+        assert source
+        # The destination #
+        destin = self.paths.aidb
+        # Symlink #
+        source.link_to(destin)
