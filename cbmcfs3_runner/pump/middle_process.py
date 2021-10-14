@@ -94,9 +94,10 @@ class MiddleProcessor(object):
 
     def finish_append(self):
         """
-        According to Scott, this is what we should do to finish the "yield appending" procedure
-        so that it matches Roberto's procedure.
-        See ticket on JIRA at https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-178
+        According to Scott, this is what we should do to finish the "yield
+        appending" procedure so that it matches Roberto's procedure.
+        See ticket on JIRA at:
+        https://webgate.ec.europa.eu/CITnet/jira/browse/BIOECONOMY-178
         """
         # Log message #
         self.parent.log.info("Executing final appending queries.")
