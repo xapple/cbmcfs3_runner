@@ -79,8 +79,6 @@ class LaunchCBM(object):
         from cbm3_python.simulation import projectsimulator
         # Use their module #
         self.results_path = projectsimulator.run(**kwargs)
-        # Remove the stream handler that they add to the root logger :/ #
-        logging.root.handlers.pop(0)
         # Success message #
         self.log.info("The CBM-CFS3 model run is completed.")
 
