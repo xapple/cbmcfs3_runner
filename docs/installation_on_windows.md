@@ -106,7 +106,7 @@ Set the environment variable that tells `cbmcfs3_runner` where the special AIDBs
 
 ## Symlink AIDBs
 
-Create symlinks for these special files:
+Create symlinks for these special files (requires administrator privileges):
 
     $ ipython -i -c "from cbmcfs3_runner.core.continent import continent as ct; print([c.aidb.symlink() for c in ct])"
 

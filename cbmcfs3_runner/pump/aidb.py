@@ -311,5 +311,7 @@ class AIDB(object):
         assert source
         # The destination #
         destin = self.paths.aidb
+        # Remove destination if it already exists #
+        destin.remove()
         # Symlink #
         source.link_to(destin)
