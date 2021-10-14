@@ -77,24 +77,18 @@ Finally, to run that step of the model:
 
     >>> runner.run(verbose=True)
 
-
 ## Accessing metadata
 
 ### Inventory start year and base year
 
-The inventory start year and simulation base year are visible by creating a runner 
-object for a given scenario (here called "static_demand") and by calling the following 
-methods:
-    
+The inventory start year and simulation base year are visible by creating a runner object for a given scenario (here called "static_demand") and by calling the following methods:
+
     from cbmcfs3_runner.core.continent import continent
     runner = continent[('static_demand', 'AT', 0)]
     runner.country.inventory_start_year
     runner.country.base_year
 
-Reference years are defined in the `set_years` method of the 
-[country](cbmcfs3_runner/core/country.py#L112). The simulation base year is the same for 
-all countries, hard coded to 2015, the inventory start year differs. 
-
+Reference years are defined in the `set_years` method of the [country](cbmcfs3_runner/core/country.py#L112). The simulation base year is the same for all countries, hard coded to 2015, the inventory start year differs.
 
 ## Data Flowchart
 
@@ -113,4 +107,3 @@ Below is presented a tentative UML-style diagram detailing not the inheritance o
 The simulation is broken down into several periods which are represented below.
 
 ![Timeline](docs/exported_to_png/timeline_and_periods.png)
-
