@@ -323,4 +323,4 @@ class AIDB(object):
         # Symlink #
         source.link_to(destin)
         # Return #
-        return 'Symlink success for .' + self.parent.iso2_code
+        return 'Symlink success for ' + self.parent.iso2_code + '.'
