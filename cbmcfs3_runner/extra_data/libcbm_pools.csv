@@ -1,24 +1,24 @@
-libcbm,cbmcfs3,ipcc,,,,
-above_ground_very_fast_soil,v_fast_ag,Litter,,,,
-below_ground_very_fast_soil,v_fast_bg,Soil organic matter,,,,
-above_ground_fast_soil,fast_ag,Litter,,,,
-below_ground_fast_soil,fast_bg,Dead wood,,,,
-medium_soil,medium,Dead wood,,,,
-above_ground_slow_soil,slow_ag,Litter,,,,
-below_ground_slow_soil,slow_bg,Soil organic matter,,,,
-softwood_stem_snag,sw_stem_snag,Dead wood,,,,
-softwood_branch_snag,sw_branch_snag,Dead wood,,,,
-hardwood_stem_snag,hw_stem_snag,Dead wood,,,,
-hardwood_branch_snag,hw_branch_snag,Dead wood,,,,
-softwood_merch,sw_merch,Aboveground biomass,,,,
-softwood_foliage,sw_foliage,Aboveground biomass,,,,
-softwood_other,sw_other,Aboveground biomass,,,,
-softwood_coarse_roots,sw_coarse,Belowground biomass,,,,
-softwood_fine_roots,sw_fine,Belowground biomass,,,,
-hardwood_merch,hw_merch,Aboveground biomass,,,,
-hardwood_foliage,hw_foliage,Aboveground biomass,,,,
-hardwood_other,hw_other,Aboveground biomass,,,,
-hardwood_coarse_roots,hw_coarse,Belowground biomass,,,,
-hardwood_fine_roots,hw_fine,Belowground biomass,,,,
-NA,hw_sub_merch,Aboveground biomass,,,,
-NA,sw_sub_merch,Aboveground biomass,,,,
+libcbm,cbmcfs3,ipcc
+above_ground_very_fast_soil,v_fast_ag,Litter
+below_ground_very_fast_soil,v_fast_bg,Soil organic matter
+above_ground_fast_soil,fast_ag,Litter
+below_ground_fast_soil,fast_bg,Dead wood
+medium_soil,medium,Dead wood
+above_ground_slow_soil,slow_ag,Litter
+below_ground_slow_soil,slow_bg,Soil organic matter
+softwood_stem_snag,sw_stem_snag,Dead wood
+softwood_branch_snag,sw_branch_snag,Dead wood
+hardwood_stem_snag,hw_stem_snag,Dead wood
+hardwood_branch_snag,hw_branch_snag,Dead wood
+softwood_merch,sw_merch,Aboveground biomass
+softwood_foliage,sw_foliage,Aboveground biomass
+softwood_other,sw_other,Aboveground biomass
+softwood_coarse_roots,sw_coarse,Belowground biomass
+softwood_fine_roots,sw_fine,Belowground biomass
+hardwood_merch,hw_merch,Aboveground biomass
+hardwood_foliage,hw_foliage,Aboveground biomass
+hardwood_other,hw_other,Aboveground biomass
+hardwood_coarse_roots,hw_coarse,Belowground biomass
+hardwood_fine_roots,hw_fine,Belowground biomass
+NA,hw_sub_merch,Aboveground biomass
+NA,sw_sub_merch,Aboveground biomass
