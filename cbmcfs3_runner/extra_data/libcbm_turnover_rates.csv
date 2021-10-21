@@ -1,0 +1,17 @@
+"libcbm","cbmcfs3"
+"sw_foliage","softwood_foliage_fall_rate"
+"hw_foliage","hardwood_foliage_fall_rate"
+"stem_turnover","stem_annual_turn_over_rate"
+"sw_branch","softwood_branch_turn_over_rate"
+"hw_branch","hardwood_branch_turn_over_rate"
+,"average_dom"
+,"decay_mult"
+"stem_snag","softwood_stem_snag_to_dom"
+"stem_snag","hardwood_stem_snag_to_dom"
+"branch_snag","softwood_branch_snag_to_dom"
+"branch_snag","'hardwood_branch_snag_to_dom'"
+"branch_snag_split",
+"coarse_root",
+"fine_root",
+"coarse_ag_split",
+"fine_ag_split",
