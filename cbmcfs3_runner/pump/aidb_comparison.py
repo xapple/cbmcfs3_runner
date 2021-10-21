@@ -31,11 +31,15 @@ class CompareAIDB(object):
     You instantiate the class with a Country object from cbmcfs3_runner.
     Then you get access to the corresponding Country object from libcbm_runner.
 
-    Then you can inspect object as so:
+    Then you can inspect objects as so:
 
-        >>> comp = comparisons[3]
+        >>> from cbmcfs3_runner.pump.aidb_comparison import CompareAIDB
+        >>> from cbmcfs3_runner.core.continent import continent as cbmcfs3_continent
+        >>> c = cbmcfs3_continent.countries['AT']
+        >>> comp = CompareAIDB(c)
         >>> print(comp.libcbm_aidb.db.read_df('slow_mixing_rate'))
         >>> print(comp.cbmcfs3_aidb.database['tblSlowAGtoBGTransferRate'])
+
     """
 
     def __init__(self, cbmcfs3_country):

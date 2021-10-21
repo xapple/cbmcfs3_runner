@@ -9,7 +9,7 @@ Unit D1 Bioeconomy.
 
     Typically you would run this file from a command line like this:
 
-         ipython3 -i -- ~/repos/cbmcfs3_runner/scripts/libcbm/compare_aidb.py
+         ipython3 -i -- ~/repos/cbmcfs3_runner/scripts/libcbm_comparison/compare_aidb.py
 """
 # Third party modules #
 from tqdm import tqdm
