@@ -35,7 +35,7 @@ class CompareAIDB(object):
     You instantiate the class with a Country object from cbmcfs3_runner.
     Then you get access to the corresponding Country object from libcbm_runner.
 
-    Then you can inspect objects as so:
+    Then you can compare AIDB tables as so:
 
         >>> from cbmcfs3_runner.pump.aidb_comparison import CompareAIDB
         >>> from cbmcfs3_runner.core.continent import continent as cbmcfs3_continent
@@ -43,6 +43,10 @@ class CompareAIDB(object):
         >>> comp = CompareAIDB(c)
         >>> print(comp.libcbm_aidb.db.read_df('slow_mixing_rate'))
         >>> print(comp.cbmcfs3_aidb.database['tblSlowAGtoBGTransferRate'])
+
+    Or use the comparison methods:
+
+        >>> turnover = comp.load_turnover_parameters()
 
     """
 
@@ -114,3 +118,26 @@ class CompareAIDB(object):
             msg += "df = compare.load_turnover_parameters()\n"
             msg += f"problem_rows = df[df['diff'].abs() > {threshold}]"
             raise ValueError(msg)
+
+    def load_decay_rates(self):
+        """Return a data frame selfaring decay rates between cbmcfs3 and libcbm"""
+
+        # Check soil pools for libcbm
+        pools_lib = self.libcbm_aidb.db.read_df('pool')
+        pools_lib.rename(columns={"id": "pool_id"}, inplace=True)
+        soc_pools_lib = self.libcbm_aidb.db.read_df('dom_pool')
+        soc_pools_lib.rename(columns={"id": "dom_pool_id"}, inplace=True)
+        dom_pools_lib = soc_pools_lib.merge(pools_lib, how ='inner', on="pool_id")
+        print(pools_lib.head(1))
+        print(soc_pools_lib.head(1))
+        print(dom_pools_lib.head(-1))
+        
+        # New library
+        decay_lib = self.libcbm_aidb.db.read_df('decay_parameter')
+        decay_lib = decay_lib.merge(dom_pools_lib, how="left", on="dom_pool_id")
+        
+        dom_pools_cfs = self.cbmcfs3_aidb.database['tblsourcename']
+        dom_pools_cfs['code'] = dom_pools_cfs.description.str.replace(r' |C$', '', regex=True)
+        print(dom_pools_cfs[dom_pools_cfs.description.str.contains("soil|Snag")])
+        decay_cfs = self.cbmcfs3_aidb.database['tbldomparametersdefault']
+        # according to tblSoilPools in project db, relevant pools are 0 -10, 11 is black carbon, 12 is peat (do not show in libcbm)
