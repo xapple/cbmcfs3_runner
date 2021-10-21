@@ -12,10 +12,8 @@ Provides access to a mapping table between cbmcfs3 pool names and libcbm pool na
 You can use this object like this:
 
     >>> from cbmcfs3_runner.pump import libcbm_mapping
-    >>> print("Pools mapping")
-    >>> print(libcbm_mapping.pools)
-    >>> print("Turnover rates mapping")
-    >>> print(libcbm_mapping.turnover_rates)
+    >>> print("Pools\n", libcbm_mapping.pools)
+    >>> print("Turnover rates\n", libcbm_mapping.turnover_rates)
 
 """
 
