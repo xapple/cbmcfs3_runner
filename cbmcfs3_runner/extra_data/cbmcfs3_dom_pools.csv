@@ -1,0 +1,12 @@
+soil_pool_id,pool_id,code
+0,11,AboveGroundVeryFastSoil
+1,12,BelowGroundVeryFastSoil
+2,13,AboveGroundFastSoil
+3,14,BelowGroundFastSoil
+4,15,MediumSoil
+5,16,AboveGroundSlowSoil
+6,17,BelowGroundSlowSoil
+7,18,SoftwoodStemSnag
+8,19,SoftwoodBranchSnag
+9,20,HardwoodStemSnag
+10,21,HardwoodBranchSnag
