@@ -21,9 +21,12 @@ from plumbing.cache import property_cached
 from libcbm_runner.core.continent import continent as libcbm_continent
 from cbmcfs3_runner.pump import libcbm_mapping
 
+
 # Keep only mapping between names that exist in both cbmcfs3 and libcbm (remove empty values)
 df = libcbm_mapping.turnover_rates
 turnover_mapping = df.loc[(df == df).sum(axis=1)==2].reset_index(drop=True)
+
+cbmcfs3_pools = libcbm_mapping.cbmcfs3_pools
 
 ###############################################################################
 class CompareAIDB(object):
@@ -128,16 +131,52 @@ class CompareAIDB(object):
         soc_pools_lib = self.libcbm_aidb.db.read_df('dom_pool')
         soc_pools_lib.rename(columns={"id": "dom_pool_id"}, inplace=True)
         dom_pools_lib = soc_pools_lib.merge(pools_lib, how ='inner', on="pool_id")
-        print(pools_lib.head(1))
-        print(soc_pools_lib.head(1))
-        print(dom_pools_lib.head(-1))
+        print(pools_lib.head(1), end = '*************\n')
+        print(soc_pools_lib.head(1), end = '*************\n')
+        print(dom_pools_lib.head(1), end = '*************\n')
         
         # New library
         decay_lib = self.libcbm_aidb.db.read_df('decay_parameter')
         decay_lib = decay_lib.merge(dom_pools_lib, how="left", on="dom_pool_id")
+        print(decay_lib.head(1),end = '*************\n')
         
-        dom_pools_cfs = self.cbmcfs3_aidb.database['tblsourcename']
-        dom_pools_cfs['code'] = dom_pools_cfs.description.str.replace(r' |C$', '', regex=True)
-        print(dom_pools_cfs[dom_pools_cfs.description.str.contains("soil|Snag")])
-        decay_cfs = self.cbmcfs3_aidb.database['tbldomparametersdefault']
+        #dom_pools_cfs = self.cbmcfs3_aidb.database['tblsourcename']
+        #dom_pools_cfs['code'] = dom_pools_cfs.description.str.replace(r' |C$', '', regex=True)
+        #print(dom_pools_cfs[dom_pools_cfs.description.str.contains("soil|Snag")])
+        #decay_cfs = self.cbmcfs3_aidb.database['tbldomparametersdefault']
+        #print(decay_cfs)
         # according to tblSoilPools in project db, relevant pools are 0 -10, 11 is black carbon, 12 is peat (do not show in libcbm)
+
+        decay_cfs = self.cbmcfs3_aidb.database['tbldomparametersdefault']
+        cbm3_soils= decay_cfs.merge(cbmcfs3_pools, how ='inner', on="soil_pool_id")
+        print(cbm3_soils. head(1), end = '*************\n')
+        col_names = ["soil_pool_id", "pool_id", "code", "organic_matter_decay_rate", "reference_temp", "q10","max_decay_rate_soft", "max_decay_rate_hard","prop_to_atmosphere"]
+        decay_cbm = cbm3_soils[col_names]
+        print(decay_cbm.head(1), end = 'xxxxxxxxxxxxxxxxxxx\n')
+        #Combine the two
+        index = ['pool_id', 'code']
+        # Reshape to long format
+        lib_decay_long = (decay_lib
+                     .melt(id_vars=index, var_name='libcbm', value_name='libcbm_value'))
+        cfs3_decay_long = (decay_cbm
+                    .melt(id_vars=index, var_name='cbmcfs3', value_name='cbmcfs3_value'))
+        combined_decay = cfs3_decay_long.merge(lib_decay_long, on=index+ ["libcbm"], how="left")
+        combined_decay.head(2)
+        # Join tables using to consecutive join instructions
+        combined_decay['diff'] = combined_decay["cbmcfs3_value"] - combined_decay["libcbm_value"]
+        combined_decay['diff']
+        
+    def check_decay_parameters(self, threshold=1e-9):
+        """Check that the absolute value of the difference between the turnover parameters is below the given threshold"""
+        df_decay = self.load_decay_rates()
+        all_equal = all(df_decay['diff'].abs() < threshold)
+        if all_equal:
+            print(f"{self.iso2_code} turnover rates are identical in libcbm and cbmcfs3")
+        else:
+            problem_rows = df_decay[df_decay['diff'].abs() > threshold]
+            msg = f"Turnover parameter mismatch in '{self.iso2_code}'\n{problem_rows}.\n"
+            msg += "You can load the comparison table with: \n"
+            msg += f"compare = CompareAIDB(cbmcfs3_continent.countries['{self.iso2_code}'])\n"
+            msg += "df = compare.load_turnover_parameters()\n"
+            msg += f"problem_rows = df[df['diff'].abs() > {threshold}]"
+            raise ValueError(msg)

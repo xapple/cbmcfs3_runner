@@ -1,0 +1,8 @@
+libcbm,cbmcfs3
+dom_pool_id,soil_pool_id
+base_decay_rate,organic_matter_decay_rate
+reference_temp,reference_temp
+q10,q10
+prop_to_atmosphere,prop_to_atmosphere
+max_rate,max_decay_rate_soft
+max_rate,max_decay_rate_hard
