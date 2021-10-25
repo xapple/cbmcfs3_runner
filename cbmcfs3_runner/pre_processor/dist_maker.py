@@ -470,8 +470,10 @@ class DisturbanceMaker(object):
 
     @property_cached
     def df_auto_allocation(self):
-        """Aggregate disturbances on the species, management type and
-        management strategy classifiers for the `auto_allocation` scenario."""
+        """
+        Aggregate disturbances on the species, management type and
+        management strategy classifiers for the `auto_allocation` scenario.
+        """
         # Take reference #
         df = self.df
         # Index #
@@ -493,5 +495,6 @@ class DisturbanceMaker(object):
     @property_cached
     def df_max_supply(self):
         """
+        #TODO
         """
         pass

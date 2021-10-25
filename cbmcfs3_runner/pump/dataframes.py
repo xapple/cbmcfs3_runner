@@ -18,7 +18,7 @@ def multi_index_pivot(df, columns=None, values=None):
 
     Note: you can perform the opposite operation, i.e.
     unpivot a DataFrame from wide format to long format with df.melt().
-    In contrast to `pivot`, `melt` does acccept a multiple index specified
+    In contrast to `pivot`, `melt` does accept a multiple index specified
     as the `id_vars` argument.
 
     TODO: add warning when there is no index set.
