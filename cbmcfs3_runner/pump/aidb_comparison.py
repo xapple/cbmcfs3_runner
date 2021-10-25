@@ -82,7 +82,14 @@ class CompareAIDB(object):
         df2 = self.cbmcfs3_aidb.database[table_name]
 
     def load_turnover_parameters(self):
-        """Return a data frame comparing turnover parameters between cbmcfs3 and libcbm"""
+        """Return a data frame comparing turnover parameters between cbmcfs3 and libcbm
+        
+        >>> from cbmcfs3_runner.pump.aidb_comparison import CompareAIDB
+        >>> from cbmcfs3_runner.core.continent import continent as cbmcfs3_continent
+        >>> comp = CompareAIDB(cbmcfs3_continent.countries['AT'])
+        >>> turnover = comp.load_turnover_parameters()
+
+        """
         # Load libcbm turnover
         eco_lib = self.libcbm_aidb.db.read_df('eco_boundary_tr')
         turn_lib = self.libcbm_aidb.db.read_df('turnover_parameter')
@@ -110,7 +117,11 @@ class CompareAIDB(object):
         return combined
 
     def check_turnover_parameters(self, threshold=1e-9):
-        """Check that the absolute value of the difference between the turnover parameters is below the given threshold"""
+        """Check that the absolute value of the difference between the turnover parameters 
+        is below the given threshold
+        
+        
+        """
         df = self.load_turnover_parameters()
         all_equal = all(df['diff'].abs() < threshold)
         if all_equal:
@@ -125,7 +136,14 @@ class CompareAIDB(object):
             raise ValueError(msg)
 
     def load_decay_rates(self):
-        """Return a data frame selfaring decay rates between cbmcfs3 and libcbm"""
+        """Return a data frame selfaring decay rates between cbmcfs3 and libcbm
+        
+        >>> from cbmcfs3_runner.pump.aidb_comparison import CompareAIDB
+        >>> from cbmcfs3_runner.core.continent import continent as cbmcfs3_continent
+        >>> comp = CompareAIDB(cbmcfs3_continent.countries['AT'])
+        >>> decay = comp.load_decay_rates()
+        
+        """
 
         # Check soil pools for libcbm
         pools_lib = self.libcbm_aidb.db.read_df('pool')
@@ -146,9 +164,12 @@ class CompareAIDB(object):
         
         #cbmcfs3
         decay_cfs = self.cbmcfs3_aidb.database['tbldomparametersdefault']
-        decay_cfs3 = decay_cfs.merge(cbmcfs3_pools, how ='inner', on="soil_pool_id")
-        decay_cbm = decay_cfs3.rename(columns={'soil_pool_id':'dom_pool_id', 'organic_matter_decay_rate':'base_decay_rate', 'reference_temp':'reference_temp', 'max_decay_rate_soft':'max_rate'})
-        decay_cbm= decay_cbm[['pool_id', 'code', 'base_decay_rate', 'reference_temp', 'q10', 'prop_to_atmosphere', 'max_rate']]
+        decay_cbm = decay_cfs.merge(cbmcfs3_pools, how ='inner', on="soil_pool_id")
+        #decay_cbm = decay_cfs3.rename(columns={'soil_pool_id':'dom_pool_id',
+        #                                       'organic_matter_decay_rate':'base_decay_rate',
+        #                                       'reference_temp':'reference_temp',
+        #                                       'max_decay_rate_soft':'max_rate'})
+        # decay_cbm= decay_cbm[['pool_id', 'code', 'base_decay_rate', 'reference_temp', 'q10', 'prop_to_atmosphere', 'max_rate']]
         #decay_cbm = decay_cbm.rename(columns={'max_decay_rate_hard':'max_rate'})
    #print(decay_cbm.head(5), end = '*X*X*X*X*X*X*X*X*X*X*X* \n')
         
@@ -159,16 +180,15 @@ class CompareAIDB(object):
                      .melt(id_vars=index, var_name='libcbm', value_name='libcbm_value'))
         cfs3_decay_long = (decay_cbm
                     .melt(id_vars=index, var_name='cbmcfs3', value_name='cbmcfs3_value'))
-        
-        
-        combined_decay = cfs3_decay_long.merge(lib_decay_long, on=index, how="left")
-         
-        
+        # Join cbmcfs3 table with with the maping table then with the libcbm table
+        combined = cfs3_decay_long.merge(decay_rates, on="cbmcfs3")
+        combined = combined.merge(lib_decay_long, on=index + ["libcbm"], how="left")
         
         # Join tables using to consecutive join instructions
-        combined_decay['diff'] = combined_decay["cbmcfs3_value"] - combined_decay["libcbm_value"]
-        combined_decay['diff']
-        print(combined_decay)
+        combined['diff'] = combined["cbmcfs3_value"] - combined["libcbm_value"]
+        combined['diff'].unique()
+        # print(combined)
+        return combined
         
     def check_decay_parameters(self, threshold=1e-9):
         """Check that the absolute value of the difference between the turnover parameters is below the given threshold"""
