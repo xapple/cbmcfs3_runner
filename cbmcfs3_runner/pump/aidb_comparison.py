@@ -142,7 +142,7 @@ class CompareAIDB(object):
         decay_lib = self.libcbm_aidb.db.read_df('decay_parameter')
         decay_lib = decay_lib.merge(dom_pools_lib, how="inner", on="dom_pool_id")
         decay_lib = decay_lib[['pool_id', 'code', 'base_decay_rate', 'reference_temp', 'q10', 'prop_to_atmosphere', 'max_rate']]
-        print(decay_lib.head(5),end = '*Q*Q*Q*Q*Q*Q*Q*Q*Q*Q*Q* \n')
+   #print(decay_lib.head(5),end = '*Q*Q*Q*Q*Q*Q*Q*Q*Q*Q*Q* \n')
         
         #cbmcfs3
         decay_cfs = self.cbmcfs3_aidb.database['tbldomparametersdefault']
@@ -150,7 +150,7 @@ class CompareAIDB(object):
         decay_cbm = decay_cfs3.rename(columns={'soil_pool_id':'dom_pool_id', 'organic_matter_decay_rate':'base_decay_rate', 'reference_temp':'reference_temp', 'max_decay_rate_soft':'max_rate'})
         decay_cbm= decay_cbm[['pool_id', 'code', 'base_decay_rate', 'reference_temp', 'q10', 'prop_to_atmosphere', 'max_rate']]
         #decay_cbm = decay_cbm.rename(columns={'max_decay_rate_hard':'max_rate'})
-        print(decay_cbm.head(5), end = '*X*X*X*X*X*X*X*X*X*X*X* \n')
+   #print(decay_cbm.head(5), end = '*X*X*X*X*X*X*X*X*X*X*X* \n')
         
         #Combine the two
         index = ['pool_id', 'code']
@@ -159,11 +159,16 @@ class CompareAIDB(object):
                      .melt(id_vars=index, var_name='libcbm', value_name='libcbm_value'))
         cfs3_decay_long = (decay_cbm
                     .melt(id_vars=index, var_name='cbmcfs3', value_name='cbmcfs3_value'))
-        combined_decay = cfs3_decay_long.merge(lib_decay_long, on=index+['libcbm'], how="left")
+        
+        
+        combined_decay = cfs3_decay_long.merge(lib_decay_long, on=index, how="left")
+         
+        
+        
         # Join tables using to consecutive join instructions
         combined_decay['diff'] = combined_decay["cbmcfs3_value"] - combined_decay["libcbm_value"]
         combined_decay['diff']
-        print(combined_decay.head(5))
+        print(combined_decay)
         
     def check_decay_parameters(self, threshold=1e-9):
         """Check that the absolute value of the difference between the turnover parameters is below the given threshold"""
